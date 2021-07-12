@@ -6,7 +6,7 @@ const config = {
     API_BASE: ''
   },
   dev: {
-    API_BASE: ''
+    API_BASE: 'http://localhost/api/v1'
   }
 }
 

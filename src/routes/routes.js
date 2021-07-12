@@ -13,7 +13,7 @@ const routes = [
     key: 'INDEX',
     exact: true,
     component: ({ authenticated }) =>
-      authenticated ? <Redirect to="/home" /> : <Redirect to="/login" />
+      authenticated ? <Redirect to="/home" /> : <Redirect to="/empresas" />
   },
   {
     path: '/home',
@@ -48,7 +48,7 @@ const routes = [
     )
   },
   {
-    path: '/empresas/idCompany',
+    path: '/empresas/:idCompany',
     key: 'COMPANY',
     exact: true,
     component: () => (

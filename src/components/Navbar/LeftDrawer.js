@@ -53,7 +53,7 @@ const LeftDrawer = ({ ...props }) => {
   return (
     <div>
       <Box className={classes.toolbar}>
-        <Typography variant="h6">IT Process</Typography>
+        <Typography variant="h6">Fundación CCHC</Typography>
       </Box>
       <Divider />
       <List>

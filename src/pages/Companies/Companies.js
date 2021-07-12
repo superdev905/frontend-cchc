@@ -1,3 +1,12 @@
-const Company = () => <div>Empresas</div>
+import { Box } from '@material-ui/core'
+import { PageHeading } from '../../components/UI'
+import CompaniesList from '../../components/Companies/List'
 
-export default Company
+const Companies = () => (
+  <Box>
+    <PageHeading>Empresas</PageHeading>
+    <CompaniesList />
+  </Box>
+)
+
+export default Companies

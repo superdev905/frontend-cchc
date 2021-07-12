@@ -6,11 +6,12 @@ const useStyles = makeStyles((theme) => ({
   label: {
     fontSize: '14px',
     color: theme.palette.common.black,
-    opacity: 0.7
+    opacity: 0.8
   },
-  input: ({ gray }) => ({
+  input: ({ gray, error }) => ({
     '& input': {
-      backgroundColor: gray ? '#F5F8FA' : 'transparent'
+      backgroundColor: gray ? '#F5F8FA' : 'transparent',
+      color: error ? theme.palette.error.main : theme.palette.common.black
     }
   })
 }))
@@ -33,7 +34,7 @@ const CustomTextField = ({
   className,
   ...props
 }) => {
-  const classes = useStyles({ gray })
+  const classes = useStyles({ gray, error })
   return (
     <Box>
       <InputLabel htmlFor={id} className={classes.label} required={required}>

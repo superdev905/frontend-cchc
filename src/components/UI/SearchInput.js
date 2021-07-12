@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     backgroundColor: '#F5F8FA',
     borderRadius: 5,
-    marginTop: 15,
+    marginTop: 5,
     [theme.breakpoints.up('md')]: {
       width: '100%'
     }
