@@ -61,10 +61,33 @@ const createDivision = (values) => () =>
     Axios.post('/sub_business', values)
       .then((response) => {
         const { data } = response
-        resolve(data.data)
+        resolve(data)
       })
       .catch((err) => {
-        console.log(err.response)
+        reject(err.response.data)
+      })
+  })
+
+const updateDivision = (divisionId, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`/sub_business/${divisionId}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const deleteDivision = (divisionId) => () =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`/sub_business/${divisionId}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
         reject(err.response.data)
       })
   })
@@ -76,5 +99,7 @@ export default {
   getCompanies,
   getCompany,
   createCompany,
-  createDivision
+  createDivision,
+  updateDivision,
+  deleteDivision
 }

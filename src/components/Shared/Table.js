@@ -15,10 +15,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: '1px solid #EBEFF2',
     padding: `4px ${theme.spacing(2)}px`,
     fontSize: 15,
-    cursor: 'pointer',
-    '&:hover': {
-      backgroundColor: theme.palette.primary.light
-    }
+    cursor: 'pointer'
   },
   center: {
     textAlign: 'center'

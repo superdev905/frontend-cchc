@@ -6,13 +6,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid, makeStyles } from '@material-ui/core'
 import useSuccess from '../../../hooks/useSuccess'
 import companyActions from '../../../state/actions/companies'
-import { Heading, TextField, SubmitButton } from '../../UI'
+import { Heading, TextField, SubmitButton, Select } from '../../UI'
 import { Dialog } from '../../Shared'
+import { decisionList } from '../../../config'
 
 const validationSchema = Yup.object({
   rut: Yup.string().required('Ingrese rut'),
   name: Yup.string(),
-  business_name: Yup.string().required('Ingrese razón social')
+  business_name: Yup.string().required('Ingrese razón social'),
+  partnership: Yup.string().required('Seleccion como empresa socia')
 })
 const useStyles = makeStyles(() => ({
   actions: {
@@ -39,24 +41,42 @@ const DivisionModal = ({ open, onClose, division, type, ...props }) => {
     initialValues: {
       rut: type === 'UPDATE' ? division.rut : '',
       name: type === 'UPDATE' ? division.name : '',
-      business_name: type === 'UPDATE' ? division.business_name : ''
+      business_name: type === 'UPDATE' ? division.business_name : '',
+      partnership: ''
     },
     onSubmit: (values, { resetForm }) => {
       const data = { ...values, business_id: parseInt(idCompany, 10) }
-      dispatch(companyActions.createDivision(data))
-        .then(() => {
-          formik.setSubmitting(false)
-          changeSuccess(false)
-          setTimeout(() => {
-            resetForm()
-            onClose()
-          }, 500)
-        })
-        .catch((err) => {
-          formik.setSubmitting(false)
-          notify(err.detail)
-          changeSuccess(false)
-        })
+      if (type === 'CREATE') {
+        dispatch(companyActions.createDivision(data))
+          .then(() => {
+            formik.setSubmitting(false)
+            changeSuccess(false)
+            setTimeout(() => {
+              resetForm()
+              onClose()
+            }, 500)
+          })
+          .catch((err) => {
+            formik.setSubmitting(false)
+            notify(err.detail)
+            changeSuccess(false)
+          })
+      } else {
+        dispatch(companyActions.updateDivision(division.id, data))
+          .then(() => {
+            formik.setSubmitting(false)
+            changeSuccess(false)
+            setTimeout(() => {
+              resetForm()
+              onClose()
+            }, 500)
+          })
+          .catch((err) => {
+            formik.setSubmitting(false)
+            notify(err.detail)
+            changeSuccess(false)
+          })
+      }
     }
   })
 
@@ -64,7 +84,9 @@ const DivisionModal = ({ open, onClose, division, type, ...props }) => {
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullScreen={isMobile}>
       <Box>
         <Box>
-          <Heading align="center">Nueva División</Heading>
+          <Heading align="center">{`${
+            type === 'CREATE' ? 'Nueva' : 'Actualizar'
+          } División`}</Heading>
         </Box>
         <Box>
           <Grid container spacing={2}>
@@ -108,6 +130,29 @@ const DivisionModal = ({ open, onClose, division, type, ...props }) => {
                 error={formik.touched.name && Boolean(formik.errors.name)}
               />
             </Grid>
+            <Grid item xs={12}>
+              <Select
+                label="Empresa socia"
+                name="partnership"
+                value={formik.values.partnership}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                helperText={
+                  formik.touched.partnership && formik.errors.partnership
+                }
+                error={
+                  formik.touched.partnership &&
+                  Boolean(formik.errors.partnership)
+                }
+              >
+                <option value="">Seleccione opción</option>
+                {decisionList.map((item, i) => (
+                  <option key={`option-${i}`} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </Select>
+            </Grid>
           </Grid>
         </Box>
         <Box className={classes.actions}>
@@ -117,7 +162,7 @@ const DivisionModal = ({ open, onClose, division, type, ...props }) => {
             loading={formik.isSubmitting}
             disabled={!formik.isValid}
           >
-            Crear división
+            {`${type === 'CREATE' ? 'Crear' : 'Actualizar'} división`}
           </SubmitButton>
         </Box>
       </Box>
