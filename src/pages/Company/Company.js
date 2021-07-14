@@ -6,6 +6,7 @@ import { ArrowBack as ArrowBackIcon } from '@material-ui/icons/'
 import companiesActions from '../../state/actions/companies'
 import { Button, PageHeading, Wrapper } from '../../components/UI'
 import CreateModal from '../../components/Contacts/CreateModal'
+import Tabs from '../../components/Company/Tabs'
 import useToggle from '../../hooks/useToggle'
 
 const Company = ({ ...props }) => {
@@ -26,8 +27,9 @@ const Company = ({ ...props }) => {
         <IconButton onClick={goBack}>
           <ArrowBackIcon />
         </IconButton>
-        <PageHeading>{company?.name}</PageHeading>
+        <PageHeading>{company?.business_name}</PageHeading>
       </Box>
+      <Tabs />
       <Wrapper>
         <Box>
           <Typography>{company?.name}</Typography>

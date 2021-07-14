@@ -1,74 +1,84 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import ReactMapGL from 'react-map-gl'
 import { Box, Grid, Typography } from '@material-ui/core'
-import regionJSON from '../../../resources/regions.json'
+import commonActions from '../../../state/actions/common'
+import companiesActions from '../../../state/actions/companies'
 import { Select, TextField } from '../../UI'
 import useStyles from './styles'
 import Actions from './Actions'
 
 const validationSchema = Yup.object({
   rut: Yup.string().required('Ingrese rut'),
-  name: Yup.string().required('Ingrese nombre'),
+  name: Yup.string(),
   businessName: Yup.string().required('Ingrese razón social'),
-  email: Yup.string().email('Ingrese correo válid').required('Ingrese correo'),
+  email: Yup.string().email('Ingrese correo válido').required('Ingrese correo'),
   address: Yup.string().required('Ingrese dirección'),
   commune: Yup.string().required('Seleccione comuna'),
   region: Yup.string().required('Seleccione región'),
-  phone1: Yup.string().required('Ingrese teléfono')
+  phone: Yup.string().required('Ingrese teléfono'),
+  phone1: Yup.string(),
+  phone2: Yup.string()
 })
 
 const StepOne = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const [communes, setCommunes] = useState([])
+  const { regions } = useSelector((state) => state.common)
+  const { create } = useSelector((state) => state.companies)
 
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      businessName: '',
-      rut: '',
-      name: '',
-      address: '',
-      commune: '',
-      region: '',
-      phone1: ''
+      businessName: create?.company?.businessName || '',
+      rut: create?.company?.rut || '',
+      name: create?.company?.name || '',
+      email: create?.company?.email || '',
+      address: create?.company?.address || '',
+      commune: create?.company?.commune || '',
+      region: create?.company?.region || '',
+      phone: create?.company?.phone || '',
+      phone1: create?.company?.phone1 || '',
+      phone2: create?.company?.phone1 || ''
     },
     onSubmit: (values) => {
-      const data = {
-        business_name: values.businessName,
-        email: values.email,
-        rut: values.rut,
-        name: values.name,
-        address: values.address,
-        commune: values.commune,
-        region: values.region,
-        phone1: values.phone1,
-        phone: '',
-        phone2: ''
-      }
-      console.log(data)
+      dispatch(
+        companiesActions.updateCreate({
+          ...create,
+          company: values,
+          step: create.step + 1
+        })
+      )
     }
   })
   const handleSelectChange = (e) => {
     const { name, value } = e.target
     switch (name) {
       case 'region': {
-        const region = regionJSON.regions.find((item) => item.number === value)
+        const region = regions.find(
+          (item) => item.number === parseInt(value, 10)
+        )
         setCommunes(region.communes)
-        formik.setFieldValue('region', region.name)
+        formik.setFieldValue('region', region.id)
         break
       }
       case 'commune': {
         const commune = communes.find((item) => item.name === value)
-        formik.setFieldValue('commune', commune.name)
+        formik.setFieldValue('commune', commune.id)
         break
       }
       default:
         throw new Error('Error')
     }
   }
+
+  useEffect(() => {
+    dispatch(commonActions.getRegions())
+  }, [])
 
   return (
     <Box className={classes.form}>
@@ -129,9 +139,13 @@ const StepOne = () => {
           </Grid>
           <Grid item xs={12} md={6}>
             <TextField
+              name="phone"
               label="Teléfono"
               onChange={formik.handleChange}
-              name="phone1"
+              onBlur={formik.handleBlur}
+              value={formik.values.phone}
+              helperText={formik.touched.phone && formik.errors.phone}
+              error={formik.touched.phone && Boolean(formik.errors.phone)}
             />
           </Grid>
           <Grid item xs={12} md={6}>
@@ -179,9 +193,9 @@ const StepOne = () => {
                     onChange={handleSelectChange}
                   >
                     <option value={`INVALID`}>Seleccione una región</option>
-                    {regionJSON.regions.map((item, index) => (
+                    {regions.map((item, index) => (
                       <option key={`region--${index}`} value={`${item.number}`}>
-                        {`${item.romanNumber}.- ${item.name}`}
+                        {`${item.roman_number}.- ${item.name}`}
                       </option>
                     ))}
                   </Select>
@@ -205,7 +219,12 @@ const StepOne = () => {
           </Grid>
         </Box>
       </Box>
-      <Actions showBackIcon={false} backText="Cancelar" />
+      <Actions
+        showBackIcon={false}
+        backText="Cancelar"
+        disableNext={!formik.isValid}
+        handleNext={formik.handleSubmit}
+      />
     </Box>
   )
 }

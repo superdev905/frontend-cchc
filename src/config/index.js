@@ -11,3 +11,5 @@ const config = {
 }
 
 export default config
+export { default as decisionList } from './decisionList'
+export { default as businessTypes } from './business'

@@ -10,7 +10,7 @@ import { Wrapper } from '../../UI'
 import CreateCompany from '../Create'
 
 const heading = {
-  name: { title: 'Nombre', width: 3 },
+  business_name: { title: 'Nombre', width: 3 },
   rut: { title: 'Rut', width: 2 },
   email: { title: 'Correo', width: 3 },
   phone: { title: 'Teléfono', width: 2 },
@@ -38,7 +38,11 @@ const heading = {
     width: 1,
     component: () => (
       <Box display="flex" justifyContent="flex-end">
-        <IconButton>
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation()
+          }}
+        >
           <MoreVertIcon />
         </IconButton>
       </Box>

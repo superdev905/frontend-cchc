@@ -8,7 +8,10 @@ const initialState = {
     limit: 20,
     search: ''
   },
-  company: null
+  company: null,
+  create: {
+    step: 0
+  }
 }
 
 const companiesReducer = (state = initialState, { type, payload }) => {
@@ -21,6 +24,8 @@ const companiesReducer = (state = initialState, { type, payload }) => {
       return { ...state, filters: payload }
     case businessTypes.GET_BUSINESS_DETAIL:
       return { ...state, company: payload }
+    case businessTypes.BUSINESS_UPDATE_CREATE:
+      return { ...state, create: payload }
     default:
       return state
   }

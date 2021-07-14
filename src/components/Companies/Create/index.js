@@ -1,13 +1,12 @@
-import { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Box, Stepper, Step, StepLabel, Typography } from '@material-ui/core'
 import { FullScreenDialog, Button } from '../../UI'
 import StepOne from './StepOne'
 import StepTwo from './StepTwo'
-import StepThree from './StepThree'
-import ConstructionForm from './Construction'
+import companiesActions from '../../../state/actions/companies'
 
 function getSteps() {
-  return ['Información de empresa', 'Contactos', 'Divisiones', 'Obras']
+  return ['Información de empresa', 'Otros datos']
 }
 
 function getStepContent(stepIndex) {
@@ -16,24 +15,30 @@ function getStepContent(stepIndex) {
       return <StepOne />
     case 1:
       return <StepTwo />
-    case 2:
-      return <StepThree />
-    case 3:
-      return <ConstructionForm />
     default:
       return <span>Paso no encontrado</span>
   }
 }
 
 const CreateDialog = ({ open, onClose }) => {
-  const [step] = useState(3)
-
   const steps = getSteps()
+  const dispatch = useDispatch()
+  const { create } = useSelector((state) => state.companies)
+
+  const handleBack = () => {
+    if (create.step === 0) {
+      onClose()
+    } else {
+      dispatch(
+        companiesActions.updateCreate({ ...create, step: create.step - 1 })
+      )
+    }
+  }
 
   return (
-    <FullScreenDialog open={open} onClose={onClose}>
+    <FullScreenDialog open={open} onClose={onClose} onBack={handleBack}>
       <Box>
-        <Stepper activeStep={step} alternativeLabel>
+        <Stepper activeStep={create.step} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
@@ -41,7 +46,7 @@ const CreateDialog = ({ open, onClose }) => {
           ))}
         </Stepper>
         <div>
-          {step === steps.length ? (
+          {create.step === steps.length ? (
             <Box>
               <Typography align="center">Cliente creado con éxito</Typography>
               <Box display="flex" justifyContent="center">
@@ -49,7 +54,7 @@ const CreateDialog = ({ open, onClose }) => {
               </Box>
             </Box>
           ) : (
-            <>{getStepContent(step)}</>
+            <>{getStepContent(create.step)}</>
           )}
         </div>
       </Box>

@@ -8,11 +8,14 @@ const toggleCreateModal = (value) => (dispatch) =>
 const updateFilters = (filters) => (dispatch) =>
   dispatch({ type: businessTypes.BUSINESS_UPDATE_FILTERS, payload: filters })
 
+const updateCreate = (form) => (dispatch) =>
+  dispatch({ type: businessTypes.BUSINESS_UPDATE_CREATE, payload: form })
+
 const getCompanies = (query) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`/business?${queryString.stringify(query)}`)
       .then((response) => {
-        const { data } = response.data
+        const { data } = response
         dispatch({
           type: businessTypes.GET_BUSINESSES,
           payload: data
@@ -29,7 +32,7 @@ const getCompany = (companyId) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`/business/${companyId}`)
       .then((response) => {
-        const { data } = response.data
+        const { data } = response
         dispatch({
           type: businessTypes.GET_BUSINESS_DETAIL,
           payload: data
@@ -45,19 +48,33 @@ const createCompany = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post('/business', values)
       .then((response) => {
-        const { data } = response.data
+        const { data } = response
+        resolve(data.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const createDivision = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post('/sub_business', values)
+      .then((response) => {
+        const { data } = response
         resolve(data.data)
       })
       .catch((err) => {
         console.log(err.response)
-        reject(err.response.data.detail)
+        reject(err.response.data)
       })
   })
 
 export default {
   toggleCreateModal,
   updateFilters,
+  updateCreate,
   getCompanies,
   getCompany,
-  createCompany
+  createCompany,
+  createDivision
 }
