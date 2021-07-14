@@ -13,7 +13,8 @@ import {
 } from '@material-ui/core'
 import {
   DashboardOutlined as DashboardIcon,
-  Business as BusinessIcon
+  Business as BusinessIcon,
+  Settings as SettingsIcon
 } from '@material-ui/icons'
 import clsx from 'clsx'
 
@@ -38,7 +39,8 @@ const useStyles = makeStyles((theme) => ({
 
 const commonRoutes = [
   { title: 'Home', path: '/home', icon: <DashboardIcon /> },
-  { title: 'Empresas', path: '/empresas', icon: <BusinessIcon /> }
+  { title: 'Empresas', path: '/empresas', icon: <BusinessIcon /> },
+  { title: 'Configuración', path: '/configuracion', icon: <SettingsIcon /> }
 ]
 
 const LeftDrawer = ({ ...props }) => {
@@ -64,7 +66,7 @@ const LeftDrawer = ({ ...props }) => {
             onClick={() => onItemClick(route.path)}
             key={`drawer-items--${index}`}
             className={clsx(
-              location.pathname === route.path && classes.activeItem
+              location.pathname.includes(route.path) && classes.activeItem
             )}
           >
             <ListItemIcon className={classes.listIcon}>

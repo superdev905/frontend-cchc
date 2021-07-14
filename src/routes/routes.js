@@ -6,6 +6,7 @@ import Can from '../components/Can'
 const Company = lazy(() => import('../pages/Company'))
 const Companies = lazy(() => import('../pages/Companies'))
 const Home = lazy(() => import('../pages/Home'))
+const Settings = lazy(() => import('../pages/Settings'))
 
 const routes = [
   {
@@ -57,6 +58,22 @@ const routes = [
         yes={() => (
           <Layout>
             <Company />
+          </Layout>
+        )}
+        no={() => <span>Log in</span>}
+      />
+    )
+  },
+  {
+    path: '/configuracion',
+    key: 'SETTINGS',
+    exact: true,
+    component: () => (
+      <Can
+        availableTo={['ADMIN']}
+        yes={() => (
+          <Layout>
+            <Settings />
           </Layout>
         )}
         no={() => <span>Log in</span>}

@@ -6,7 +6,7 @@ const config = {
     API_BASE: ''
   },
   dev: {
-    API_BASE: 'http://localhost/api/v1'
+    API_BASE: 'https://ecaca450ac6c.ngrok.io/api/v1'
   }
 }
 
