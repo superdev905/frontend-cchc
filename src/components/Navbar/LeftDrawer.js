@@ -38,7 +38,8 @@ const useStyles = makeStyles((theme) => ({
 
 const commonRoutes = [
   { title: 'Home', path: '/home', icon: <DashboardIcon /> },
-  { title: 'Empresas', path: '/empresas', icon: <BusinessIcon /> }
+  { title: 'Empresas', path: '/empresas', icon: <BusinessIcon /> },
+  { title: 'Configuración', path: '/configuracion', icon: <BusinessIcon /> }
 ]
 
 const LeftDrawer = ({ ...props }) => {
