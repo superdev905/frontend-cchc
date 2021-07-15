@@ -11,7 +11,10 @@ const initialState = {
   company: null,
   create: {
     step: 0
-  }
+  },
+  divisions: [],
+  contacts: [],
+  constructions: []
 }
 
 const companiesReducer = (state = initialState, { type, payload }) => {
@@ -26,6 +29,12 @@ const companiesReducer = (state = initialState, { type, payload }) => {
       return { ...state, company: payload }
     case businessTypes.BUSINESS_UPDATE_CREATE:
       return { ...state, create: payload }
+    case businessTypes.BUSINESS_GET_DIVISIONS:
+      return { ...state, divisions: payload }
+    case businessTypes.BUSINESS_GET_CONTACTS:
+      return { ...state, contacts: payload }
+    case businessTypes.BUSINESS_GET_CONSTRUCTIONS:
+      return { ...state, constructions: payload }
     default:
       return state
   }

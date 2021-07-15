@@ -1,4 +1,5 @@
 export { default as Dialog } from './Dialog'
 export { default as Forbidden } from './Forbidden'
 export { default as ConfirmDelete } from './ConfirmDelete'
-export { default as Table } from './Table'
+export { default as DataTable } from './DataTable'
+export { default as DatePicker } from './DatePicker'

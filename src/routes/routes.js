@@ -7,6 +7,8 @@ const Company = lazy(() => import('../pages/Company'))
 const Companies = lazy(() => import('../pages/Companies'))
 const Home = lazy(() => import('../pages/Home'))
 const Settings = lazy(() => import('../pages/Settings'))
+const Construction = lazy(() => import('../pages/Construction'))
+const Constructions = lazy(() => import('../pages/Constructions'))
 
 const routes = [
   {
@@ -58,6 +60,38 @@ const routes = [
         yes={() => (
           <Layout>
             <Company />
+          </Layout>
+        )}
+        no={() => <span>Log in</span>}
+      />
+    )
+  },
+  {
+    path: '/obras',
+    key: 'CONSTRUCTION',
+    exact: true,
+    component: () => (
+      <Can
+        availableTo={['ADMIN']}
+        yes={() => (
+          <Layout>
+            <Constructions />
+          </Layout>
+        )}
+        no={() => <span>Log in</span>}
+      />
+    )
+  },
+  {
+    path: '/obras/:idConstruction',
+    key: 'CONSTRUCTIONS',
+    exact: true,
+    component: () => (
+      <Can
+        availableTo={['ADMIN']}
+        yes={() => (
+          <Layout>
+            <Construction />
           </Layout>
         )}
         no={() => <span>Log in</span>}

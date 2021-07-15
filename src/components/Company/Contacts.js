@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { withRouter } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Typography } from '@material-ui/core'
 import { useSuccess, useToggle } from '../../hooks'
@@ -6,10 +7,12 @@ import { ContactCard, ContactModal } from '../Contacts'
 import { Button, EmptyState, Wrapper } from '../UI'
 import { ConfirmDelete } from '../Shared'
 import contactActions from '../../state/actions/contact'
+import companyActions from '../../state/actions/companies'
 
-const Contacts = () => {
+const Contacts = ({ ...props }) => {
   const dispatch = useDispatch()
-  const { company } = useSelector((state) => state.companies)
+  const { idCompany } = props.match.params
+  const { contacts } = useSelector((state) => state.companies)
   const [deleting, setDeleting] = useState(false)
   const { success, changeSuccess } = useSuccess()
   const [currentContact, setCurrentContact] = useState(null)
@@ -29,6 +32,9 @@ const Contacts = () => {
         setDeleting(false)
       })
   }
+  useEffect(() => {
+    dispatch(companyActions.getContacts(idCompany))
+  }, [])
   return (
     <Box>
       <Wrapper>
@@ -39,7 +45,7 @@ const Contacts = () => {
         <Box>
           {
             <ContactCard.Container>
-              {company?.contacts.map((item) => (
+              {contacts.map((item) => (
                 <ContactCard
                   key={`contact-card-${item.id}`}
                   contact={item}
@@ -55,7 +61,7 @@ const Contacts = () => {
               ))}
             </ContactCard.Container>
           }
-          {company?.contacts.length === 0 && (
+          {contacts.length === 0 && (
             <EmptyState message="No hay contactos registrados" />
           )}
         </Box>
@@ -89,6 +95,4 @@ const Contacts = () => {
   )
 }
 
-Contacts.propTypes = {}
-
-export default Contacts
+export default withRouter(Contacts)

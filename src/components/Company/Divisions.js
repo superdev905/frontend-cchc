@@ -1,44 +1,23 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  Box,
-  Chip,
-  IconButton,
-  makeStyles,
-  Typography
-} from '@material-ui/core'
-import DataTable from 'react-data-table-component'
-import {
-  ArrowDownward as SortIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon
-} from '@material-ui/icons/'
+import { withRouter } from 'react-router-dom'
+import { Box, Chip, makeStyles, Typography } from '@material-ui/core'
 import companyActions from '../../state/actions/companies'
-import { Button, Wrapper } from '../UI'
+import { ActionsTable, Button, Wrapper } from '../UI'
 import DivisionModal from '../Companies/Division/Modal'
 import { useSuccess, useToggle } from '../../hooks'
-import { ConfirmDelete } from '../Shared'
-
-const ActionRow = ({ onEdit, onDelete }) => (
-  <Box>
-    <IconButton onClick={onEdit}>
-      <EditIcon />
-    </IconButton>
-    <IconButton onClick={onDelete}>
-      <DeleteIcon />
-    </IconButton>
-  </Box>
-)
+import { ConfirmDelete, DataTable } from '../Shared'
 
 const useStyles = makeStyles(() => ({
   root: {}
 }))
 
-const Details = () => {
+const Details = ({ ...props }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const { idCompany } = props.match.params
   const [tableData, setTableData] = useState([])
-  const { company } = useSelector((state) => state.companies)
+  const { divisions } = useSelector((state) => state.companies)
   const { open: openCreate, toggleOpen: toggleOpenCreate } = useToggle()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
@@ -63,6 +42,7 @@ const Details = () => {
         setDeleting(false)
         changeSuccess(true)
         toggleOpenDelete()
+        dispatch(companyActions.getDivisions(idCompany))
       })
       .catch(() => {
         setDeleting(false)
@@ -81,18 +61,20 @@ const Details = () => {
     {
       name: 'Empresa socia',
       selector: 'is_partner',
-      cell: (row) => <Chip {...row} label="No"></Chip>
+      cell: (row) => <Chip {...row} label="No"></Chip>,
+      hide: 'md'
     },
     {
       name: 'Fecha de creación',
-      selector: 'createDate'
+      selector: 'createDate',
+      hide: 'md'
     },
     {
       name: '',
       selector: '',
       right: true,
       cell: (row) => (
-        <ActionRow
+        <ActionsTable
           {...row}
           onEdit={() => onEditClick(row)}
           onDelete={() => onDelete(row)}
@@ -102,8 +84,12 @@ const Details = () => {
   ]
 
   useEffect(() => {
+    dispatch(companyActions.getDivisions(idCompany))
+  }, [])
+
+  useEffect(() => {
     setTableData(
-      company?.sub_businesses.map((item) => ({
+      divisions.map((item) => ({
         ...item,
         is_partner: Boolean(item.is_partner),
         createDate: new Date(item.created_at).toLocaleDateString('es-CL', {
@@ -111,7 +97,7 @@ const Details = () => {
         })
       }))
     )
-  }, [company])
+  }, [divisions])
 
   return (
     <Box className={classes.root}>
@@ -122,13 +108,7 @@ const Details = () => {
         </Box>
 
         <Box>
-          <DataTable
-            columns={columns}
-            data={tableData}
-            defaultSortFieldId={1}
-            sortIcon={<SortIcon />}
-            pagination={false}
-          />
+          <DataTable columns={columns} data={tableData} />
         </Box>
       </Wrapper>
       <DivisionModal open={openCreate} onClose={toggleOpenCreate} />
@@ -159,4 +139,4 @@ const Details = () => {
   )
 }
 
-export default Details
+export default withRouter(Details)

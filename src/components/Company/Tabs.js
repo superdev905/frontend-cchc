@@ -3,6 +3,7 @@ import { Box, makeStyles, Tabs, Tab } from '@material-ui/core'
 import Details from './Details'
 import Divisions from './Divisions'
 import Contacts from './Contacts'
+import Constructions from './Constructions'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -25,8 +26,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Constructions = () => <span>Obras</span>
-
 const CompanyTabs = () => {
   const classes = useStyles()
   const [tab, setTab] = useState(0)
@@ -39,7 +38,8 @@ const CompanyTabs = () => {
     if (value === 0) return <Details />
     if (value === 1) return <Divisions />
     if (value === 2) return <Contacts />
-    return <Constructions />
+    if (value === 3) return <Constructions />
+    return <span>Not found</span>
   }
   return (
     <Box className={classes.root}>
@@ -65,22 +65,3 @@ const CompanyTabs = () => {
 }
 
 export default CompanyTabs
-/**
- * 
- * 
- * is_partner(pin):"NO"
-update_at(pin):null
-id(pin):1
-state(pin):"CREATED"
-rut(pin):"24110487-7"
-phone(pin):"399383838"
-name(pin):"Anakin Corp"
-phone1(pin):""
-address(pin):"Company Address"
-phone2(pin):""
-business_name(pin):"Anakin Company"
-region_id(pin):1
-email(pin):"anakin@corp.com"
-commune_id(pin):1
-created_at(pin):"2021-07-13T04:41:40.526258+00:00"
- */
