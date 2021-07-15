@@ -48,7 +48,9 @@ const TypologyModal = ({ open, onClose, type, typology }) => {
             changeSuccess(false)
           })
       } else {
-        dispatch(constructionsActions.updateConstruction(typology.id, data))
+        dispatch(
+          constructionsActions.updateConstructionTypology(typology.id, data)
+        )
           .then(() => {
             formik.setSubmitting(false)
             changeSuccess(false)

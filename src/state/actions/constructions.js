@@ -42,8 +42,34 @@ const createConstructionTypology = (values) => () =>
       })
   })
 
+const updateConstructionTypology = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`/construction_typology/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const deleteConstructionTypology = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`/construction_typology/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
 export default {
   createConstruction,
   createConstructionTypology,
-  getConstructionTypology
+  getConstructionTypology,
+  updateConstructionTypology,
+  deleteConstructionTypology
 }
