@@ -48,9 +48,9 @@ const CreateDialog = ({ open, onClose }) => {
         <div>
           {create.step === steps.length ? (
             <Box>
-              <Typography align="center">Cliente creado con éxito</Typography>
+              <Typography align="center">Empresa creado con éxito</Typography>
               <Box display="flex" justifyContent="center">
-                <Button>Cerrar</Button>
+                <Button onClick={onClose}>Cerrar</Button>
               </Box>
             </Box>
           ) : (

@@ -1,230 +1,330 @@
+import { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import * as Yup from 'yup'
-import PropTypes from 'prop-types'
-import toast, { Toaster } from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
+import ReactMapGL from 'react-map-gl'
+import { withRouter } from 'react-router-dom'
+import { Box, Grid, Typography } from '@material-ui/core'
+import commonActions from '../../state/actions/common'
+import constructionsActions from '../../state/actions/constructions'
 import {
-  Box,
-  Grid,
-  IconButton,
-  Dialog,
-  makeStyles,
-  DialogContent
-} from '@material-ui/core'
-import { Close as CloseIcon } from '@material-ui/icons/'
-import useSuccess from '../../hooks/useSuccess'
-import companiesActions from '../../state/actions/companies'
-import { Heading, TextField, SubmitButton, Select } from '../UI'
+  Button,
+  FullScreenDialog,
+  Select,
+  SubmitButton,
+  TextField
+} from '../UI'
+import { DatePicker } from '../Shared'
 
 const validationSchema = Yup.object({
-  name: Yup.string().required('Ingrese nombre'),
-  charge: Yup.string().required('Ingrese cargo'),
-  email: Yup.string().email('Ingrese correo válid').required('Ingrese correo'),
-  phone: Yup.string().required('Ingrese teléfono'),
-  phoneOffice: Yup.string().required('Ingrese teléfono'),
-  phoneOther: Yup.string().required('Ingrese teléfono')
+  rut: Yup.string().required('Ingrese rut'),
+  name: Yup.string(),
+  business_name: Yup.string().required('Ingrese razón social'),
+  address: Yup.string().required('Ingrese dirección'),
+  commune_id: Yup.string().required('Seleccione comuna'),
+  region_id: Yup.string().required('Seleccione región'),
+  state: Yup.string().required('Seleccione estado'),
+  typology_id: Yup.string().nullable(),
+  economic_sector_id: Yup.string().required('Seleccione sector economico'),
+  end_date: Yup.date().nullable()
 })
-const useStyles = makeStyles(() => ({
-  form: {
-    width: '100%'
-  },
-  heading: {
-    display: 'flex',
-    justifyContent: 'space-between'
-  },
-  subtitle: {
-    fontWeight: 'bold',
-    opacity: 0.8,
-    margin: `10px 0px`
-  },
-  actions: {
-    marginTop: 15,
-    '& button': {
-      margin: 0
-    }
-  }
-}))
 
-const exampleCharges = [
-  {
-    id: 1,
-    name: 'Gerente'
-  },
-  {
-    id: 2,
-    name: 'Administrador'
-  },
-  {
-    id: 3,
-    name: 'Ayudante'
-  },
-  {
-    id: 4,
-    name: 'Sub gerente'
-  }
-]
-
-const notify = (message) => toast.error(message)
-
-const CreateDrawer = ({ open, onClose }) => {
-  const classes = useStyles()
+const ConstructionModal = ({ open, onClose, type, construction, ...props }) => {
   const dispatch = useDispatch()
-  const { success, changeSuccess } = useSuccess()
+  const { idCompany } = props.match.params
+  const [communes, setCommunes] = useState([])
+  const { regions } = useSelector((state) => state.common)
+  const { typologies, sectors } = useSelector((state) => state.constructions)
 
   const formik = useFormik({
     validateOnMount: true,
+    enableReinitialize: true,
     validationSchema,
     initialValues: {
-      name: '',
-      email: '',
-      charge: '',
-      phone: '',
-      phoneOffice: '',
-      phoneOther: ''
+      business_name: type === 'UPDATE' ? construction.business_name : '',
+      rut: type === 'UPDATE' ? construction.rut : '',
+      name: type === 'UPDATE' ? construction.name : '',
+      address: type === 'UPDATE' ? construction.address : '',
+      commune_id: type === 'UPDATE' ? construction.commune.id : '',
+      region_id: type === 'UPDATE' ? construction.region.id : '',
+      state: type === 'UPDATE' ? construction.state : '',
+      typology_id: type === 'UPDATE' ? construction.typology_id : '',
+      economic_sector_id:
+        type === 'UPDATE' ? construction.economic_sector_id : '',
+      end_date: type === 'UPDATE' ? construction.end_date : null
     },
     onSubmit: (values) => {
       const data = {
-        business_name: values.businessName,
-        email: values.email,
-        rut: values.rut,
-        name: values.name,
-        address: values.address,
-        commune: values.commune,
-        region: values.region,
-        phone1: values.phone1,
-        phone: '',
-        phone2: ''
+        ...values,
+        typology_id: values.typology_id
+          ? parseInt(values.typology_id, 10)
+          : null,
+        economic_sector_id: parseInt(values.economic_sector_id, 10),
+        business_id: idCompany
       }
-      dispatch(companiesActions.createCompany(data))
-        .then(() => {
-          formik.setSubmitting(false)
-          setTimeout(() => {
-            changeSuccess(true)
-          }, 1000)
-        })
-        .catch((err) => {
-          formik.setSubmitting(false)
-          notify(err)
-          changeSuccess(false)
-        })
+      if (type === 'CREATE') {
+        dispatch(constructionsActions.createConstruction(data))
+      } else {
+        dispatch(constructionsActions.updateConstruction(construction.id, data))
+      }
     }
   })
+  const handleSelectChange = (e) => {
+    const { name, value } = e.target
+    switch (name) {
+      case 'region': {
+        const region = regions.find((item) => item.id === parseInt(value, 10))
+        setCommunes(region.communes)
+        formik.setFieldValue('region_id', region.id)
+        break
+      }
+      case 'commune': {
+        const commune = communes.find((item) => item.id === parseInt(value, 10))
+        formik.setFieldValue('commune_id', commune.id)
+        break
+      }
+      default:
+        throw new Error('Error')
+    }
+  }
+
+  useEffect(() => {
+    if (open) {
+      dispatch(commonActions.getRegions())
+      dispatch(constructionsActions.getTypologies())
+      dispatch(constructionsActions.getSectors())
+    }
+  }, [open, type])
+
+  useEffect(() => {
+    if (regions.length > 0 && type === 'UPDATE') {
+      setCommunes(
+        regions.find((item) => item.id === construction.region.id).communes
+      )
+    }
+  }, [regions])
+
+  console.log(formik.errors)
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogContent>
+    <FullScreenDialog open={open} onClose={onClose}>
+      <Box maxWidth="900px" style={{ margin: '0 auto' }}>
         <Box>
-          <IconButton onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        <Box className={classes.form} p={2}>
-          <Box className={classes.heading}>
-            <Box display="flex" alignItems="center">
-              <Heading>Nuevo Contacto</Heading>
-            </Box>
-          </Box>
-          <Box>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <TextField
-                  label="Nombre"
-                  name="name"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.name}
-                  helperText={formik.touched.name && formik.errors.name}
-                  error={formik.touched.name && Boolean(formik.errors.name)}
-                />
+          <Typography align="center">{`${
+            type === 'CREATE' ? 'Nueva' : 'Editar'
+          } obra`}</Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Rut"
+                name="rut"
+                error={true}
+                required
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.rut}
+                helperText={formik.touched.rut && formik.errors.rut}
+                error={formik.touched.rut && Boolean(formik.errors.rut)}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Razón social"
+                name="business_name"
+                required
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.business_name}
+                helperText={
+                  formik.touched.businessName && formik.errors.businessName
+                }
+                error={
+                  formik.touched.businessName &&
+                  Boolean(formik.errors.businessName)
+                }
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Nombre"
+                name="name"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.name}
+                helperText={formik.touched.name && formik.errors.name}
+                error={formik.touched.name && Boolean(formik.errors.name)}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Select
+                label="Tipologia de obra"
+                name="typology_id"
+                onChange={formik.handleChange}
+                value={formik.values.typology_id}
+                helperText={
+                  formik.touched.typology_id && formik.errors.typology_id
+                }
+                error={
+                  formik.touched.typology_id &&
+                  Boolean(formik.errors.typology_id)
+                }
+              >
+                <option value="">Sin tipología</option>
+                {typologies.map((item, index) => (
+                  <option key={`region--${index}`} value={`${item.id}`}>
+                    {item.name}
+                  </option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Select
+                label="Sector económico"
+                name="economic_sector_id"
+                required
+                onChange={formik.handleChange}
+                value={formik.values.economic_sector_id}
+                helperText={
+                  formik.touched.economic_sector_id &&
+                  formik.errors.economic_sector_id
+                }
+                error={
+                  formik.touched.economic_sector_id &&
+                  Boolean(formik.errors.economic_sector_id)
+                }
+              >
+                <option value="">Seleccione sector</option>
+                {sectors.map((item, index) => (
+                  <option key={`region--${index}`} value={`${item.id}`}>
+                    {item.name}
+                  </option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Select
+                label="Estado"
+                name="state"
+                required
+                onChange={formik.handleChange}
+                value={formik.values.state}
+                helperText={formik.touched.state && formik.errors.state}
+                error={formik.touched.state && Boolean(formik.errors.state)}
+              >
+                <option value="">Seleccione estado</option>
+                {[
+                  { key: 'VIGENTE', name: 'VIGENTE' },
+                  { key: 'NO_VIGENTE', name: 'NO VIGENTE' }
+                ].map((item, index) => (
+                  <option key={`region--${index}`} value={`${item.key}`}>
+                    {item.name}
+                  </option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <DatePicker
+                label="Fecha termino"
+                value={formik.values.end_date}
+                helperText={formik.touched.end_date && formik.errors.end_date}
+                error={
+                  formik.touched.end_date && Boolean(formik.errors.end_date)
+                }
+                onChange={(date) => {
+                  formik.setFieldTouched('end_date')
+                  formik.setFieldValue('end_date', date)
+                }}
+              />
+            </Grid>
+          </Grid>
+          <Box marginTop="15px">
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <Box height="250px">
+                  <ReactMapGL
+                    mapboxApiAccessToken="pk.eyJ1Ijoib2NmcmFueiIsImEiOiJja3F3cnFuanAwbWNoMm9uenV1bHQ1b2xrIn0.GEpo1IDGKp-mxvJZAm1cJw"
+                    {...{
+                      width: '100%',
+                      height: '100%',
+                      latitude: -33.45694,
+                      longitude: -70.64827,
+                      zoom: 10
+                    }}
+                  />
+                </Box>
               </Grid>
-
-              <Grid item xs={12} md={12}>
-                <TextField
-                  label="Correo"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  name="email"
-                  value={formik.values.email}
-                  helperText={formik.touched.email && formik.errors.email}
-                  error={formik.touched.email && Boolean(formik.errors.email)}
-                />
-              </Grid>
-              <Grid item xs={12} md={12}>
-                <Select label="Cargo">
-                  <option value="EMPTY">Seleccione cargo</option>
-                  {exampleCharges.map((item) => (
-                    <option value={item.id}>{item.name}</option>
-                  ))}
-                </Select>
-              </Grid>
-              <Grid item xs={12} md={12}>
-                <TextField
-                  label="Teléfono"
-                  name="phone"
-                  value={formik.values.phone}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  helperText={formik.touched.phone && formik.errors.phone}
-                  error={formik.touched.phone && Boolean(formik.errors.phone)}
-                />
-              </Grid>
-              <Grid item xs={12} md={12}>
-                <TextField
-                  label="Teléfono oficina"
-                  name="phoneOffice"
-                  value={formik.values.phoneOffice}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  helperText={
-                    formik.touched.phoneOffice && formik.errors.phoneOffice
-                  }
-                  error={
-                    formik.touched.phoneOffice &&
-                    Boolean(formik.errors.phoneOffice)
-                  }
-                />
-              </Grid>
-              <Grid item xs={12} md={12}>
-                <TextField
-                  label="Otro Teléfono"
-                  name="phoneOther"
-                  value={formik.values.phoneOther}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  helperText={
-                    formik.touched.phoneOther && formik.errors.phoneOther
-                  }
-                  error={
-                    formik.touched.phoneOther &&
-                    Boolean(formik.errors.phoneOther)
-                  }
-                />
+              <Grid item xs={12} md={6}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Dirección"
+                      name="address"
+                      required
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.address}
+                      helperText={
+                        formik.touched.address && formik.errors.address
+                      }
+                      error={
+                        formik.touched.address && Boolean(formik.errors.address)
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Select
+                      label="Región"
+                      name="region"
+                      onChange={handleSelectChange}
+                      value={formik.values.region_id}
+                      required
+                    >
+                      <option value={`INVALID`}>Seleccione una región</option>
+                      {regions.map((item, index) => (
+                        <option key={`region--${index}`} value={`${item.id}`}>
+                          {`${item.name}`}
+                        </option>
+                      ))}
+                    </Select>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Select
+                      label="Comuna"
+                      name="commune"
+                      onChange={handleSelectChange}
+                      value={formik.values.commune_id}
+                      required
+                    >
+                      <option value={`INVALID`}>Seleccione una comuna</option>
+                      {communes.map((item, index) => (
+                        <option key={`region--${index}`} value={`${item.id}`}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </Select>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
-          </Box>
-          <Box
-            display="flex"
-            justifyContent="flex-end"
-            className={classes.actions}
-          >
-            <SubmitButton
-              onClick={formik.handleSubmit}
-              success={success}
-              loading={formik.isSubmitting}
-              disabled={!formik.isValid || formik.isSubmitting}
-            >
-              Crear empresa
-            </SubmitButton>
+            <Box textAlign="center" marginTop="15px">
+              <Button variant="outlined" onClick={onClose}>
+                Cancelar
+              </Button>
+              <SubmitButton
+                disabled={!formik.isValid || formik.isSubmitting}
+                onClick={formik.handleSubmit}
+              >
+                {`${type === 'CREATE' ? 'Crear' : 'Actualizar'} obra`}
+              </SubmitButton>
+            </Box>
           </Box>
         </Box>
-      </DialogContent>
-      <Toaster />
-    </Dialog>
+      </Box>
+    </FullScreenDialog>
   )
 }
-
-CreateDrawer.propTypes = {
-  anchor: PropTypes.string
+ConstructionModal.defaultProps = {
+  type: 'CREATE'
 }
 
-export default CreateDrawer
+export default withRouter(ConstructionModal)

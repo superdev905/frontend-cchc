@@ -4,14 +4,19 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import ReactMapGL from 'react-map-gl'
 import { Box, Grid, Typography } from '@material-ui/core'
+
 import commonActions from '../../../state/actions/common'
 import companiesActions from '../../../state/actions/companies'
 import { Select, TextField } from '../../UI'
 import useStyles from './styles'
 import Actions from './Actions'
+import { rutValidation } from '../../../validations'
+import { formatRut } from '../../../formatters'
 
 const validationSchema = Yup.object({
-  rut: Yup.string().required('Ingrese rut'),
+  rut: Yup.string()
+    .required('Ingrese rut')
+    .test('Check rut', 'Ingrese rut válido', (v) => rutValidation(v)),
   name: Yup.string(),
   businessName: Yup.string().required('Ingrese razón social'),
   email: Yup.string().email('Ingrese correo válido').required('Ingrese correo'),
@@ -92,7 +97,9 @@ const StepOne = () => {
               label="Rut"
               name="rut"
               error={true}
-              onChange={formik.handleChange}
+              onChange={(e) => {
+                formik.setFieldValue('rut', formatRut(e.target.value))
+              }}
               onBlur={formik.handleBlur}
               value={formik.values.rut}
               helperText={formik.touched.rut && formik.errors.rut}

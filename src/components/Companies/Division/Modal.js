@@ -55,6 +55,7 @@ const DivisionModal = ({ open, onClose, division, type, ...props }) => {
               resetForm()
               onClose()
             }, 500)
+            dispatch(companyActions.getDivisions(idCompany))
           })
           .catch((err) => {
             formik.setSubmitting(false)
@@ -70,6 +71,7 @@ const DivisionModal = ({ open, onClose, division, type, ...props }) => {
               resetForm()
               onClose()
             }, 500)
+            dispatch(companyActions.getDivisions(idCompany))
           })
           .catch((err) => {
             formik.setSubmitting(false)

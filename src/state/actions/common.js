@@ -18,6 +18,24 @@ const getRegions = () => (dispatch) =>
       })
   })
 
+const getCharges = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`/contact_charges`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: commonTypes.GET_CHARGES,
+          payload: data
+        })
+
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 export default {
-  getRegions
+  getRegions,
+  getCharges
 }

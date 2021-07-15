@@ -92,6 +92,48 @@ const deleteDivision = (divisionId) => () =>
       })
   })
 
+const getDivisions = (companyId) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`/sub_business?business_id=${companyId}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: businessTypes.BUSINESS_GET_DIVISIONS, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const getContacts = (companyId) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`/business_contacts?business_id=${companyId}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: businessTypes.BUSINESS_GET_CONTACTS, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const getConstructions = (companyId) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`/constructions?business_id=${companyId}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: businessTypes.BUSINESS_GET_CONSTRUCTIONS,
+          payload: data
+        })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
 export default {
   toggleCreateModal,
   updateFilters,
@@ -101,5 +143,8 @@ export default {
   createCompany,
   createDivision,
   updateDivision,
-  deleteDivision
+  deleteDivision,
+  getDivisions,
+  getContacts,
+  getConstructions
 }

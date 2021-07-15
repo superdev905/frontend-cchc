@@ -1,22 +1,22 @@
+import { useEffect } from 'react'
 import * as Yup from 'yup'
 import toast, { Toaster } from 'react-hot-toast'
 import { useFormik } from 'formik'
-import { withRouter } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid, makeStyles } from '@material-ui/core'
 import useSuccess from '../../hooks/useSuccess'
-import contactActions from '../../state/actions/contact'
-import companyActions from '../../state/actions/companies'
+import constructionActions from '../../state/actions/constructions'
+import commonActions from '../../state/actions/common'
 import { Heading, TextField, SubmitButton, Select } from '../UI'
 import { Dialog } from '../Shared'
 
 const validationSchema = Yup.object({
-  name: Yup.string().required('Ingrese nombre'),
-  charge: Yup.string().required('Seleccione cargo'),
+  full_name: Yup.string().required('Ingrese nombre'),
+  charge_id: Yup.string().required('Seleccione cargo'),
   email: Yup.string().email('Ingrese correo válid').required('Ingrese correo'),
-  phone: Yup.string().required('Ingrese teléfono'),
-  phoneOffice: Yup.string().required('Ingrese teléfono'),
-  phoneOther: Yup.string().required('Ingrese teléfono')
+  cell_phone: Yup.string().required('Ingrese teléfono'),
+  office_phone: Yup.string().required('Ingrese teléfono'),
+  other_phone: Yup.string().required('Ingrese teléfono')
 })
 const useStyles = makeStyles(() => ({
   form: {
@@ -40,31 +40,19 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const exampleCharges = [
-  {
-    id: 1,
-    name: 'Gerente'
-  },
-  {
-    id: 2,
-    name: 'Administrador'
-  },
-  {
-    id: 3,
-    name: 'Ayudante'
-  },
-  {
-    id: 4,
-    name: 'Sub gerente'
-  }
-]
-
 const notify = (message) => toast.error(message)
 
-const ContactModal = ({ open, onClose, type, contact, ...props }) => {
+const ContactModal = ({
+  open,
+  onClose,
+  type,
+  contact,
+  idConstruction,
+  successFunc
+}) => {
   const classes = useStyles()
-  const { idCompany } = props.match.params
   const { isMobile } = useSelector((state) => state.ui)
+  const { charges } = useSelector((state) => state.common)
   const dispatch = useDispatch()
   const { success, changeSuccess } = useSuccess()
 
@@ -73,48 +61,48 @@ const ContactModal = ({ open, onClose, type, contact, ...props }) => {
     enableReinitialize: true,
     validationSchema,
     initialValues: {
-      name: type === 'UPDATE' ? contact.full_name : '',
+      full_name: type === 'UPDATE' ? contact.full_name : '',
       email: type === 'UPDATE' ? contact.email : '',
-      charge: type === 'UPDATE' ? contact.charge : '',
-      phone: type === 'UPDATE' ? contact.cell_phone : '',
-      phoneOffice: type === 'UPDATE' ? contact.office_phone : '',
-      phoneOther: type === 'UPDATE' ? contact.other_phone : ''
+      charge_id: type === 'UPDATE' ? contact.charge_id : '',
+      cell_phone: type === 'UPDATE' ? contact.cell_phone : '',
+      office_phone: type === 'UPDATE' ? contact.office_phone : '',
+      other_phone: type === 'UPDATE' ? contact.other_phone : ''
     },
     onSubmit: (values, { resetForm }) => {
       const data = {
-        full_name: values.name,
-        email: values.email,
-        charge: values.charge,
-        cell_phone: values.phone,
-        office_phone: values.phoneOffice,
-        other_phone: values.phoneOther,
-        business_id: parseInt(idCompany, 10)
+        ...values,
+        construction_id: idConstruction
       }
+
       if (type === 'CREATE') {
-        dispatch(contactActions.createContact(data))
+        dispatch(constructionActions.createContact(data))
           .then(() => {
             formik.setSubmitting(false)
             changeSuccess(false)
             setTimeout(() => {
               resetForm()
               onClose()
-              dispatch(companyActions.getContacts(idCompany))
+              if (successFunc) {
+                successFunc()
+              }
             }, 500)
           })
           .catch((err) => {
             formik.setSubmitting(false)
-            notify(err)
+            notify(err.detail)
             changeSuccess(false)
           })
       } else {
-        dispatch(contactActions.updateContact(contact.id, data))
+        dispatch(constructionActions.updateContact(contact.id, data))
           .then(() => {
             formik.setSubmitting(false)
             changeSuccess(false)
             setTimeout(() => {
               resetForm()
               onClose()
-              dispatch(companyActions.getContacts(idCompany))
+              if (successFunc) {
+                successFunc()
+              }
             }, 500)
           })
           .catch((err) => {
@@ -126,6 +114,11 @@ const ContactModal = ({ open, onClose, type, contact, ...props }) => {
     }
   })
 
+  useEffect(() => {
+    if (open) {
+      dispatch(commonActions.getCharges())
+    }
+  }, [open])
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullScreen={isMobile}>
       <Box className={classes.form} p={2}>
@@ -139,12 +132,14 @@ const ContactModal = ({ open, onClose, type, contact, ...props }) => {
             <Grid item xs={12} md={6}>
               <TextField
                 label="Nombre"
-                name="name"
+                name="full_name"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.name}
-                helperText={formik.touched.name && formik.errors.name}
-                error={formik.touched.name && Boolean(formik.errors.name)}
+                value={formik.values.full_name}
+                helperText={formik.touched.full_name && formik.errors.full_name}
+                error={
+                  formik.touched.full_name && Boolean(formik.errors.full_name)
+                }
               />
             </Grid>
 
@@ -162,14 +157,18 @@ const ContactModal = ({ open, onClose, type, contact, ...props }) => {
             <Grid item xs={12} md={6}>
               <Select
                 label="Cargo"
-                name="charge"
+                name="charge_id"
                 onChange={formik.handleChange}
-                helperText={formik.touched.charge && formik.errors.charge}
-                error={formik.touched.charge && Boolean(formik.errors.charge)}
+                onBlur={formik.handleBlur}
+                value={formik.values.charge_id}
+                helperText={formik.touched.charge_id && formik.errors.charge_id}
+                error={
+                  formik.touched.charge_id && Boolean(formik.errors.charge_id)
+                }
                 required
               >
                 <option value="">Seleccione cargo</option>
-                {exampleCharges.map((item) => (
+                {charges.map((item) => (
                   <option value={item.id}>{item.name}</option>
                 ))}
               </Select>
@@ -177,42 +176,47 @@ const ContactModal = ({ open, onClose, type, contact, ...props }) => {
             <Grid item xs={12} md={6}>
               <TextField
                 label="Teléfono"
-                name="phone"
-                value={formik.values.phone}
+                name="cell_phone"
+                value={formik.values.cell_phone}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                helperText={formik.touched.phone && formik.errors.phone}
-                error={formik.touched.phone && Boolean(formik.errors.phone)}
+                helperText={
+                  formik.touched.cell_phone && formik.errors.cell_phone
+                }
+                error={
+                  formik.touched.cell_phone && Boolean(formik.errors.cell_phone)
+                }
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 label="Teléfono oficina"
-                name="phoneOffice"
-                value={formik.values.phoneOffice}
+                name="office_phone"
+                value={formik.values.office_phone}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 helperText={
-                  formik.touched.phoneOffice && formik.errors.phoneOffice
+                  formik.touched.office_phone && formik.errors.office_phone
                 }
                 error={
-                  formik.touched.phoneOffice &&
-                  Boolean(formik.errors.phoneOffice)
+                  formik.touched.office_phone &&
+                  Boolean(formik.errors.office_phone)
                 }
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 label="Otro Teléfono"
-                name="phoneOther"
-                value={formik.values.phoneOther}
+                name="other_phone"
+                value={formik.values.other_phone}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 helperText={
-                  formik.touched.phoneOther && formik.errors.phoneOther
+                  formik.touched.other_phone && formik.errors.other_phone
                 }
                 error={
-                  formik.touched.phoneOther && Boolean(formik.errors.phoneOther)
+                  formik.touched.other_phone &&
+                  Boolean(formik.errors.other_phone)
                 }
               />
             </Grid>
@@ -239,4 +243,4 @@ ContactModal.defaultProps = {
   type: 'CREATE'
 }
 
-export default withRouter(ContactModal)
+export default ContactModal

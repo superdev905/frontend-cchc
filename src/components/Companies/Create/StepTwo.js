@@ -14,9 +14,10 @@ import { businessTypes, decisionList } from '../../../config'
 
 const validationSchema = Yup.object({
   type: Yup.string().required('Seleccione tipo'),
-  partnership: Yup.string().required('Seleccione empresa socia'),
-  pyme: Yup.string(),
-  social: Yup.string().required('Seleccione servicio social')
+  is_partner: Yup.string().required('Seleccione empresa socia'),
+  social_service: Yup.string().required('Seleccione opción'),
+  benefit_pyme: Yup.string(),
+  parent_business_id: Yup.string()
 })
 
 const notify = (message) => toast.error(message)
@@ -32,11 +33,12 @@ const StepOne = () => {
     validationSchema,
     initialValues: {
       type: '',
-      partnership: '',
-      pyme: 'NO',
+      is_partner: '',
+      benefit_pyme: 'NO',
+      social_service: '',
       social: ''
     },
-    onSubmit: () => {
+    onSubmit: (values) => {
       const {
         rut,
         name,
@@ -58,15 +60,19 @@ const StepOne = () => {
         phone1,
         phone2,
         region_id: region,
-        commune_id: commune
+        commune_id: commune,
+        ...values
       }
       dispatch(companiesActions.createCompany(data))
         .then(() => {
           formik.setSubmitting(false)
           changeSuccess(true)
+          dispatch(
+            companiesActions.updateCreate({ ...create, step: create.step + 1 })
+          )
         })
         .catch((err) => {
-          notify(err)
+          notify(err.detail)
           formik.setSubmitting(false)
         })
     }
@@ -107,9 +113,9 @@ const StepOne = () => {
           <Grid item xs={12} md={6}>
             <Select
               label="Asociada"
-              name="partnership"
+              name="is_partner"
               onChange={formik.handleChange}
-              value={formik.values.partnership}
+              value={formik.values.is_partner}
               required
             >
               <option value="">Seleccione tipo</option>
@@ -123,9 +129,9 @@ const StepOne = () => {
           <Grid item xs={12} md={6}>
             <Select
               label="Beneficio Pyme"
-              name="pyme"
+              name="benefit_pyme"
               onChange={formik.handleChange}
-              value={formik.values.pyme}
+              value={formik.values.benefit_pyme}
             >
               {decisionList.map((item, i) => (
                 <option key={`pyme-option-${i}`} value={item}>
@@ -137,9 +143,9 @@ const StepOne = () => {
           <Grid item xs={12} md={6}>
             <Select
               label="Servicio Social"
-              name="social"
+              name="social_service"
               onChange={formik.handleChange}
-              value={formik.values.social}
+              value={formik.values.social_service}
               required
             >
               <option value="">Seleccione una opción</option>
