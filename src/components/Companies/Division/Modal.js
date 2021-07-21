@@ -6,7 +6,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid, makeStyles } from '@material-ui/core'
 import useSuccess from '../../../hooks/useSuccess'
 import companyActions from '../../../state/actions/companies'
-import { Heading, TextField, SubmitButton, Select } from '../../UI'
+import {
+  Heading,
+  TextField,
+  SubmitButton,
+  Select,
+  RutTextField
+} from '../../UI'
 import { Dialog } from '../../Shared'
 import { decisionList } from '../../../config'
 
@@ -14,7 +20,7 @@ const validationSchema = Yup.object({
   rut: Yup.string().required('Ingrese rut'),
   name: Yup.string(),
   business_name: Yup.string().required('Ingrese razón social'),
-  partnership: Yup.string().required('Seleccion como empresa socia')
+  is_partner: Yup.string().required('Seleccion como empresa socia')
 })
 const useStyles = makeStyles(() => ({
   actions: {
@@ -42,7 +48,7 @@ const DivisionModal = ({ open, onClose, division, type, ...props }) => {
       rut: type === 'UPDATE' ? division.rut : '',
       name: type === 'UPDATE' ? division.name : '',
       business_name: type === 'UPDATE' ? division.business_name : '',
-      partnership: ''
+      is_partner: type === 'UPDATE' ? division.is_partner : ''
     },
     onSubmit: (values, { resetForm }) => {
       const data = { ...values, business_id: parseInt(idCompany, 10) }
@@ -93,7 +99,7 @@ const DivisionModal = ({ open, onClose, division, type, ...props }) => {
         <Box>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField
+              <RutTextField
                 label="Rut"
                 name="rut"
                 onChange={formik.handleChange}
@@ -135,16 +141,15 @@ const DivisionModal = ({ open, onClose, division, type, ...props }) => {
             <Grid item xs={12}>
               <Select
                 label="Empresa socia"
-                name="partnership"
-                value={formik.values.partnership}
+                name="is_partner"
+                value={formik.values.is_partner}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 helperText={
-                  formik.touched.partnership && formik.errors.partnership
+                  formik.touched.is_partner && formik.errors.is_partner
                 }
                 error={
-                  formik.touched.partnership &&
-                  Boolean(formik.errors.partnership)
+                  formik.touched.is_partner && Boolean(formik.errors.is_partner)
                 }
               >
                 <option value="">Seleccione opción</option>

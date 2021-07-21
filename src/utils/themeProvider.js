@@ -11,10 +11,14 @@ const theme = createMuiTheme({
       main: '#656366'
     },
     error: {
-      main: '#F66372'
+      main: '#F66372',
+      light: '#fbc3c9',
+      dark: '#b00a1b'
     },
     success: {
-      main: '#5FC961'
+      main: '#5FC961',
+      light: '#c2eac2',
+      dark: '#37a539'
     },
     dark_blue: {
       main: '#334D6E'
@@ -46,8 +50,23 @@ const theme = createMuiTheme({
       xl: 1920
     }
   },
+  typography: {
+    fontFamily: ['Rubik', 'sans-serif'].join(',')
+  },
   constants: {
     drawerWidth: 240
+  },
+  overrides: {
+    MuiCssBaseline: {
+      '@global': {
+        html: {
+          WebkitFontSmoothing: 'auto'
+        },
+        '*': {
+          fontFamily: ['Rubik', 'sans-serif'].join(',')
+        }
+      }
+    }
   }
 })
 

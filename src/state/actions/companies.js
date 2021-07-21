@@ -134,6 +134,30 @@ const getConstructions = (companyId) => (dispatch) =>
       })
   })
 
+const blockCompany = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`/business/${id}/block`)
+      .then((response) => {
+        const { data } = response
+        resolve(data.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const updateCompany = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`/business/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
 export default {
   toggleCreateModal,
   updateFilters,
@@ -146,5 +170,7 @@ export default {
   deleteDivision,
   getDivisions,
   getContacts,
-  getConstructions
+  getConstructions,
+  blockCompany,
+  updateCompany
 }

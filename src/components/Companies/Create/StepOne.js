@@ -2,30 +2,28 @@ import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import ReactMapGL from 'react-map-gl'
 import { Box, Grid, Typography } from '@material-ui/core'
-
 import commonActions from '../../../state/actions/common'
 import companiesActions from '../../../state/actions/companies'
-import { Select, TextField } from '../../UI'
+import { RutTextField, Select, TextField } from '../../UI'
 import useStyles from './styles'
 import Actions from './Actions'
 import { rutValidation } from '../../../validations'
-import { formatRut } from '../../../formatters'
+import { AddressAutoComplete, Map } from '../../Shared'
+import { SantiagoDefaultLocation as location } from '../../../config'
 
 const validationSchema = Yup.object({
   rut: Yup.string()
     .required('Ingrese rut')
     .test('Check rut', 'Ingrese rut válido', (v) => rutValidation(v)),
   name: Yup.string(),
-  businessName: Yup.string().required('Ingrese razón social'),
+  business_name: Yup.string().required('Ingrese razón social'),
   email: Yup.string().email('Ingrese correo válido').required('Ingrese correo'),
   address: Yup.string().required('Ingrese dirección'),
   commune: Yup.string().required('Seleccione comuna'),
-  region: Yup.string().required('Seleccione región'),
-  phone: Yup.string().required('Ingrese teléfono'),
-  phone1: Yup.string(),
-  phone2: Yup.string()
+  longitude: Yup.string().required('Seleccione dirección'),
+  latitude: Yup.string().required('Seleccione dirección'),
+  region: Yup.string().required('Seleccione región')
 })
 
 const StepOne = () => {
@@ -39,40 +37,43 @@ const StepOne = () => {
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      businessName: create?.company?.businessName || '',
+      business_name: create?.company?.business_name || '',
       rut: create?.company?.rut || '',
       name: create?.company?.name || '',
       email: create?.company?.email || '',
       address: create?.company?.address || '',
-      commune: create?.company?.commune || '',
-      region: create?.company?.region || '',
-      phone: create?.company?.phone || '',
-      phone1: create?.company?.phone1 || '',
-      phone2: create?.company?.phone1 || ''
+      commune: create?.company?.commune?.id || '',
+      region: create?.company?.region_id || '',
+      latitude: parseFloat(create?.company?.latitude) || location.latitude,
+      longitude: parseFloat(create?.company?.longitude) || location.longitude
     },
     onSubmit: (values) => {
       dispatch(
         companiesActions.updateCreate({
           ...create,
-          company: values,
+          company: { ...create.company, ...values },
           step: create.step + 1
         })
       )
     }
   })
+
+  const changeLocation = (targetLocation) => {
+    formik.setFieldValue('longitude', targetLocation.lng)
+    formik.setFieldValue('latitude', targetLocation.lat)
+  }
+
   const handleSelectChange = (e) => {
     const { name, value } = e.target
     switch (name) {
       case 'region': {
-        const region = regions.find(
-          (item) => item.number === parseInt(value, 10)
-        )
+        const region = regions.find((item) => item.id === parseInt(value, 10))
         setCommunes(region.communes)
         formik.setFieldValue('region', region.id)
         break
       }
       case 'commune': {
-        const commune = communes.find((item) => item.name === value)
+        const commune = communes.find((item) => item.id === parseInt(value, 10))
         formik.setFieldValue('commune', commune.id)
         break
       }
@@ -80,6 +81,14 @@ const StepOne = () => {
         throw new Error('Error')
     }
   }
+
+  useEffect(() => {
+    if (formik.values.region && regions.length > 0) {
+      handleSelectChange({
+        target: { name: 'region', value: formik.values.region }
+      })
+    }
+  }, [formik.values.region, regions])
 
   useEffect(() => {
     dispatch(commonActions.getRegions())
@@ -93,13 +102,12 @@ const StepOne = () => {
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <TextField
+            <RutTextField
               label="Rut"
               name="rut"
+              required
               error={true}
-              onChange={(e) => {
-                formik.setFieldValue('rut', formatRut(e.target.value))
-              }}
+              onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.rut}
               helperText={formik.touched.rut && formik.errors.rut}
@@ -109,16 +117,17 @@ const StepOne = () => {
           <Grid item xs={12} md={6}>
             <TextField
               label="Razón social"
-              name="businessName"
+              name="business_name"
+              required
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.businessName}
+              value={formik.values.business_name}
               helperText={
-                formik.touched.businessName && formik.errors.businessName
+                formik.touched.business_name && formik.errors.business_name
               }
               error={
-                formik.touched.businessName &&
-                Boolean(formik.errors.businessName)
+                formik.touched.business_name &&
+                Boolean(formik.errors.business_name)
               }
             />
           </Grid>
@@ -137,6 +146,7 @@ const StepOne = () => {
             <TextField
               label="Correo"
               name="email"
+              required
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.email}
@@ -144,65 +154,51 @@ const StepOne = () => {
               error={formik.touched.email && Boolean(formik.errors.email)}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              name="phone"
-              label="Teléfono"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.phone}
-              helperText={formik.touched.phone && formik.errors.phone}
-              error={formik.touched.phone && Boolean(formik.errors.phone)}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField label="Teléfono" name="phone2" />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField label="Teléfono" name="phone3" />
-          </Grid>
         </Grid>
         <Box marginTop="15px">
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <Box height="250px" className={classes.mapContainer}>
-                <ReactMapGL
-                  mapboxApiAccessToken="pk.eyJ1Ijoib2NmcmFueiIsImEiOiJja3F3cnFuanAwbWNoMm9uenV1bHQ1b2xrIn0.GEpo1IDGKp-mxvJZAm1cJw"
-                  {...{
-                    width: '100%',
-                    height: '100%',
-                    latitude: -33.45694,
-                    longitude: -70.64827,
-                    zoom: 10
-                  }}
-                />
+              <Box>
+                <Map
+                  latitude={formik.values.latitude}
+                  longitude={formik.values.longitude}
+                  markers={[
+                    {
+                      address: formik.values.address,
+                      latitude: formik.values.latitude,
+                      longitude: formik.values.longitude
+                    }
+                  ]}
+                ></Map>
               </Box>
             </Grid>
             <Grid item xs={12} md={6}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <TextField
-                    label="Dirección"
-                    name="address"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.address}
+                  <AddressAutoComplete
+                    search={formik.values.address}
+                    onChange={(value) => {
+                      formik.setFieldValue('address', value)
+                    }}
                     helperText={formik.touched.address && formik.errors.address}
                     error={
                       formik.touched.address && Boolean(formik.errors.address)
                     }
+                    onSetLocation={changeLocation}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <Select
                     label="Región"
                     name="region"
+                    value={formik.values.region}
+                    required
                     onChange={handleSelectChange}
                   >
                     <option value={`INVALID`}>Seleccione una región</option>
                     {regions.map((item, index) => (
-                      <option key={`region--${index}`} value={`${item.number}`}>
-                        {`${item.roman_number}.- ${item.name}`}
+                      <option key={`region--${index}`} value={`${item.id}`}>
+                        {item.name}
                       </option>
                     ))}
                   </Select>
@@ -211,11 +207,13 @@ const StepOne = () => {
                   <Select
                     label="Comuna"
                     name="commune"
+                    value={formik.values.commune}
+                    required
                     onChange={handleSelectChange}
                   >
                     <option value={`INVALID`}>Seleccione una comuna</option>
                     {communes.map((item, index) => (
-                      <option key={`region--${index}`} value={`${item.name}`}>
+                      <option key={`region--${index}`} value={`${item.id}`}>
                         {item.name}
                       </option>
                     ))}
@@ -228,6 +226,9 @@ const StepOne = () => {
       </Box>
       <Actions
         showBackIcon={false}
+        handleBack={() => {
+          dispatch(companiesActions.toggleCreateModal(true))
+        }}
         backText="Cancelar"
         disableNext={!formik.isValid}
         handleNext={formik.handleSubmit}

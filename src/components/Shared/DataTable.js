@@ -21,10 +21,11 @@ const CustomDataTable = ({
   data,
   pagination,
   responsive,
+  styles,
   ...props
 }) => (
   <DataTable
-    customStyles={customStyles}
+    customStyles={{ ...customStyles, ...styles }}
     columns={columns}
     data={data}
     pagination={pagination}

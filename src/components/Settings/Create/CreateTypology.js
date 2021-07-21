@@ -70,7 +70,13 @@ const TypologyModal = ({ open, onClose, type, typology }) => {
   })
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullScreen={isMobile}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      fullScreen={isMobile}
+    >
       <Box p={2}>
         <Box>
           <Heading align="center">
@@ -92,7 +98,7 @@ const TypologyModal = ({ open, onClose, type, typology }) => {
             </Grid>
           </Grid>
         </Box>
-        <Box>
+        <Box textAlign="center">
           <SubmitButton
             onClick={formik.handleSubmit}
             success={success}

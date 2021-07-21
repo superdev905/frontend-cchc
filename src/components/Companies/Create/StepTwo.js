@@ -31,11 +31,12 @@ const StepOne = () => {
 
   const formik = useFormik({
     validationSchema,
+    validateOnMount: true,
     initialValues: {
-      type: '',
-      is_partner: '',
-      benefit_pyme: 'NO',
-      social_service: '',
+      type: create?.company?.type || '',
+      is_partner: create?.company?.is_partner || '',
+      benefit_pyme: create?.company?.benfit_pyme || 'NO',
+      social_service: create?.company?.social_service || '',
       social: ''
     },
     onSubmit: (values) => {
@@ -46,35 +47,55 @@ const StepOne = () => {
         commune,
         email,
         address,
-        phone,
-        phone1,
-        phone2
+        latitude,
+        longitude
       } = create.company
       const data = {
         rut,
         name,
         email,
-        business_name: create.company.businessName,
+        business_name: create.company.business_name,
         address,
-        phone,
-        phone1,
-        phone2,
+        latitude,
+        longitude,
+        type: values.type,
         region_id: region,
         commune_id: commune,
         ...values
       }
-      dispatch(companiesActions.createCompany(data))
-        .then(() => {
-          formik.setSubmitting(false)
-          changeSuccess(true)
-          dispatch(
-            companiesActions.updateCreate({ ...create, step: create.step + 1 })
-          )
-        })
-        .catch((err) => {
-          notify(err.detail)
-          formik.setSubmitting(false)
-        })
+      if (create.type === 'CREATE') {
+        dispatch(companiesActions.createCompany(data))
+          .then(() => {
+            formik.setSubmitting(false)
+            changeSuccess(true)
+            dispatch(
+              companiesActions.updateCreate({
+                ...create,
+                step: create.step + 1
+              })
+            )
+          })
+          .catch((err) => {
+            notify(err.detail)
+            formik.setSubmitting(false)
+          })
+      } else {
+        dispatch(companiesActions.updateCompany(create.company.id, data))
+          .then(() => {
+            formik.setSubmitting(false)
+            changeSuccess(true)
+            dispatch(
+              companiesActions.updateCreate({
+                ...create,
+                step: create.step + 1
+              })
+            )
+          })
+          .catch((err) => {
+            notify(err.detail)
+            formik.setSubmitting(false)
+          })
+      }
     }
   })
   const goBack = () => {
@@ -99,7 +120,7 @@ const StepOne = () => {
             >
               <option value="">Seleccione tipo</option>
               {businessTypes.map((item, i) => (
-                <option key={`business-type-${i}`} value={item.key}>
+                <option key={`business-type-${i}`} value={item.name}>
                   {item.name}
                 </option>
               ))}
@@ -168,7 +189,7 @@ const StepOne = () => {
           success={success}
           disabled={!formik.isValid || formik.isSubmitting}
         >
-          Crear empresa
+          {create.type === 'UPDATE' ? 'Actualidar' : 'Crear'} empresa
         </SubmitButton>
       </Box>
       <CreateModal open={open} onClose={toggleOpen} />

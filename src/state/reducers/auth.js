@@ -4,8 +4,8 @@ const initialState = {
   isAuthenticated: true,
   rememberSession: false,
   user: {
-    name: 'Franz',
-    lastName: 'Ogosi',
+    name: 'Jhon',
+    lastName: 'Doe',
     role: {
       name: 'ADMIN'
     }

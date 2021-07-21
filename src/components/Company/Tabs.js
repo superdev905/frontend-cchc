@@ -1,9 +1,6 @@
 import { useState } from 'react'
 import { Box, makeStyles, Tabs, Tab } from '@material-ui/core'
-import Details from './Details'
-import Divisions from './Divisions'
-import Contacts from './Contacts'
-import Constructions from './Constructions'
+import { useHistory, useLocation, useParams } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -26,21 +23,33 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const CompanyTabs = () => {
+const CompanyTabs = ({ children }) => {
   const classes = useStyles()
-  const [tab, setTab] = useState(0)
+  const history = useHistory()
+  const location = useLocation()
+  const { idCompany } = useParams()
+
+  const getValue = () => {
+    if (location.pathname.includes('constructions')) return 3
+    if (location.pathname.includes('contacts')) return 2
+    if (location.pathname.includes('divisions')) return 1
+
+    return 0
+  }
+
+  const [tab] = useState(getValue())
+
+  const getRoute = (value) => {
+    if (value === 3) return 'constructions'
+    if (value === 2) return 'contacts'
+    if (value === 1) return 'divisions'
+    return 'details'
+  }
 
   const handleTabChange = (__, newValue) => {
-    setTab(newValue)
+    history.push(`/company/${idCompany}/${getRoute(newValue)}`)
   }
 
-  const getPanel = (value) => {
-    if (value === 0) return <Details />
-    if (value === 1) return <Divisions />
-    if (value === 2) return <Contacts />
-    if (value === 3) return <Constructions />
-    return <span>Not found</span>
-  }
   return (
     <Box className={classes.root}>
       <Box>
@@ -59,7 +68,7 @@ const CompanyTabs = () => {
           <Tab label="Obras" />
         </Tabs>
       </Box>
-      <Box>{getPanel(tab)}</Box>
+      <Box>{children}</Box>
     </Box>
   )
 }

@@ -1,4 +1,4 @@
-import { Box, Menu } from '@material-ui/core'
+import { Box, makeStyles, Menu } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { Calendar } from 'react-modern-calendar-datepicker'
 import 'react-modern-calendar-datepicker/lib/DatePicker.css'
@@ -48,9 +48,9 @@ const ESLocale = {
       isWeekend: true
     },
     {
-      name: 'Domingo', // used for accessibility
-      short: 'D', // displayed at the top of days' rows
-      isWeekend: true // is it a formal weekend or not?
+      name: 'Domingo',
+      short: 'D',
+      isWeekend: true
     }
   ],
   weekStartingIndex: 6,
@@ -91,7 +91,22 @@ const setCalendarFormat = (date) => {
   }
 }
 
-const CustomDatePicker = ({ value, onChange, label, required, ...props }) => {
+const useStyles = makeStyles((theme) => ({
+  input: ({ disabled }) => ({
+    pointerEvents: disabled ? 'none' : 'inherit',
+    backgroundColor: disabled ? theme.palette.bg.main : 'transparent'
+  })
+}))
+
+const CustomDatePicker = ({
+  value,
+  onChange,
+  label,
+  required,
+  disabled,
+  ...props
+}) => {
+  const classes = useStyles({ disabled })
   const [selectedDate, setSelectedDate] = useState(value || null)
   const [selectDay, setSelectDay] = useState(setCalendarFormat(value))
   const { open, anchorEl, handleOpen, handleClose } = useMenu()
@@ -122,6 +137,8 @@ const CustomDatePicker = ({ value, onChange, label, required, ...props }) => {
         label={label}
         onClick={handleOpen}
         inputProps={{ readOnly: true }}
+        disabled={disabled}
+        className={classes.input}
         {...props}
       />
       <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
@@ -138,6 +155,7 @@ const CustomDatePicker = ({ value, onChange, label, required, ...props }) => {
 
 CustomDatePicker.defaultProps = {
   required: false,
-  placeholder: 'Seleccione fecha'
+  placeholder: 'Seleccione fecha',
+  disabled: false
 }
 export default CustomDatePicker

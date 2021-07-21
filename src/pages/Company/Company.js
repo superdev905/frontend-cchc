@@ -1,35 +1,89 @@
-import { useEffect } from 'react'
-import { withRouter } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, IconButton } from '@material-ui/core'
+import { Box, IconButton, Typography } from '@material-ui/core'
 import { ArrowBack as ArrowBackIcon } from '@material-ui/icons/'
 import companiesActions from '../../state/actions/companies'
-import { PageHeading } from '../../components/UI'
-
+import { Button, PageHeading } from '../../components/UI'
 import Tabs from '../../components/Company/Tabs'
+import { useSuccess, useToggle } from '../../hooks'
+import { ConfirmDelete } from '../../components/Shared'
+import CompanyModal from '../../components/Companies/Create'
 
-const Company = ({ ...props }) => {
+const Company = ({ children }) => {
   const dispatch = useDispatch()
-  const { idCompany } = props.match.params
+  const history = useHistory()
+  const { idCompany } = useParams()
   const { company } = useSelector((state) => state.companies)
+  const [deleting, setDeleting] = useState(false)
+  const { open, toggleOpen } = useToggle()
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { success, changeSuccess } = useSuccess()
   const goBack = () => {
-    props.history.goBack()
+    history.push('/companies')
+  }
+
+  const fetchCompanyDetails = () => {
+    dispatch(companiesActions.getCompany(idCompany))
   }
 
   useEffect(() => {
-    dispatch(companiesActions.getCompany(idCompany))
+    fetchCompanyDetails()
   }, [])
+
+  const blockCompany = () => {
+    setDeleting(true)
+    dispatch(companiesActions.blockCompany(idCompany))
+      .then(() => {
+        setDeleting(false)
+        changeSuccess(true)
+        toggleOpen()
+      })
+      .catch(() => {
+        setDeleting(false)
+        toggleOpen()
+      })
+  }
   return (
     <div>
-      <Box display="flex" alignItems="center">
-        <IconButton onClick={goBack}>
-          <ArrowBackIcon />
-        </IconButton>
-        <PageHeading>{company?.business_name}</PageHeading>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box display="flex" alignItems="center">
+          <IconButton onClick={goBack}>
+            <ArrowBackIcon />
+          </IconButton>
+          <PageHeading>{company?.business_name}</PageHeading>
+        </Box>
+        <Box>
+          <Button danger onClick={toggleOpen}>
+            Eliminar
+          </Button>
+          <Button onClick={toggleOpenEdit}>Editar</Button>
+        </Box>
       </Box>
-      <Tabs />
+      <Tabs>{children}</Tabs>
+      <ConfirmDelete
+        open={open}
+        loading={deleting}
+        success={success}
+        message={
+          <Typography variant="h6">
+            <strong>¿Estás seguro de eliminar este cliente?</strong>
+          </Typography>
+        }
+        onConfirm={blockCompany}
+        onClose={toggleOpen}
+      />
+      {company && openEdit && (
+        <CompanyModal
+          type="UPDATE"
+          data={company}
+          open={openEdit}
+          successFunction={fetchCompanyDetails}
+          onClose={toggleOpenEdit}
+        />
+      )}
     </div>
   )
 }
 
-export default withRouter(Company)
+export default Company

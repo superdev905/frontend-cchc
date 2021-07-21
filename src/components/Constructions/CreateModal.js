@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import ReactMapGL from 'react-map-gl'
 import { withRouter } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
 import commonActions from '../../state/actions/common'
@@ -10,14 +9,20 @@ import constructionsActions from '../../state/actions/constructions'
 import {
   Button,
   FullScreenDialog,
+  RutTextField,
   Select,
   SubmitButton,
   TextField
 } from '../UI'
-import { DatePicker } from '../Shared'
+import { DatePicker, Map, AddressAutoComplete } from '../Shared'
+import { rutValidation } from '../../validations'
+import { SantiagoDefaultLocation as location } from '../../config'
+import { useSuccess } from '../../hooks'
 
 const validationSchema = Yup.object({
-  rut: Yup.string().required('Ingrese rut'),
+  rut: Yup.string()
+    .required('Ingrese rut')
+    .test('Check rut', 'Ingrese rut válido', (v) => rutValidation(v)),
   name: Yup.string(),
   business_name: Yup.string().required('Ingrese razón social'),
   address: Yup.string().required('Ingrese dirección'),
@@ -26,13 +31,23 @@ const validationSchema = Yup.object({
   state: Yup.string().required('Seleccione estado'),
   typology_id: Yup.string().nullable(),
   economic_sector_id: Yup.string().required('Seleccione sector economico'),
-  end_date: Yup.date().nullable()
+  end_date: Yup.date().nullable(),
+  longitude: Yup.string().nullable(),
+  latitude: Yup.string().nullable()
 })
 
-const ConstructionModal = ({ open, onClose, type, construction, ...props }) => {
+const ConstructionModal = ({
+  open,
+  onClose,
+  type,
+  construction,
+  successFunction,
+  ...props
+}) => {
   const dispatch = useDispatch()
   const { idCompany } = props.match.params
   const [communes, setCommunes] = useState([])
+  const { success, changeSuccess } = useSuccess()
   const { regions } = useSelector((state) => state.common)
   const { typologies, sectors } = useSelector((state) => state.constructions)
 
@@ -51,7 +66,15 @@ const ConstructionModal = ({ open, onClose, type, construction, ...props }) => {
       typology_id: type === 'UPDATE' ? construction.typology_id : '',
       economic_sector_id:
         type === 'UPDATE' ? construction.economic_sector_id : '',
-      end_date: type === 'UPDATE' ? construction.end_date : null
+      end_date: type === 'UPDATE' ? construction.end_date : null,
+      latitude:
+        type === 'UPDATE'
+          ? parseFloat(construction.latitude)
+          : location.latitude,
+      longitude:
+        type === 'UPDATE'
+          ? parseFloat(construction.longitude)
+          : location.longitude
     },
     onSubmit: (values) => {
       const data = {
@@ -64,8 +87,30 @@ const ConstructionModal = ({ open, onClose, type, construction, ...props }) => {
       }
       if (type === 'CREATE') {
         dispatch(constructionsActions.createConstruction(data))
+          .then(() => {
+            formik.setSubmitting(false)
+            changeSuccess(true)
+            if (successFunction) {
+              successFunction()
+            }
+            onClose()
+          })
+          .catch(() => {
+            formik.setSubmitting(false)
+          })
       } else {
         dispatch(constructionsActions.updateConstruction(construction.id, data))
+          .then(() => {
+            formik.setSubmitting(false)
+            changeSuccess(true)
+            if (successFunction) {
+              successFunction()
+            }
+            onClose()
+          })
+          .catch(() => {
+            formik.setSubmitting(false)
+          })
       }
     }
   })
@@ -88,6 +133,18 @@ const ConstructionModal = ({ open, onClose, type, construction, ...props }) => {
     }
   }
 
+  const handleStateChange = (e) => {
+    const { name, value } = e.target
+    formik.setFieldValue('end_date', value === 'NO_VIGENTE' ? new Date() : null)
+    formik.setFieldValue(name, value)
+    formik.setFieldTouched(name)
+  }
+
+  const changeLocation = (targetLocation) => {
+    formik.setFieldValue('longitude', targetLocation.lng)
+    formik.setFieldValue('latitude', targetLocation.lat)
+  }
+
   useEffect(() => {
     if (open) {
       dispatch(commonActions.getRegions())
@@ -104,21 +161,23 @@ const ConstructionModal = ({ open, onClose, type, construction, ...props }) => {
     }
   }, [regions])
 
-  console.log(formik.errors)
-
   return (
     <FullScreenDialog open={open} onClose={onClose}>
       <Box maxWidth="900px" style={{ margin: '0 auto' }}>
         <Box>
-          <Typography align="center">{`${
-            type === 'CREATE' ? 'Nueva' : 'Editar'
-          } obra`}</Typography>
+          <Typography
+            align="center"
+            style={{
+              fontSize: '20px',
+              marginBottom: '15px',
+              fontWeight: 'bold'
+            }}
+          >{`${type === 'CREATE' ? 'Nueva' : 'Editar'} obra`}</Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <TextField
+              <RutTextField
                 label="Rut"
                 name="rut"
-                error={true}
                 required
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -206,7 +265,7 @@ const ConstructionModal = ({ open, onClose, type, construction, ...props }) => {
                 label="Estado"
                 name="state"
                 required
-                onChange={formik.handleChange}
+                onChange={handleStateChange}
                 value={formik.values.state}
                 helperText={formik.touched.state && formik.errors.state}
                 error={formik.touched.state && Boolean(formik.errors.state)}
@@ -234,41 +293,42 @@ const ConstructionModal = ({ open, onClose, type, construction, ...props }) => {
                   formik.setFieldTouched('end_date')
                   formik.setFieldValue('end_date', date)
                 }}
+                disabled={!(formik.values.state === 'NO_VIGENTE')}
               />
             </Grid>
           </Grid>
           <Box marginTop="15px">
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
-                <Box height="250px">
-                  <ReactMapGL
-                    mapboxApiAccessToken="pk.eyJ1Ijoib2NmcmFueiIsImEiOiJja3F3cnFuanAwbWNoMm9uenV1bHQ1b2xrIn0.GEpo1IDGKp-mxvJZAm1cJw"
-                    {...{
-                      width: '100%',
-                      height: '100%',
-                      latitude: -33.45694,
-                      longitude: -70.64827,
-                      zoom: 10
-                    }}
-                  />
-                </Box>
+                <Map
+                  latitude={formik.values.latitude}
+                  longitude={formik.values.longitude}
+                  markers={[
+                    {
+                      address: formik.values.address,
+                      latitude: formik.values.latitude,
+                      longitude: formik.values.longitude
+                    }
+                  ]}
+                />
               </Grid>
               <Grid item xs={12} md={6}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <TextField
-                      label="Dirección"
-                      name="address"
+                    <AddressAutoComplete
+                      search={formik.values.address}
                       required
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.address}
+                      onChange={(value) => {
+                        formik.setFieldValue('address', value)
+                        formik.setFieldTouched('address')
+                      }}
                       helperText={
                         formik.touched.address && formik.errors.address
                       }
                       error={
                         formik.touched.address && Boolean(formik.errors.address)
                       }
+                      onSetLocation={changeLocation}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -311,8 +371,10 @@ const ConstructionModal = ({ open, onClose, type, construction, ...props }) => {
                 Cancelar
               </Button>
               <SubmitButton
+                loading={formik.isSubmitting}
                 disabled={!formik.isValid || formik.isSubmitting}
                 onClick={formik.handleSubmit}
+                success={success}
               >
                 {`${type === 'CREATE' ? 'Crear' : 'Actualizar'} obra`}
               </SubmitButton>

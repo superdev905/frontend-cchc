@@ -13,8 +13,9 @@ import {
 } from '@material-ui/core'
 import {
   DashboardOutlined as DashboardIcon,
-  Business as BusinessIcon,
-  Settings as SettingsIcon
+  Business as ConstructionIcon,
+  Settings as SettingsIcon,
+  BusinessCenter as BusinessIcon
 } from '@material-ui/icons'
 import clsx from 'clsx'
 
@@ -39,8 +40,9 @@ const useStyles = makeStyles((theme) => ({
 
 const commonRoutes = [
   { title: 'Home', path: '/home', icon: <DashboardIcon /> },
-  { title: 'Empresas', path: '/empresas', icon: <BusinessIcon /> },
-  { title: 'Obras', path: '/obras', icon: <SettingsIcon /> }
+  { title: 'Empresas', path: '/companies', icon: <BusinessIcon /> },
+  { title: 'Obras', path: '/obras', icon: <ConstructionIcon /> },
+  { title: 'Configuración', path: '/settings', icon: <SettingsIcon /> }
 ]
 
 const LeftDrawer = ({ ...props }) => {

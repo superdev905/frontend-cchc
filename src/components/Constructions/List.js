@@ -1,15 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Chip, Grid } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import constructionAction from '../../state/actions/constructions'
 import { DataTable } from '../Shared'
-import { SearchInput, Wrapper } from '../UI'
+import { SearchInput, Wrapper, StatusChip } from '../UI'
 
 const List = ({ ...props }) => {
   const dispatch = useDispatch()
-  const [filters, setFilters] = useState({ skip: 0, limit: 25 })
-  const { list } = useSelector((state) => state.constructions)
+
+  const { list, filters } = useSelector((state) => state.constructions)
+
+  const searchChange = (e) => {
+    dispatch(
+      constructionAction.updateFilters({ ...filters, search: e.target.value })
+    )
+  }
 
   const handleRowClick = (row) => {
     props.history.push(`/obras/${row.id}`)
@@ -27,11 +33,9 @@ const List = ({ ...props }) => {
         <Grid container>
           <Grid item xs={6}>
             <SearchInput
-              value={filters.search || ''}
+              value={filters.search}
               placeholder="Buscar por empresa"
-              onChange={(e) => {
-                setFilters({ ...filters, search: e.target.value })
-              }}
+              onChange={searchChange}
             />
           </Grid>
         </Grid>
@@ -51,7 +55,14 @@ const List = ({ ...props }) => {
             {
               name: 'Estado',
               selector: 'is_partner',
-              cell: (row) => <Chip {...row} label={row.state}></Chip>,
+              cell: (row) => (
+                <StatusChip
+                  {...row}
+                  success={row.state === 'VIGENTE'}
+                  error={row.state === 'NO_VIGENTE'}
+                  label={row.state === 'VIGENTE' ? 'Vigente' : 'No vigente'}
+                />
+              ),
               hide: 'md'
             },
             {

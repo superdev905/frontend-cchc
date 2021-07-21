@@ -1,22 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Box, Chip, makeStyles, Typography } from '@material-ui/core'
+import { Box, Chip, Typography } from '@material-ui/core'
 import companyActions from '../../state/actions/companies'
-import { ActionsTable, Button, Wrapper } from '../UI'
+import { ActionsTable, Button, EmptyState, Wrapper } from '../UI'
 import DivisionModal from '../Companies/Division/Modal'
 import { useSuccess, useToggle } from '../../hooks'
 import { ConfirmDelete, DataTable } from '../Shared'
-
-const useStyles = makeStyles(() => ({
-  root: {}
-}))
+import useStyles from './styles'
 
 const Details = ({ ...props }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { idCompany } = props.match.params
   const [tableData, setTableData] = useState([])
+  const [loading, setLoading] = useState(false)
   const { divisions } = useSelector((state) => state.companies)
   const { open: openCreate, toggleOpen: toggleOpenCreate } = useToggle()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
@@ -61,7 +59,7 @@ const Details = ({ ...props }) => {
     {
       name: 'Empresa socia',
       selector: 'is_partner',
-      cell: (row) => <Chip {...row} label="No"></Chip>,
+      cell: (row) => <Chip {...row} label={row.is_partner}></Chip>,
       hide: 'md'
     },
     {
@@ -84,14 +82,20 @@ const Details = ({ ...props }) => {
   ]
 
   useEffect(() => {
+    setLoading(true)
     dispatch(companyActions.getDivisions(idCompany))
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }, [])
 
   useEffect(() => {
     setTableData(
       divisions.map((item) => ({
         ...item,
-        is_partner: Boolean(item.is_partner),
         createDate: new Date(item.created_at).toLocaleDateString('es-CL', {
           dateStyle: 'long'
         })
@@ -100,15 +104,19 @@ const Details = ({ ...props }) => {
   }, [divisions])
 
   return (
-    <Box className={classes.root}>
+    <Box>
       <Wrapper>
         <Box display="flex" justifyContent="space-between">
-          <Typography>Divisiones</Typography>
+          <Typography className={classes.heading}>Divisiones</Typography>
           <Button onClick={toggleOpenCreate}>Agregar</Button>
         </Box>
 
         <Box>
-          <DataTable columns={columns} data={tableData} />
+          {!loading && tableData.length > 0 ? (
+            <DataTable columns={columns} data={tableData} />
+          ) : (
+            <EmptyState message={'Esta empresa no tiene subempresas'} />
+          )}
         </Box>
       </Wrapper>
       <DivisionModal open={openCreate} onClose={toggleOpenCreate} />

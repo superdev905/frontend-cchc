@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Box, Chip, makeStyles, Typography } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import companyActions from '../../state/actions/companies'
 import constructionActions from '../../state/actions/constructions'
-import { ActionsTable, Button, Wrapper } from '../UI'
+import { ActionsTable, Button, EmptyState, StatusChip, Wrapper } from '../UI'
 import { useSuccess, useToggle } from '../../hooks'
 import { ConfirmDelete, DataTable } from '../Shared'
 import { ConstructionModal } from '../Constructions'
-
-const useStyles = makeStyles(() => ({
-  root: {}
-}))
+import useStyles from './styles'
 
 const Details = ({ ...props }) => {
   const classes = useStyles()
@@ -29,6 +26,10 @@ const Details = ({ ...props }) => {
   const onEditClick = (construction) => {
     setCurrentConstruction(construction)
     toggleOpenUpdate()
+  }
+
+  const fetchConstruction = () => {
+    dispatch(companyActions.getConstructions(idCompany))
   }
 
   const onDelete = (construction) => {
@@ -51,7 +52,7 @@ const Details = ({ ...props }) => {
   }
 
   useEffect(() => {
-    dispatch(companyActions.getConstructions(idCompany))
+    fetchConstruction()
   }, [])
 
   useEffect(() => {
@@ -67,63 +68,79 @@ const Details = ({ ...props }) => {
   }, [constructions])
 
   return (
-    <Box className={classes.root}>
+    <Box>
       <Wrapper>
         <Box display="flex" justifyContent="space-between">
-          <Typography>Obras</Typography>
+          <Typography className={classes.heading}>Obras</Typography>
           <Button onClick={toggleOpenCreate}>Agregar</Button>
         </Box>
 
         <Box>
-          <DataTable
-            columns={[
-              {
-                name: 'Razón social',
-                selector: 'business_name',
-                sortable: true
-              },
-              {
-                name: 'Rut',
-                selector: 'rut'
-              },
-              {
-                name: 'Estado',
-                selector: 'is_partner',
-                cell: (row) => <Chip {...row} label={row.state}></Chip>,
-                hide: 'md'
-              },
-              {
-                name: 'Dirección',
-                selector: 'address',
-                hide: 'md'
-              },
-              {
-                name: '',
-                selector: '',
-                right: true,
-                cell: (row) => (
-                  <ActionsTable
-                    {...row}
-                    onEdit={() => onEditClick(row)}
-                    onDelete={() => onDelete(row)}
-                    onView={() => {
-                      props.history.push(`/obras/${row.id}`)
-                    }}
-                  />
-                )
-              }
-            ]}
-            data={tableData}
-          />
+          {tableData.length === 0 ? (
+            <EmptyState message="Esta empresa no tiene obras" />
+          ) : (
+            <DataTable
+              columns={[
+                {
+                  name: 'Razón social',
+                  selector: 'business_name',
+                  sortable: true
+                },
+                {
+                  name: 'Rut',
+                  selector: 'rut'
+                },
+                {
+                  name: 'Estado',
+                  selector: 'is_partner',
+                  cell: (row) => (
+                    <StatusChip
+                      {...row}
+                      success={row.state === 'VIGENTE'}
+                      error={row.state === 'NO_VIGENTE'}
+                      label={row.state === 'VIGENTE' ? 'Vigente' : 'No vigente'}
+                    />
+                  ),
+                  hide: 'md'
+                },
+                {
+                  name: 'Dirección',
+                  selector: 'address',
+                  hide: 'md'
+                },
+                {
+                  name: '',
+                  selector: '',
+                  right: true,
+                  cell: (row) => (
+                    <ActionsTable
+                      {...row}
+                      onEdit={() => onEditClick(row)}
+                      onDelete={() => onDelete(row)}
+                      onView={() => {
+                        props.history.push(`/obras/${row.id}`)
+                      }}
+                    />
+                  )
+                }
+              ]}
+              data={tableData}
+            />
+          )}
         </Box>
       </Wrapper>
-      <ConstructionModal open={openCreate} onClose={toggleOpenCreate} />
+      <ConstructionModal
+        open={openCreate}
+        onClose={toggleOpenCreate}
+        successFunction={fetchConstruction}
+      />
       {currentConstruction && openUpdate && (
         <ConstructionModal
           type="UPDATE"
           open={openUpdate}
           onClose={toggleOpenUpdate}
           construction={currentConstruction}
+          successFunction={fetchConstruction}
         />
       )}
       {currentConstruction && openDelete && (

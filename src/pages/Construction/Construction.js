@@ -1,37 +1,105 @@
-import { useEffect } from 'react'
-import { withRouter } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, IconButton, Typography } from '@material-ui/core'
+import { Box, IconButton } from '@material-ui/core'
 import { ArrowBack as ArrowBackIcon } from '@material-ui/icons/'
 import constructionActions from '../../state/actions/constructions'
-import { PageHeading, Wrapper } from '../../components/UI'
-import { ConstructionContactsList } from '../../components/Constructions'
+import { Button, PageHeading, Text } from '../../components/UI'
+import {
+  ConstructionContactsList,
+  ConstructionDetails,
+  ConstructionModal
+} from '../../components/Constructions'
+import { ConfirmDelete } from '../../components/Shared'
+import { useSuccess, useToggle } from '../../hooks'
 
-const Construction = ({ ...props }) => {
+const Construction = () => {
   const dispatch = useDispatch()
-  const { idConstruction } = props.match.params
+  const { idConstruction } = useParams()
+  const history = useHistory()
+  const [loading, setLoading] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
+  const { success, changeSuccess } = useSuccess()
   const { construction } = useSelector((state) => state.constructions)
+
+  const deleteConstruction = (id) => {
+    setDeleting(true)
+    dispatch(constructionActions.deleteConstruction(id))
+      .then(() => {
+        setDeleting(false)
+        changeSuccess(true)
+        toggleOpenDelete()
+      })
+      .catch(() => {
+        setDeleting(false)
+      })
+  }
+
   const goBack = () => {
-    props.history.goBack()
+    history.goBack()
+  }
+  const getConstructionDetails = () => {
+    setLoading(true)
+    dispatch(constructionActions.getConstruction(idConstruction))
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }
 
   useEffect(() => {
-    dispatch(constructionActions.getConstruction(idConstruction))
+    getConstructionDetails()
   }, [])
   return (
     <div>
-      <Box display="flex" alignItems="center">
-        <IconButton onClick={goBack}>
-          <ArrowBackIcon />
-        </IconButton>
-        <PageHeading>{construction?.business_name}</PageHeading>
+      <Box display="flex" alignItems="center" justifyContent="space-between">
+        <Box display="flex" alignItems="center">
+          <IconButton onClick={goBack}>
+            <ArrowBackIcon />
+          </IconButton>
+          <Text loading={loading}>
+            <PageHeading>{construction?.business_name}</PageHeading>{' '}
+          </Text>
+        </Box>
+        <Box>
+          <Button danger onClick={toggleOpenDelete}>
+            Eliminar
+          </Button>
+          <Button onClick={toggleOpenUpdate}>Editar</Button>
+        </Box>
       </Box>
-      <Wrapper>
-        <Typography>Detalles</Typography>
-      </Wrapper>
+      <ConstructionDetails loading={loading} />
       <ConstructionContactsList />
+      {construction && openDelete && (
+        <ConfirmDelete
+          open={openDelete}
+          onClose={toggleOpenDelete}
+          loading={deleting}
+          success={success}
+          onConfirm={() => deleteConstruction(construction.id)}
+          message={
+            <span>
+              ¿Estás seguro de eliminar
+              <strong> {construction.business_name}</strong>?
+            </span>
+          }
+        />
+      )}
+      {construction && openUpdate && (
+        <ConstructionModal
+          type="UPDATE"
+          open={openUpdate}
+          onClose={toggleOpenUpdate}
+          construction={construction}
+          successFunction={getConstructionDetails}
+        />
+      )}
     </div>
   )
 }
 
-export default withRouter(Construction)
+export default Construction

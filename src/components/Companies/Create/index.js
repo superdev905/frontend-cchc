@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Stepper, Step, StepLabel, Typography } from '@material-ui/core'
 import { FullScreenDialog, Button } from '../../UI'
@@ -20,7 +21,7 @@ function getStepContent(stepIndex) {
   }
 }
 
-const CreateDialog = ({ open, onClose }) => {
+const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
   const steps = getSteps()
   const dispatch = useDispatch()
   const { create } = useSelector((state) => state.companies)
@@ -35,6 +36,30 @@ const CreateDialog = ({ open, onClose }) => {
     }
   }
 
+  const handleEnd = () => {
+    if (successFunction) {
+      successFunction()
+    }
+    dispatch(
+      companiesActions.updateCreate({
+        step: 0,
+        type,
+        company: null
+      })
+    )
+    onClose()
+  }
+
+  useEffect(() => {
+    dispatch(
+      companiesActions.updateCreate({
+        ...create,
+        type,
+        company: type === 'UPDATE' ? data : null
+      })
+    )
+  }, [type])
+
   return (
     <FullScreenDialog open={open} onClose={onClose} onBack={handleBack}>
       <Box>
@@ -48,9 +73,11 @@ const CreateDialog = ({ open, onClose }) => {
         <div>
           {create.step === steps.length ? (
             <Box>
-              <Typography align="center">Empresa creado con éxito</Typography>
+              <Typography align="center">{`Empresa ${
+                type === 'UPDATE' ? 'actualizada' : 'creada'
+              }  con éxito`}</Typography>
               <Box display="flex" justifyContent="center">
-                <Button onClick={onClose}>Cerrar</Button>
+                <Button onClick={handleEnd}>Cerrar</Button>
               </Box>
             </Box>
           ) : (
@@ -60,6 +87,10 @@ const CreateDialog = ({ open, onClose }) => {
       </Box>
     </FullScreenDialog>
   )
+}
+
+CreateDialog.defaultProps = {
+  type: 'CREATE'
 }
 
 export default CreateDialog

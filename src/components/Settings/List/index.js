@@ -1,33 +1,18 @@
 import { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { Box, IconButton, Typography } from '@material-ui/core'
-import {
-  ArrowDownward as SortIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon
-} from '@material-ui/icons/'
-import DataTable from 'react-data-table-component'
-import { Wrapper, Button } from '../../UI'
+import { useDispatch } from 'react-redux'
+import { Box, Typography } from '@material-ui/core'
+import { Wrapper, Button, ActionsTable } from '../../UI'
 import constructionsActions from '../../../state/actions/constructions'
 import CreateTypology from '../Create/CreateTypology'
 import { useSuccess, useToggle } from '../../../hooks'
-import { ConfirmDelete } from '../../Shared'
-
-const ActionRow = ({ onEdit, onDelete }) => (
-  <Box>
-    <IconButton onClick={onEdit}>
-      <EditIcon />
-    </IconButton>
-    <IconButton onClick={onDelete}>
-      <DeleteIcon />
-    </IconButton>
-  </Box>
-)
+import { ConfirmDelete, DataTable } from '../../Shared'
+import commonActions from '../../../state/actions/common'
+import ListCharges from '../Charges/List'
+import ListRegions from '../Regions/List'
 
 const List = () => {
   const dispatch = useDispatch()
-  const { list, filters } = useSelector((state) => state.constructions)
   const { open: openCreate, toggleOpen: toggleOpenCreate } = useToggle()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
@@ -60,31 +45,10 @@ const List = () => {
       })
   }
 
-  const columns = [
-    {
-      name: 'Tipología',
-      selector: 'name',
-      sortable: true
-    },
-    {
-      name: '',
-      selector: '',
-      right: true,
-      cell: (row) => (
-        <ActionRow
-          {...row}
-          onEdit={() => onEditClick(row)}
-          onDelete={() => onDelete(row)}
-        />
-      )
-    }
-  ]
-
   useEffect(() => {
-    setTableData(list)
-  }, [list])
-  useEffect(() => {
-    dispatch(constructionsActions.getConstructionTypology(filters))
+    dispatch(commonActions.getTypologies({})).then((list) => {
+      setTableData(list)
+    })
   }, [])
 
   return (
@@ -97,11 +61,26 @@ const List = () => {
           </Box>
           <Box>
             <DataTable
-              columns={columns}
+              columns={[
+                {
+                  name: 'Nombre de Tipología',
+                  selector: 'name',
+                  sortable: true
+                },
+                {
+                  name: '',
+                  selector: '',
+                  right: true,
+                  cell: (row) => (
+                    <ActionsTable
+                      {...row}
+                      onEdit={() => onEditClick(row)}
+                      onDelete={() => onDelete(row)}
+                    />
+                  )
+                }
+              ]}
               data={tableData}
-              defaultSortFieldId={1}
-              sortIcon={<SortIcon />}
-              pagination={false}
             />
           </Box>
         </Box>
@@ -130,6 +109,8 @@ const List = () => {
           }
         />
       )}
+      <ListCharges />
+      <ListRegions />
     </Box>
   )
 }

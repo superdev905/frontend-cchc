@@ -3,9 +3,8 @@ import { withRouter } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Typography } from '@material-ui/core'
 import constructionsActions from '../../state/actions/constructions'
-import { Button, Wrapper } from '../UI'
-import { ContactCard } from '../Contacts'
-import ContactModal from './ContactModal'
+import { Button, EmptyState, Wrapper } from '../UI'
+import { ContactCard, ContactModal } from '../Contacts'
 import { useToggle } from '../../hooks'
 import { ConfirmDelete } from '../Shared'
 
@@ -22,6 +21,22 @@ const ContactList = ({ ...props }) => {
   const fetchContacts = () => {
     dispatch(constructionsActions.getContacts(idConstruction))
   }
+
+  const onCreateContact = (values) =>
+    dispatch(
+      constructionsActions.createContact({
+        ...values,
+        construction_id: parseInt(idConstruction, 10)
+      })
+    )
+
+  const onEditContact = (values) =>
+    dispatch(
+      constructionsActions.updateContact(currentContact.id, {
+        ...values,
+        construction_id: parseInt(idConstruction, 10)
+      })
+    )
 
   const deleteContact = (id) => {
     setDeleting(true)
@@ -42,42 +57,51 @@ const ContactList = ({ ...props }) => {
   return (
     <Wrapper>
       <Box display="flex" justifyContent="space-between">
-        <Typography>Contactos de obra</Typography>
+        <Typography style={{ fontSize: 18, fontWeight: 'bold' }}>
+          Contactos de obra
+        </Typography>
         <Button onClick={toggleOpen}>Nuevo contacto</Button>
       </Box>
 
-      <ContactCard.Container>
-        {contacts
-          .map((item) => ({ ...item, charge: item.charge.name }))
-          .map((item) => (
-            <ContactCard
-              key={`contact-i-${item.id}`}
-              contact={item}
-              onDelete={() => {
-                toggleOpenDelete()
-                setCurrentContact(item)
-              }}
-              onEdit={() => {
-                toggleOpenUpdate()
-                setCurrentContact(item)
-              }}
-            />
-          ))}
-      </ContactCard.Container>
+      {contacts.length === 0 ? (
+        <EmptyState message="Esta obra no tiene contactos" />
+      ) : (
+        <ContactCard.Container>
+          {contacts
+            .map((item) => ({ ...item, charge: item.charge.name }))
+            .map((item) => (
+              <ContactCard
+                key={`contact-i-${item.id}`}
+                contact={item}
+                onDelete={() => {
+                  toggleOpenDelete()
+                  setCurrentContact(item)
+                }}
+                onEdit={() => {
+                  toggleOpenUpdate()
+                  setCurrentContact(item)
+                }}
+              />
+            ))}
+        </ContactCard.Container>
+      )}
+
       <ContactModal
         open={open}
         onClose={toggleOpen}
-        idConstruction={idConstruction}
+        submitFunction={onCreateContact}
         successFunc={fetchContacts}
+        successMessage="Contacto de obra creado con éxito"
       />
       {currentContact && openUpdate && (
         <ContactModal
-          contact={currentContact}
+          data={currentContact}
           type="UPDATE"
           open={openUpdate}
           onClose={toggleOpenUpdate}
-          idConstruction={idConstruction}
+          submitFunction={onEditContact}
           successFunc={fetchContacts}
+          successMessage="Contacto de obra actualizado con éxito"
         />
       )}
       {currentContact && openDelete && (

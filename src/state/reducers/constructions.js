@@ -5,7 +5,12 @@ const initialState = {
   typologies: [],
   sectors: [],
   construction: null,
-  contacts: []
+  contacts: [],
+  filters: {
+    skip: 0,
+    limit: 20,
+    search: ''
+  }
 }
 
 const constructionReducer = (state = initialState, { type, payload }) => {
@@ -20,6 +25,8 @@ const constructionReducer = (state = initialState, { type, payload }) => {
       return { ...state, construction: payload }
     case constructionTypes.GET_CONSTRUCTIONS_CONTACTS:
       return { ...state, contacts: payload }
+    case constructionTypes.CONSTRUCTIONS_UPDATE_FILTERS:
+      return { ...state, filters: payload }
 
     default:
       return state

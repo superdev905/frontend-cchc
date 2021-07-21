@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Box } from '@material-ui/core'
+import { Box, Grid } from '@material-ui/core'
 import companiesActions from '../../../state/actions/companies'
-import Filters from './Filters'
-import { ActionsTable, Wrapper } from '../../UI'
+import { ActionsTable, Button, SearchInput, Wrapper } from '../../UI'
 import CreateCompany from '../Create'
 import { DataTable } from '../../Shared'
+import StatusChip from '../../UI/StatusChip'
 
 const List = ({ ...props }) => {
   const dispatch = useDispatch()
@@ -20,16 +20,47 @@ const List = ({ ...props }) => {
   }
 
   const handleRowClick = (row) => {
-    props.history.push(`/empresas/${row.id}`)
+    props.history.push(`/company/${row.id}/details`)
+  }
+  const addButtonClick = () => {
+    dispatch(companiesActions.toggleCreateModal(showCreateModal))
+  }
+
+  const onSearchChange = (e) => {
+    const { value } = e.target
+    dispatch(
+      companiesActions.updateFilters({ ...filters, search: value, page: 1 })
+    )
+  }
+
+  const fetchCompanies = () => {
+    dispatch(companiesActions.getCompanies(filters))
   }
 
   useEffect(() => {
-    dispatch(companiesActions.getCompanies(filters))
-  }, [])
+    fetchCompanies()
+  }, [filters])
 
   return (
     <Box marginTop="10px">
-      <Filters />
+      <Wrapper>
+        <Box>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <SearchInput
+                value={filters.search}
+                onChange={onSearchChange}
+                placeholder="Buscar por nombre de empresa"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box display="flex" justifyContent="flex-end">
+                <Button onClick={addButtonClick}>Nueva empresa</Button>
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+      </Wrapper>
       <Wrapper>
         <DataTable
           columns={[
@@ -51,6 +82,19 @@ const List = ({ ...props }) => {
             {
               name: 'Estado',
               selector: 'state',
+              hide: 'md',
+              center: true,
+              cell: (row) => (
+                <StatusChip
+                  label={row.state === 'CREATED' ? 'Activo' : 'Eliminado'}
+                  error={row.state !== 'CREATED'}
+                  success={row.state === 'CREATED'}
+                />
+              )
+            },
+            {
+              name: 'Dirección',
+              selector: 'address',
               hide: 'md'
             },
             {
@@ -64,7 +108,11 @@ const List = ({ ...props }) => {
         />
       </Wrapper>
 
-      <CreateCompany open={showCreateModal} onClose={toggleCreateModal} />
+      <CreateCompany
+        open={showCreateModal}
+        onClose={toggleCreateModal}
+        successFunction={fetchCompanies}
+      />
     </Box>
   )
 }

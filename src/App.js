@@ -1,6 +1,6 @@
 import { Suspense, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { useTheme, useMediaQuery } from '@material-ui/core'
+import { useTheme, useMediaQuery, CssBaseline } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 import { ConnectedRouter } from 'connected-react-router'
 import { HelmetProvider } from 'react-helmet-async'
@@ -34,6 +34,7 @@ function App() {
       }
     >
       <HelmetProvider>
+        <CssBaseline />
         <ThemeProvider theme={theme}>
           <ConnectedRouter history={history}>
             <RenderRoutes />

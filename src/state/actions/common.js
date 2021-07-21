@@ -35,7 +35,20 @@ const getCharges = () => (dispatch) =>
       })
   })
 
+const getTypologies = () => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`/construction_typology`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 export default {
   getRegions,
-  getCharges
+  getCharges,
+  getTypologies
 }

@@ -2,6 +2,12 @@ import queryString from 'query-string'
 import Axios from '../../Axios'
 import constructionTypes from '../types/construction'
 
+const updateFilters = (filters) => (dispatch) =>
+  dispatch({
+    type: constructionTypes.CONSTRUCTIONS_UPDATE_FILTERS,
+    payload: filters
+  })
+
 const getConstructionTypology = (query) => () =>
   new Promise((resolve, reject) => {
     Axios.get(`/construction_typology?${queryString.stringify(query)}`)
@@ -152,6 +158,58 @@ const deleteConstructionTypology = (id) => () =>
       })
   })
 
+const getContacts = (idConstruction) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`/construction_contacts?construction_id=${idConstruction}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: constructionTypes.GET_CONSTRUCTIONS_CONTACTS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const createContact = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`/construction_contacts`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const updateContact = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`/construction_contacts/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const deleteContact = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`/construction_contacts/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
 export default {
   getConstructions,
   createConstruction,
@@ -161,5 +219,12 @@ export default {
   createConstructionTypology,
   getConstructionTypology,
   updateConstructionTypology,
-  deleteConstructionTypology
+  deleteConstructionTypology,
+  getSectors,
+  getTypologies,
+  getContacts,
+  createContact,
+  updateContact,
+  deleteContact,
+  updateFilters
 }
