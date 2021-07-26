@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Grid } from '@material-ui/core'
+import { Box, Grid } from '@material-ui/core'
 import constructionAction from '../../state/actions/constructions'
 import { DataTable } from '../Shared'
-import { SearchInput, Wrapper, StatusChip } from '../UI'
+import { SearchInput, Wrapper, StatusChip, Button } from '../UI'
 
 const List = ({ ...props }) => {
   const dispatch = useDispatch()
@@ -37,6 +37,11 @@ const List = ({ ...props }) => {
               placeholder="Buscar por empresa"
               onChange={searchChange}
             />
+          </Grid>
+          <Grid item xs={6}>
+            <Box display="flex" justifyContent="flex-end">
+              <Button>Nueva obra</Button>
+            </Box>
           </Grid>
         </Grid>
       </Wrapper>

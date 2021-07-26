@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:lts as build
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ FROM nginx:stable-alpine
 
 COPY --from=build /app/build /bin/www
 
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
