@@ -30,7 +30,6 @@ function App() {
           size={80}
           height={window.innerHeight}
           width={window.innerWidth}
-          showLogo
         />
       }
     >

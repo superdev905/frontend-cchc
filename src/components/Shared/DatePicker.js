@@ -1,5 +1,6 @@
-import { Box, makeStyles, Menu } from '@material-ui/core'
+import { Box, InputAdornment, makeStyles, Menu } from '@material-ui/core'
 import { useEffect, useState } from 'react'
+import CalendarIcon from '@material-ui/icons/CalendarToday'
 import { Calendar } from 'react-modern-calendar-datepicker'
 import 'react-modern-calendar-datepicker/lib/DatePicker.css'
 import { useMenu } from '../../hooks'
@@ -94,7 +95,10 @@ const setCalendarFormat = (date) => {
 const useStyles = makeStyles((theme) => ({
   input: ({ disabled }) => ({
     pointerEvents: disabled ? 'none' : 'inherit',
-    backgroundColor: disabled ? theme.palette.bg.main : 'transparent'
+    backgroundColor: disabled ? theme.palette.bg.main : 'transparent',
+    '& input': {
+      cursor: 'pointer'
+    }
   })
 }))
 
@@ -137,6 +141,13 @@ const CustomDatePicker = ({
         label={label}
         onClick={handleOpen}
         inputProps={{ readOnly: true }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <CalendarIcon />
+            </InputAdornment>
+          )
+        }}
         disabled={disabled}
         className={classes.input}
         {...props}

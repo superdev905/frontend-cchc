@@ -2,7 +2,12 @@ import commonTypes from '../types/common'
 
 const initialState = {
   regions: [],
-  charges: []
+  charges: [],
+  maritalStatus: [],
+  nationalities: [],
+  scholarshipList: [],
+  banks: [],
+  rshList: []
 }
 
 const commonReducer = (state = initialState, { type, payload }) => {
@@ -11,6 +16,16 @@ const commonReducer = (state = initialState, { type, payload }) => {
       return { ...state, regions: payload }
     case commonTypes.GET_CHARGES:
       return { ...state, charges: payload }
+    case commonTypes.GET_MARITAL_STATUS:
+      return { ...state, maritalStatus: payload }
+    case commonTypes.GET_SCHOLARSHIP:
+      return { ...state, scholarshipList: payload }
+    case commonTypes.GET_NATIONALITIES:
+      return { ...state, nationalities: payload }
+    case commonTypes.GET_BANKS:
+      return { ...state, banks: payload }
+    case commonTypes.GET_RSH:
+      return { ...state, rshList: payload }
 
     default:
       return state

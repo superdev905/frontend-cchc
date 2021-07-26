@@ -1,21 +1,26 @@
 import { Box } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
 import { formatDate } from '../../formatters'
+import { useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
 import { DataTable } from '../Shared'
 import { Button, Wrapper } from '../UI'
+import EmployeeForm from './EmployeeForm'
 
 const ListEmployees = () => {
   const dispatch = useDispatch()
-  const history = useHistory()
+
   const [tableData, setTableData] = useState([])
+  const { open, toggleOpen } = useToggle()
   const { list: listEmployees } = useSelector((state) => state.employees)
 
   const fetchEmployees = () => {
     dispatch(employeesActions.getEmployees())
   }
+
+  const createEmployee = (values) =>
+    dispatch(employeesActions.createEmployee(values))
 
   useEffect(() => {
     setTableData(
@@ -34,13 +39,7 @@ const ListEmployees = () => {
   return (
     <Wrapper>
       <Box display="flex" justifyContent="flex-end">
-        <Button
-          onClick={() => {
-            history.push('/employee/new')
-          }}
-        >
-          Nuevo trabajador
-        </Button>
+        <Button onClick={toggleOpen}>Nuevo trabajador</Button>
       </Box>
       <DataTable
         columns={[
@@ -66,6 +65,13 @@ const ListEmployees = () => {
         ]}
         data={tableData}
         pagination
+      />
+      <EmployeeForm
+        open={open}
+        onClose={toggleOpen}
+        submitFunction={createEmployee}
+        successMessage="Ficha de trabajador creado correctamente"
+        successFunction={fetchEmployees}
       />
     </Wrapper>
   )
