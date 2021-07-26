@@ -9,7 +9,6 @@ import { useSuccess, useToggle } from '../../../hooks'
 import { ConfirmDelete, DataTable } from '../../Shared'
 import commonActions from '../../../state/actions/common'
 import ListCharges from '../Charges/List'
-import ListRegions from '../Regions/List'
 
 const List = () => {
   const dispatch = useDispatch()
@@ -110,7 +109,6 @@ const List = () => {
         />
       )}
       <ListCharges />
-      <ListRegions />
     </Box>
   )
 }

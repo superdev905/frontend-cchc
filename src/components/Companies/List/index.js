@@ -50,7 +50,7 @@ const List = ({ ...props }) => {
               <SearchInput
                 value={filters.search}
                 onChange={onSearchChange}
-                placeholder="Buscar por nombre de empresa"
+                placeholder="Buscar por: nombre de empresa, rut"
               />
             </Grid>
             <Grid item xs={12} md={6}>

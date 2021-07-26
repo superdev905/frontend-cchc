@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSnackbar } from 'notistack'
 import { withRouter } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Typography } from '@material-ui/core'
@@ -13,6 +14,7 @@ import useStyles from './styles'
 const Contacts = ({ ...props }) => {
   const dispatch = useDispatch()
   const classes = useStyles()
+  const { enqueueSnackbar } = useSnackbar()
   const { idCompany } = props.match.params
   const { contacts } = useSelector((state) => state.companies)
   const [deleting, setDeleting] = useState(false)
@@ -52,6 +54,10 @@ const Contacts = ({ ...props }) => {
         changeSuccess(true)
         toggleOpenDelete()
         fetchContacts()
+        enqueueSnackbar('El contacto fue eliminado', {
+          autoHideDuration: 1500,
+          variant: 'success'
+        })
       })
       .catch(() => {
         setDeleting(false)

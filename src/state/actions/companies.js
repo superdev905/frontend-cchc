@@ -11,6 +11,18 @@ const updateFilters = (filters) => (dispatch) =>
 const updateCreate = (form) => (dispatch) =>
   dispatch({ type: businessTypes.BUSINESS_UPDATE_CREATE, payload: form })
 
+const getMainCompanies = () => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`/business?type=${'EMPRESA PRINCIPAL'}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 const getCompanies = (query) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`/business?${queryString.stringify(query)}`)
@@ -22,6 +34,19 @@ const getCompanies = (query) => (dispatch) =>
         })
 
         resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+const getMainCompany = (companyId) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`/business/${companyId}`)
+      .then((response) => {
+        const { data } = response
+
+        resolve(data)
       })
       .catch((err) => {
         reject(err)
@@ -172,5 +197,7 @@ export default {
   getContacts,
   getConstructions,
   blockCompany,
-  updateCompany
+  updateCompany,
+  getMainCompanies,
+  getMainCompany
 }

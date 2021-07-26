@@ -71,6 +71,17 @@ const Details = ({ loading }) => {
                 </LabeledRow>
               </Box>
             </Box>
+            <Box>
+              <Typography className={classes.heading}>Facturación</Typography>
+              <LabeledRow label="Rut">
+                <Text loading={loading}> {construction?.billing_rut}</Text>
+              </LabeledRow>
+              <LabeledRow label="Razón social">
+                <Text loading={loading}>
+                  {construction?.billing_business_name}
+                </Text>
+              </LabeledRow>
+            </Box>
           </Grid>
           <Grid item xs={12} md={6}>
             <Box>

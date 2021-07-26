@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import toast, { Toaster } from 'react-hot-toast'
+import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
@@ -17,17 +18,18 @@ const validationSchema = Yup.object({
   is_partner: Yup.string().required('Seleccione empresa socia'),
   social_service: Yup.string().required('Seleccione opción'),
   benefit_pyme: Yup.string(),
-  parent_business_id: Yup.string()
+  parent_business_id: Yup.string(),
+  main_company_id: Yup.string('Selecciona empresa madre').nullable()
 })
-
-const notify = (message) => toast.error(message)
 
 const StepOne = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { open, toggleOpen } = useToggle()
   const { create } = useSelector((state) => state.companies)
+  const [mainCompanies, setMainCompanies] = useState([])
 
   const formik = useFormik({
     validationSchema,
@@ -35,9 +37,10 @@ const StepOne = () => {
     initialValues: {
       type: create?.company?.type || '',
       is_partner: create?.company?.is_partner || '',
-      benefit_pyme: create?.company?.benfit_pyme || 'NO',
+      benefit_pyme: create?.company?.benefit_pyme || '',
       social_service: create?.company?.social_service || '',
-      social: ''
+      social: '',
+      main_business_id: create?.company?.main_business_id || null
     },
     onSubmit: (values) => {
       const {
@@ -61,6 +64,9 @@ const StepOne = () => {
         type: values.type,
         region_id: region,
         commune_id: commune,
+        main_business_id: values.main_business_id
+          ? parseInt(values.main_business_id, 10)
+          : null,
         ...values
       }
       if (create.type === 'CREATE') {
@@ -74,9 +80,16 @@ const StepOne = () => {
                 step: create.step + 1
               })
             )
+            enqueueSnackbar('Cliente fue creado exitosamente', {
+              autoHideDuration: 1500,
+              variant: 'success'
+            })
           })
           .catch((err) => {
-            notify(err.detail)
+            enqueueSnackbar(err.detail, {
+              autoHideDuration: 1500,
+              variant: 'error'
+            })
             formik.setSubmitting(false)
           })
       } else {
@@ -84,6 +97,10 @@ const StepOne = () => {
           .then(() => {
             formik.setSubmitting(false)
             changeSuccess(true)
+            enqueueSnackbar('Cliente fue actualizado exitosamente', {
+              autoHideDuration: 1500,
+              variant: 'success'
+            })
             dispatch(
               companiesActions.updateCreate({
                 ...create,
@@ -92,12 +109,21 @@ const StepOne = () => {
             )
           })
           .catch((err) => {
-            notify(err.detail)
+            enqueueSnackbar(err.detail, {
+              autoHideDuration: 1500,
+              variant: 'error'
+            })
             formik.setSubmitting(false)
           })
       }
     }
   })
+
+  useEffect(() => {
+    dispatch(companiesActions.getMainCompanies()).then((list) => {
+      setMainCompanies(list)
+    })
+  }, [])
   const goBack = () => {
     dispatch(
       companiesActions.updateCreate({ ...create, step: create.step - 1 })
@@ -127,8 +153,18 @@ const StepOne = () => {
             </Select>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Select label="Empresa madre" name="businessMain">
+            <Select
+              label="Empresa madre"
+              name="main_business_id"
+              value={formik.values.main_business_id}
+              onChange={formik.handleChange}
+            >
               <option>Seleccione empresa</option>
+              {mainCompanies.map((item, i) => (
+                <option key={`option-${i}`} value={item.id}>
+                  {item.business_name}
+                </option>
+              ))}
             </Select>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -154,6 +190,7 @@ const StepOne = () => {
               onChange={formik.handleChange}
               value={formik.values.benefit_pyme}
             >
+              <option value="">Seleccione opción</option>
               {decisionList.map((item, i) => (
                 <option key={`pyme-option-${i}`} value={item}>
                   {item}
@@ -193,7 +230,6 @@ const StepOne = () => {
         </SubmitButton>
       </Box>
       <CreateModal open={open} onClose={toggleOpen} />
-      <Toaster />
     </Box>
   )
 }

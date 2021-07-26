@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import * as Yup from 'yup'
-import toast, { Toaster } from 'react-hot-toast'
+import { useSnackbar } from 'notistack'
 import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid, makeStyles } from '@material-ui/core'
@@ -39,8 +39,6 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const notify = (message) => toast.error(message)
-
 const ContactModal = ({
   open,
   onClose,
@@ -51,6 +49,7 @@ const ContactModal = ({
   successMessage
 }) => {
   const classes = useStyles()
+  const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
   const { charges } = useSelector((state) => state.common)
   const dispatch = useDispatch()
@@ -73,7 +72,10 @@ const ContactModal = ({
         .then(() => {
           formik.setSubmitting(false)
           changeSuccess(false)
-          notify(successMessage)
+          enqueueSnackbar(successMessage, {
+            autoHideDuration: 1500,
+            variant: 'success'
+          })
           setTimeout(() => {
             resetForm()
             onClose()
@@ -84,7 +86,10 @@ const ContactModal = ({
         })
         .catch((err) => {
           formik.setSubmitting(false)
-          notify(err)
+          enqueueSnackbar(err, {
+            autoHideDuration: 1500,
+            variant: 'error'
+          })
           changeSuccess(false)
         })
     }
@@ -208,12 +213,10 @@ const ContactModal = ({
             loading={formik.isSubmitting}
             disabled={!formik.isValid}
           >
-            {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} datao`}
+            {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} contacto`}
           </SubmitButton>
         </Box>
       </Box>
-
-      <Toaster />
     </Dialog>
   )
 }

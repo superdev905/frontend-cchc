@@ -27,16 +27,13 @@ const Company = ({ children }) => {
     dispatch(companiesActions.getCompany(idCompany))
   }
 
-  useEffect(() => {
-    fetchCompanyDetails()
-  }, [])
-
   const blockCompany = () => {
     setDeleting(true)
     dispatch(companiesActions.blockCompany(idCompany))
       .then(() => {
         setDeleting(false)
         changeSuccess(true)
+        fetchCompanyDetails()
         toggleOpen()
       })
       .catch(() => {
@@ -44,6 +41,9 @@ const Company = ({ children }) => {
         toggleOpen()
       })
   }
+  useEffect(() => {
+    fetchCompanyDetails()
+  }, [])
   return (
     <div>
       <Box display="flex" justifyContent="space-between" alignItems="center">

@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Stepper, Step, StepLabel, Typography } from '@material-ui/core'
-import { FullScreenDialog, Button } from '../../UI'
+import { Button } from '../../UI'
 import StepOne from './StepOne'
 import StepTwo from './StepTwo'
 import companiesActions from '../../../state/actions/companies'
+import { Dialog } from '../../Shared'
 
 function getSteps() {
   return ['Información de empresa', 'Otros datos']
@@ -25,6 +26,7 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
   const steps = getSteps()
   const dispatch = useDispatch()
   const { create } = useSelector((state) => state.companies)
+  const { isMobile } = useSelector((state) => state.ui)
 
   const handleBack = () => {
     if (create.step === 0) {
@@ -61,7 +63,14 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
   }, [type])
 
   return (
-    <FullScreenDialog open={open} onClose={onClose} onBack={handleBack}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth={'lg'}
+      fullWidth
+      onBack={handleBack}
+      fullScreen={isMobile}
+    >
       <Box>
         <Stepper activeStep={create.step} alternativeLabel>
           {steps.map((label) => (
@@ -85,7 +94,7 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
           )}
         </div>
       </Box>
-    </FullScreenDialog>
+    </Dialog>
   )
 }
 

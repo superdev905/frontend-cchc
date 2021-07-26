@@ -1,12 +1,26 @@
-import { useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
+import companiesActions from '../../state/actions/companies'
 import { LabeledRow, StatusChip, Text, Wrapper } from '../UI'
 import { Map } from '../Shared'
 import useStyles from './styles'
 
 const Details = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
+  const [mainCompany, setMainCompany] = useState(null)
   const { company } = useSelector((state) => state.companies)
+
+  useEffect(() => {
+    if (company?.main_business_id) {
+      dispatch(companiesActions.getMainCompany(company.main_business_id)).then(
+        (data) => {
+          setMainCompany(data)
+        }
+      )
+    }
+  }, [company])
   return (
     <Box>
       <Wrapper>
@@ -48,8 +62,17 @@ const Details = () => {
                   <Text>{company?.social_service}</Text>
                 </LabeledRow>
                 <LabeledRow label="Beneficio Pyme">
-                  <Text>{company?.benfit_pyme}</Text>
+                  <Text>{company?.benefit_pyme}</Text>
                 </LabeledRow>
+                {mainCompany && (
+                  <LabeledRow label="Empresa madre">
+                    <Text>
+                      <a href={`/company/${mainCompany?.id}/details`}>
+                        {mainCompany?.business_name}
+                      </a>
+                    </Text>
+                  </LabeledRow>
+                )}
               </Box>
             </Box>
           </Grid>

@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom'
 import Layout from '../components/Layout'
 import Can from '../components/Can'
 import companyRoutes from './company'
+import employeeRoutes from './employee'
 
 const Home = lazy(() => import('../pages/Home'))
 const Settings = lazy(() => import('../pages/Settings'))
@@ -33,8 +34,8 @@ const routes = [
       />
     )
   },
-
   ...companyRoutes,
+  ...employeeRoutes,
   {
     path: '/obras',
     key: 'CONSTRUCTION',

@@ -4,7 +4,7 @@ import { Button, makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   button: ({ color, size, variant }) => ({
-    textTransform: 'capitalize',
+    textTransform: 'inherit',
     margin: theme.spacing(1),
     padding: size === 'small' ? '7px 10px' : '10px 14px',
     color:

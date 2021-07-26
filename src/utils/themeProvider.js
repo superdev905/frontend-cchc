@@ -54,7 +54,7 @@ const theme = createMuiTheme({
     fontFamily: ['Rubik', 'sans-serif'].join(',')
   },
   constants: {
-    drawerWidth: 240
+    drawerWidth: 220
   },
   overrides: {
     MuiCssBaseline: {

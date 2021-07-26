@@ -1,9 +1,10 @@
 import { Suspense, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { useTheme, useMediaQuery, CssBaseline } from '@material-ui/core'
+import { useTheme, useMediaQuery, CssBaseline, Fade } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 import { ConnectedRouter } from 'connected-react-router'
 import { HelmetProvider } from 'react-helmet-async'
+import { SnackbarProvider } from 'notistack'
 import Loading from './components/UI/Loading'
 import { history } from './state/store'
 import theme from './utils/themeProvider'
@@ -33,14 +34,25 @@ function App() {
         />
       }
     >
-      <HelmetProvider>
-        <CssBaseline />
-        <ThemeProvider theme={theme}>
-          <ConnectedRouter history={history}>
-            <RenderRoutes />
-          </ConnectedRouter>
-        </ThemeProvider>
-      </HelmetProvider>
+      <SnackbarProvider
+        maxSnack={3}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right'
+        }}
+        TransitionComponent={Fade}
+        dense
+        preventDuplicate
+      >
+        <HelmetProvider>
+          <CssBaseline />
+          <ThemeProvider theme={theme}>
+            <ConnectedRouter history={history}>
+              <RenderRoutes />
+            </ConnectedRouter>
+          </ThemeProvider>
+        </HelmetProvider>
+      </SnackbarProvider>
     </Suspense>
   )
 }

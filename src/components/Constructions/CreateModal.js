@@ -1,20 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import * as Yup from 'yup'
+import { useSnackbar } from 'notistack'
 import { useFormik } from 'formik'
 import { withRouter } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
 import commonActions from '../../state/actions/common'
 import constructionsActions from '../../state/actions/constructions'
-import {
-  Button,
-  FullScreenDialog,
-  RutTextField,
-  Select,
-  SubmitButton,
-  TextField
-} from '../UI'
-import { DatePicker, Map, AddressAutoComplete } from '../Shared'
+import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
+import { DatePicker, Map, AddressAutoComplete, Dialog } from '../Shared'
 import { rutValidation } from '../../validations'
 import { SantiagoDefaultLocation as location } from '../../config'
 import { useSuccess } from '../../hooks'
@@ -33,7 +27,13 @@ const validationSchema = Yup.object({
   economic_sector_id: Yup.string().required('Seleccione sector economico'),
   end_date: Yup.date().nullable(),
   longitude: Yup.string().nullable(),
-  latitude: Yup.string().nullable()
+  latitude: Yup.string().nullable(),
+  billing_rut: Yup.string()
+    .required('Ingrese rut de facturación')
+    .test('Check rut', 'Ingrese rut válido', (v) => rutValidation(v)),
+  billing_business_name: Yup.string().required(
+    'Ingrese razón social de facturación'
+  )
 })
 
 const ConstructionModal = ({
@@ -46,6 +46,7 @@ const ConstructionModal = ({
 }) => {
   const dispatch = useDispatch()
   const { idCompany } = props.match.params
+  const { enqueueSnackbar } = useSnackbar()
   const [communes, setCommunes] = useState([])
   const { success, changeSuccess } = useSuccess()
   const { regions } = useSelector((state) => state.common)
@@ -74,7 +75,9 @@ const ConstructionModal = ({
       longitude:
         type === 'UPDATE'
           ? parseFloat(construction.longitude)
-          : location.longitude
+          : location.longitude,
+      billing_rut: type === 'UPDATE' ? construction?.billing_rut : '',
+      billing_business_name: type === 'UPDATE' ? construction?.billing_rut : ''
     },
     onSubmit: (values) => {
       const data = {
@@ -89,6 +92,10 @@ const ConstructionModal = ({
         dispatch(constructionsActions.createConstruction(data))
           .then(() => {
             formik.setSubmitting(false)
+            enqueueSnackbar('Obra creada exitosamente', {
+              autoHideDuration: 1500,
+              variant: 'success'
+            })
             changeSuccess(true)
             if (successFunction) {
               successFunction()
@@ -103,6 +110,10 @@ const ConstructionModal = ({
           .then(() => {
             formik.setSubmitting(false)
             changeSuccess(true)
+            enqueueSnackbar('Obra actualizada exitosamente', {
+              autoHideDuration: 1500,
+              variant: 'success'
+            })
             if (successFunction) {
               successFunction()
             }
@@ -162,7 +173,7 @@ const ConstructionModal = ({
   }, [regions])
 
   return (
-    <FullScreenDialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullWidth>
       <Box maxWidth="900px" style={{ margin: '0 auto' }}>
         <Box>
           <Typography
@@ -365,6 +376,46 @@ const ConstructionModal = ({
                   </Grid>
                 </Grid>
               </Grid>
+              <Grid item xs={12}>
+                <Typography style={{ marginBottom: '10px' }}>
+                  Facturación
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={6}>
+                    <RutTextField
+                      name="billing_rut"
+                      label="Rut"
+                      required
+                      onChange={formik.handleChange}
+                      value={formik.values.billing_rut}
+                      helperText={
+                        formik.touched.billing_rut && formik.errors.billing_rut
+                      }
+                      error={
+                        formik.touched.billing_rut &&
+                        Boolean(formik.errors.billing_rut)
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      name="billing_business_name"
+                      label="Razón social"
+                      onChange={formik.handleChange}
+                      required
+                      value={formik.values.billing_business_name}
+                      helperText={
+                        formik.touched.billing_business_name &&
+                        formik.errors.billing_business_name
+                      }
+                      error={
+                        formik.touched.billing_business_name &&
+                        Boolean(formik.errors.billing_business_name)
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
             </Grid>
             <Box textAlign="center" marginTop="15px">
               <Button variant="outlined" onClick={onClose}>
@@ -382,7 +433,7 @@ const ConstructionModal = ({
           </Box>
         </Box>
       </Box>
-    </FullScreenDialog>
+    </Dialog>
   )
 }
 ConstructionModal.defaultProps = {

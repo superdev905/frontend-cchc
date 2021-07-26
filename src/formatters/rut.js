@@ -6,19 +6,25 @@
  * @returns
  */
 
-const formatRut = (rut) => {
-  const newRut = rut.replace(/\./g, '').replace(/\-/g, '').trim().toLowerCase()
-  const lastDigit = newRut.substr(-1, 1)
-  const rutDigit = newRut.substr(0, newRut.length - 1)
-  let format = ''
-  for (let i = rutDigit.length; i > 0; i--) {
-    const e = rutDigit.charAt(i - 1)
-    format = e.concat(format)
-    if (i % 3 === 0) {
-      format = '.'.concat(format)
-    }
-  }
-  return format.concat('-').concat(lastDigit)
-}
+const formatRut = (value) => {
+  let newValue = null
+  let cleanRut = value.replace(/\./g, '').replace(/\-/g, '')
+  let body = cleanRut.slice(0, -1)
+  let checker = cleanRut.slice(-1).toUpperCase()
 
+  if (body.length > 0) {
+    let rutFormatted = ''
+    for (let j = 1, i = body.length - 1; i >= 0; i--, j++) {
+      let number = body.charAt(i)
+      rutFormatted = number + rutFormatted
+      if (j % 3 === 0 && j <= body.length - 1) {
+        rutFormatted = '.' + rutFormatted
+      }
+    }
+    newValue = `${rutFormatted}-${checker}`
+  } else {
+    newValue = value
+  }
+  return newValue
+}
 export default formatRut
