@@ -205,6 +205,13 @@ const StepOne = () => {
               onChange={formik.handleChange}
               value={formik.values.social_service}
               required
+              error={
+                formik.touched.social_service &&
+                Boolean(formik.errors.social_service)
+              }
+              helperText={
+                formik.touched.social_service && formik.errors.social_service
+              }
             >
               <option value="">Seleccione una opción</option>
               {decisionList.map((item, i) => (

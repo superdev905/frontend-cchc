@@ -13,7 +13,7 @@ const updateCreate = (form) => (dispatch) =>
 
 const getMainCompanies = () => () =>
   new Promise((resolve, reject) => {
-    Axios.get(`/business?type=${'EMPRESA PRINCIPAL'}`)
+    Axios.get(`/business?type=${'EMPRESA PRINCIPAL'}&state=CREATED`)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -23,22 +23,25 @@ const getMainCompanies = () => () =>
       })
   })
 
-const getCompanies = (query) => (dispatch) =>
-  new Promise((resolve, reject) => {
-    Axios.get(`/business?${queryString.stringify(query)}`)
-      .then((response) => {
-        const { data } = response
-        dispatch({
-          type: businessTypes.GET_BUSINESSES,
-          payload: data
+const getCompanies =
+  (query, handleDispatch = true) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`/business?${queryString.stringify(query)}`)
+        .then((response) => {
+          const { data } = response
+          if (handleDispatch) {
+            dispatch({
+              type: businessTypes.GET_BUSINESSES,
+              payload: data
+            })
+          }
+          resolve(data)
         })
-
-        resolve()
-      })
-      .catch((err) => {
-        reject(err)
-      })
-  })
+        .catch((err) => {
+          reject(err)
+        })
+    })
 
 const getMainCompany = (companyId) => () =>
   new Promise((resolve, reject) => {

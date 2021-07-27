@@ -26,7 +26,7 @@ const validationSchema = Yup.object({
   region: Yup.string().required('Seleccione región')
 })
 
-const StepOne = () => {
+const StepOne = ({ onClose }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const [communes, setCommunes] = useState([])
@@ -226,9 +226,7 @@ const StepOne = () => {
       </Box>
       <Actions
         showBackIcon={false}
-        handleBack={() => {
-          dispatch(companiesActions.toggleCreateModal(true))
-        }}
+        handleBack={onClose}
         backText="Cancelar"
         disableNext={!formik.isValid}
         handleNext={formik.handleSubmit}

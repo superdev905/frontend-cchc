@@ -82,7 +82,7 @@ const AddressAutocomplete = ({
       },
       (error) => {
         //  eslint-disabled-next-line
-        console.error(error)
+        console.log(error)
       }
     )
   }

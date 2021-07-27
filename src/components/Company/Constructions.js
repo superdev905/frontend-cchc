@@ -37,6 +37,24 @@ const Details = ({ ...props }) => {
     toggleOpenDelete()
   }
 
+  const createConstruction = (values) =>
+    dispatch(
+      constructionActions.createConstruction({
+        ...values,
+        typology_id: values.typology_id || null,
+        business_id: parseInt(idCompany, 10)
+      })
+    )
+
+  const updateConstruction = (values) =>
+    dispatch(
+      constructionActions.updateConstruction(currentConstruction.id, {
+        ...values,
+        typology_id: values.typology_id || null,
+        business_id: parseInt(idCompany, 10)
+      })
+    )
+
   const deleteConstruction = (id) => {
     setDeleting(true)
     dispatch(constructionActions.deleteConstruction(id))
@@ -133,6 +151,7 @@ const Details = ({ ...props }) => {
         open={openCreate}
         onClose={toggleOpenCreate}
         successFunction={fetchConstruction}
+        submitFunction={createConstruction}
       />
       {currentConstruction && openUpdate && (
         <ConstructionModal
@@ -140,6 +159,8 @@ const Details = ({ ...props }) => {
           open={openUpdate}
           onClose={toggleOpenUpdate}
           construction={currentConstruction}
+          submitFunction={updateConstruction}
+          successMessage="Obra actualizada exitosamente"
           successFunction={fetchConstruction}
         />
       )}

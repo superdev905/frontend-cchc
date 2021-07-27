@@ -8,14 +8,27 @@ import useSuccess from '../../hooks/useSuccess'
 import commonActions from '../../state/actions/common'
 import { Heading, TextField, SubmitButton, Select } from '../UI'
 import { Dialog } from '../Shared'
+import { phoneValidator } from '../../validations'
 
 const validationSchema = Yup.object({
   full_name: Yup.string().required('Ingrese nombre'),
   charge_id: Yup.string().required('Seleccione cargo'),
   email: Yup.string().email('Ingrese correo válid').required('Ingrese correo'),
-  cell_phone: Yup.string('Ingrese teléfono'),
-  office_phone: Yup.string(),
-  other_phone: Yup.string()
+  cell_phone: Yup.string('Ingrese teléfono').test(
+    'Check phone',
+    'Ingrese télefono válido',
+    (v) => phoneValidator(v)
+  ),
+  office_phone: Yup.string().test(
+    'Check phone',
+    'Ingrese télefono válido',
+    (v) => phoneValidator(v)
+  ),
+  other_phone: Yup.string().test(
+    'Check phone',
+    'Ingrese télefono válido',
+    (v) => phoneValidator(v)
+  )
 })
 const useStyles = makeStyles(() => ({
   form: {
@@ -55,6 +68,13 @@ const ContactModal = ({
   const dispatch = useDispatch()
   const { success, changeSuccess } = useSuccess()
 
+  const getValidValidation = (form) => {
+    if (form.cell_phone) return true
+    if (form.office_phone) return true
+    if (form.other_phone) return true
+    return false
+  }
+
   const formik = useFormik({
     validateOnMount: true,
     enableReinitialize: true,
@@ -73,7 +93,6 @@ const ContactModal = ({
           formik.setSubmitting(false)
           changeSuccess(false)
           enqueueSnackbar(successMessage, {
-            autoHideDuration: 1500,
             variant: 'success'
           })
           setTimeout(() => {
@@ -87,7 +106,6 @@ const ContactModal = ({
         .catch((err) => {
           formik.setSubmitting(false)
           enqueueSnackbar(err, {
-            autoHideDuration: 1500,
             variant: 'error'
           })
           changeSuccess(false)
@@ -113,7 +131,7 @@ const ContactModal = ({
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <TextField
-                label="Nombre"
+                label="Nombres"
                 name="full_name"
                 required
                 onChange={formik.handleChange}
@@ -170,6 +188,9 @@ const ContactModal = ({
                 error={
                   formik.touched.cell_phone && Boolean(formik.errors.cell_phone)
                 }
+                inputProps={{
+                  maxLength: 9
+                }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -186,6 +207,9 @@ const ContactModal = ({
                   formik.touched.office_phone &&
                   Boolean(formik.errors.office_phone)
                 }
+                inputProps={{
+                  maxLength: 9
+                }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -202,6 +226,9 @@ const ContactModal = ({
                   formik.touched.other_phone &&
                   Boolean(formik.errors.other_phone)
                 }
+                inputProps={{
+                  maxLength: 9
+                }}
               />
             </Grid>
           </Grid>
@@ -211,7 +238,11 @@ const ContactModal = ({
             onClick={formik.handleSubmit}
             success={success}
             loading={formik.isSubmitting}
-            disabled={!formik.isValid}
+            disabled={
+              !formik.isValid ||
+              formik.isSubmitting ||
+              !getValidValidation(formik.values)
+            }
           >
             {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} contacto`}
           </SubmitButton>

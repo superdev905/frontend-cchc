@@ -42,6 +42,7 @@ function App() {
         TransitionComponent={Fade}
         dense
         preventDuplicate
+        autoHideDuration={2000}
       >
         <HelmetProvider>
           <CssBaseline />

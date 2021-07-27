@@ -1,14 +1,18 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid } from '@material-ui/core'
 import constructionAction from '../../state/actions/constructions'
 import { DataTable } from '../Shared'
 import { SearchInput, Wrapper, StatusChip, Button } from '../UI'
+import ConstructionModal from './CreateModal'
+import { useToggle } from '../../hooks'
 
 const List = ({ ...props }) => {
   const dispatch = useDispatch()
 
+  const { open, toggleOpen } = useToggle()
+  const [loading, setLoading] = useState(false)
   const { list, filters } = useSelector((state) => state.constructions)
 
   const searchChange = (e) => {
@@ -17,12 +21,28 @@ const List = ({ ...props }) => {
     )
   }
 
+  const createConstruction = (values) =>
+    dispatch(
+      constructionAction.createConstruction({
+        ...values,
+        typology_id: values.typology_id || null
+      })
+    )
+
   const handleRowClick = (row) => {
     props.history.push(`/obras/${row.id}`)
   }
 
   const fetchConstructions = () => {
-    dispatch(constructionAction.getConstructions(filters))
+    setLoading(true)
+    dispatch(
+      constructionAction.getConstructions({
+        ...filters,
+        search: filters.search.trim()
+      })
+    ).then(() => {
+      setLoading(false)
+    })
   }
   useEffect(() => {
     fetchConstructions()
@@ -34,19 +54,27 @@ const List = ({ ...props }) => {
           <Grid item xs={6}>
             <SearchInput
               value={filters.search}
-              placeholder="Buscar por empresa"
+              placeholder="Buscar por: razón social, rut"
               onChange={searchChange}
             />
           </Grid>
           <Grid item xs={6}>
             <Box display="flex" justifyContent="flex-end">
-              <Button>Nueva obra</Button>
+              <Button onClick={toggleOpen}>Nueva obra</Button>
             </Box>
           </Grid>
         </Grid>
       </Wrapper>
       <Wrapper>
         <DataTable
+          emptyMessage={
+            filters.search
+              ? `No se encontraron resultados para: ${filters.search}`
+              : 'Aún no se registraron empresas'
+          }
+          highlightOnHover
+          pointerOnHover
+          progressPending={loading}
           columns={[
             {
               name: 'Razón social',
@@ -86,6 +114,14 @@ const List = ({ ...props }) => {
           pagination
         />
       </Wrapper>
+      <ConstructionModal
+        open={open}
+        onClose={toggleOpen}
+        selectClient={true}
+        submitFunction={createConstruction}
+        successMessage="Obra creada exitosamente"
+        successFunction={fetchConstructions}
+      />
     </div>
   )
 }

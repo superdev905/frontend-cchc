@@ -40,6 +40,16 @@ const Construction = () => {
   const goBack = () => {
     history.goBack()
   }
+
+  const updateConstruction = (values) =>
+    dispatch(
+      constructionActions.updateConstruction(idConstruction, {
+        ...values,
+        typology_id: values.typology_id || null,
+        business_id: construction.business_id
+      })
+    )
+
   const getConstructionDetails = () => {
     setLoading(true)
     dispatch(constructionActions.getConstruction(idConstruction))
@@ -95,7 +105,9 @@ const Construction = () => {
           open={openUpdate}
           onClose={toggleOpenUpdate}
           construction={construction}
+          submitFunction={updateConstruction}
           successFunction={getConstructionDetails}
+          successMessage="Obra actualizada exitosamente"
         />
       )}
     </div>

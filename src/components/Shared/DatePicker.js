@@ -125,6 +125,15 @@ const CustomDatePicker = ({
     setSelectDay(calendarDate)
     handleClose()
   }
+  useEffect(() => {
+    if (value) {
+      setSelectDay(setCalendarFormat(value))
+      setSelectedDate(value)
+    } else {
+      setSelectDay(setCalendarFormat(null))
+      setSelectedDate(null)
+    }
+  }, [value])
 
   useEffect(() => {
     if (selectedDate) {

@@ -29,7 +29,7 @@ const Map = ({ height, longitude, latitude, markers, disabled }) => {
     height: '100%',
     latitude,
     longitude,
-    zoom: 10
+    zoom: 12
   })
 
   const renderMarkers = () => {

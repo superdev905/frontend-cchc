@@ -3,15 +3,19 @@ import { useSelector, useDispatch } from 'react-redux'
 import * as Yup from 'yup'
 import { useSnackbar } from 'notistack'
 import { useFormik } from 'formik'
-import { withRouter } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
 import commonActions from '../../state/actions/common'
 import constructionsActions from '../../state/actions/constructions'
+import companiesActions from '../../state/actions/companies'
 import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
 import { DatePicker, Map, AddressAutoComplete, Dialog } from '../Shared'
 import { rutValidation } from '../../validations'
 import { SantiagoDefaultLocation as location } from '../../config'
 import { useSuccess } from '../../hooks'
+
+const businessSchema = Yup.object({
+  business_selected_id: Yup.number().required('Seleccione empresa')
+})
 
 const validationSchema = Yup.object({
   rut: Yup.string()
@@ -21,10 +25,10 @@ const validationSchema = Yup.object({
   business_name: Yup.string().required('Ingrese razón social'),
   address: Yup.string().required('Ingrese dirección'),
   commune_id: Yup.string().required('Seleccione comuna'),
-  region_id: Yup.string().required('Seleccione región'),
+  region_id: Yup.number().required('Seleccione región'),
   state: Yup.string().required('Seleccione estado'),
-  typology_id: Yup.string().nullable(),
-  economic_sector_id: Yup.string().required('Seleccione sector economico'),
+  typology_id: Yup.number().nullable(),
+  economic_sector_id: Yup.number().required('Seleccione sector economico'),
   end_date: Yup.date().nullable(),
   longitude: Yup.string().nullable(),
   latitude: Yup.string().nullable(),
@@ -38,25 +42,32 @@ const validationSchema = Yup.object({
 
 const ConstructionModal = ({
   open,
+  selectClient,
   onClose,
   type,
   construction,
+  submitFunction,
   successFunction,
-  ...props
+  successMessage
 }) => {
   const dispatch = useDispatch()
-  const { idCompany } = props.match.params
   const { enqueueSnackbar } = useSnackbar()
   const [communes, setCommunes] = useState([])
+  const [companies, setCompanies] = useState([])
   const { success, changeSuccess } = useSuccess()
+  const { isMobile } = useSelector((state) => state.ui)
   const { regions } = useSelector((state) => state.common)
   const { typologies, sectors } = useSelector((state) => state.constructions)
 
   const formik = useFormik({
     validateOnMount: true,
     enableReinitialize: true,
-    validationSchema,
+    validateOnBlur: true,
+    validationSchema: selectClient
+      ? businessSchema.concat(validationSchema)
+      : validationSchema,
     initialValues: {
+      business_selected_id: '',
       business_name: type === 'UPDATE' ? construction.business_name : '',
       rut: type === 'UPDATE' ? construction.rut : '',
       name: type === 'UPDATE' ? construction.name : '',
@@ -79,50 +90,30 @@ const ConstructionModal = ({
       billing_rut: type === 'UPDATE' ? construction?.billing_rut : '',
       billing_business_name: type === 'UPDATE' ? construction?.billing_rut : ''
     },
-    onSubmit: (values) => {
-      const data = {
-        ...values,
-        typology_id: values.typology_id
-          ? parseInt(values.typology_id, 10)
-          : null,
-        economic_sector_id: parseInt(values.economic_sector_id, 10),
-        business_id: idCompany
+    onSubmit: (values, { resetForm }) => {
+      const data = { ...values }
+      if (selectClient) {
+        data.business_id = parseInt(values.business_selected_id, 10)
       }
-      if (type === 'CREATE') {
-        dispatch(constructionsActions.createConstruction(data))
-          .then(() => {
-            formik.setSubmitting(false)
-            enqueueSnackbar('Obra creada exitosamente', {
-              autoHideDuration: 1500,
-              variant: 'success'
-            })
-            changeSuccess(true)
-            if (successFunction) {
-              successFunction()
-            }
-            onClose()
+      submitFunction(data)
+        .then(() => {
+          formik.setSubmitting(false)
+          changeSuccess(true)
+          if (successFunction) {
+            successFunction()
+          }
+          onClose()
+          resetForm()
+          enqueueSnackbar(successMessage, {
+            variant: 'success'
           })
-          .catch(() => {
-            formik.setSubmitting(false)
+        })
+        .catch((err) => {
+          formik.setSubmitting(false)
+          enqueueSnackbar(err.detail, {
+            variant: 'error'
           })
-      } else {
-        dispatch(constructionsActions.updateConstruction(construction.id, data))
-          .then(() => {
-            formik.setSubmitting(false)
-            changeSuccess(true)
-            enqueueSnackbar('Obra actualizada exitosamente', {
-              autoHideDuration: 1500,
-              variant: 'success'
-            })
-            if (successFunction) {
-              successFunction()
-            }
-            onClose()
-          })
-          .catch(() => {
-            formik.setSubmitting(false)
-          })
-      }
+        })
     }
   })
   const handleSelectChange = (e) => {
@@ -130,13 +121,13 @@ const ConstructionModal = ({
     switch (name) {
       case 'region': {
         const region = regions.find((item) => item.id === parseInt(value, 10))
-        setCommunes(region.communes)
-        formik.setFieldValue('region_id', region.id)
+        setCommunes(region?.communes || [])
+        formik.setFieldValue('region_id', region?.id || '')
         break
       }
       case 'commune': {
         const commune = communes.find((item) => item.id === parseInt(value, 10))
-        formik.setFieldValue('commune_id', commune.id)
+        formik.setFieldValue('commune_id', commune?.id || '')
         break
       }
       default:
@@ -161,8 +152,13 @@ const ConstructionModal = ({
       dispatch(commonActions.getRegions())
       dispatch(constructionsActions.getTypologies())
       dispatch(constructionsActions.getSectors())
+      if (selectClient) {
+        dispatch(companiesActions.getCompanies({}, false)).then((list) => {
+          setCompanies(list)
+        })
+      }
     }
-  }, [open, type])
+  }, [open, type, selectClient])
 
   useEffect(() => {
     if (regions.length > 0 && type === 'UPDATE') {
@@ -173,7 +169,7 @@ const ConstructionModal = ({
   }, [regions])
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullScreen={isMobile}>
       <Box maxWidth="900px" style={{ margin: '0 auto' }}>
         <Box>
           <Typography
@@ -185,6 +181,33 @@ const ConstructionModal = ({
             }}
           >{`${type === 'CREATE' ? 'Nueva' : 'Editar'} obra`}</Typography>
           <Grid container spacing={2}>
+            {selectClient && (
+              <Grid item xs={12} md={6}>
+                <Select
+                  label="Seleccion empresa"
+                  name="business_selected_id"
+                  required
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.business_selected_id}
+                  helperText={
+                    formik.touched.business_selected_id &&
+                    formik.errors.business_selected_id
+                  }
+                  error={
+                    formik.touched.business_id &&
+                    Boolean(formik.errors.business_selected_id)
+                  }
+                >
+                  <option value="">Seleccione empresa</option>
+                  {companies.map((item, index) => (
+                    <option key={`company--${index}`} value={`${item.id}`}>
+                      {item.business_name}
+                    </option>
+                  ))}
+                </Select>
+              </Grid>
+            )}
             <Grid item xs={12} md={6}>
               <RutTextField
                 label="Rut"
@@ -437,7 +460,9 @@ const ConstructionModal = ({
   )
 }
 ConstructionModal.defaultProps = {
-  type: 'CREATE'
+  type: 'CREATE',
+  selectClient: false,
+  successMessage: 'Obra creada exitosamente'
 }
 
-export default withRouter(ConstructionModal)
+export default ConstructionModal

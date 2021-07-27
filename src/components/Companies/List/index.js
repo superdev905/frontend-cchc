@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Box, Grid } from '@material-ui/core'
@@ -10,7 +10,7 @@ import StatusChip from '../../UI/StatusChip'
 
 const List = ({ ...props }) => {
   const dispatch = useDispatch()
-
+  const [loading, setLoading] = useState(false)
   const { list, showCreateModal, filters } = useSelector(
     (state) => state.companies
   )
@@ -29,12 +29,23 @@ const List = ({ ...props }) => {
   const onSearchChange = (e) => {
     const { value } = e.target
     dispatch(
-      companiesActions.updateFilters({ ...filters, search: value, page: 1 })
+      companiesActions.updateFilters({
+        ...filters,
+        search: value.toString(),
+        page: 1
+      })
     )
   }
 
   const fetchCompanies = () => {
+    setLoading(true)
     dispatch(companiesActions.getCompanies(filters))
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }
 
   useEffect(() => {
@@ -42,7 +53,7 @@ const List = ({ ...props }) => {
   }, [filters])
 
   return (
-    <Box marginTop="10px">
+    <Box>
       <Wrapper>
         <Box>
           <Grid container spacing={2} alignItems="center">
@@ -50,7 +61,7 @@ const List = ({ ...props }) => {
               <SearchInput
                 value={filters.search}
                 onChange={onSearchChange}
-                placeholder="Buscar por: nombre de empresa, rut"
+                placeholder="Buscar por: razón social, rut"
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -63,6 +74,14 @@ const List = ({ ...props }) => {
       </Wrapper>
       <Wrapper>
         <DataTable
+          emptyMessage={
+            filters.search
+              ? `No se encontraron resultados para: ${filters.search}`
+              : 'Aún no se registraron empresas'
+          }
+          highlightOnHover
+          pointerOnHover
+          progressPending={loading}
           columns={[
             {
               name: 'Razón social',

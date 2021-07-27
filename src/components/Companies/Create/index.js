@@ -11,10 +11,10 @@ function getSteps() {
   return ['Información de empresa', 'Otros datos']
 }
 
-function getStepContent(stepIndex) {
+function getStepContent(stepIndex, { onClose }) {
   switch (stepIndex) {
     case 0:
-      return <StepOne />
+      return <StepOne onClose={onClose} />
     case 1:
       return <StepTwo />
     default:
@@ -57,10 +57,11 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
       companiesActions.updateCreate({
         ...create,
         type,
+        step: open ? 0 : create.step,
         company: type === 'UPDATE' ? data : null
       })
     )
-  }, [type])
+  }, [type, open])
 
   return (
     <Dialog
@@ -90,7 +91,7 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
               </Box>
             </Box>
           ) : (
-            <>{getStepContent(create.step)}</>
+            <>{getStepContent(create.step, { onClose })}</>
           )}
         </div>
       </Box>
