@@ -6,7 +6,8 @@ const config = {
     API_BASE: 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5000'
   },
   dev: {
-    API_BASE: 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5000'
+    API_BASE:
+      'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5000/api/v1'
   }
 }
 
