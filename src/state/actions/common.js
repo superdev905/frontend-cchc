@@ -113,6 +113,31 @@ const getRSH = () => (dispatch) =>
       })
   })
 
+const getActivities = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${employeeEndpoint}/activities`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_ACTIVITIES, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+const getRelationships = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${employeeEndpoint}/relationships`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_RELATIONSHIPS, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 export default {
   getRegions,
   getCharges,
@@ -121,5 +146,7 @@ export default {
   getScholarship,
   getNationalities,
   getBanks,
-  getRSH
+  getRSH,
+  getRelationships,
+  getActivities
 }

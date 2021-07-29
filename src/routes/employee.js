@@ -3,14 +3,14 @@ import Layout from '../components/Layout'
 import Can from '../components/Can'
 
 const Employees = lazy(() => import('../pages/Employees'))
-const AddEmployee = lazy(() => import('../pages/Employees/AddEmployee'))
+const Employee = lazy(() => import('../pages/Employee'))
 
 const rootName = 'employee'
 
 const companyRoutes = [
   {
     path: `/${rootName}s`,
-    key: 'COMPANIES',
+    key: 'EMPLOYEES',
     exact: true,
     component: () => (
       <Can
@@ -25,15 +25,15 @@ const companyRoutes = [
     )
   },
   {
-    path: `/${rootName}/new`,
-    key: 'COMPANIES-NEW',
+    path: `/${rootName}/:idEmployee`,
+    key: 'EMPLOYEE-DETAILS',
     exact: true,
     component: () => (
       <Can
         availableTo={['ADMIN']}
         yes={() => (
           <Layout>
-            <AddEmployee />
+            <Employee />
           </Layout>
         )}
         no={() => <span>Log in</span>}

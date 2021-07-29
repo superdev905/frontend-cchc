@@ -13,14 +13,17 @@ const Details = () => {
   const { company } = useSelector((state) => state.companies)
 
   useEffect(() => {
-    if (company?.main_business_id) {
-      dispatch(companiesActions.getMainCompany(company.main_business_id)).then(
-        (data) => {
-          setMainCompany(data)
-        }
-      )
+    if (company?.parent_business_id) {
+      dispatch(
+        companiesActions.getMainCompany(company.parent_business_id)
+      ).then((data) => {
+        setMainCompany(data)
+      })
+    } else {
+      setMainCompany(null)
     }
   }, [company])
+
   return (
     <Box>
       <Wrapper>

@@ -15,8 +15,8 @@ import {
   DashboardOutlined as DashboardIcon,
   Business as ConstructionIcon,
   Settings as SettingsIcon,
-  BusinessCenter as BusinessIcon
-  //  People as EmployeeIcon
+  BusinessCenter as BusinessIcon,
+  People as EmployeeIcon
 } from '@material-ui/icons'
 import clsx from 'clsx'
 
@@ -43,7 +43,7 @@ const commonRoutes = [
   { title: 'Home', path: '/home', icon: <DashboardIcon /> },
   { title: 'Empresas', path: '/companies', icon: <BusinessIcon /> },
   { title: 'Obras', path: '/obras', icon: <ConstructionIcon /> },
-  //  { title: 'Trabajadores', path: '/employees', icon: <EmployeeIcon /> },
+  { title: 'Trabajadores', path: '/employees', icon: <EmployeeIcon /> },
   { title: 'Configuración', path: '/settings', icon: <SettingsIcon /> }
 ]
 

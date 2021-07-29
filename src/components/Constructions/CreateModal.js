@@ -135,17 +135,17 @@ const ConstructionModal = ({
     }
   }
 
-  const handleStateChange = (e) => {
-    const { name, value } = e.target
-    formik.setFieldValue('end_date', value === 'NO_VIGENTE' ? new Date() : null)
-    formik.setFieldValue(name, value)
-    formik.setFieldTouched(name)
-  }
-
   const changeLocation = (targetLocation) => {
     formik.setFieldValue('longitude', targetLocation.lng)
     formik.setFieldValue('latitude', targetLocation.lat)
   }
+
+  useEffect(() => {
+    formik.setFieldValue(
+      'end_date',
+      formik.values.state === 'NO_VIGENTE' ? new Date() : null
+    )
+  }, [formik.values.state])
 
   useEffect(() => {
     if (open) {
@@ -299,7 +299,7 @@ const ConstructionModal = ({
                 label="Estado"
                 name="state"
                 required
-                onChange={handleStateChange}
+                onChange={formik.handleChange}
                 value={formik.values.state}
                 helperText={formik.touched.state && formik.errors.state}
                 error={formik.touched.state && Boolean(formik.errors.state)}

@@ -11,9 +11,9 @@ const updateFilters = (filters) => (dispatch) =>
 const updateCreate = (form) => (dispatch) =>
   dispatch({ type: businessTypes.BUSINESS_UPDATE_CREATE, payload: form })
 
-const getMainCompanies = () => () =>
+const getTreeCompanies = () => () =>
   new Promise((resolve, reject) => {
-    Axios.get(`/business?type=${'EMPRESA PRINCIPAL'}&state=CREATED`)
+    Axios.get(`/business/tree`)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -42,6 +42,17 @@ const getCompanies =
           reject(err)
         })
     })
+const getAvailableCompanies = () => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`/business?type=${'EMPRESA PRINCIPAL'}&state=CREATED`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 
 const getMainCompany = (companyId) => () =>
   new Promise((resolve, reject) => {
@@ -201,6 +212,7 @@ export default {
   getConstructions,
   blockCompany,
   updateCompany,
-  getMainCompanies,
-  getMainCompany
+  getTreeCompanies,
+  getMainCompany,
+  getAvailableCompanies
 }

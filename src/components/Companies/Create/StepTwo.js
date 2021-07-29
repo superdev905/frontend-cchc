@@ -5,21 +5,20 @@ import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
-import useSuccess from '../../../hooks/useSuccess'
-import useToggle from '../../../hooks/useToggle'
+import { useToggle, useSuccess } from '../../../hooks'
 import companiesActions from '../../../state/actions/companies'
-import { Button, Select, SubmitButton } from '../../UI'
+import { Button, Select, SubmitButton, TextField } from '../../UI'
 import useStyles from './styles'
-import CreateModal from '../../Contacts/CreateModal'
+
 import { businessTypes, decisionList } from '../../../config'
+import ParentBusiness from './ParentBusiness'
 
 const validationSchema = Yup.object({
   type: Yup.string().required('Seleccione tipo'),
   is_partner: Yup.string().required('Seleccione empresa socia'),
   social_service: Yup.string().required('Seleccione opción'),
   benefit_pyme: Yup.string(),
-  parent_business_id: Yup.string(),
-  main_company_id: Yup.string('Selecciona empresa madre').nullable()
+  parent_business_id: Yup.number().nullable()
 })
 
 const StepOne = () => {
@@ -27,9 +26,12 @@ const StepOne = () => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
-  const { open, toggleOpen } = useToggle()
+
   const { create } = useSelector((state) => state.companies)
   const [mainCompanies, setMainCompanies] = useState([])
+  const [listCompanies, setListCompanies] = useState([])
+  const [parentCompany, setParentCompany] = useState(null)
+  const { open, toggleOpen } = useToggle()
 
   const formik = useFormik({
     validationSchema,
@@ -40,7 +42,7 @@ const StepOne = () => {
       benefit_pyme: create?.company?.benefit_pyme || '',
       social_service: create?.company?.social_service || '',
       social: '',
-      main_business_id: create?.company?.main_business_id || null
+      parent_business_id: create?.company?.parent_business_id || null
     },
     onSubmit: (values) => {
       const {
@@ -64,9 +66,7 @@ const StepOne = () => {
         type: values.type,
         region_id: region,
         commune_id: commune,
-        main_business_id: values.main_business_id
-          ? parseInt(values.main_business_id, 10)
-          : null,
+
         ...values
       }
       if (create.type === 'CREATE') {
@@ -120,8 +120,21 @@ const StepOne = () => {
   })
 
   useEffect(() => {
-    dispatch(companiesActions.getMainCompanies()).then((list) => {
+    if (formik.values.parent_business_id && listCompanies.length > 0) {
+      setParentCompany(
+        listCompanies.find(
+          (item) => item.id === formik.values.parent_business_id
+        )
+      )
+    }
+  }, [listCompanies, formik.values.parent_business_id])
+
+  useEffect(() => {
+    dispatch(companiesActions.getTreeCompanies()).then((list) => {
       setMainCompanies(list)
+    })
+    dispatch(companiesActions.getAvailableCompanies()).then((list) => {
+      setListCompanies(list)
     })
   }, [])
   const goBack = () => {
@@ -153,19 +166,17 @@ const StepOne = () => {
             </Select>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Select
+            <TextField
               label="Empresa madre"
-              name="main_business_id"
-              value={formik.values.main_business_id}
+              name="parent_business_id"
+              value={
+                parentCompany?.business_name || formik.values.parent_business_id
+              }
               onChange={formik.handleChange}
-            >
-              <option>Seleccione empresa</option>
-              {mainCompanies.map((item, i) => (
-                <option key={`option-${i}`} value={item.id}>
-                  {item.business_name}
-                </option>
-              ))}
-            </Select>
+              onClick={toggleOpen}
+              disabled
+              placeholder="Sin empresa madre"
+            />
           </Grid>
           <Grid item xs={12} md={6}>
             <Select
@@ -221,6 +232,16 @@ const StepOne = () => {
               ))}
             </Select>
           </Grid>
+
+          <ParentBusiness
+            open={open}
+            onClose={toggleOpen}
+            data={mainCompanies}
+            selectedId={formik.values.parent_business_id}
+            onChange={(id) => {
+              formik.setFieldValue('parent_business_id', id)
+            }}
+          />
         </Grid>
       </Box>
       <Box className={classes.actions}>
@@ -236,7 +257,6 @@ const StepOne = () => {
           {create.type === 'UPDATE' ? 'Actualidar' : 'Crear'} empresa
         </SubmitButton>
       </Box>
-      <CreateModal open={open} onClose={toggleOpen} />
     </Box>
   )
 }

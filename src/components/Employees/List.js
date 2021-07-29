@@ -1,6 +1,7 @@
 import { Box } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { formatDate } from '../../formatters'
 import { useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
@@ -10,7 +11,7 @@ import EmployeeForm from './EmployeeForm'
 
 const ListEmployees = () => {
   const dispatch = useDispatch()
-
+  const history = useHistory()
   const [tableData, setTableData] = useState([])
   const { open, toggleOpen } = useToggle()
   const { list: listEmployees } = useSelector((state) => state.employees)
@@ -18,7 +19,9 @@ const ListEmployees = () => {
   const fetchEmployees = () => {
     dispatch(employeesActions.getEmployees())
   }
-
+  const onRowClick = (row) => {
+    history.push(`/employee/${row.id}`)
+  }
   const createEmployee = (values) =>
     dispatch(employeesActions.createEmployee(values))
 
@@ -42,6 +45,8 @@ const ListEmployees = () => {
         <Button onClick={toggleOpen}>Nuevo trabajador</Button>
       </Box>
       <DataTable
+        highlightOnHover
+        pointerOnHover
         columns={[
           {
             name: 'Run',
@@ -65,6 +70,7 @@ const ListEmployees = () => {
         ]}
         data={tableData}
         pagination
+        onRowClicked={onRowClick}
       />
       <EmployeeForm
         open={open}

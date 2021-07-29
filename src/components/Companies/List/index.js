@@ -32,7 +32,7 @@ const List = ({ ...props }) => {
       companiesActions.updateFilters({
         ...filters,
         search: value.toString(),
-        page: 1
+        page: 0
       })
     )
   }

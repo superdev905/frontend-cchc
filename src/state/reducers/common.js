@@ -7,7 +7,9 @@ const initialState = {
   nationalities: [],
   scholarshipList: [],
   banks: [],
-  rshList: []
+  rshList: [],
+  relationshipList: [],
+  activities: []
 }
 
 const commonReducer = (state = initialState, { type, payload }) => {
@@ -26,7 +28,10 @@ const commonReducer = (state = initialState, { type, payload }) => {
       return { ...state, banks: payload }
     case commonTypes.GET_RSH:
       return { ...state, rshList: payload }
-
+    case commonTypes.GET_RELATIONSHIPS:
+      return { ...state, relationshipList: payload }
+    case commonTypes.GET_ACTIVITIES:
+      return { ...state, activities: payload }
     default:
       return state
   }

@@ -103,7 +103,7 @@ const StepOne = ({ onClose }) => {
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <RutTextField
-              label="Rut"
+              label="Rut empresa"
               name="rut"
               required
               error={true}

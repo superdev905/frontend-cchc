@@ -8,12 +8,14 @@ import { DatePicker, Dialog } from '../Shared'
 import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
 import { rutValidation } from '../../validations'
 import commonActions from '../../state/actions/common'
-import { decisionList } from '../../config'
+import { decisionList, genderList } from '../../config'
+import SelectableCard from '../UI/SelectableCard/SelectableCard'
 
 const validationSchema = Yup.object().shape({
-  run: Yup.string()
-    .required('Ingrese run')
-    .test('validRUN', 'Ingrese run válido', (v) => rutValidation(v)),
+  run: Yup.string().test('validRUN', 'Ingrese run válido', (v) => {
+    if (!v) return true
+    return rutValidation(v)
+  }),
   names: Yup.string().required('Ingrese nombres'),
   paternal_surname: Yup.string().required('Ingrese nombres'),
   maternal_surname: Yup.string().required('Ingrese nombres'),
@@ -21,16 +23,12 @@ const validationSchema = Yup.object().shape({
   born_date: Yup.date().required('Seleccione fecha de nacimiento'),
   scholarship_id: Yup.number().required('Seleccione escolaridad'),
   marital_status_id: Yup.number().required('Seleccione estado civil'),
-  disability: Yup.string().required('Seleccione opción'),
-  credential_disability: Yup.string(),
-  recognize: Yup.string().required('Seleccione opción'),
+  job_id: Yup.number().required('Seleccione ocupación/actividad'),
   nationality_id: Yup.number().required('Seleccione nacionalidad'),
-  alive: Yup.string().required('Seleccione opción'),
-  bank_id: Yup.number('Seleccione banco'),
-  account_type: Yup.string('Seleccione tipo de cuenta'),
-  account_number: Yup.string('Seleccione número de cuenta'),
+  relationship_id: Yup.number().required('Seleccione parentesco'),
+  legal_charge: Yup.string().required('Seleccion opcion de carga legal'),
   rsh: Yup.string('Seleccione opción'),
-  rsh_percentage: Yup.string('Seleccione opción')
+  rsh_percentage_id: Yup.number()
 })
 
 const EmployeeModal = ({
@@ -44,8 +42,15 @@ const EmployeeModal = ({
 }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
-  const { maritalStatus, nationalities, scholarshipList, banks, rshList } =
-    useSelector((state) => state.common)
+  const { isMobile } = useSelector((state) => state.ui)
+  const {
+    maritalStatus,
+    nationalities,
+    scholarshipList,
+    rshList,
+    relationshipList,
+    activities
+  } = useSelector((state) => state.common)
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
@@ -57,51 +62,54 @@ const EmployeeModal = ({
       gender: type === 'UPDATE' ? data.gender : '',
       born_date: type === 'UPDATE' ? data.born_date : null,
       scholarship_id: type === 'UPDATE' ? data.scholarship_id : '',
-      marital_status_id: type === 'UPDATE' ? data.marital_status_id : '',
-      disability: type === 'UPDATE' ? data.disability : '',
-      credential_disability:
-        type === 'UPDATE' ? data.credential_disability : '',
-      recognize: type === 'UPDATE' ? data.recognize : '',
       nationality_id: type === 'UPDATE' ? data.nationality_id : '',
-      alive: type === 'UPDATE' ? data.alive : '',
-      bank_id: type === 'UPDATE' ? data.bank_id : '',
-      account_type: type === 'UPDATE' ? data.account_type : '',
-      account_number: type === 'UPDATE' ? data.account_number : '',
+      marital_status_id: type === 'UPDATE' ? data.marital_status_id : '',
+      relationship_id: type === 'UPDATE' ? data.relationship_id : '',
+      job_id: type === 'UPDATE' ? data.job_id : '',
       rsh: type === 'UPDATE' ? data.rsh : '',
-      rsh_percentage: type === 'UPDATE' ? data.rsh_percentage : ''
+      rsh_percentage_id: type === 'UPDATE' ? data.rsh_percentage_id : '',
+      legal_charge: type === 'UPDATE' ? data.legal_charge : ''
     },
     onSubmit: (values) => {
-      submitFunction(values).then(() => {
-        formik.setSubmitting(false)
-        enqueueSnackbar(successMessage, {
-          variant: 'success',
-          autoHideDuration: 1500
+      submitFunction(values)
+        .then(() => {
+          formik.setSubmitting(false)
+          enqueueSnackbar(successMessage, {
+            variant: 'success'
+          })
+          successFunction()
         })
-        successFunction()
-      })
+        .catch((err) => {
+          enqueueSnackbar(err, {
+            variant: 'error'
+          })
+        })
     }
   })
 
   useEffect(() => {
-    dispatch(commonActions.getMaritalStatuses())
-    dispatch(commonActions.getNationalities())
-    dispatch(commonActions.getScholarship())
-    dispatch(commonActions.getBanks())
-    dispatch(commonActions.getRSH())
-  }, [])
+    if (open) {
+      dispatch(commonActions.getMaritalStatuses())
+      dispatch(commonActions.getNationalities())
+      dispatch(commonActions.getScholarship())
+      dispatch(commonActions.getBanks())
+      dispatch(commonActions.getRSH())
+      dispatch(commonActions.getRelationships())
+      dispatch(commonActions.getActivities())
+    }
+  }, [open])
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
+    <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullScreen={isMobile}>
       <Box>
         <Typography variant="h6" align="center">
-          Nuevo trabajador
+          {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} pariente`}
         </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={4}>
               <RutTextField
-                label="Run"
+                label="RUN pariente"
                 name="run"
-                required
                 value={formik.values.run}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -160,6 +168,7 @@ const EmployeeModal = ({
             <Grid item xs={12} md={6} lg={4}>
               <DatePicker
                 label="Fecha de nacimiento"
+                value={formik.values.born_date}
                 required
                 onChange={(date) => {
                   formik.setFieldValue('born_date', date)
@@ -170,47 +179,23 @@ const EmployeeModal = ({
                 helperText={formik.touched.born_date && formik.errors.born_date}
               />
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <Select
-                label="Sexo"
-                name="gender"
-                required
-                value={formik.values.gender}
-                onChange={formik.handleChange}
-                error={formik.touched.gender && Boolean(formik.errors.gender)}
-                helperText={formik.touched.gender && formik.errors.gender}
-              >
-                <option value="">Seleccione sexo</option>
-                {['MASCULINO', 'FEMENINO', 'INDETERMINADO'].map((item, i) => (
-                  <option key={`gender-${i}-${item}`} value={item}>
-                    {item}
-                  </option>
+            <Grid item xs={12}>
+              <SelectableCard.Container label="Seleccione sexo" required>
+                {genderList.map((item, i) => (
+                  <SelectableCard
+                    key={`gender-card-${item.key}-${i}`}
+                    selected={item.key === formik.values.gender}
+                    onClick={() => {
+                      formik.setFieldTouched('gender')
+                      formik.setFieldValue('gender', item.key)
+                    }}
+                  >
+                    {item.name}
+                  </SelectableCard>
                 ))}
-              </Select>
+              </SelectableCard.Container>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <Select
-                label="Escolaridad"
-                name="scholarship_id"
-                required
-                value={formik.values.scholarship_id}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.scholarship_id &&
-                  Boolean(formik.errors.scholarship_id)
-                }
-                helperText={
-                  formik.touched.scholarship_id && formik.errors.scholarship_id
-                }
-              >
-                <option value="">Seleccione escolaridad</option>
-                {scholarshipList.map((item, i) => (
-                  <option key={`scholarship-${i}-${item.id}`} value={item.id}>
-                    {item.description}
-                  </option>
-                ))}
-              </Select>
-            </Grid>
+
             <Grid item xs={12} md={6} lg={4}>
               <Select
                 label="Estado civil"
@@ -240,66 +225,23 @@ const EmployeeModal = ({
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <Select
-                label="Discapacidad"
-                name="disability"
+                label="Escolaridad"
+                name="scholarship_id"
                 required
-                value={formik.values.disability}
+                value={formik.values.scholarship_id}
                 onChange={formik.handleChange}
                 error={
-                  formik.touched.disability && Boolean(formik.errors.disability)
+                  formik.touched.scholarship_id &&
+                  Boolean(formik.errors.scholarship_id)
                 }
                 helperText={
-                  formik.touched.disability && formik.errors.disability
+                  formik.touched.scholarship_id && formik.errors.scholarship_id
                 }
               >
                 <option value="">Seleccione escolaridad</option>
-                {decisionList.map((item, i) => (
-                  <option key={`gender-${i}-${item}`} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <Select
-                label="Crendencial de discapacidad"
-                name="credential_disability"
-                required
-                value={formik.values.credential_disability}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.credential_disability &&
-                  Boolean(formik.errors.credential_disability)
-                }
-                helperText={
-                  formik.touched.credential_disability &&
-                  formik.errors.credential_disability
-                }
-              >
-                <option value="">Seleccione escolaridad</option>
-                {decisionList.map((item, i) => (
-                  <option key={`credential-${i}-${item}`} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <Select
-                label="Reconocer"
-                name="recognize"
-                required
-                value={formik.values.recognize}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.recognize && Boolean(formik.errors.recognize)
-                }
-                helperText={formik.touched.recognize && formik.errors.recognize}
-              >
-                <option value="">Seleccione opción</option>
-                {decisionList.map((item, i) => (
-                  <option key={`option-r-${i}-${item}`} value={item}>
-                    {item}
+                {scholarshipList.map((item, i) => (
+                  <option key={`scholarship-${i}-${item.id}`} value={item.id}>
+                    {item.description}
                   </option>
                 ))}
               </Select>
@@ -329,13 +271,60 @@ const EmployeeModal = ({
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <Select
-                label="Vivo"
-                name="alive"
+                label="Parentesco"
+                name="relationship_id"
                 required
-                value={formik.values.alive}
+                value={formik.values.relationship_id}
                 onChange={formik.handleChange}
-                error={formik.touched.alive && Boolean(formik.errors.alive)}
-                helperText={formik.touched.alive && formik.errors.alive}
+                error={
+                  formik.touched.relationship_id &&
+                  Boolean(formik.errors.relationship_id)
+                }
+                helperText={
+                  formik.touched.relationship_id &&
+                  formik.errors.relationship_id
+                }
+              >
+                <option value="">Seleccione parentesco</option>
+                {relationshipList.map((item, i) => (
+                  <option key={`relationship-${i}-${item.id}`} value={item.id}>
+                    {item.description}
+                  </option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <Select
+                label="Ocupación/Actividad"
+                name="job_id"
+                required
+                value={formik.values.job_id}
+                onChange={formik.handleChange}
+                error={formik.touched.job_id && Boolean(formik.errors.job_id)}
+                helperText={formik.touched.job_id && formik.errors.job_id}
+              >
+                <option value="">Seleccione parentesco</option>
+                {activities.map((item, i) => (
+                  <option key={`relationship-${i}-${item.id}`} value={item.id}>
+                    {item.description}
+                  </option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <Select
+                label="Carga legal"
+                name="legal_charge"
+                required
+                value={formik.values.legal_charge}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.legal_charge &&
+                  Boolean(formik.errors.legal_charge)
+                }
+                helperText={
+                  formik.touched.legal_charge && formik.errors.legal_charge
+                }
               >
                 <option value="">Seleccione opción</option>
                 {decisionList.map((item, i) => (
@@ -347,60 +336,6 @@ const EmployeeModal = ({
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <Select
-                label="Banco"
-                name="bank_id"
-                value={formik.values.bank_id}
-                onChange={formik.handleChange}
-                error={formik.touched.bank_id && Boolean(formik.errors.bank_id)}
-                helperText={formik.touched.bank_id && formik.errors.bank_id}
-              >
-                <option value="">Seleccione escolaridad</option>
-                {banks.map((item, i) => (
-                  <option key={`gender-${i}-${item}`} value={item.id}>
-                    {item.description}
-                  </option>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <Select
-                label="Tipo de cuenta"
-                name="account_type"
-                value={formik.values.account_type}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.account_type &&
-                  Boolean(formik.errors.account_type)
-                }
-                helperText={
-                  formik.touched.account_type && formik.errors.account_type
-                }
-              >
-                <option value="">Seleccione escolaridad</option>
-                {['CUENTA CORRIENTE', 'AHORRO', 'VISTA'].map((item, i) => (
-                  <option key={`account-type-${i}-${item}`} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <TextField
-                label="Número de cuenta"
-                name="account_number"
-                value={formik.values.account_number}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.account_number &&
-                  Boolean(formik.errors.account_number)
-                }
-                helperText={
-                  formik.touched.account_number && formik.errors.account_number
-                }
-              />
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <Select
                 label="RSH"
                 name="rsh"
                 value={formik.values.rsh}
@@ -408,28 +343,39 @@ const EmployeeModal = ({
                 error={formik.touched.rsh && Boolean(formik.errors.rsh)}
                 helperText={formik.touched.rsh && formik.errors.rsh}
               >
-                <option value="">Seleccione escolaridad</option>
-                {rshList.map((item, i) => (
-                  <option key={`rsh-item-${i}-${item.id}`} value={item.id}>
-                    {item.description}
+                <option value="">Seleccione rsh</option>
+                {decisionList.map((item, i) => (
+                  <option key={`rsh-item-${i}-${item}`} value={item}>
+                    {item}
                   </option>
                 ))}
               </Select>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <TextField
+              <Select
                 label="RSH %"
-                name="rsh_percentage"
-                value={formik.values.rsh_percentage}
+                name="rsh_percentage_id"
+                value={formik.values.rsh_percentage_id}
                 onChange={formik.handleChange}
                 error={
-                  formik.touched.rsh_percentage &&
-                  Boolean(formik.errors.rsh_percentage)
+                  formik.touched.rsh_percentage_id &&
+                  Boolean(formik.errors.rsh_percentage_id)
                 }
                 helperText={
-                  formik.touched.rsh_percentage && formik.errors.rsh_percentage
+                  formik.touched.rsh_percentage_id &&
+                  formik.errors.rsh_percentage_id
                 }
-              />
+              >
+                <option value="">Sin RSH %</option>
+                {rshList.map((item, i) => (
+                  <option
+                    key={`rsh-percentage-item-${i}-${item.id}`}
+                    value={item.id}
+                  >
+                    {item.description}
+                  </option>
+                ))}
+              </Select>
             </Grid>
           </Grid>
           <Box textAlign="center" marginTop="10px">
@@ -440,7 +386,7 @@ const EmployeeModal = ({
               onClick={formik.handleSubmit}
               disabled={!formik.isValid}
             >
-              {`${type === 'UPDATE' ? 'Crear' : 'Actualizar'} datos`}
+              {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} datos`}
             </SubmitButton>
           </Box>
         </Box>
