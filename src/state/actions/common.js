@@ -1,7 +1,11 @@
 import Axios from '../../Axios'
 import commonTypes from '../types/common'
 
-const employeeEndpoint = 'http://localhost:8000/api/v1'
+const employeeEndpoint = `${
+  process.env.REACT_APP_NODE_ENV === 'production'
+    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:8000'
+    : 'http://localhost:8000'
+}/api/v1`
 
 const getRegions = () => (dispatch) =>
   new Promise((resolve, reject) => {
