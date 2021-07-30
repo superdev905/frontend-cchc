@@ -6,7 +6,11 @@ import employeesActions from '../../state/actions/employees'
 import {
   EmployeeDetails,
   EmployeeFamiliarGroup,
-  EmployeeInfoContact
+  EmployeeInfoContact,
+  EmployeeJobs,
+  HousingSituation,
+  PensionSituation,
+  SpecializationHistory
 } from '../../components/Employee'
 
 const Employee = () => {
@@ -32,6 +36,10 @@ const Employee = () => {
       <EmployeeDetails loading={loading} fetchFunction={getEmployee} />
       <EmployeeInfoContact />
       <EmployeeFamiliarGroup />
+      <PensionSituation />
+      <HousingSituation />
+      <SpecializationHistory />
+      <EmployeeJobs />
     </Box>
   )
 }

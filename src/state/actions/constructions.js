@@ -91,36 +91,45 @@ const deleteConstruction = (constructionId) => () =>
       })
   })
 
-const getConstructions = (query) => (dispatch) =>
-  new Promise((resolve, reject) => {
-    Axios.get(`/constructions?${queryString.stringify(query)}`)
-      .then((response) => {
-        const { data } = response
-        dispatch({
-          type: constructionTypes.GET_CONSTRUCTIONS,
-          payload: data
+const getConstructions =
+  (query, handleDispatch = true) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`/constructions?${queryString.stringify(query)}`)
+        .then((response) => {
+          const { data } = response
+          if (handleDispatch) {
+            dispatch({
+              type: constructionTypes.GET_CONSTRUCTIONS,
+              payload: data
+            })
+          }
+          resolve(data)
         })
-        resolve()
-      })
-      .catch((err) => {
-        reject(err.response.data)
-      })
-  })
-const getConstruction = (constructionId) => (dispatch) =>
-  new Promise((resolve, reject) => {
-    Axios.get(`/constructions/${constructionId}`)
-      .then((response) => {
-        const { data } = response
-        dispatch({
-          type: constructionTypes.GET_CONSTRUCTION_DETAILS,
-          payload: data
+        .catch((err) => {
+          reject(err.response.data)
         })
-        resolve()
-      })
-      .catch((err) => {
-        reject(err.response.data)
-      })
-  })
+    })
+
+const getConstruction =
+  (constructionId, handleDispatch = true) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`/constructions/${constructionId}`)
+        .then((response) => {
+          const { data } = response
+          if (handleDispatch) {
+            dispatch({
+              type: constructionTypes.GET_CONSTRUCTION_DETAILS,
+              payload: data
+            })
+          }
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data)
+        })
+    })
 
 const createConstructionTypology = (values) => () =>
   new Promise((resolve, reject) => {

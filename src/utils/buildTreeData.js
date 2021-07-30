@@ -32,3 +32,5 @@ const buildTreeData = (list) => {
 
   return roots
 }
+
+export default buildTreeData

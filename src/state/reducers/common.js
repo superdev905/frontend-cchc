@@ -9,7 +9,14 @@ const initialState = {
   banks: [],
   rshList: [],
   relationshipList: [],
-  activities: []
+  activities: [],
+  IsapreFonasaList: [],
+  AfpIspList: [],
+  propertyHomeList: [],
+  typesHomeList: [],
+  subsidyList: [],
+  specList: [],
+  entities: []
 }
 
 const commonReducer = (state = initialState, { type, payload }) => {
@@ -32,6 +39,20 @@ const commonReducer = (state = initialState, { type, payload }) => {
       return { ...state, relationshipList: payload }
     case commonTypes.GET_ACTIVITIES:
       return { ...state, activities: payload }
+    case commonTypes.GET_ISAPRE_FONASA:
+      return { ...state, IsapreFonasaList: payload }
+    case commonTypes.GET_AFP_ISP:
+      return { ...state, AfpIspList: payload }
+    case commonTypes.GET_TYPES_HOME:
+      return { ...state, typesHomeList: payload }
+    case commonTypes.GET_PROPERTY_HOME:
+      return { ...state, propertyHomeList: payload }
+    case commonTypes.GET_TYPES_SUBSIDY:
+      return { ...state, subsidyList: payload }
+    case commonTypes.GET_SPEC_LIST:
+      return { ...state, specList: payload }
+    case commonTypes.GET_ENTITIES:
+      return { ...state, entities: payload }
     default:
       return state
   }

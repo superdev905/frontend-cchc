@@ -11,7 +11,8 @@ import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
 import { DatePicker, Map, AddressAutoComplete, Dialog } from '../Shared'
 import { rutValidation } from '../../validations'
 import { SantiagoDefaultLocation as location } from '../../config'
-import { useSuccess } from '../../hooks'
+import { useSuccess, useToggle } from '../../hooks'
+import FacturationModal from '../Companies/Create/ParentBusiness'
 
 const businessSchema = Yup.object({
   business_selected_id: Yup.number().required('Seleccione empresa')
@@ -32,12 +33,7 @@ const validationSchema = Yup.object({
   end_date: Yup.date().nullable(),
   longitude: Yup.string().nullable(),
   latitude: Yup.string().nullable(),
-  billing_rut: Yup.string()
-    .required('Ingrese rut de facturación')
-    .test('Check rut', 'Ingrese rut válido', (v) => rutValidation(v)),
-  billing_business_name: Yup.string().required(
-    'Ingrese razón social de facturación'
-  )
+  billing_business_id: Yup.number().required('Seleccione empresa')
 })
 
 const ConstructionModal = ({
@@ -52,9 +48,12 @@ const ConstructionModal = ({
 }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
+  const [treeData, setTreeData] = useState([])
   const [communes, setCommunes] = useState([])
   const [companies, setCompanies] = useState([])
+  const [companyBill, setCompanyBill] = useState(null)
   const { success, changeSuccess } = useSuccess()
+  const { open: openFact, toggleOpen: toggleOpenFact } = useToggle()
   const { isMobile } = useSelector((state) => state.ui)
   const { regions } = useSelector((state) => state.common)
   const { typologies, sectors } = useSelector((state) => state.constructions)
@@ -87,8 +86,8 @@ const ConstructionModal = ({
         type === 'UPDATE'
           ? parseFloat(construction.longitude)
           : location.longitude,
-      billing_rut: type === 'UPDATE' ? construction?.billing_rut : '',
-      billing_business_name: type === 'UPDATE' ? construction?.billing_rut : ''
+      billing_business_id:
+        type === 'UPDATE' ? construction?.billing_business_id : ''
     },
     onSubmit: (values, { resetForm }) => {
       const data = { ...values }
@@ -148,15 +147,28 @@ const ConstructionModal = ({
   }, [formik.values.state])
 
   useEffect(() => {
+    if (formik.values.billing_business_id && companies.length > 0) {
+      setCompanyBill(
+        companies.find(
+          (item) => item.id === parseInt(formik.values.billing_business_id, 10)
+        )
+      )
+    }
+  }, [formik.values.billing_business_id, companies])
+
+  useEffect(() => {
     if (open) {
       dispatch(commonActions.getRegions())
       dispatch(constructionsActions.getTypologies())
       dispatch(constructionsActions.getSectors())
-      if (selectClient) {
-        dispatch(companiesActions.getCompanies({}, false)).then((list) => {
-          setCompanies(list)
-        })
-      }
+
+      dispatch(companiesActions.getCompanies({}, false)).then((list) => {
+        setCompanies(list)
+      })
+
+      dispatch(companiesActions.getTreeCompanies()).then((list) => {
+        setTreeData(list)
+      })
     }
   }, [open, type, selectClient])
 
@@ -406,35 +418,20 @@ const ConstructionModal = ({
                 <Grid container spacing={2}>
                   <Grid item xs={12} md={6}>
                     <RutTextField
-                      name="billing_rut"
-                      label="Rut"
-                      required
-                      onChange={formik.handleChange}
-                      value={formik.values.billing_rut}
-                      helperText={
-                        formik.touched.billing_rut && formik.errors.billing_rut
-                      }
-                      error={
-                        formik.touched.billing_rut &&
-                        Boolean(formik.errors.billing_rut)
-                      }
+                      onClick={toggleOpenFact}
+                      label="Empresa facturadora"
+                      disabled
+                      value={companyBill?.business_name || ''}
                     />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      name="billing_business_name"
-                      label="Razón social"
-                      onChange={formik.handleChange}
-                      required
-                      value={formik.values.billing_business_name}
-                      helperText={
-                        formik.touched.billing_business_name &&
-                        formik.errors.billing_business_name
-                      }
-                      error={
-                        formik.touched.billing_business_name &&
-                        Boolean(formik.errors.billing_business_name)
-                      }
+                    <FacturationModal
+                      type="FACTURATION"
+                      open={openFact}
+                      onClose={toggleOpenFact}
+                      data={treeData}
+                      selectedId={formik.values.billing_business_id}
+                      onChange={(id) => {
+                        formik.setFieldValue('billing_business_id', id)
+                      }}
                     />
                   </Grid>
                 </Grid>

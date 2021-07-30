@@ -1,3 +1,4 @@
+import queryString from 'query-string'
 import Axios from '../../Axios'
 import employeesTypes from '../types/employees'
 
@@ -115,9 +116,235 @@ const createEmployeeContact = (values) => () =>
       })
   })
 
-const getEmployeeContact = () => () =>
+const getEmployeeContact = (query) => () =>
   new Promise((resolve, reject) => {
-    Axios.get(`${employeeEndpoint}/employee-contacts`)
+    Axios.get(
+      `${employeeEndpoint}/employee-contacts?${queryString.stringify(query)}`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateEmployeeContact = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${employeeEndpoint}/employee-contacts/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchEmployeeContact = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${employeeEndpoint}/employee-contacts/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getPensionSituation = (query) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${employeeEndpoint}/pension-situations?${queryString.stringify(query)}`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const createPensionSituation = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${employeeEndpoint}/pension-situations`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updatePensionSituation = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${employeeEndpoint}/pension-situations/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchPensionSituation = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${employeeEndpoint}/pension-situations/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const createHousingSituation = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${employeeEndpoint}/housing-situation`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getHousingSituation = (query) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${employeeEndpoint}/housing-situation?${queryString.stringify(query)}`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateHousingSituation = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${employeeEndpoint}/housing-situation/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchHousingSituation = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${employeeEndpoint}/housing-situation/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getSpecializationHistory = (query) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${employeeEndpoint}/specialization?${queryString.stringify(query)}`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const createSpecialization = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${employeeEndpoint}/specialization`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateSpecialization = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${employeeEndpoint}/specialization/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchSpecialization = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${employeeEndpoint}/specialization/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getEmployeeJobs = (query) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${employeeEndpoint}/employee-jobs?${queryString.stringify(query)}`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const createEmployeeJob = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${employeeEndpoint}/employee-jobs`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateEmployeeJob = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${employeeEndpoint}/employee-jobs/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchEmployeeJob = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${employeeEndpoint}/employee-jobs/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -137,5 +364,23 @@ export default {
   updateRelative,
   blockRelative,
   createEmployeeContact,
-  getEmployeeContact
+  getEmployeeContact,
+  updateEmployeeContact,
+  patchEmployeeContact,
+  createPensionSituation,
+  getPensionSituation,
+  updatePensionSituation,
+  patchPensionSituation,
+  createHousingSituation,
+  getHousingSituation,
+  updateHousingSituation,
+  patchHousingSituation,
+  getSpecializationHistory,
+  createSpecialization,
+  updateSpecialization,
+  patchSpecialization,
+  getEmployeeJobs,
+  createEmployeeJob,
+  updateEmployeeJob,
+  patchEmployeeJob
 }

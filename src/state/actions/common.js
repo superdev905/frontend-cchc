@@ -138,6 +138,97 @@ const getRelationships = () => (dispatch) =>
       })
   })
 
+const getIsapreFonasa = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${employeeEndpoint}/isapre-fonasa`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_ISAPRE_FONASA, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+const getAfpIsp = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${employeeEndpoint}/afp-isp`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_AFP_ISP, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+const getTypesHome = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${employeeEndpoint}/types-home`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_TYPES_HOME, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+const getPropertyHome = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${employeeEndpoint}/property-home`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_PROPERTY_HOME, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+const getTypesSubsidy = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${employeeEndpoint}/types-subsidy`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_TYPES_SUBSIDY, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+const getSpecList = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${employeeEndpoint}/specialties`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_SPEC_LIST, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+const getEntities = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${employeeEndpoint}/entities`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_ENTITIES, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 export default {
   getRegions,
   getCharges,
@@ -148,5 +239,12 @@ export default {
   getBanks,
   getRSH,
   getRelationships,
-  getActivities
+  getActivities,
+  getIsapreFonasa,
+  getAfpIsp,
+  getTypesHome,
+  getPropertyHome,
+  getTypesSubsidy,
+  getSpecList,
+  getEntities
 }

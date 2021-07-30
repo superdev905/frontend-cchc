@@ -1,6 +1,7 @@
 export { default as Button } from './CustomButton'
 export { default as PageHeading } from './PageHeading'
 export { default as TextField } from './CustomTextField'
+export { default as TextArea } from './TextArea'
 export { default as SubmitButton } from './SubmitButton'
 export { default as FullScreenDialog } from './FullScreenDialog'
 export { default as Select } from './CustomSelect'

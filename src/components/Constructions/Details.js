@@ -1,5 +1,7 @@
-import { useSelector } from 'react-redux'
+import { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
+import companiesActions from '../../state/actions/companies'
 import { LabeledRow, StatusChip, Text, Wrapper } from '../UI'
 import { Map } from '../Shared'
 
@@ -12,7 +14,19 @@ const useStyles = makeStyles(() => ({
 
 const Details = ({ loading }) => {
   const classes = useStyles()
+  const dispatch = useDispatch()
+  const [billing, setBilling] = useState(null)
   const { construction } = useSelector((state) => state.constructions)
+
+  useEffect(() => {
+    if (construction) {
+      dispatch(
+        companiesActions.getCompany(construction.billing_business_id, false)
+      ).then((result) => {
+        setBilling(result)
+      })
+    }
+  }, [construction])
   return (
     <Box>
       <Wrapper>
@@ -74,12 +88,10 @@ const Details = ({ loading }) => {
             <Box>
               <Typography className={classes.heading}>Facturación</Typography>
               <LabeledRow label="Rut">
-                <Text loading={loading}> {construction?.billing_rut}</Text>
+                <Text loading={loading}> {billing?.rut}</Text>
               </LabeledRow>
               <LabeledRow label="Razón social">
-                <Text loading={loading}>
-                  {construction?.billing_business_name}
-                </Text>
+                <Text loading={loading}>{billing?.business_name}</Text>
               </LabeledRow>
             </Box>
           </Grid>

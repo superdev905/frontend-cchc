@@ -22,14 +22,22 @@ const useStyles = makeStyles((theme) => ({
 
 mapboxgl.workerClass = MapboxWorker
 
-const Map = ({ height, longitude, latitude, markers, disabled }) => {
+const Map = ({
+  height,
+  zoom,
+  longitude,
+  latitude,
+  markers,
+  disabled,
+  showMarkers
+}) => {
   const classes = useStyles()
   const [viewport, setViewport] = useState({
     width: '100%',
     height: '100%',
     latitude,
     longitude,
-    zoom: 12
+    zoom
   })
 
   const renderMarkers = () => {
@@ -70,13 +78,15 @@ const Map = ({ height, longitude, latitude, markers, disabled }) => {
           }
         }}
       >
-        {renderMarkers()}
+        {showMarkers && renderMarkers()}
       </ReactMapGL>
     </Box>
   )
 }
 
 Map.defaultProps = {
+  showMarkers: true,
+  zoom: 12,
   latitude: -33.45694,
   longitude: -70.64827,
   height: '250px',

@@ -1,3 +1,7 @@
 export { default as EmployeeDetails } from './Details'
 export { default as EmployeeFamiliarGroup } from './FamiliarGroup'
 export { default as EmployeeInfoContact } from './InfoContact'
+export { default as PensionSituation } from './PensionSituation'
+export { default as HousingSituation } from './HousingSituation'
+export { default as SpecializationHistory } from './Specialization'
+export { default as EmployeeJobs } from './Jobs'

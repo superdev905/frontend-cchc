@@ -6,13 +6,17 @@ import { Button, Wrapper } from '../UI'
 import ContactForm from './ContactForm'
 import ContactCard from './ContactCard'
 import employeesActions from '../../state/actions/employees'
+import { ConfirmDelete } from '../Shared'
 
 const InfoContact = () => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
   const [contacts, setContacts] = useState([])
+  const [currentContact, setCurrentContact] = useState(null)
   const { employee } = useSelector((state) => state.employees)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
 
   const createContact = (values) =>
     dispatch(
@@ -20,6 +24,22 @@ const InfoContact = () => {
         ...values,
         employee_run: employee.run,
         is_main: true
+      })
+    )
+  const updateContact = (values) =>
+    dispatch(
+      employeesActions.updateEmployeeContact(currentContact.id, {
+        ...currentContact,
+        ...values,
+        employee_run: employee.run,
+        is_main: true
+      })
+    )
+
+  const blockContact = () =>
+    dispatch(
+      employeesActions.patchEmployeeContact(currentContact.id, {
+        state: 'DELETED'
       })
     )
   const fetchContacts = (run) => {
@@ -51,7 +71,18 @@ const InfoContact = () => {
           <Grid container spacing={2}>
             {!loading &&
               contacts.map((item) => (
-                <ContactCard key={`contact-${item.id}`} contact={item} />
+                <ContactCard
+                  key={`contact-${item.id}`}
+                  contact={item}
+                  onEdit={() => {
+                    setCurrentContact(item)
+                    toggleOpenEdit()
+                  }}
+                  onDelete={() => {
+                    setCurrentContact(item)
+                    toggleOpenDelete()
+                  }}
+                />
               ))}
           </Grid>
         </Box>
@@ -61,8 +92,31 @@ const InfoContact = () => {
         open={openAdd}
         onClose={toggleOpenAdd}
         submitFunction={createContact}
-        submitFunction={fetchContacts}
+        successFunction={fetchContacts}
       />
+      {currentContact && openEdit && (
+        <ContactForm
+          type="UPDATE"
+          successMessage="Información de contacto actualizado"
+          open={openEdit}
+          data={currentContact}
+          onClose={toggleOpenEdit}
+          submitFunction={updateContact}
+          successFunction={fetchContacts}
+        />
+      )}
+      {currentContact && openDelete && (
+        <ConfirmDelete
+          open={openDelete}
+          onClose={toggleOpenDelete}
+          onConfirm={() => blockContact(currentContact.id)}
+          message={
+            <Typography>
+              ¿Estás seguro de eliminar la información de contacto?
+            </Typography>
+          }
+        />
+      )}
     </Box>
   )
 }

@@ -4,12 +4,22 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { addMonths } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, Grid, Typography } from '@material-ui/core'
+import {
+  Box,
+  FormControlLabel,
+  Grid,
+  Switch,
+  Typography
+} from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 import { Dialog, Map } from '../Shared'
 import { Button, Select, SubmitButton, TextField } from '../UI'
 import commonActions from '../../state/actions/common'
 import AddressAutocomplete from '../Shared/AddressAutoComplete'
 import { phoneValidator } from '../../validations'
+import { useSuccess } from '../../hooks'
+import { SantiagoDefaultLocation } from '../../config'
+import { formatDate } from '../../formatters'
 
 const validationSchema = Yup.object().shape({
   address: Yup.string().required('Ingrese dirección'),
@@ -20,6 +30,7 @@ const validationSchema = Yup.object().shape({
   block: Yup.string(),
   department: Yup.string(),
   email: Yup.string().email('Ingrese correo válido').required('Ingreso correo'),
+
   mobile_phone: Yup.string().test(
     'Check phone',
     'Ingrese télefono válido',
@@ -34,7 +45,8 @@ const validationSchema = Yup.object().shape({
     'Check phone',
     'Ingrese télefono válido',
     (v) => phoneValidator(v)
-  )
+  ),
+  is_confirmed: Yup.bool()
 })
 
 const EmployeeModal = ({
@@ -48,7 +60,9 @@ const EmployeeModal = ({
 }) => {
   const dispatch = useDispatch()
   const [communes, setCommunes] = useState([])
+  const [confirmDate, setConfirmDate] = useState(null)
   const { enqueueSnackbar } = useSnackbar()
+  const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
   const { regions } = useSelector((state) => state.common)
 
@@ -70,19 +84,26 @@ const EmployeeModal = ({
       housing_group: type === 'UPDATE' ? data.housing_group : '',
       block: type === 'UPDATE' ? data.block : '',
       department: type === 'UPDATE' ? data.department : '',
+      longitude: type === 'UPDATE' ? data.longitude : '',
+      latitude: type === 'UPDATE' ? data.latitude : '',
       email: type === 'UPDATE' ? data.email : '',
       mobile_phone: type === 'UPDATE' ? data.mobile_phone : '',
       other_phone: type === 'UPDATE' ? data.other_phone : '',
-      landline_phone: type === 'UPDATE' ? data.landline_phone : ''
+      landline_phone: type === 'UPDATE' ? data.landline_phone : '',
+      is_confirmed: type === 'UPDATE' ? data.is_confirmed : false
     },
     onSubmit: (values) => {
-      submitFunction({ ...values, confirmation_date: addMonths(new Date(), 1) })
+      submitFunction({
+        ...values,
+        confirmation_date: new Date(addMonths(new Date(), 1))
+      })
         .then(() => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, {
             variant: 'success'
           })
           onClose()
+          changeSuccess(true)
           if (successFunction) {
             successFunction()
           }
@@ -121,10 +142,22 @@ const EmployeeModal = ({
   }
 
   useEffect(() => {
+    if (regions.length > 0 && type === 'UPDATE') {
+      setCommunes(regions.find((item) => item.id === data.region_id).communes)
+    }
+  }, [regions])
+
+  useEffect(() => {
     if (open) {
       dispatch(commonActions.getRegions())
     }
-  }, [open])
+
+    setConfirmDate(
+      type === 'UPDATE'
+        ? new Date(data.confirmation_date)
+        : new Date(addMonths(new Date(), 1))
+    )
+  }, [open, type, data])
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullScreen={isMobile}>
       <Box>
@@ -136,7 +169,7 @@ const EmployeeModal = ({
         <Box p={2}>
           <Grid container spacing={2}>
             <Grid item xs={8}>
-              <Grid container spacing={2}>
+              <Grid container spacing={1}>
                 <Grid item xs={12} md={12}>
                   <AddressAutocomplete
                     required
@@ -199,6 +232,7 @@ const EmployeeModal = ({
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <TextField
+                    required
                     label="Número"
                     name="number"
                     value={formik.values.number}
@@ -214,7 +248,7 @@ const EmployeeModal = ({
                   <TextField
                     label="Nombre de la villa o cojunto habitacional"
                     name="housing_group"
-                    value={formik.values.names}
+                    value={formik.values.housing_group}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     error={formik.touched.names && Boolean(formik.errors.names)}
@@ -225,7 +259,7 @@ const EmployeeModal = ({
                   <TextField
                     label="Block"
                     name="block"
-                    value={formik.values.names}
+                    value={formik.values.block}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     error={formik.touched.names && Boolean(formik.errors.names)}
@@ -244,33 +278,41 @@ const EmployeeModal = ({
                     helperText={formik.touched.email && formik.errors.email}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    label="Block"
-                    name="block"
-                    value={formik.values.names}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.names && Boolean(formik.errors.names)}
-                    helperText={formik.touched.names && formik.errors.names}
-                  />
-                </Grid>
+
                 <Grid item xs={12} md={6}>
                   <TextField
                     label="Departamento"
                     name="department"
-                    value={formik.values.names}
+                    value={formik.values.department}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    error={formik.touched.names && Boolean(formik.errors.names)}
-                    helperText={formik.touched.names && formik.errors.names}
+                    error={
+                      formik.touched.department &&
+                      Boolean(formik.errors.department)
+                    }
+                    helperText={
+                      formik.touched.department && formik.errors.department
+                    }
                   />
                 </Grid>
+              </Grid>
+              <Box marginTop="10px">
+                <Typography
+                  style={{
+                    fontSize: '17px',
+                    fontWeight: 'bold',
+                    marginBottom: '10px'
+                  }}
+                >
+                  Teléfonos
+                </Typography>
+              </Box>
+              <Grid container spacing={1}>
                 <Grid item xs={12} md={6}>
                   <TextField
                     label="Telefóno móvil"
                     name="mobile_phone"
-                    value={formik.values.names}
+                    value={formik.values.mobile_phone}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     error={
@@ -324,11 +366,59 @@ const EmployeeModal = ({
                     }}
                   />
                 </Grid>
+                <Grid item xs={12} md={12}>
+                  <Alert severity="info">
+                    <Typography>
+                      Próxima fecha de confirmación de teléfono:{' '}
+                      <strong>{confirmDate && formatDate(confirmDate)}</strong>
+                    </Typography>
+                    <Box>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            color="primary"
+                            checked={formik.values.is_confirmed}
+                            onChange={(e) => {
+                              formik.setFieldValue(
+                                'is_confirmed',
+                                e.target.checked
+                              )
+                            }}
+                          />
+                        }
+                        label="Confirmar teléfono"
+                      />
+                    </Box>
+                  </Alert>
+                </Grid>
               </Grid>
             </Grid>
 
             <Grid item xs={4}>
-              <Map height="100%" />
+              <Map
+                height="100%"
+                zoom={16}
+                latitude={
+                  formik.values.latitude || SantiagoDefaultLocation.latitude
+                }
+                longitude={
+                  formik.values.longitude || SantiagoDefaultLocation.longitude
+                }
+                showMarkers={Boolean(
+                  formik.values.latitude && formik.values.longitude
+                )}
+                markers={[
+                  {
+                    address: formik.values.address,
+                    latitude:
+                      formik.values.latitude ||
+                      SantiagoDefaultLocation.latitude,
+                    longitude:
+                      formik.values.longitude ||
+                      SantiagoDefaultLocation.longitude
+                  }
+                ]}
+              />
             </Grid>
           </Grid>
 
@@ -343,6 +433,8 @@ const EmployeeModal = ({
                 formik.isSubmitting ||
                 !getValidValidation(formik.values)
               }
+              loading={formik.isSubmitting}
+              success={success}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} datos`}
             </SubmitButton>

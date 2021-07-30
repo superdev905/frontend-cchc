@@ -4,18 +4,36 @@ import { Dialog } from '../../Shared'
 import { Button } from '../../UI'
 import TreeCompany from './TreeCompany'
 
-const ParentBusiness = ({ open, onClose, data, selectedId, onChange }) => (
+const ParentBusiness = ({
+  type,
+  open,
+  onClose,
+  data,
+  selectedId,
+  onChange
+}) => (
   <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
     <Typography
       style={{ fontSize: '17px', fontWeight: 'bold', marginBottom: '10px' }}
       align="center"
     >
-      Selecciona una empresa
+      {type === 'PARENT'
+        ? 'Selecciona una empresa madre'
+        : 'Selecciona una empresa para la facturación'}
     </Typography>
     <Box marginBottom="10px">
       <Alert severity="info">
-        La empresa seleccionada será la <strong>empresa madre</strong> de la
-        nueva empresa
+        {type === 'PARENT' ? (
+          <>
+            La empresa seleccionada será la <strong>empresa madre</strong> de la
+            nueva empresa
+          </>
+        ) : (
+          <>
+            La empresa seleccionada será la <strong>empresa facturadora</strong>{' '}
+            de la obra
+          </>
+        )}
       </Alert>
     </Box>
     <TreeCompany data={data} selectedId={selectedId} onChange={onChange} />
@@ -27,5 +45,9 @@ const ParentBusiness = ({ open, onClose, data, selectedId, onChange }) => (
     </Box>
   </Dialog>
 )
+
+ParentBusiness.defaultProps = {
+  type: 'PARENT'
+}
 
 export default ParentBusiness

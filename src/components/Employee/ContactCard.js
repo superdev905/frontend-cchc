@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import {
   Box,
   Card,
@@ -16,6 +17,9 @@ const useStyles = makeStyles(() => ({
   root: {
     position: 'relative'
   },
+  deleted: {
+    opacity: 0.6
+  },
   btnMore: {
     position: 'absolute',
     top: 15,
@@ -27,12 +31,17 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const ContactCard = ({ contact, loading }) => {
+const ContactCard = ({ contact, loading, onEdit, onDelete }) => {
   const classes = useStyles()
   const { open, anchorEl, handleOpen, handleClose } = useMenu()
   return (
     <Grid item xs={12} md={6}>
-      <Card className={classes.root}>
+      <Card
+        className={clsx(
+          classes.root,
+          contact.state === 'DELETED' && classes.deleted
+        )}
+      >
         <IconButton className={classes.btnMore} onClick={handleOpen}>
           <MoreVertIcon />
         </IconButton>
@@ -81,8 +90,8 @@ const ContactCard = ({ contact, loading }) => {
         open={open}
         onClose={handleClose}
         anchorEl={anchorEl}
-        onEdit={() => {}}
-        onDelete={() => {}}
+        onEdit={onEdit}
+        onDelete={onDelete}
       />
     </Grid>
   )

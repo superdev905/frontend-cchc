@@ -67,21 +67,25 @@ const getMainCompany = (companyId) => () =>
       })
   })
 
-const getCompany = (companyId) => (dispatch) =>
-  new Promise((resolve, reject) => {
-    Axios.get(`/business/${companyId}`)
-      .then((response) => {
-        const { data } = response
-        dispatch({
-          type: businessTypes.GET_BUSINESS_DETAIL,
-          payload: data
+const getCompany =
+  (companyId, handleDispatch = true) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`/business/${companyId}`)
+        .then((response) => {
+          const { data } = response
+          if (handleDispatch) {
+            dispatch({
+              type: businessTypes.GET_BUSINESS_DETAIL,
+              payload: data
+            })
+          }
+          resolve(data)
         })
-        resolve(data)
-      })
-      .catch((err) => {
-        reject(err)
-      })
-  })
+        .catch((err) => {
+          reject(err)
+        })
+    })
 
 const createCompany = (values) => () =>
   new Promise((resolve, reject) => {
