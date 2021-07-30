@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import { useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
-import { Button, EmptyState, Wrapper } from '../UI'
+import { ActionsTable, Button, Wrapper } from '../UI'
 import SpecForm from './SpecForm'
-import CardSpecialization from './CardSpecialization'
-import { ConfirmDelete } from '../Shared'
+import { ConfirmDelete, DataTable } from '../Shared'
+import { formatDate } from '../../formatters'
 
 const PensionSituation = () => {
   const dispatch = useDispatch()
@@ -24,7 +24,17 @@ const PensionSituation = () => {
     dispatch(
       employeesActions.getSpecializationHistory({ employee_id: idEmployee })
     ).then((data) => {
-      setList(data)
+      setList(
+        data.map((item) => ({
+          ...item,
+          specName: item.specialty.description,
+          specDetailName: item.specialty_detail.description,
+          certEntity: item.certifying_entity
+            ? item.certifying_entity.description
+            : '',
+          certDate: formatDate(item.certificated_date)
+        }))
+      )
     })
   }
 
@@ -65,31 +75,70 @@ const PensionSituation = () => {
     <Wrapper>
       <Box>
         <Box display="flex" justifyContent="space-between">
-          <Typography>Historial de especialidades</Typography>
+          <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
+            Historial de especialidades
+          </Typography>
           <Button onClick={toggleOpenAdd}>Registrar </Button>
         </Box>
       </Box>
       <Box>
-        <Grid container spacing={2}>
-          {list.length === 0 ? (
-            <EmptyState message="Este trabajador no tiene especializaciones" />
-          ) : (
-            list.map((item) => (
-              <CardSpecialization
-                key={`item-housing-${item.id}`}
-                data={item}
-                onEdit={() => {
-                  setCurrent(item)
-                  toggleOpenEdit()
-                }}
-                onDelete={() => {
-                  setCurrent(item)
-                  toggleOpenDelete()
-                }}
-              />
-            ))
-          )}
-        </Grid>
+        <Box>
+          <DataTable
+            emptyMessage="Este trabajador no tiene espacialiadades en su historial "
+            columns={[
+              {
+                name: 'Nombre de especialidad',
+                selector: 'specName',
+                sortable: true
+              },
+              {
+                name: 'Detalle de especialidad',
+                selector: 'specDetailName',
+                sortable: true
+              },
+              {
+                name: 'Autodidacta',
+                selector: 'is_self_taught'
+              },
+              {
+                name: 'Certificado',
+                selector: 'is_certificated'
+              },
+
+              {
+                name: 'Entidad certificadora',
+                selector: 'certEntity',
+                hide: 'md'
+              },
+              {
+                name: 'Fecha de certificación',
+                selector: 'certDate',
+                hide: 'md'
+              },
+
+              {
+                name: '',
+                selector: '',
+                right: true,
+                cell: (row) => (
+                  <ActionsTable
+                    {...row}
+                    onEdit={() => {
+                      setCurrent(row)
+                      toggleOpenEdit()
+                    }}
+                    onDelete={() => {
+                      setCurrent(row)
+                      toggleOpenDelete()
+                    }}
+                  />
+                )
+              }
+            ]}
+            data={list}
+            pagination
+          />
+        </Box>
       </Box>
       <SpecForm
         successMessage="Especialización creado"

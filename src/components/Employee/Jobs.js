@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import { useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
-import { Button, EmptyState, Wrapper } from '../UI'
+import { ActionsTable, Button, Wrapper } from '../UI'
 import JobForm from './JobForm'
-import CardJob from './CardJob'
-import { ConfirmDelete } from '../Shared'
+import { ConfirmDelete, DataTable } from '../Shared'
+import { formatDate } from '../../formatters'
 
 const PensionSituation = () => {
   const dispatch = useDispatch()
@@ -24,7 +24,14 @@ const PensionSituation = () => {
     dispatch(
       employeesActions.getEmployeeJobs({ employee_id: idEmployee })
     ).then((data) => {
-      setList(data)
+      setList(
+        data.map((item) => ({
+          ...item,
+          startDate: formatDate(item.admission_date),
+          endDate: formatDate(item.leave_date),
+          stringSalary: `$ ${item.salary}`
+        }))
+      )
     })
   }
 
@@ -63,32 +70,73 @@ const PensionSituation = () => {
   return (
     <Wrapper>
       <Box>
-        <Box display="flex" justifyContent="space-between">
-          <Typography>Historial de trabajos</Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
+            Historial de trabajos
+          </Typography>
           <Button onClick={toggleOpenAdd}>Nuevo trabajo </Button>
         </Box>
       </Box>
       <Box>
-        <Grid container spacing={2}>
-          {list.length === 0 ? (
-            <EmptyState message="Este trabajador no tiene trabajos en su historial" />
-          ) : (
-            list.map((item) => (
-              <CardJob
-                key={`item-job-${item.id}`}
-                data={item}
-                onEdit={() => {
-                  setCurrent(item)
-                  toggleOpenEdit()
-                }}
-                onDelete={() => {
-                  setCurrent(item)
-                  toggleOpenDelete()
-                }}
-              />
-            ))
-          )}
-        </Grid>
+        <DataTable
+          emptyMessage="Este trabajador no tiene trabajos en su historial "
+          columns={[
+            {
+              name: 'Nombre de empresa',
+              selector: 'business_name',
+              sortable: true
+            },
+            {
+              name: 'Nombre de Obra',
+              selector: 'construction_name',
+              sortable: true
+            },
+            {
+              name: 'Fecha de inicio',
+              selector: 'startDate'
+            },
+            {
+              name: 'Fecha de fin',
+              selector: 'endDate'
+            },
+
+            {
+              name: 'Plazo de contrato',
+              selector: 'contract_term',
+              hide: 'md'
+            },
+            {
+              name: 'Tipo de contrato',
+              selector: 'contract_type',
+              hide: 'md'
+            },
+            {
+              name: 'Ingreso',
+              selector: 'stringSalary',
+              hide: 'md'
+            },
+            {
+              name: '',
+              selector: '',
+              right: true,
+              cell: (row) => (
+                <ActionsTable
+                  {...row}
+                  onEdit={() => {
+                    setCurrent(row)
+                    toggleOpenEdit()
+                  }}
+                  onDelete={() => {
+                    setCurrent(row)
+                    toggleOpenDelete()
+                  }}
+                />
+              )
+            }
+          ]}
+          data={list}
+          pagination
+        />
       </Box>
       <JobForm
         successMessage="Especialización creado"

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { useToggle } from '../../hooks'
-import { Button, Wrapper } from '../UI'
+import { Button, EmptyState, Wrapper } from '../UI'
 import ContactForm from './ContactForm'
 import ContactCard from './ContactCard'
 import employeesActions from '../../state/actions/employees'
@@ -63,11 +63,16 @@ const InfoContact = () => {
   return (
     <Box>
       <Wrapper>
-        <Box display="flex" justifyContent="space-between">
-          <Typography>Información de contacto</Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
+            Información de contacto
+          </Typography>
           <Button onClick={toggleOpenAdd}> Registrar contacto</Button>
         </Box>
         <Box>
+          {contacts.length === 0 && (
+            <EmptyState message="Este trabajador no tiene información de contacto" />
+          )}
           <Grid container spacing={2}>
             {!loading &&
               contacts.map((item) => (

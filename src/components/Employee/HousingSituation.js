@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
-import { Button, Wrapper } from '../UI'
+import { Button, EmptyState, Wrapper } from '../UI'
 import HousingSituationForm from './HousingSituationForm'
 import CardHousingSituation from './CardHousingSituation'
 import { ConfirmDelete } from '../Shared'
@@ -56,27 +56,33 @@ const PensionSituation = () => {
   return (
     <Wrapper>
       <Box>
-        <Box display="flex" justifyContent="space-between">
-          <Typography>Situación habitacional</Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
+            Situación habitacional
+          </Typography>
           <Button onClick={toggleOpenAdd}>Registrar </Button>
         </Box>
       </Box>
       <Box>
         <Grid container spacing={2}>
-          {list.map((item) => (
-            <CardHousingSituation
-              key={`item-housing-${item.id}`}
-              data={item}
-              onEdit={() => {
-                setCurrent(item)
-                toggleOpenEdit()
-              }}
-              onDelete={() => {
-                setCurrent(item)
-                toggleOpenDelete()
-              }}
-            />
-          ))}
+          {list.length === 0 ? (
+            <EmptyState message="Ese trabajador no tiene situacial habitacional" />
+          ) : (
+            list.map((item) => (
+              <CardHousingSituation
+                key={`item-housing-${item.id}`}
+                data={item}
+                onEdit={() => {
+                  setCurrent(item)
+                  toggleOpenEdit()
+                }}
+                onDelete={() => {
+                  setCurrent(item)
+                  toggleOpenDelete()
+                }}
+              />
+            ))
+          )}
         </Grid>
       </Box>
       <HousingSituationForm

@@ -38,10 +38,10 @@ const CardSituation = ({ data, onEdit, onDelete }) => {
             <Typography>
               ISAPRE/FONASA: {data.isapre_fonasa.description}
             </Typography>
-            <Box>
+            <Box marginBottom="10px">
               <StatusChip label={`Pensionado: ${data.is_pensioner}`} />
             </Box>
-            <Box>
+            <Box marginBottom="10px">
               <StatusChip
                 label={`Pertenece a reconocer: ${data.belongs_to_recognize}`}
               />

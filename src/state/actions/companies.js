@@ -44,7 +44,7 @@ const getCompanies =
     })
 const getAvailableCompanies = () => () =>
   new Promise((resolve, reject) => {
-    Axios.get(`/business?type=${'EMPRESA PRINCIPAL'}&state=CREATED`)
+    Axios.get(`/business?state=CREATED`)
       .then((response) => {
         const { data } = response
         resolve(data)

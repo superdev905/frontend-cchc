@@ -80,8 +80,10 @@ const FamiliarGroup = () => {
   return (
     <div>
       <Wrapper>
-        <Box display="flex" justifyContent="space-between">
-          <Typography>Grupo Familiar</Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
+            Grupo Familiar
+          </Typography>
           <Button onClick={toggleOpenAdd}>Agregar nuevo</Button>
         </Box>
 

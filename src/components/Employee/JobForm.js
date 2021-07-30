@@ -4,8 +4,8 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { DatePicker, Dialog } from '../Shared'
-import { Button, Select, SubmitButton, TextField } from '../UI'
+import { CurrencyTextField, DatePicker, Dialog } from '../Shared'
+import { Button, Select, SubmitButton } from '../UI'
 import companiesActions from '../../state/actions/companies'
 import { useSuccess } from '../../hooks'
 
@@ -44,6 +44,8 @@ const HousingForm = ({
       admission_date: type === 'UPDATE' ? data.admission_date : '',
       business_id: type === 'UPDATE' ? data.business_id : '',
       construction_id: type === 'UPDATE' ? data.construction_id : '',
+      business_name: type === 'UPDATE' ? data.construction_id : '',
+      construction_name: type === 'UPDATE' ? data.construction_id : '',
       contract_term: type === 'UPDATE' ? data.contract_term : '',
       contract_type: type === 'UPDATE' ? data.contract_type : '',
       leave_date: type === 'UPDATE' ? data.leave_date : '',
@@ -73,12 +75,22 @@ const HousingForm = ({
   })
 
   useEffect(() => {
-    if (formik.values.business_id && companies.length > 0) {
-      setConstructions(
-        companies.find(
-          (item) => item.id === parseInt(formik.values.business_id, 10)
-        ).constructions
+    if (formik.values.construction_id && constructions.length > 0) {
+      const currentCons = constructions.find(
+        (item) => item.id === parseInt(formik.values.construction_id, 10)
       )
+      formik.setFieldValue('construction_name', currentCons.business_name)
+    }
+  }, [formik.values.construction_id, constructions])
+
+  useEffect(() => {
+    if (formik.values.business_id && companies.length > 0) {
+      const currentCompany = companies.find(
+        (item) => item.id === parseInt(formik.values.business_id, 10)
+      )
+      console.log(currentCompany)
+      formik.setFieldValue('business_name', currentCompany.business_name)
+      setConstructions(currentCompany.constructions)
     } else {
       setConstructions([])
     }
@@ -252,7 +264,7 @@ const HousingForm = ({
               </Select>
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
+              <CurrencyTextField
                 label="Ingreso"
                 name="salary"
                 onChange={formik.handleChange}

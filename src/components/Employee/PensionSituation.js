@@ -56,8 +56,10 @@ const PensionSituation = () => {
   return (
     <Wrapper>
       <Box>
-        <Box display="flex" justifyContent="space-between">
-          <Typography>Situación provisional</Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
+            Situación provisional
+          </Typography>
           <Button onClick={toggleOpenAdd}>Registrar </Button>
         </Box>
       </Box>

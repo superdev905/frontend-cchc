@@ -4,8 +4,8 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { Dialog } from '../Shared'
-import { Button, Select, SubmitButton, TextField } from '../UI'
+import { Dialog, CurrencyTextField } from '../Shared'
+import { Button, Select, SubmitButton } from '../UI'
 import commonActions from '../../state/actions/common'
 import { useSuccess } from '../../hooks'
 import { decisionList } from '../../config'
@@ -177,7 +177,7 @@ const PensionSituation = ({
               </Select>
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
+              <CurrencyTextField
                 label="Monto de pensión"
                 name="pension_amount"
                 value={formik.values.pension_amount}
