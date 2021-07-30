@@ -56,12 +56,6 @@ const ContactCard = ({ contact, loading, onEdit, onDelete }) => {
             <LabeledRow label="Número">
               <Text loading={loading}>{contact?.number}</Text>
             </LabeledRow>
-            <LabeledRow label="Región">
-              <Text loading={loading}>{contact?.number}</Text>
-            </LabeledRow>
-            <LabeledRow label="Comuna">
-              <Text loading={loading}>{contact?.number}</Text>
-            </LabeledRow>
             <LabeledRow label="Correo">
               <Text loading={loading}>{contact?.email}</Text>
             </LabeledRow>
