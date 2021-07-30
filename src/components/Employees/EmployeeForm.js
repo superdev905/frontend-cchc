@@ -121,7 +121,7 @@ const EmployeeModal = ({
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
       <Box>
         <Typography variant="h6" align="center">
-          {`${type === 'UPDATE' ? 'Actualizar' : 'Editar'} trabajador`}
+          {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} trabajador`}
         </Typography>
         <Box p={2}>
           <Box>
