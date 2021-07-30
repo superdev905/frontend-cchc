@@ -6,7 +6,7 @@ const getBaseUrl = () => {
     return config.test.API_BASE
   }
   if (process.env.REACT_APP_NODE_ENV === 'production') {
-    return config.dev.API_BASE
+    return config.prod.API_BASE
   }
   return config.dev.API_BASE
 }
