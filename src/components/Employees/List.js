@@ -20,7 +20,7 @@ const ListEmployees = () => {
     dispatch(employeesActions.getEmployees())
   }
   const onRowClick = (row) => {
-    history.push(`/employee/${row.id}`)
+    history.push(`/employee/${row.id}/info`)
   }
   const createEmployee = (values) =>
     dispatch(employeesActions.createEmployee(values))

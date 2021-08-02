@@ -1,30 +1,9 @@
 import { useState } from 'react'
-import { Box, makeStyles, Tabs, Tab } from '@material-ui/core'
+import { Box } from '@material-ui/core'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
-
-const useStyles = makeStyles((theme) => ({
-  root: {},
-  tabRoot: {
-    marginBottom: 15,
-    minHeight: 0,
-    '& button': {
-      minHeight: 0,
-      fontSize: 15,
-      fontWeight: 'bold',
-      opacity: 0.7,
-      minWidth: 0,
-      padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
-      textTransform: 'inherit'
-    },
-    '& .Mui-selected': {
-      color: theme.palette.primary.main,
-      opacity: 1
-    }
-  }
-}))
+import { Tabs } from '../Shared'
 
 const CompanyTabs = ({ children }) => {
-  const classes = useStyles()
   const history = useHistory()
   const location = useLocation()
   const { idCompany } = useParams()
@@ -51,24 +30,16 @@ const CompanyTabs = ({ children }) => {
   }
 
   return (
-    <Box className={classes.root}>
+    <Box>
       <Box>
         <Tabs
           value={tab}
           onChange={handleTabChange}
-          classes={{ root: classes.tabRoot }}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="scrollable"
-          scrollButtons="auto"
+          tabs={['Detalles', 'Divisiones', 'Contactos', 'Obras']}
         >
-          <Tab label="Detalles" />
-          <Tab label="Divisiones" />
-          <Tab label="Contactos" />
-          <Tab label="Obras" />
+          {children}
         </Tabs>
       </Box>
-      <Box>{children}</Box>
     </Box>
   )
 }

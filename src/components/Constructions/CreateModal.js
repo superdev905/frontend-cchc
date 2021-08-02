@@ -4,6 +4,7 @@ import * as Yup from 'yup'
 import { useSnackbar } from 'notistack'
 import { useFormik } from 'formik'
 import { Box, Grid, Typography } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 import commonActions from '../../state/actions/common'
 import constructionsActions from '../../state/actions/constructions'
 import companiesActions from '../../state/actions/companies'
@@ -51,6 +52,7 @@ const ConstructionModal = ({
   const [treeData, setTreeData] = useState([])
   const [communes, setCommunes] = useState([])
   const [companies, setCompanies] = useState([])
+  const [selectedCompany, setSelectedCompany] = useState(null)
   const [companyBill, setCompanyBill] = useState(null)
   const { success, changeSuccess } = useSuccess()
   const { open: openFact, toggleOpen: toggleOpenFact } = useToggle()
@@ -138,6 +140,11 @@ const ConstructionModal = ({
     formik.setFieldValue('longitude', targetLocation.lng)
     formik.setFieldValue('latitude', targetLocation.lat)
   }
+  const onCompanySelect = (__, values) => {
+    setSelectedCompany(values)
+    formik.setFieldValue('business_selected_id', values ? values.id : '')
+    formik.setFieldTouched('business_selected_id')
+  }
 
   useEffect(() => {
     formik.setFieldValue(
@@ -195,29 +202,28 @@ const ConstructionModal = ({
           <Grid container spacing={2}>
             {selectClient && (
               <Grid item xs={12} md={6}>
-                <Select
-                  label="Seleccion empresa"
-                  name="business_selected_id"
-                  required
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.business_selected_id}
-                  helperText={
-                    formik.touched.business_selected_id &&
-                    formik.errors.business_selected_id
-                  }
-                  error={
-                    formik.touched.business_id &&
-                    Boolean(formik.errors.business_selected_id)
-                  }
-                >
-                  <option value="">Seleccione empresa</option>
-                  {companies.map((item, index) => (
-                    <option key={`company--${index}`} value={`${item.id}`}>
-                      {item.business_name}
-                    </option>
-                  ))}
-                </Select>
+                <Autocomplete
+                  options={companies}
+                  value={selectedCompany || ''}
+                  getOptionLabel={(option) => option.business_name}
+                  onChange={onCompanySelect}
+                  renderOption={(option) => (
+                    <Box>
+                      <Typography>
+                        {`Razón social: `}
+                        <strong>{option.business_name}</strong>
+                      </Typography>
+                      <Typography>{`Rut: ${option.rut}`}</Typography>
+                    </Box>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Selecciona empresa"
+                      placeholder="Nombre de empresa"
+                    />
+                  )}
+                />
               </Grid>
             )}
             <Grid item xs={12} md={6}>
