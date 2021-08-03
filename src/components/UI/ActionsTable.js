@@ -20,10 +20,19 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const ActionGroup = ({ onEdit, onDelete, onView }) => {
+const ActionGroup = ({ onEdit, onDelete, onView, moreOptions }) => {
   const classes = useStyles()
   return (
     <Box className={classes.root}>
+      {moreOptions.map((item, index) => (
+        <IconButton
+          disabled={item.disabled}
+          key={`more-table-option-${index}`}
+          onClick={item.onClick}
+        >
+          {item.icon}
+        </IconButton>
+      ))}
       {onEdit && (
         <IconButton onClick={onEdit}>
           <EditIcon className={classes.btnPrimary} />
@@ -41,6 +50,10 @@ const ActionGroup = ({ onEdit, onDelete, onView }) => {
       )}
     </Box>
   )
+}
+
+ActionGroup.defaultProps = {
+  moreOptions: []
 }
 
 ActionGroup.propTypes = {

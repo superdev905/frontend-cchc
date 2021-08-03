@@ -4,7 +4,7 @@ import { Box, InputLabel, TextField, makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   label: {
-    fontSize: '14px',
+    fontSize: '15px',
     color: theme.palette.common.black,
     opacity: 0.8
   },

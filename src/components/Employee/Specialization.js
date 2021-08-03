@@ -3,11 +3,12 @@ import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { Box, Typography } from '@material-ui/core'
+import { AttachFile as AttachFileIcon } from '@material-ui/icons'
 import { useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
 import { ActionsTable, Button, Wrapper } from '../UI'
 import SpecForm from './SpecForm'
-import { ConfirmDelete, DataTable } from '../Shared'
+import { ConfirmDelete, DataTable, FileVisor } from '../Shared'
 import { formatDate } from '../../formatters'
 
 const PensionSituation = () => {
@@ -19,6 +20,7 @@ const PensionSituation = () => {
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
 
   const fetchData = () => {
     dispatch(
@@ -131,6 +133,16 @@ const PensionSituation = () => {
                       setCurrent(row)
                       toggleOpenDelete()
                     }}
+                    moreOptions={[
+                      {
+                        disabled: !row.certification_url,
+                        icon: <AttachFileIcon />,
+                        onClick: () => {
+                          toggleOpenVisor()
+                          setCurrent(row)
+                        }
+                      }
+                    ]}
                   />
                 )
               }
@@ -168,6 +180,13 @@ const PensionSituation = () => {
               ¿Estás seguro de eliminar esta especialización?
             </Typography>
           }
+        />
+      )}
+      {current && openVisor && (
+        <FileVisor
+          open={openVisor}
+          onClose={toggleOpenVisor}
+          fileName={current.certification_url}
         />
       )}
     </Wrapper>

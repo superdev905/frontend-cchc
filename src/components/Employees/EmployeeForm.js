@@ -340,7 +340,7 @@ const EmployeeModal = ({
                   }
                   disabled={formik.values.disability === 'NO'}
                 >
-                  <option value="">Seleccione escolaridad</option>
+                  <option value="">Seleccione opción</option>
                   {decisionList.map((item, i) => (
                     <option key={`credential-${i}-${item}`} value={item}>
                       {item}
@@ -364,7 +364,7 @@ const EmployeeModal = ({
                   }
                   helperText={formik.touched.bank_id && formik.errors.bank_id}
                 >
-                  <option value="">Seleccione escolaridad</option>
+                  <option value="">Seleccione Banco</option>
                   {banks.map((item, i) => (
                     <option key={`gender-${i}-${item}`} value={item.id}>
                       {item.description}
@@ -386,7 +386,7 @@ const EmployeeModal = ({
                     formik.touched.account_type && formik.errors.account_type
                   }
                 >
-                  <option value="">Seleccione escolaridad</option>
+                  <option value="">Seleccione tipo de cuenta</option>
                   {['CUENTA CORRIENTE', 'AHORRO', 'VISTA'].map((item, i) => (
                     <option key={`account-type-${i}-${item}`} value={item}>
                       {item}
@@ -419,7 +419,7 @@ const EmployeeModal = ({
                   error={formik.touched.rsh && Boolean(formik.errors.rsh)}
                   helperText={formik.touched.rsh && formik.errors.rsh}
                 >
-                  <option value="">Seleccione escolaridad</option>
+                  <option value="">Seleccione opción</option>
                   {decisionList.map((item, i) => (
                     <option key={`rsh-item-${i}-${item.id}`} value={item}>
                       {item}

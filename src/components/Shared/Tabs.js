@@ -1,18 +1,37 @@
 import PropTypes from 'prop-types'
 import { Box, makeStyles, Tabs, Tab } from '@material-ui/core'
 
+function a11yProps(index) {
+  return {
+    id: `scrollable-auto-tab-${index}`,
+    'aria-controls': `scrollable-auto-tabpanel-${index}`
+  }
+}
+
 const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    width: `${window.innerWidth - 16}px`,
+    backgroundColor: theme.palette.background.paper,
+    [theme.breakpoints.up('md')]: {
+      width: '100%'
+    }
+  },
   tabRoot: {
     marginBottom: 15,
     minHeight: 0,
     '& button': {
       minHeight: 0,
+      maxWidth: 'fit-content',
       fontSize: 15,
       fontWeight: 'bold',
-      opacity: 0.8,
+      opacity: 0.9,
       minWidth: 0,
-      padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
-      textTransform: 'inherit'
+      padding: `10px`,
+      textTransform: 'inherit',
+      [theme.breakpoints.up('md')]: {
+        padding: `${theme.spacing(2)}px ${theme.spacing(2)}px`
+      }
     },
     '& .Mui-selected': {
       color: theme.palette.primary.main,
@@ -26,7 +45,7 @@ const CustomTabs = ({ children, value, onChange, tabs }) => {
 
   return (
     <Box>
-      <Box>
+      <Box className={classes.root}>
         <Tabs
           value={value}
           onChange={onChange}
@@ -37,7 +56,11 @@ const CustomTabs = ({ children, value, onChange, tabs }) => {
           scrollButtons="auto"
         >
           {tabs.map((item, index) => (
-            <Tab label={item} key={`index-tab-${index}`} />
+            <Tab
+              label={item}
+              key={`index-tab-${index}`}
+              {...a11yProps(index)}
+            />
           ))}
         </Tabs>
       </Box>

@@ -3,8 +3,8 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, Grid, Typography } from '@material-ui/core'
-import { DatePicker, Dialog } from '../Shared'
+import { Box, Grid, Typography, InputLabel } from '@material-ui/core'
+import { DatePicker, Dialog, FileUploader } from '../Shared'
 import { Button, Select, SubmitButton } from '../UI'
 import commonActions from '../../state/actions/common'
 import { useSuccess } from '../../hooks'
@@ -45,7 +45,8 @@ const HousingForm = ({
       is_self_taught: type === 'UPDATE' ? data.is_self_taught : '',
       certifying_entity_id: type === 'UPDATE' ? data.certifying_entity_id : '',
       is_certificated: type === 'UPDATE' ? data.is_certificated : '',
-      certificated_date: type === 'UPDATE' ? data.certificated_date : ''
+      certificated_date: type === 'UPDATE' ? data.certificated_date : '',
+      certification_url: type === 'UPDATE' ? data.certification_url : ''
     },
     onSubmit: (values) => {
       submitFunction({
@@ -238,6 +239,16 @@ const HousingForm = ({
                 onChange={(date) => {
                   formik.setFieldTouched('certificated_date')
                   formik.setFieldValue('certificated_date', date)
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} md={12}>
+              <InputLabel style={{ fontSize: '15px', marginBottom: '10px' }}>
+                Certificado
+              </InputLabel>
+              <FileUploader
+                onSuccess={(url) => {
+                  formik.setFieldValue('certification_url', url)
                 }}
               />
             </Grid>

@@ -7,7 +7,8 @@ import {
   PensionSituation,
   SpecializationHistory,
   EmployeeJobs,
-  EmployeeFamiliarGroup
+  EmployeeFamiliarGroup,
+  HousingSituation
 } from '../components/Employee'
 
 const Employees = lazy(() => import('../pages/Employees'))
@@ -97,6 +98,7 @@ const companyRoutes = [
           <Layout>
             <Employee>
               <PensionSituation />
+              <HousingSituation />
             </Employee>
           </Layout>
         )}
