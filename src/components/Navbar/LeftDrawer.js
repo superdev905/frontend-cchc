@@ -16,7 +16,8 @@ import {
   Business as ConstructionIcon,
   Settings as SettingsIcon,
   BusinessCenter as BusinessIcon,
-  People as EmployeeIcon
+  People as UserIcon,
+  AssignmentInd as EmployeeIcon
 } from '@material-ui/icons'
 import clsx from 'clsx'
 
@@ -44,7 +45,8 @@ const commonRoutes = [
   { title: 'Empresas', path: '/companies', icon: <BusinessIcon /> },
   { title: 'Obras', path: '/obras', icon: <ConstructionIcon /> },
   { title: 'Trabajadores', path: '/employees', icon: <EmployeeIcon /> },
-  { title: 'Configuración', path: '/settings', icon: <SettingsIcon /> }
+  { title: 'Configuración', path: '/settings', icon: <SettingsIcon /> },
+  { title: 'Usuarios', path: '/users', icon: <UserIcon /> }
 ]
 
 const LeftDrawer = ({ ...props }) => {

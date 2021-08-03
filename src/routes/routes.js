@@ -9,6 +9,7 @@ const Home = lazy(() => import('../pages/Home'))
 const Settings = lazy(() => import('../pages/Settings'))
 const Construction = lazy(() => import('../pages/Construction'))
 const Constructions = lazy(() => import('../pages/Constructions'))
+const Users = lazy(() => import('../pages/Users'))
 
 const routes = [
   {
@@ -78,6 +79,22 @@ const routes = [
         yes={() => (
           <Layout>
             <Settings />
+          </Layout>
+        )}
+        no={() => <span>Log in</span>}
+      />
+    )
+  },
+  {
+    path: '/users',
+    key: 'USERS',
+    exact: true,
+    component: () => (
+      <Can
+        availableTo={['ADMIN']}
+        yes={() => (
+          <Layout>
+            <Users />
           </Layout>
         )}
         no={() => <span>Log in</span>}
