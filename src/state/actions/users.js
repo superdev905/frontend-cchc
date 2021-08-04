@@ -2,7 +2,7 @@ import queryString from 'query-string'
 import Axios from '../../Axios'
 import usersTypes from '../types/users'
 
-const employeeEndpoint = `${
+const usersEndpoint = `${
   process.env.REACT_APP_NODE_ENV === 'production'
     ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5500'
     : 'http://localhost:5500'
@@ -12,7 +12,7 @@ const getUsers =
   (query = {}) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
-      Axios.get(`${employeeEndpoint}/users?${queryString.stringify(query)}`)
+      Axios.get(`${usersEndpoint}/users?${queryString.stringify(query)}`)
         .then((response) => {
           const { data } = response
           dispatch({ type: usersTypes.GET_USERS, payload: data })
@@ -25,7 +25,7 @@ const getUsers =
 
 const createUser = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${employeeEndpoint}/users`, values)
+    Axios.post(`${usersEndpoint}/users`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -35,4 +35,28 @@ const createUser = (values) => () =>
       })
   })
 
-export default { getUsers, createUser }
+const updateUser = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${usersEndpoint}/users/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchUser = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${usersEndpoint}/users/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+export default { getUsers, createUser, updateUser, patchUser }

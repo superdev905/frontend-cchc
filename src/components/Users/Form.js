@@ -3,6 +3,7 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import {
+  Avatar,
   Box,
   Grid,
   InputLabel,
@@ -20,6 +21,15 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.black,
     fontSize: '15px',
     opacity: 0.8
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: '15px'
+  },
+  avatar: {
+    width: 100,
+    height: 100
   }
 }))
 
@@ -37,12 +47,20 @@ const Form = ({
   type,
   data,
   submitFunction,
-  successFunction
+  successFunction,
+  successMessage
 }) => {
   const classes = useStyles()
+  const [readOnly] = useState(type === 'VIEW')
   const [randomPassword] = useState(generatePassword())
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
+
+  const getTitle = (actionType) => {
+    if (actionType === 'VIEW') return 'Ver usuario'
+    if (actionType === 'UDPATE') return 'Editar usuario'
+    return 'Nuevo usuario'
+  }
 
   const formik = useFormik({
     validateOnMount: true,
@@ -60,6 +78,7 @@ const Form = ({
         .then(() => {
           formik.setSubmitting(false)
           resetForm()
+          enqueueSnackbar(successMessage, { variant: 'success' })
           changeSuccess(true)
           if (successFunction) {
             successFunction()
@@ -75,9 +94,18 @@ const Form = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth={true}>
       <Box>
-        <Typography align="center">Nuevo usuario</Typography>
+        <Typography className={classes.title} align="center">
+          {getTitle(type)}
+        </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center" marginBottom="10px">
+                <Avatar className={classes.avatar}>
+                  {formik.values.names ? formik.values.names.charAt(0) : ''}
+                </Avatar>
+              </Box>
+            </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 name="names"
@@ -87,6 +115,7 @@ const Form = ({
                 onChange={formik.handleChange}
                 error={formik.touched.names && Boolean(formik.errors.names)}
                 helperText={formik.touched.names && formik.errors.names}
+                inputProps={{ readOnly }}
               />
             </Grid>
 
@@ -105,6 +134,7 @@ const Form = ({
                   formik.touched.paternal_surname &&
                   formik.errors.paternal_surname
                 }
+                inputProps={{ readOnly }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -122,6 +152,7 @@ const Form = ({
                   formik.touched.maternal_surname &&
                   formik.errors.maternal_surname
                 }
+                inputProps={{ readOnly }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -133,6 +164,7 @@ const Form = ({
                 onChange={formik.handleChange}
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
+                inputProps={{ readOnly }}
               />
             </Grid>
             {type === 'ADD' && (
@@ -157,21 +189,28 @@ const Form = ({
                   formik.setFieldValue('is_administrator', e.target.checked)
                 }}
                 name="checked-administrator"
+                disabled={readOnly}
               />
             </Grid>
           </Grid>
           <Box textAlign="center">
-            <Button onClick={onClose} variant="outlined">
-              Cancelar
-            </Button>
-            <SubmitButton
-              disabled={!formik.isValid || formik.isSubmitting}
-              loading={formik.isSubmitting}
-              onClick={formik.handleSubmit}
-              success={success}
-            >{`${
-              type === 'ADD' ? 'Crear' : 'Actualizar'
-            } usuario`}</SubmitButton>
+            {type === 'VIEW' ? (
+              <Button onClick={onClose}>Aceptar</Button>
+            ) : (
+              <>
+                <Button onClick={onClose} variant="outlined">
+                  Cancelar
+                </Button>
+                <SubmitButton
+                  disabled={!formik.isValid || formik.isSubmitting}
+                  loading={formik.isSubmitting}
+                  onClick={formik.handleSubmit}
+                  success={success}
+                >{`${
+                  type === 'ADD' ? 'Crear' : 'Actualizar'
+                } usuario`}</SubmitButton>
+              </>
+            )}
           </Box>
         </Box>
       </Box>
