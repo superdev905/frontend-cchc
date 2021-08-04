@@ -5,6 +5,7 @@ import Can from '../components/Can'
 import companyRoutes from './company'
 import employeeRoutes from './employee'
 
+const Login = lazy(() => import('../pages/Login'))
 const Home = lazy(() => import('../pages/Home'))
 const Settings = lazy(() => import('../pages/Settings'))
 const Construction = lazy(() => import('../pages/Construction'))
@@ -18,6 +19,18 @@ const routes = [
     exact: true,
     component: ({ authenticated }) =>
       authenticated ? <Redirect to="/home" /> : <Redirect to="/companies" />
+  },
+  {
+    path: '/login',
+    key: 'LOGIN',
+    exact: true,
+    component: () => (
+      <Can
+        availableTo={['ADMIN']}
+        yes={() => <Login />}
+        no={() => <span>Log in</span>}
+      />
+    )
   },
   {
     path: '/home',

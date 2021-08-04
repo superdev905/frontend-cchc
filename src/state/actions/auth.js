@@ -1,9 +1,15 @@
 import Axios from '../../Axios'
 import authTypes from '../types/auth'
 
+const autEndpoint = `${
+  process.env.REACT_APP_NODE_ENV === 'production'
+    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5500'
+    : 'http://localhost:5500'
+}/api/v1`
+
 const loginUser = (credentials) => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.post('/auth/login', credentials)
+    Axios.post(`${autEndpoint}/auth/login`, credentials)
       .then((response) => {
         const { data } = response
         dispatch({ type: authTypes.SET_CURRENT_USER, payload: data.user })
