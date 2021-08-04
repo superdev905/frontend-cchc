@@ -12,7 +12,7 @@ import { usersConfig } from '../../config'
 const useStyles = makeStyles((theme) => ({
   top: {
     [theme.breakpoints.up('md')]: {
-      marginTop: 13
+      marginTop: 12
     }
   }
 }))
@@ -96,7 +96,8 @@ const List = () => {
               onChange={handleSearch}
             />
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={3}></Grid>
+          <Grid item xs={12} md={3}>
             <Select
               label="Estado"
               name="state-filter"
@@ -112,9 +113,7 @@ const List = () => {
             </Select>
           </Grid>
           <Grid item xs={12} md={2} className={classes.top}>
-            <Box textAlign="right">
-              <Button onClick={toggleOpenAdd}> Nuevo usuario</Button>
-            </Box>
+            <Button onClick={toggleOpenAdd}> Nuevo usuario</Button>
           </Grid>
         </Grid>
       </Box>
