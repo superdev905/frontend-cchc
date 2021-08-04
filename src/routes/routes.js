@@ -110,7 +110,7 @@ const routes = [
             <Users />
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Login />}
       />
     )
   }

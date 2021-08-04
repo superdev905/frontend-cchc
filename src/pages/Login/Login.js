@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
+import { useHistory } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
@@ -51,9 +52,11 @@ const validationSchema = Yup.object().shape({
 
 const Login = () => {
   const classes = useStyles()
-  const { enqueueSnackbar } = useSnackbar()
   const dispatch = useDispatch()
+  const history = useHistory()
+  const { enqueueSnackbar } = useSnackbar()
   const [error, setError] = useState('')
+  const { isAuthenticated } = useSelector((state) => state.auth)
 
   const formik = useFormik({
     validateOnMount: true,
@@ -87,6 +90,10 @@ const Login = () => {
     if (key === 'Enter' && formik.isValid) {
       formik.submitForm()
     }
+  }
+
+  if (isAuthenticated) {
+    history.push('/')
   }
 
   return (

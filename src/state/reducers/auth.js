@@ -1,7 +1,9 @@
 import authTypes from '../types/auth'
 
+const token = window.localStorage.getItem('token')
+
 const initialState = {
-  isAuthenticated: true,
+  isAuthenticated: !!token,
   rememberSession: false,
   user: null
 }

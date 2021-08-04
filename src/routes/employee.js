@@ -11,6 +11,7 @@ import {
   HousingSituation
 } from '../components/Employee'
 
+const Login = lazy(() => import('../pages/Login'))
 const Employees = lazy(() => import('../pages/Employees'))
 const Employee = lazy(() => import('../pages/Employee'))
 
@@ -29,7 +30,7 @@ const companyRoutes = [
             <Employees />
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Login />}
       />
     )
   },
@@ -47,7 +48,7 @@ const companyRoutes = [
             </Employee>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Login />}
       />
     )
   },
@@ -65,7 +66,7 @@ const companyRoutes = [
             </Employee>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Login />}
       />
     )
   },
@@ -83,7 +84,7 @@ const companyRoutes = [
             </Employee>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Login />}
       />
     )
   },
@@ -102,7 +103,7 @@ const companyRoutes = [
             </Employee>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Login />}
       />
     )
   },
@@ -120,7 +121,7 @@ const companyRoutes = [
             </Employee>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Login />}
       />
     )
   },
@@ -138,7 +139,7 @@ const companyRoutes = [
             </Employee>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Login />}
       />
     )
   }
