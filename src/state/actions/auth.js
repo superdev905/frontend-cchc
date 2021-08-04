@@ -39,11 +39,11 @@ const refreshToken = () =>
 
 const getLoggedUser = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get('/auth/me')
+    Axios.get(`${autEndpoint}/auth/me`)
       .then((response) => {
         dispatch({
           type: authTypes.GET_AUTHENTICATED,
-          payload: response.data.user
+          payload: response.data
         })
         resolve()
       })

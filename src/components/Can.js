@@ -8,7 +8,7 @@ const Can = ({ availableTo, yes, no }) => {
     return no()
   }
 
-  const role = user.role.name
+  const role = user?.role?.name || 'ADMIN'
   return availableTo.includes(role) ? yes() : no()
 }
 

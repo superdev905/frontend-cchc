@@ -6,6 +6,7 @@ import CompanyDivisions from '../components/Company/Divisions'
 import CompanyContacts from '../components/Company/Contacts'
 import CompanyConstructions from '../components/Company/Constructions'
 
+const Login = lazy(() => import('../pages/Login'))
 const Companies = lazy(() => import('../pages/Companies'))
 const Company = lazy(() => import('../pages/Company'))
 
@@ -24,7 +25,7 @@ const companyRoutes = [
             <Companies />
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Login />}
       />
     )
   },
@@ -42,7 +43,7 @@ const companyRoutes = [
             </Company>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Login />}
       />
     )
   },
@@ -60,7 +61,7 @@ const companyRoutes = [
             </Company>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Login />}
       />
     )
   },
@@ -78,7 +79,7 @@ const companyRoutes = [
             </Company>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Login />}
       />
     )
   },
@@ -96,7 +97,7 @@ const companyRoutes = [
             </Company>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Login />}
       />
     )
   }
