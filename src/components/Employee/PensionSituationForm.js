@@ -67,6 +67,12 @@ const PensionSituation = ({
   })
 
   useEffect(() => {
+    if (formik.values.is_pensioner !== 'SI') {
+      formik.setFieldValue('pension_amount', '')
+    }
+  }, [formik.values.is_pensioner])
+
+  useEffect(() => {
     if (open) {
       dispatch(commonActions.getAfpIsp())
       dispatch(commonActions.getIsapreFonasa())
@@ -190,6 +196,10 @@ const PensionSituation = ({
                 helperText={
                   formik.touched.pension_amount && formik.errors.pension_amount
                 }
+                disabled={formik.values.is_pensioner === 'NO'}
+                inputProps={{
+                  readOnly: formik.values.is_pensioner === 'NO'
+                }}
               />
             </Grid>
           </Grid>
