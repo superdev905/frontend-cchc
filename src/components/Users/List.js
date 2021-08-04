@@ -38,10 +38,12 @@ const List = () => {
 
   const onCreateUser = (values) => dispatch(usersActions.createUser(values))
 
-  const onUpdateUser = (values) =>
-    dispatch(
+  const onUpdateUser = (values) => {
+    delete values.password
+    return dispatch(
       usersActions.updateUser(current.id, { ...values, state: current.state })
     )
+  }
   const onBlockUser = () => {
     dispatch(usersActions.patchUser(current.id, { state: 'DELETED' }))
       .then(() => {

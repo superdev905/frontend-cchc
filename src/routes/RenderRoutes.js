@@ -23,7 +23,7 @@ function RenderRoutes() {
     } else if (token && !isAuthenticated) {
       window.localStorage.clear()
     }
-  }, [token])
+  }, [token, isAuthenticated])
 
   return <Switch>{renderRoutes(routes, { isAuthenticated })}</Switch>
 }
