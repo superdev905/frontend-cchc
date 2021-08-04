@@ -8,6 +8,7 @@ import constructions from './constructions'
 import charges from './charges'
 import regions from './regions'
 import employees from './employees'
+import users from './users'
 
 const reducers = (history) =>
   combineReducers({
@@ -19,6 +20,7 @@ const reducers = (history) =>
     charges,
     regions,
     employees,
+    users,
     router: connectRouter(history)
   })
 

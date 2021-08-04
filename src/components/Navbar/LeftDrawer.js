@@ -45,8 +45,8 @@ const commonRoutes = [
   { title: 'Empresas', path: '/companies', icon: <BusinessIcon /> },
   { title: 'Obras', path: '/obras', icon: <ConstructionIcon /> },
   { title: 'Trabajadores', path: '/employees', icon: <EmployeeIcon /> },
-  { title: 'Configuración', path: '/settings', icon: <SettingsIcon /> },
-  { title: 'Usuarios', path: '/users', icon: <UserIcon /> }
+  { title: 'Usuarios', path: '/users', icon: <UserIcon /> },
+  { title: 'Configuración', path: '/settings', icon: <SettingsIcon /> }
 ]
 
 const LeftDrawer = ({ ...props }) => {
