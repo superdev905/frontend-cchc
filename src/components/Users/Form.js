@@ -58,7 +58,7 @@ const Form = ({
 
   const getTitle = (actionType) => {
     if (actionType === 'VIEW') return 'Ver usuario'
-    if (actionType === 'UDPATE') return 'Editar usuario'
+    if (actionType === 'UPDATE') return 'Editar usuario'
     return 'Nuevo usuario'
   }
 
