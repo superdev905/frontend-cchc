@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box } from '@material-ui/core'
+import { Box, Grid } from '@material-ui/core'
 
 import usersActions from '../../state/actions/users'
 import { DataTable } from '../Shared'
-import { ActionsTable, Button } from '../UI'
+import { ActionsTable, Button, SearchInput } from '../UI'
 import UserForm from './Form'
 import { useToggle } from '../../hooks'
 
 const List = () => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
+  const [current, setCurrent] = useState(null)
   const { usersList } = useSelector((state) => state.users)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
 
   const onCreateUser = (values) => dispatch(usersActions.createUser(values))
 
@@ -33,7 +35,16 @@ const List = () => {
   return (
     <Box>
       <Box>
-        <Button onClick={toggleOpenAdd}> Nuevo usuario</Button>
+        <Grid container>
+          <Grid item xs={12} md={4}>
+            <SearchInput placeholder="Buscar por: Nombre, Correo" />
+          </Grid>
+          <Grid item xs={12} md={8}>
+            <Box textAlign="right">
+              <Button onClick={toggleOpenAdd}> Nuevo usuario</Button>
+            </Box>
+          </Grid>
+        </Grid>
       </Box>
       <DataTable
         progressPending={loading}
@@ -61,9 +72,11 @@ const List = () => {
               <ActionsTable
                 {...row}
                 onEdit={() => {
-                  console.log('on de edit')
+                  setCurrent(row)
+                  toggleOpenEdit()
                 }}
                 onDelete={() => {
+                  setCurrent(row)
                   console.log('on delete')
                 }}
               />
@@ -74,9 +87,20 @@ const List = () => {
       />
       <UserForm
         open={openAdd}
+        successFunction={fetchUsers}
         onClose={toggleOpenAdd}
         submitFunction={onCreateUser}
       />
+      {current && openEdit && (
+        <UserForm
+          open={openEdit}
+          data={current}
+          type="UPDATE"
+          successFunction={fetchUsers}
+          onClose={toggleOpenEdit}
+          submitFunction={onCreateUser}
+        />
+      )}
     </Box>
   )
 }

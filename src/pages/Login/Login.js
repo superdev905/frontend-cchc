@@ -65,14 +65,29 @@ const Login = () => {
     onSubmit: (values) => {
       dispatch(authActions.loginUser(values))
         .then(() => {
-          enqueueSnackbar('Inicio de sesión exitoso', { variant: 'success' })
+          formik.setSubmitting(false)
+          enqueueSnackbar('Inicio de sesión exitoso', {
+            variant: 'success',
+            anchorOrigin: { vertical: 'bottom', horizontal: 'center' }
+          })
         })
         .catch((err) => {
+          formik.setSubmitting(false)
           setError(err)
-          enqueueSnackbar(err, { variant: 'error' })
+          enqueueSnackbar(err, {
+            variant: 'error',
+            anchorOrigin: { vertical: 'bottom', horizontal: 'center' }
+          })
         })
     }
   })
+
+  const handlePasswordKeyDown = (e) => {
+    const { key } = e
+    if (key === 'Enter' && formik.isValid) {
+      formik.submitForm()
+    }
+  }
 
   return (
     <Box className={classes.root}>
@@ -87,7 +102,9 @@ const Login = () => {
         <Typography className={classes.title} align="center">
           Iniciar sesión
         </Typography>
-        <Box>{error && <Alert severity="error">{error}</Alert>}</Box>
+        <Box marginBottom="10px">
+          {error && <Alert severity="error">{error}</Alert>}
+        </Box>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -110,6 +127,7 @@ const Login = () => {
               onChange={formik.handleChange}
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password}
+              onKeyDown={handlePasswordKeyDown}
             />
           </Grid>
         </Grid>

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
@@ -12,6 +13,7 @@ import {
 import { Dialog } from '../Shared'
 import { SubmitButton, Button, TextField } from '../UI'
 import { useSuccess } from '../../hooks'
+import generatePassword from '../../utils/generatePassword'
 
 const useStyles = makeStyles((theme) => ({
   label: {
@@ -29,8 +31,16 @@ const validationSchema = Yup.object().shape({
   is_administrator: Yup.bool()
 })
 
-const Form = ({ open, onClose, type, data, submitFunction }) => {
+const Form = ({
+  open,
+  onClose,
+  type,
+  data,
+  submitFunction,
+  successFunction
+}) => {
   const classes = useStyles()
+  const [randomPassword] = useState(generatePassword())
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
 
@@ -42,6 +52,7 @@ const Form = ({ open, onClose, type, data, submitFunction }) => {
       maternal_surname: type !== 'ADD' ? data.maternal_surname : '',
       paternal_surname: type !== 'ADD' ? data.paternal_surname : '',
       email: type !== 'ADD' ? data.email : '',
+      password: randomPassword,
       is_administrator: type !== 'ADD' ? data.is_administrator : false
     },
     onSubmit: (values, { resetForm }) => {
@@ -50,6 +61,9 @@ const Form = ({ open, onClose, type, data, submitFunction }) => {
           formik.setSubmitting(false)
           resetForm()
           changeSuccess(true)
+          if (successFunction) {
+            successFunction()
+          }
           onClose()
         })
         .catch((error) => {
@@ -121,9 +135,20 @@ const Form = ({ open, onClose, type, data, submitFunction }) => {
                 helperText={formik.touched.email && formik.errors.email}
               />
             </Grid>
+            {type === 'ADD' && (
+              <Grid item xs={12} md={6}>
+                <TextField
+                  name="password"
+                  label="Contraseña"
+                  required
+                  value={formik.values.password}
+                  inputProps={{ readOnly: true }}
+                />
+              </Grid>
+            )}
             <Grid item xs={12} md={6}>
               <InputLabel className={classes.label}>
-                Crear como administrador
+                Usuario administrador
               </InputLabel>
               <Switch
                 checked={formik.values.is_administrator}

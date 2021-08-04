@@ -3,13 +3,7 @@ import authTypes from '../types/auth'
 const initialState = {
   isAuthenticated: true,
   rememberSession: false,
-  user: {
-    name: 'Jhon',
-    lastName: 'Doe',
-    role: {
-      name: 'ADMIN'
-    }
-  }
+  user: null
 }
 
 const authReducer = (state = initialState, { type, payload }) => {

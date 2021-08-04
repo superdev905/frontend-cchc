@@ -12,14 +12,14 @@ const loginUser = (credentials) => (dispatch) =>
     Axios.post(`${autEndpoint}/auth/login`, credentials)
       .then((response) => {
         const { data } = response
-        dispatch({ type: authTypes.SET_CURRENT_USER, payload: data.user })
-        window.localStorage.setItem('token', data.accessToken)
-        window.localStorage.setItem('refreshToken', data.refreshToken)
+        //  dispatch({ type: authTypes.SET_CURRENT_USER, payload: data.user })
+        window.localStorage.setItem('token', data.access_token)
+        //  window.localStorage.setItem('refreshToken', data.refreshToken)
         dispatch({ type: authTypes.LOGIN_USER, payload: true })
         resolve()
       })
       .catch((err) => {
-        reject(err)
+        reject(err.response.data.detail)
       })
   })
 
