@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
@@ -44,19 +44,43 @@ const commonRoutes = [
   { title: 'Home', path: '/home', icon: <DashboardIcon /> },
   { title: 'Empresas', path: '/companies', icon: <BusinessIcon /> },
   { title: 'Obras', path: '/obras', icon: <ConstructionIcon /> },
-  { title: 'Trabajadores', path: '/employees', icon: <EmployeeIcon /> },
-  { title: 'Usuarios', path: '/users', icon: <UserIcon /> },
-  { title: 'Configuración', path: '/settings', icon: <SettingsIcon /> }
+  {
+    title: 'Trabajadores',
+    path: '/employees',
+    icon: <EmployeeIcon />
+  },
+  {
+    title: 'Configuración',
+    path: '/settings',
+    icon: <SettingsIcon />
+  }
 ]
 
 const LeftDrawer = ({ ...props }) => {
   const classes = useStyles()
+  const [userRoutes, setUserRoutes] = useState([...commonRoutes])
   const { location } = useSelector((state) => state.router)
-  const [routes] = useState([...commonRoutes])
+  const { user } = useSelector((state) => state.auth)
 
   const onItemClick = (path) => {
     props.history.push(path)
   }
+
+  useEffect(() => {
+    if (user) {
+      if (user.is_administrator) {
+        const adminRoutes = userRoutes.concat([
+          {
+            index: 5,
+            title: 'Usuarios',
+            path: '/users',
+            icon: <UserIcon />
+          }
+        ])
+        setUserRoutes(adminRoutes)
+      }
+    }
+  }, [user])
 
   return (
     <div>
@@ -65,7 +89,7 @@ const LeftDrawer = ({ ...props }) => {
       </Box>
       <Divider />
       <List>
-        {routes.map((route, index) => (
+        {userRoutes.map((route, index) => (
           <ListItem
             button
             key={route.title}

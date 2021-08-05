@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import usersActions from '../../state/actions/users'
 import { ConfirmDelete, DataTable } from '../Shared'
-import { ActionsTable, Button, SearchInput, Select } from '../UI'
+import { ActionsTable, Button, SearchInput, Select, StatusChip } from '../UI'
 import UserForm from './Form'
 import { useToggle } from '../../hooks'
 import { usersConfig } from '../../config'
@@ -13,6 +13,13 @@ const useStyles = makeStyles((theme) => ({
   top: {
     [theme.breakpoints.up('md')]: {
       marginTop: 12
+    }
+  },
+  statusSelect: {
+    position: 'relative',
+    '& label': {
+      position: 'absolute',
+      bottom: '100%'
     }
   }
 }))
@@ -27,7 +34,7 @@ const List = () => {
     skip: 0,
     limit: 30,
     search: '',
-    state: 'ACTIVE'
+    state: ''
   })
   const [current, setCurrent] = useState(null)
   const { usersList } = useSelector((state) => state.users)
@@ -35,31 +42,6 @@ const List = () => {
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
-
-  const onCreateUser = (values) => dispatch(usersActions.createUser(values))
-
-  const onUpdateUser = (values) => {
-    delete values.password
-    return dispatch(
-      usersActions.updateUser(current.id, { ...values, state: current.state })
-    )
-  }
-  const onBlockUser = () => {
-    dispatch(usersActions.patchUser(current.id, { state: 'DELETED' }))
-      .then(() => {
-        enqueueSnackbar('Usuario eliminado', { variant: 'success' })
-      })
-      .catch((err) => {
-        enqueueSnackbar(err, { variant: 'error' })
-      })
-  }
-
-  const handleSearch = (e) => {
-    setFilters({ ...filters, search: e.target.value })
-  }
-  const handleStatusChange = (e) => {
-    setFilters({ ...filters, state: e.target.value })
-  }
 
   const fetchUsers = () => {
     setLoading(true)
@@ -73,6 +55,35 @@ const List = () => {
         setLoading(false)
       })
   }
+
+  const onCreateUser = (values) => dispatch(usersActions.createUser(values))
+
+  const onUpdateUser = (values) => {
+    delete values.password
+    return dispatch(
+      usersActions.updateUser(current.id, { ...values, state: current.state })
+    )
+  }
+
+  const onBlockUser = () => {
+    dispatch(usersActions.patchUser(current.id, { state: 'DELETED' }))
+      .then(() => {
+        enqueueSnackbar('Usuario eliminado', { variant: 'success' })
+        toggleOpenDelete()
+        fetchUsers()
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, { variant: 'error' })
+      })
+  }
+
+  const handleSearch = (e) => {
+    setFilters({ ...filters, search: e.target.value })
+  }
+  const handleStatusChange = (e) => {
+    setFilters({ ...filters, state: e.target.value })
+  }
+
   useEffect(() => {
     setTableData(
       usersList.map((item) => ({
@@ -88,23 +99,15 @@ const List = () => {
   return (
     <Box>
       <Box>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={4} className={classes.top}>
-            <SearchInput
-              value={filters.search}
-              placeholder="Buscar por: Nombre, Correo"
-              onChange={handleSearch}
-            />
-          </Grid>
-          <Grid item xs={12} md={3}></Grid>
+        <Grid container spacing={1} alignItems="center">
           <Grid item xs={12} md={3}>
             <Select
-              label="Estado"
               name="state-filter"
               onChange={handleStatusChange}
               value={filters.state}
+              className={classes.statusSelect}
             >
-              <option value="">Todos</option>
+              <option value="">Todos los usuarios</option>
               {usersConfig.states.map((item) => (
                 <option key={`option-users-${item.key}`} value={item.key}>
                   {item.name}
@@ -112,8 +115,18 @@ const List = () => {
               ))}
             </Select>
           </Grid>
-          <Grid item xs={12} md={2} className={classes.top}>
-            <Button onClick={toggleOpenAdd}> Nuevo usuario</Button>
+          <Grid item xs={12} md={4}>
+            <SearchInput
+              value={filters.search}
+              placeholder="Buscar por: Nombre, Correo"
+              onChange={handleSearch}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={5} className={classes.top}>
+            <Box display="flex" justifyContent="flex-end">
+              <Button onClick={toggleOpenAdd}> Nuevo usuario</Button>
+            </Box>
           </Grid>
         </Grid>
       </Box>
@@ -139,6 +152,19 @@ const List = () => {
             name: 'Correo',
             selector: 'email',
             hide: 'md'
+          },
+          {
+            name: '',
+            selector: '',
+            hide: 'md',
+            center: true,
+            cell: (row) => (
+              <StatusChip
+                label={`${row.is_administrator ? 'Admin' : 'Usuario'} `}
+                success={row.state === 'ACTIVE'}
+                error={row.state === 'DELETED'}
+              />
+            )
           },
           {
             name: '',
