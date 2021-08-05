@@ -92,7 +92,7 @@ const EmployeeModal = ({
       landline_phone: type === 'UPDATE' ? data.landline_phone : '',
       is_confirmed: type === 'UPDATE' ? data.is_confirmed : false
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       submitFunction({
         ...values,
         confirmation_date: new Date(addMonths(new Date(), 1))
@@ -103,6 +103,7 @@ const EmployeeModal = ({
             variant: 'success'
           })
           onClose()
+          resetForm()
           changeSuccess(true)
           if (successFunction) {
             successFunction()

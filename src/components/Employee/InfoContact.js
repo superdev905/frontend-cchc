@@ -97,7 +97,7 @@ const InfoContact = () => {
         open={openAdd}
         onClose={toggleOpenAdd}
         submitFunction={createContact}
-        successFunction={fetchContacts}
+        successFunction={() => fetchContacts(employee.run)}
       />
       {currentContact && openEdit && (
         <ContactForm
@@ -107,7 +107,7 @@ const InfoContact = () => {
           data={currentContact}
           onClose={toggleOpenEdit}
           submitFunction={updateContact}
-          successFunction={fetchContacts}
+          successFunction={() => fetchContacts(employee.run)}
         />
       )}
       {currentContact && openDelete && (

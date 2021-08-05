@@ -13,7 +13,7 @@ import { phoneValidator } from '../../validations'
 const validationSchema = Yup.object({
   full_name: Yup.string().required('Ingrese nombre'),
   charge_id: Yup.string().required('Seleccione cargo'),
-  email: Yup.string().email('Ingrese correo válid').required('Ingrese correo'),
+  email: Yup.string().email('Ingrese correo válido').required('Ingrese correo'),
   cell_phone: Yup.string('Ingrese teléfono').test(
     'Check phone',
     'Ingrese télefono válido',
