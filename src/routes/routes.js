@@ -12,6 +12,7 @@ const Settings = lazy(() => import('../pages/Settings'))
 const Construction = lazy(() => import('../pages/Construction'))
 const Constructions = lazy(() => import('../pages/Constructions'))
 const Users = lazy(() => import('../pages/Users'))
+const Calendar = lazy(() => import('../pages/Calendar'))
 
 const routes = [
   {
@@ -103,6 +104,22 @@ const routes = [
         yes={() => (
           <Layout>
             <Users />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/calendar',
+    key: 'USERS',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SIMPLE_USER']}
+        yes={() => (
+          <Layout>
+            <Calendar />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}

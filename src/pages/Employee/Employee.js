@@ -32,6 +32,7 @@ const Employee = ({ children }) => {
   useEffect(() => {
     getEmployee()
   }, [idEmployee])
+
   return (
     <Box>
       <Box marginBottom="10px" display="flex" justifyContent="space-between">
