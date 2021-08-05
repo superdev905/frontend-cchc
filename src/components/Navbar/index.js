@@ -74,7 +74,7 @@ const ResponsiveDrawer = ({ ...props }) => {
             alignItems="center"
           >
             <Typography noWrap style={{ marginRight: '15px' }}>
-              {user && `${user.name} ${user.lastName}`}
+              {user && `${user.names} ${user.paternal_surname}`}
             </Typography>
             {user &&
               (user.profilePicture !== '' ? (

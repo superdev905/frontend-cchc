@@ -29,7 +29,7 @@ const persistConfig = {
   key: 'root',
   storage,
   blacklist: ['router'],
-  whitelist: ['routerLocations', 'auth']
+  whitelist: ['routerLocations']
 }
 
 const persistedReducer = persistReducer(persistConfig, reducers(history))

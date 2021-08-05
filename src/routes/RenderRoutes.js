@@ -1,31 +1,47 @@
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { Switch } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
 import { useSelector, useDispatch } from 'react-redux'
 import authActions from '../state/actions/auth'
 import routes from './routes'
+import { Loading } from '../components/UI'
 
 function RenderRoutes() {
-  const { isAuthenticated } = useSelector((state) => state.auth)
-  const [token, setToken] = useState(window.localStorage.getItem('token'))
   const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
+  const { isAuthenticated } = useSelector((state) => state.auth)
+
+  const authenticateUser = async () => {
+    setLoading(true)
+    dispatch(authActions.getLoggedUser()).then(() => {
+      setLoading(false)
+    })
+  }
 
   useEffect(() => {
-    setToken(window.localStorage.getItem('token'))
-  }, [window.localStorage.getItem('token')])
-
-  useEffect(() => {
-    const authenticateUser = async () => {
-      dispatch(authActions.getLoggedUser())
-    }
-    if (token && isAuthenticated) {
+    if (isAuthenticated) {
       authenticateUser()
-    } else if (token && !isAuthenticated) {
+    } else if (!isAuthenticated) {
       window.localStorage.clear()
     }
-  }, [token])
+  }, [isAuthenticated])
 
-  return <Switch>{renderRoutes(routes, { isAuthenticated })}</Switch>
+  return (
+    <Switch>
+      {loading ? (
+        <Loading
+          loading={loading}
+          center
+          centerVertically
+          height="100vh"
+          width="100vw"
+          size={60}
+        />
+      ) : (
+        renderRoutes(routes, { authenticated: isAuthenticated })
+      )}
+    </Switch>
+  )
 }
 
-export default RenderRoutes
+export default memo(RenderRoutes)

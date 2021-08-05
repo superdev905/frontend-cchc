@@ -1,6 +1,7 @@
 import { lazy } from 'react'
 import Layout from '../components/Layout'
 import Can from '../components/Can'
+import Forbidden from '../pages/Forbidden'
 import CompanyDetails from '../components/Company/Details'
 import CompanyDivisions from '../components/Company/Divisions'
 import CompanyContacts from '../components/Company/Contacts'
@@ -18,13 +19,13 @@ const companyRoutes = [
     exact: true,
     component: () => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
             <Companies />
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Forbidden />}
       />
     )
   },
@@ -34,7 +35,7 @@ const companyRoutes = [
     exact: true,
     component: () => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
             <Company>
@@ -42,7 +43,7 @@ const companyRoutes = [
             </Company>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Forbidden />}
       />
     )
   },
@@ -52,7 +53,7 @@ const companyRoutes = [
     exact: true,
     component: () => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
             <Company>
@@ -60,7 +61,7 @@ const companyRoutes = [
             </Company>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Forbidden />}
       />
     )
   },
@@ -70,7 +71,7 @@ const companyRoutes = [
     exact: true,
     component: () => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
             <Company>
@@ -78,7 +79,7 @@ const companyRoutes = [
             </Company>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Forbidden />}
       />
     )
   },
@@ -88,7 +89,7 @@ const companyRoutes = [
     exact: true,
     component: () => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
             <Company>
@@ -96,7 +97,7 @@ const companyRoutes = [
             </Company>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => <Forbidden />}
       />
     )
   }

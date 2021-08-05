@@ -1,19 +1,26 @@
 import Axios from '../../Axios'
 import authTypes from '../types/auth'
 
+const autEndpoint = `${
+  process.env.REACT_APP_NODE_ENV === 'production'
+    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5500'
+    : 'http://localhost:5500'
+}/api/v1`
+
 const loginUser = (credentials) => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.post('/auth/login', credentials)
+    Axios.post(`${autEndpoint}/auth/login`, credentials)
       .then((response) => {
         const { data } = response
-        dispatch({ type: authTypes.SET_CURRENT_USER, payload: data.user })
-        window.localStorage.setItem('token', data.accessToken)
-        window.localStorage.setItem('refreshToken', data.refreshToken)
+        //  dispatch({ type: authTypes.SET_CURRENT_USER, payload: data.user })
+        window.localStorage.setItem('token', data.access_token)
+        //  window.localStorage.setItem('refreshToken', data.refreshToken)
         dispatch({ type: authTypes.LOGIN_USER, payload: true })
         resolve()
       })
       .catch((err) => {
-        reject(err)
+        console.log(err)
+        reject(err.response.data.detail)
       })
   })
 
@@ -33,11 +40,11 @@ const refreshToken = () =>
 
 const getLoggedUser = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get('/auth/me')
+    Axios.get(`${autEndpoint}/auth/me`)
       .then((response) => {
         dispatch({
           type: authTypes.GET_AUTHENTICATED,
-          payload: response.data.user
+          payload: response.data
         })
         resolve()
       })

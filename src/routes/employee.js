@@ -1,6 +1,7 @@
 import { lazy } from 'react'
 import Layout from '../components/Layout'
 import Can from '../components/Can'
+import Forbidden from '../pages/Forbidden'
 import {
   EmployeeInfoContact,
   EmployeeDetails,
@@ -11,6 +12,7 @@ import {
   HousingSituation
 } from '../components/Employee'
 
+const Login = lazy(() => import('../pages/Login'))
 const Employees = lazy(() => import('../pages/Employees'))
 const Employee = lazy(() => import('../pages/Employee'))
 
@@ -21,15 +23,15 @@ const companyRoutes = [
     path: `/${rootName}s`,
     key: 'EMPLOYEES',
     exact: true,
-    component: () => (
+    component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
             <Employees />
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
       />
     )
   },
@@ -37,9 +39,9 @@ const companyRoutes = [
     path: `/${rootName}/:idEmployee/info`,
     key: 'EMPLOYEE-INFO',
     exact: true,
-    component: () => (
+    component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
             <Employee>
@@ -47,7 +49,7 @@ const companyRoutes = [
             </Employee>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
       />
     )
   },
@@ -55,9 +57,9 @@ const companyRoutes = [
     path: `/${rootName}/:idEmployee/contacts`,
     key: 'EMPLOYEE-CONTACT',
     exact: true,
-    component: () => (
+    component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
             <Employee>
@@ -65,7 +67,7 @@ const companyRoutes = [
             </Employee>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
       />
     )
   },
@@ -73,9 +75,9 @@ const companyRoutes = [
     path: `/${rootName}/:idEmployee/family`,
     key: 'EMPLOYEE-FAMILY',
     exact: true,
-    component: () => (
+    component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
             <Employee>
@@ -83,7 +85,7 @@ const companyRoutes = [
             </Employee>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
       />
     )
   },
@@ -91,9 +93,9 @@ const companyRoutes = [
     path: `/${rootName}/:idEmployee/situation`,
     key: 'EMPLOYEE-SITUATION',
     exact: true,
-    component: () => (
+    component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
             <Employee>
@@ -102,7 +104,7 @@ const companyRoutes = [
             </Employee>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
       />
     )
   },
@@ -110,9 +112,9 @@ const companyRoutes = [
     path: `/${rootName}/:idEmployee/specialties`,
     key: 'EMPLOYEE-SPECIALTIES',
     exact: true,
-    component: () => (
+    component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
             <Employee>
@@ -120,7 +122,7 @@ const companyRoutes = [
             </Employee>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
       />
     )
   },
@@ -128,9 +130,9 @@ const companyRoutes = [
     path: `/${rootName}/:idEmployee/jobs-history`,
     key: 'EMPLOYEE-JOBS-HISTORY',
     exact: true,
-    component: () => (
+    component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
             <Employee>
@@ -138,7 +140,7 @@ const companyRoutes = [
             </Employee>
           </Layout>
         )}
-        no={() => <span>Log in</span>}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
       />
     )
   }

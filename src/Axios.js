@@ -26,7 +26,7 @@ Axios.interceptors.request.use(
   (settings) => {
     const token = window.localStorage.getItem('token')
     if (token) {
-      settings.headers.Authorization = token
+      settings.headers.Authorization = `Bearer ${token}`
     }
     return settings
   },
