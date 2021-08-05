@@ -254,7 +254,7 @@ const StepOne = () => {
           success={success}
           disabled={!formik.isValid || formik.isSubmitting}
         >
-          {create.type === 'UPDATE' ? 'Actualidar' : 'Crear'} empresa
+          {create.type === 'UPDATE' ? 'Actualizar' : 'Crear'} empresa
         </SubmitButton>
       </Box>
     </Box>
