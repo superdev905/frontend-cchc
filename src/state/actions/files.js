@@ -12,7 +12,6 @@ const getFile = (fileKey) => () =>
       .then((response) => {
         const { data } = response
         const type = response.headers['content-type']
-        console.log(data)
         resolve({ blob: new Blob([data], { type, encoding: 'UTF-8' }), type })
       })
       .catch((err) => {

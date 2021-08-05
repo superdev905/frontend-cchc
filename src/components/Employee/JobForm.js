@@ -15,8 +15,8 @@ const validationSchema = Yup.object().shape({
   construction_id: Yup.number().required('Seleccione obra'),
   contract_term: Yup.string().required('Seleccione obra'),
   contract_type: Yup.string().required('Seleccione obra'),
-  leave_date: Yup.date(),
-  leave_motive: Yup.string().required('Seleccione motivo'),
+  leave_date: Yup.date().nullable(),
+  leave_motive: Yup.string().nullable(),
   salary: Yup.number().required('Ingrese sueldo')
 })
 
@@ -52,7 +52,7 @@ const HousingForm = ({
       leave_motive: type === 'UPDATE' ? data.leave_motive : '',
       salary: type === 'UPDATE' ? data.salary : ''
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       submitFunction(values)
         .then(() => {
           formik.setSubmitting(false)
@@ -60,6 +60,7 @@ const HousingForm = ({
             variant: 'success'
           })
           onClose()
+          resetForm()
           changeSuccess(true)
           if (successFunction) {
             successFunction()
@@ -74,12 +75,39 @@ const HousingForm = ({
     }
   })
 
+  const handleCompanyChange = (e) => {
+    const { value } = e.target
+    if (value === '') {
+      formik.setFieldValue('business_id', value)
+      formik.setFieldValue('business_name', value)
+      formik.setFieldValue('construction_id', value)
+      formik.setFieldValue('construction_name', value)
+      setConstructions([])
+    } else {
+      const currentCompany = companies.find(
+        (item) => item.id === parseInt(value, 10)
+      )
+      setConstructions(currentCompany.constructions)
+      formik.setFieldValue('business_id', value)
+      formik.setFieldValue('business_name', currentCompany.business_name)
+      formik.setFieldValue('construction_id', '')
+      formik.setFieldValue('construction_name', '')
+    }
+  }
+
+  useEffect(() => {
+    if (formik.values.contract_type !== 'CESANTE') {
+      formik.setFieldValue('leave_date', null)
+      formik.setFieldValue('leave_motive', null)
+    }
+  }, [formik.values.contract_type])
+
   useEffect(() => {
     if (formik.values.construction_id && constructions.length > 0) {
       const currentCons = constructions.find(
         (item) => item.id === parseInt(formik.values.construction_id, 10)
       )
-      formik.setFieldValue('construction_name', currentCons.business_name)
+      formik.setFieldValue('construction_name', currentCons.business_name || '')
     }
   }, [formik.values.construction_id, constructions])
 
@@ -88,7 +116,6 @@ const HousingForm = ({
       const currentCompany = companies.find(
         (item) => item.id === parseInt(formik.values.business_id, 10)
       )
-      console.log(currentCompany)
       formik.setFieldValue('business_name', currentCompany.business_name)
       setConstructions(currentCompany.constructions)
     } else {
@@ -133,7 +160,7 @@ const HousingForm = ({
               <Select
                 label="Empresa"
                 name="business_id"
-                onChange={formik.handleChange}
+                onChange={handleCompanyChange}
                 value={formik.values.business_id}
                 required
                 error={
@@ -238,6 +265,7 @@ const HousingForm = ({
                 helperText={
                   formik.touched.leave_date && formik.errors.leave_date
                 }
+                disabled={formik.values.contract_type !== 'CESANTE'}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -246,7 +274,6 @@ const HousingForm = ({
                 name="leave_motive"
                 onChange={formik.handleChange}
                 value={formik.values.leave_motive}
-                required
                 error={
                   formik.touched.leave_motive &&
                   Boolean(formik.errors.leave_motive)
@@ -254,6 +281,7 @@ const HousingForm = ({
                 helperText={
                   formik.touched.leave_motive && formik.errors.leave_motive
                 }
+                disabled={formik.values.contract_type !== 'CESANTE'}
               >
                 <option value="">Seleccione una opción</option>
                 {['EMPRESA', 'SUB CONTRATRO', 'CESANTE'].map((item, index) => (

@@ -37,8 +37,10 @@ const FileUploader = ({ onSuccess }) => {
             })
             .catch((thrown) => {
               if (Axios.isCancel(thrown)) {
+                // eslint-disable-next-line
                 console.log('Request canceled', thrown.message)
               } else {
+                // eslint-disable-next-line
                 console.log(thrown)
               }
             })

@@ -69,7 +69,7 @@ const FileVisor = ({ open, onClose, fileName }) => {
     if (fileData) {
       const reader = new FileReader()
       reader.readAsDataURL(fileData)
-      reader.onloadend = function () {
+      reader.onloadend = () => {
         const base64data = reader.result
         setImgData(base64data)
       }

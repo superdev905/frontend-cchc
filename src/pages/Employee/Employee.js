@@ -5,7 +5,7 @@ import { Box, IconButton } from '@material-ui/core'
 import { ArrowBack as ArrowBackIcon } from '@material-ui/icons/'
 import employeesActions from '../../state/actions/employees'
 import { EmployeeTabs } from '../../components/Employee'
-import { PageHeading, Text } from '../../components/UI'
+import { PageHeading, Text, Button } from '../../components/UI'
 
 const Employee = ({ children }) => {
   const dispatch = useDispatch()
@@ -15,7 +15,7 @@ const Employee = ({ children }) => {
   const { employee } = useSelector((state) => state.employees)
 
   const goBack = () => {
-    history.goBack()
+    history.push('/employees')
   }
 
   const getEmployee = useCallback(() => {
@@ -34,16 +34,19 @@ const Employee = ({ children }) => {
   }, [idEmployee])
   return (
     <Box>
-      <Box display="flex" alignItems="center" marginBottom="10px">
-        <IconButton onClick={goBack}>
-          <ArrowBackIcon />
-        </IconButton>
-        <Text loading={loading}>
-          <PageHeading>
-            {employee &&
-              `${employee.names} ${employee.paternal_surname} ${employee.maternal_surname}`}
-          </PageHeading>
-        </Text>
+      <Box marginBottom="10px" display="flex" justifyContent="space-between">
+        <Box display="flex" alignItems="center">
+          <IconButton onClick={goBack}>
+            <ArrowBackIcon />
+          </IconButton>
+          <Text loading={loading}>
+            <PageHeading>
+              {employee &&
+                `${employee.names} ${employee.paternal_surname} ${employee.maternal_surname}`}
+            </PageHeading>
+          </Text>
+        </Box>
+        <Button danger>Eliminar</Button>
       </Box>
       <EmployeeTabs>{children}</EmployeeTabs>
     </Box>

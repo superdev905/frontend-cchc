@@ -48,7 +48,7 @@ const HousingForm = ({
       certificated_date: type === 'UPDATE' ? data.certificated_date : '',
       certification_url: type === 'UPDATE' ? data.certification_url : ''
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       submitFunction({
         ...values,
         certifying_entity_id: values.certifying_entity_id || null
@@ -59,6 +59,7 @@ const HousingForm = ({
             variant: 'success'
           })
           onClose()
+          resetForm()
           changeSuccess(true)
           if (successFunction) {
             successFunction()
@@ -72,6 +73,12 @@ const HousingForm = ({
         })
     }
   })
+
+  useEffect(() => {
+    if (formik.values.is_certificated === 'NO') {
+      formik.setFieldTouched('certifying_entity_id', '')
+    }
+  }, [formik.values.is_certificated])
 
   useEffect(() => {
     if (formik.values.specialty_id && specList.length > 0) {
@@ -214,6 +221,7 @@ const HousingForm = ({
                   formik.touched.certifying_entity_id &&
                   formik.errors.certifying_entity_id
                 }
+                disabled={formik.values.is_certificated !== 'SI'}
               >
                 <option value="">Seleccione una opción</option>
                 {entities.map((item, index) => (

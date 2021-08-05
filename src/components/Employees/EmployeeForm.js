@@ -92,14 +92,14 @@ const EmployeeModal = ({
       rsh_percentage: type === 'UPDATE' ? data.rsh_percentage : ''
     },
     onSubmit: (values) => {
-      submitFunction(values).then(() => {
+      submitFunction(values).then((result) => {
         formik.setSubmitting(false)
         enqueueSnackbar(successMessage, {
           variant: 'success',
           autoHideDuration: 1500
         })
         onClose()
-        successFunction()
+        successFunction(result)
       })
     }
   })
@@ -327,7 +327,6 @@ const EmployeeModal = ({
                 <Select
                   label="Crendencial de discapacidad"
                   name="credential_disability"
-                  required
                   value={formik.values.credential_disability}
                   onChange={formik.handleChange}
                   error={

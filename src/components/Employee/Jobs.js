@@ -43,7 +43,13 @@ const PensionSituation = () => {
       })
     )
 
-  const updateEvent = (values) =>
+  const updateEvent = (values) => {
+    if (!values.leave_date) {
+      delete values.leave_date
+    }
+    if (!values.leave_motive) {
+      delete values.leave_motive
+    }
     dispatch(
       employeesActions.updateEmployeeJob(current.id, {
         ...values,
@@ -51,6 +57,7 @@ const PensionSituation = () => {
         employee_id: parseInt(idEmployee, 10)
       })
     )
+  }
   const patchEvent = (id) => {
     dispatch(
       employeesActions.patchEmployeeJob(id, {

@@ -19,7 +19,6 @@ const loginUser = (credentials) => (dispatch) =>
         resolve()
       })
       .catch((err) => {
-        console.log(err)
         reject(err.response.data.detail)
       })
   })

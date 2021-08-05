@@ -13,9 +13,14 @@ function RenderRoutes() {
 
   const authenticateUser = async () => {
     setLoading(true)
-    dispatch(authActions.getLoggedUser()).then(() => {
-      setLoading(false)
-    })
+    dispatch(authActions.getLoggedUser())
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+        window.localStorage.clear()
+      })
   }
 
   useEffect(() => {
@@ -34,7 +39,7 @@ function RenderRoutes() {
           center
           centerVertically
           height="100vh"
-          width="100vw"
+          width="100vh"
           size={60}
         />
       ) : (

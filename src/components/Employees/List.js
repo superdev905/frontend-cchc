@@ -22,6 +22,10 @@ const ListEmployees = () => {
   const onRowClick = (row) => {
     history.push(`/employee/${row.id}/info`)
   }
+
+  const afterCreateEmployee = (createData) => {
+    history.push(`/employee/${createData.id}/info`)
+  }
   const createEmployee = (values) =>
     dispatch(employeesActions.createEmployee(values))
 
@@ -77,7 +81,7 @@ const ListEmployees = () => {
         onClose={toggleOpen}
         submitFunction={createEmployee}
         successMessage="Ficha de trabajador creado correctamente"
-        successFunction={fetchEmployees}
+        successFunction={afterCreateEmployee}
       />
     </Wrapper>
   )
