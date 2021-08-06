@@ -3,6 +3,8 @@ import { Box, Dialog, DialogContent, Typography } from '@material-ui/core'
 import { Button, SubmitButton } from '../UI'
 
 const ConfirmDelete = ({
+  event,
+  confirmText,
   open,
   onClose,
   message,
@@ -21,18 +23,23 @@ const ConfirmDelete = ({
             Cancelar
           </Button>
           <SubmitButton
-            danger
+            danger={event === 'DELETE'}
             onClick={onConfirm}
             loading={loading}
             success={success}
           >
-            Eliminar
+            {confirmText}
           </SubmitButton>
         </Box>
       </Box>
     </DialogContent>
   </Dialog>
 )
+
+ConfirmDelete.defaultProps = {
+  event: 'DELETE',
+  confirmText: 'Eliminar'
+}
 
 ConfirmDelete.propTypes = {
   open: PropTypes.bool,
