@@ -10,8 +10,8 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     alignItems: centerVertically ? 'center' : 'flex-start',
     justifyContent: center ? 'center' : 'flex-start',
-    height: height ? `${height}px` : '100%',
-    width: width ? `${width}px` : '100%',
+    height: height ? `${height}` : '100%',
+    width: width ? `${width}` : '100%',
     backgroundColor: background || 'rgba(255,255,255)'
   }),
   circle: () => ({}),

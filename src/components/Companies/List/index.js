@@ -45,7 +45,7 @@ const List = ({ ...props }) => {
 
   const fetchCompanies = () => {
     setLoading(true)
-    dispatch(companiesActions.getCompanies(filters))
+    dispatch(companiesActions.getCompanies())
       .then(() => {
         setLoading(false)
       })
