@@ -7,6 +7,12 @@ const employeeEndpoint = `${
     : 'http://localhost:8000'
 }/api/v1`
 
+const parametersEndpoint = `${
+  process.env.REACT_APP_NODE_ENV === 'production'
+    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5100'
+    : 'http://localhost:5200'
+}/api/v1`
+
 const getRegions = () => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`/regions`)
@@ -233,6 +239,32 @@ const getEntities = () => (dispatch) =>
       })
   })
 
+const getEventTypes = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${parametersEndpoint}/task-type`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_EVENT_TYPES, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+const getShiftList = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${parametersEndpoint}/shift`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_SHIFT_LIST, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 export default {
   getRegions,
   getCharges,
@@ -250,5 +282,7 @@ export default {
   getPropertyHome,
   getTypesSubsidy,
   getSpecList,
-  getEntities
+  getEntities,
+  getEventTypes,
+  getShiftList
 }

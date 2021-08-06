@@ -3,14 +3,16 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import companiesActions from '../../state/actions/companies'
+import commonActions from '../../state/actions/common'
 import { formatDate } from '../../formatters'
 import { Dialog } from '../Shared'
-import { TextArea, TextField } from '../UI'
+import { Button, Select, SubmitButton, TextArea, TextField } from '../UI'
 
 const EventForm = ({ open, onClose, data }) => {
   const dispatch = useDispatch()
   const [selectedCompany, setSelectedCompany] = useState(null)
   const { user } = useSelector((state) => state.auth)
+  const { eventTypes, shiftList } = useSelector((state) => state.common)
   const [companies, setCompanies] = useState([])
 
   const getHours = (dateString) => {
@@ -25,6 +27,8 @@ const EventForm = ({ open, onClose, data }) => {
     dispatch(companiesActions.getCompanies({}, false)).then((list) => {
       setCompanies(list)
     })
+    dispatch(commonActions.getEventTypes())
+    dispatch(commonActions.getShiftList())
   }, [open])
 
   return (
@@ -39,6 +43,19 @@ const EventForm = ({ open, onClose, data }) => {
         </Grid>
         <Grid item xs={12}>
           <Typography>Tipo : {formatDate(data.start)}</Typography>
+          <Select label="Tipo">
+            {eventTypes.map((item) => (
+              <option>{item.description} </option>
+            ))}
+          </Select>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography>Tipo : {formatDate(data.start)}</Typography>
+          <Select label="Jornada">
+            {shiftList.map((item) => (
+              <option>{item.name} </option>
+            ))}
+          </Select>
         </Grid>
         <Grid item xs={12} md={6}>
           <Autocomplete
@@ -100,6 +117,10 @@ const EventForm = ({ open, onClose, data }) => {
           <TextArea label="Observaciones" />
         </Grid>
       </Grid>
+      <Box textAlign="center">
+        <Button variant="outlined">Cancelar</Button>
+        <SubmitButton>Crear evento</SubmitButton>
+      </Box>
     </Dialog>
   )
 }

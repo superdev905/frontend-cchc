@@ -16,7 +16,9 @@ const initialState = {
   typesHomeList: [],
   subsidyList: [],
   specList: [],
-  entities: []
+  entities: [],
+  eventTypes: [],
+  shiftList: []
 }
 
 const commonReducer = (state = initialState, { type, payload }) => {
@@ -53,6 +55,10 @@ const commonReducer = (state = initialState, { type, payload }) => {
       return { ...state, specList: payload }
     case commonTypes.GET_ENTITIES:
       return { ...state, entities: payload }
+    case commonTypes.GET_EVENT_TYPES:
+      return { ...state, eventTypes: payload }
+    case commonTypes.GET_SHIFT_LIST:
+      return { ...state, shiftList: payload }
     default:
       return state
   }

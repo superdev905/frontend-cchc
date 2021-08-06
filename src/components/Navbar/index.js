@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import {
   AppBar,
   Avatar,
@@ -26,6 +26,7 @@ import LeftDrawer from './LeftDrawer'
 
 const ResponsiveDrawer = ({ ...props }) => {
   const { window } = props
+  const history = useHistory()
   const classes = useStyles()
   const dispatch = useDispatch()
   const theme = useTheme()
@@ -36,9 +37,12 @@ const ResponsiveDrawer = ({ ...props }) => {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
   }
+  const onCalendarClick = () => {
+    history.push('/calendar')
+  }
 
   const onProfileClick = () => {
-    props.history.push('/perfil')
+    history.push('/perfil')
   }
 
   const logoutUser = () => {
@@ -100,6 +104,7 @@ const ResponsiveDrawer = ({ ...props }) => {
               horizontal: 'bottom'
             }}
           >
+            <MenuItem onClick={onCalendarClick}>Mi Calendario</MenuItem>
             <MenuItem onClick={onProfileClick}>Ver perfil</MenuItem>
             <Divider />
             <MenuItem onClick={logoutUser}>Cerrar sesión</MenuItem>
@@ -145,4 +150,4 @@ ResponsiveDrawer.propTypes = {
   window: PropTypes.func
 }
 
-export default withRouter(ResponsiveDrawer)
+export default ResponsiveDrawer
