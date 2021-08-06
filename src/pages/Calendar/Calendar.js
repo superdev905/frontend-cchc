@@ -23,31 +23,41 @@ const localizer = dateFnsLocalizer({
 
 const EventsCalendar = () => {
   const [currentDate] = useState(new Date())
+  const [events, setEvents] = useState([
+    {
+      id: 0,
+      title: 'All Day Event very long title',
+      allDay: true,
+      start: new Date(),
+      end: new Date()
+    },
+    {
+      id: 5,
+      title: 'Conference',
+      start: new Date(addMinutes(currentDate, 30)),
+      end: new Date(addHours(currentDate, 3)),
+      desc: 'Big conference for important people'
+    }
+  ])
+
+  const handleSelectSlot = (e) => {
+    console.log(e)
+    const temp = [...events]
+    temp.push({ ...e, title: 'Example' })
+    setEvents(temp)
+  }
   return (
     <div>
       <Wrapper>
         <Box height="500px">
           <Calendar
+            selectable
             localizer={localizer}
-            events={[
-              {
-                id: 0,
-                title: 'All Day Event very long title',
-                allDay: true,
-                start: new Date(),
-                end: new Date()
-              },
-              {
-                id: 5,
-                title: 'Conference',
-                start: new Date(addMinutes(currentDate, 30)),
-                end: new Date(addHours(currentDate, 3)),
-                desc: 'Big conference for important people'
-              }
-            ]}
+            events={events}
             views={['month', 'work_week', 'day', 'agenda']}
             startAccessor="start"
             endAccessor="end"
+            onSelectSlot={handleSelectSlot}
           />
         </Box>
       </Wrapper>
