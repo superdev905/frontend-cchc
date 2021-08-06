@@ -14,7 +14,7 @@ const validationSchema = Yup.object().shape({
   specialty_id: Yup.number().required('Seleccione especialidad'),
   specialty_detail_id: Yup.number().required('Seleccione especialidad'),
   is_self_taught: Yup.string().required('Seleccione opción'),
-  certifying_entity_id: Yup.number(),
+  certifying_entity_id: Yup.number().nullable(),
   is_certificated: Yup.string().required('Seleccion opción')
 })
 
@@ -22,7 +22,7 @@ const certificationDateRequired = Yup.object().shape({
   certificated_date: Yup.date().required('Seleccione fecha')
 })
 const certificationDateNotRequired = Yup.object().shape({
-  certificated_date: Yup.date().notRequired()
+  certificated_date: Yup.date().notRequired().nullable()
 })
 
 const HousingForm = ({
@@ -87,14 +87,12 @@ const HousingForm = ({
         })
     }
   })
-  console.log(formik.errors, isCertified)
 
   useEffect(() => {
     if (formik.values.is_certificated === 'NO') {
       setIsCertified(false)
-      formik.setFieldTouched('certifying_entity_id', '')
-      formik.setFieldTouched('certificated_date', '')
-      formik.setFieldTouched('certifying_entity_id', '')
+      formik.setFieldTouched('certificated_date', null)
+      formik.setFieldTouched('certifying_entity_id', null)
     } else {
       setIsCertified(true)
     }
