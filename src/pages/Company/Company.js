@@ -54,7 +54,11 @@ const Company = ({ children }) => {
           <PageHeading>{company?.business_name}</PageHeading>
         </Box>
         <Box>
-          <Button danger onClick={toggleOpen}>
+          <Button
+            disabled={company?.state === 'DELETED'}
+            danger
+            onClick={toggleOpen}
+          >
             Eliminar
           </Button>
           <Button onClick={toggleOpenEdit}>Editar</Button>

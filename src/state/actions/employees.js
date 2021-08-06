@@ -8,18 +8,20 @@ const employeeEndpoint = `${
     : 'http://localhost:8000'
 }/api/v1`
 
-const getEmployees = () => (dispatch) =>
-  new Promise((resolve, reject) => {
-    Axios.get(`${employeeEndpoint}/employees`)
-      .then((response) => {
-        const { data } = response
-        dispatch({ type: employeesTypes.GET_EMPLOYEES, payload: data })
-        resolve(data)
-      })
-      .catch((err) => {
-        reject(err.response.data.detail)
-      })
-  })
+const getEmployees =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`${employeeEndpoint}/employees?${queryString.stringify(query)}`)
+        .then((response) => {
+          const { data } = response
+          dispatch({ type: employeesTypes.GET_EMPLOYEES, payload: data })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
 
 const getEmployeeDetails = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
@@ -49,6 +51,18 @@ const createEmployee = (values) => () =>
 const updateEmployee = (id, values) => () =>
   new Promise((resolve, reject) => {
     Axios.put(`${employeeEndpoint}/employees/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchEmployee = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${employeeEndpoint}/employees/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -364,6 +378,7 @@ export default {
   getEmployeeDetails,
   updateEmployee,
   createRelative,
+  patchEmployee,
   getEmployeeRelatives,
   updateRelative,
   blockRelative,

@@ -1,5 +1,6 @@
+/* eslint-disable */
 const removeEmptyChildren = (data) => {
-  if (data.children.length > 0 && data.children) {
+  if (data.children && data.children.length > 0) {
     data.children.forEach((item) => {
       removeEmptyChildren(item)
     })
@@ -8,29 +9,32 @@ const removeEmptyChildren = (data) => {
   }
 }
 
-//  eslint-disable-next-line
-const buildTreeData = (list) => {
-  const map = []
-  let node = []
-  const roots = []
-
-  for (let i = 0; i < list.length; i += 1) {
-    map[list[i].id] = i
-    list[i].children = []
-  }
-  for (let j = 0; j < list.length; j += 1) {
-    node = list[j]
-    if (node.parent_business_id !== null) {
-      list[map[node.parent_business_id]].children.push(node)
-    } else {
-      roots.push(node)
+const searchFromTree = (mainNode, element, matchingTitle) => {
+  if (element.id === matchingTitle) {
+    return mainNode
+  } else if (element.children) {
+    let i
+    let result = null
+    for (i = 0; result === null && i < element.children.length; i++) {
+      result = searchFromTree(mainNode, element.children[i], matchingTitle)
     }
+    return result
   }
-  roots.forEach((item) => {
-    removeEmptyChildren(item)
-  })
-
-  return roots
+  return null
 }
 
-export default buildTreeData
+//  eslint-disable-next-line
+const buildTreeData = (list) => {
+  const hashTable = Object.create(null)
+  list.forEach((aData) => (hashTable[aData.id] = { ...aData, children: [] }))
+  const dataTree = []
+  list.forEach((aData) => {
+    if (aData.parent_business_id)
+      hashTable[aData.parent_business_id].children.push(hashTable[aData.id])
+    else dataTree.push(hashTable[aData.id])
+  })
+
+  return dataTree
+}
+
+export { buildTreeData, searchFromTree }

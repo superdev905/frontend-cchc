@@ -100,17 +100,13 @@ const Details = ({ ...props }) => {
             <DataTable
               columns={[
                 {
-                  name: 'Razón social',
-                  selector: 'business_name',
+                  name: 'Nombre',
+                  selector: 'name',
                   sortable: true
                 },
                 {
-                  name: 'Rut',
-                  selector: 'rut'
-                },
-                {
                   name: 'Estado',
-                  selector: 'is_partner',
+                  selector: '',
                   cell: (row) => (
                     <StatusChip
                       {...row}

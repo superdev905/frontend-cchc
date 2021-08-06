@@ -34,13 +34,14 @@ const ContactList = ({ ...props }) => {
     dispatch(
       constructionsActions.updateContact(currentContact.id, {
         ...values,
+        state: currentContact.state,
         construction_id: parseInt(idConstruction, 10)
       })
     )
 
   const deleteContact = (id) => {
     setDeleting(true)
-    dispatch(constructionsActions.deleteContact(id))
+    dispatch(constructionsActions.patchContact(id, { state: 'DELETED' }))
       .then(() => {
         setDeleting(false)
         toggleOpenDelete()

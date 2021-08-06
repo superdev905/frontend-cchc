@@ -58,12 +58,14 @@ const HousingForm = ({
           enqueueSnackbar(successMessage, {
             variant: 'success'
           })
-          onClose()
-          resetForm()
-          changeSuccess(true)
-          if (successFunction) {
-            successFunction()
-          }
+
+          changeSuccess(true, () => {
+            onClose()
+            resetForm()
+            if (successFunction) {
+              successFunction()
+            }
+          })
         })
         .catch((err) => {
           formik.setSubmitting(false)

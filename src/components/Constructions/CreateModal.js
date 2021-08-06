@@ -10,25 +10,21 @@ import constructionsActions from '../../state/actions/constructions'
 import companiesActions from '../../state/actions/companies'
 import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
 import { DatePicker, Map, AddressAutoComplete, Dialog } from '../Shared'
-import { rutValidation } from '../../validations'
 import { SantiagoDefaultLocation as location } from '../../config'
 import { useSuccess, useToggle } from '../../hooks'
 import FacturationModal from '../Companies/Create/ParentBusiness'
+import { buildTreeData, searchFromTree } from '../../utils/buildTreeData'
 
 const businessSchema = Yup.object({
   business_selected_id: Yup.number().required('Seleccione empresa')
 })
 
 const validationSchema = Yup.object({
-  rut: Yup.string()
-    .required('Ingrese rut')
-    .test('Check rut', 'Ingrese rut válido', (v) => rutValidation(v)),
-  name: Yup.string(),
-  business_name: Yup.string().required('Ingrese razón social'),
+  name: Yup.string().required('Ingrese nombre de empresa'),
   address: Yup.string().required('Ingrese dirección'),
   commune_id: Yup.string().required('Seleccione comuna'),
   region_id: Yup.number().required('Seleccione región'),
-  state: Yup.string().required('Seleccione estado'),
+  status: Yup.string().required('Seleccione estado'),
   typology_id: Yup.number().nullable(),
   economic_sector_id: Yup.number().required('Seleccione sector economico'),
   end_date: Yup.date().nullable(),
@@ -69,13 +65,11 @@ const ConstructionModal = ({
       : validationSchema,
     initialValues: {
       business_selected_id: '',
-      business_name: type === 'UPDATE' ? construction.business_name : '',
-      rut: type === 'UPDATE' ? construction.rut : '',
       name: type === 'UPDATE' ? construction.name : '',
       address: type === 'UPDATE' ? construction.address : '',
       commune_id: type === 'UPDATE' ? construction.commune.id : '',
       region_id: type === 'UPDATE' ? construction.region.id : '',
-      state: type === 'UPDATE' ? construction.state : '',
+      status: type === 'UPDATE' ? construction.status : 'VIGENTE',
       typology_id: type === 'UPDATE' ? construction.typology_id : '',
       economic_sector_id:
         type === 'UPDATE' ? construction.economic_sector_id : '',
@@ -146,12 +140,19 @@ const ConstructionModal = ({
     formik.setFieldTouched('business_selected_id')
   }
 
+  const updateTreeData = (mainId) => {
+    const treeList = treeData.map((item) =>
+      searchFromTree(item, item, parseInt(mainId, 10))
+    )
+    setTreeData(treeList.filter((item) => item))
+  }
+
   useEffect(() => {
     formik.setFieldValue(
       'end_date',
-      formik.values.state === 'NO_VIGENTE' ? new Date() : null
+      formik.values.status === 'NO_VIGENTE' ? new Date() : null
     )
-  }, [formik.values.state])
+  }, [formik.values.status])
 
   useEffect(() => {
     if (formik.values.billing_business_id && companies.length > 0) {
@@ -164,6 +165,16 @@ const ConstructionModal = ({
   }, [formik.values.billing_business_id, companies])
 
   useEffect(() => {
+    if (selectedCompany) {
+      const mainId =
+        type === 'UPDATE'
+          ? selectedCompany.id
+          : formik.values.business_selected_id
+      updateTreeData(mainId)
+    }
+  }, [formik.values.business_selected_id, type, selectedCompany])
+
+  useEffect(() => {
     if (open) {
       dispatch(commonActions.getRegions())
       dispatch(constructionsActions.getTypologies())
@@ -171,10 +182,7 @@ const ConstructionModal = ({
 
       dispatch(companiesActions.getCompanies({}, false)).then((list) => {
         setCompanies(list)
-      })
-
-      dispatch(companiesActions.getTreeCompanies()).then((list) => {
-        setTreeData(list)
+        setTreeData(buildTreeData(list))
       })
     }
   }, [open, type, selectClient])
@@ -227,37 +235,9 @@ const ConstructionModal = ({
               </Grid>
             )}
             <Grid item xs={12} md={6}>
-              <RutTextField
-                label="Rut"
-                name="rut"
-                required
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.rut}
-                helperText={formik.touched.rut && formik.errors.rut}
-                error={formik.touched.rut && Boolean(formik.errors.rut)}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                label="Razón social"
-                name="business_name"
-                required
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.business_name}
-                helperText={
-                  formik.touched.businessName && formik.errors.businessName
-                }
-                error={
-                  formik.touched.businessName &&
-                  Boolean(formik.errors.businessName)
-                }
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
               <TextField
                 label="Nombre"
+                required
                 name="name"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -315,12 +295,12 @@ const ConstructionModal = ({
             <Grid item xs={12} md={6}>
               <Select
                 label="Estado"
-                name="state"
+                name="status"
                 required
                 onChange={formik.handleChange}
-                value={formik.values.state}
-                helperText={formik.touched.state && formik.errors.state}
-                error={formik.touched.state && Boolean(formik.errors.state)}
+                value={formik.values.status}
+                helperText={formik.touched.status && formik.errors.status}
+                error={formik.touched.status && Boolean(formik.errors.status)}
               >
                 <option value="">Seleccione estado</option>
                 {[
@@ -345,7 +325,7 @@ const ConstructionModal = ({
                   formik.setFieldTouched('end_date')
                   formik.setFieldValue('end_date', date)
                 }}
-                disabled={!(formik.values.state === 'NO_VIGENTE')}
+                disabled={!(formik.values.status === 'NO_VIGENTE')}
               />
             </Grid>
           </Grid>

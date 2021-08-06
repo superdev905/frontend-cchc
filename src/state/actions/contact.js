@@ -24,9 +24,21 @@ const updateContact = (id, values) => () =>
       })
   })
 
-const deleteContact = (id, values) => () =>
+const deleteContact = (id) => () =>
   new Promise((resolve, reject) => {
-    Axios.delete(`/business_contacts/${id}`, values)
+    Axios.delete(`/business_contacts/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchContact = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`/business_contacts/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -39,5 +51,6 @@ const deleteContact = (id, values) => () =>
 export default {
   createContact,
   updateContact,
-  deleteContact
+  deleteContact,
+  patchContact
 }

@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
-import { Button, Wrapper } from '../UI'
+import { Button, EmptyState, Wrapper } from '../UI'
 import PensionSituationForm from './PensionSituationForm'
 import CardPensionSituation from './CardPensionSituation'
 import { ConfirmDelete } from '../Shared'
@@ -65,19 +65,23 @@ const PensionSituation = () => {
       </Box>
       <Box>
         <Grid container spacing={2}>
-          {list.map((item) => (
-            <CardPensionSituation
-              data={item}
-              onEdit={() => {
-                setCurrent(item)
-                toggleOpenEdit()
-              }}
-              onDelete={() => {
-                setCurrent(item)
-                toggleOpenDelete()
-              }}
-            />
-          ))}
+          {list.length === 0 ? (
+            <EmptyState message="Este trabajador no tiene una situación previsonal" />
+          ) : (
+            list.map((item) => (
+              <CardPensionSituation
+                data={item}
+                onEdit={() => {
+                  setCurrent(item)
+                  toggleOpenEdit()
+                }}
+                onDelete={() => {
+                  setCurrent(item)
+                  toggleOpenDelete()
+                }}
+              />
+            ))
+          )}
         </Grid>
       </Box>
       <PensionSituationForm

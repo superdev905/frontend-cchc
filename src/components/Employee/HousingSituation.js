@@ -60,13 +60,15 @@ const PensionSituation = () => {
           <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
             Situación habitacional
           </Typography>
-          <Button onClick={toggleOpenAdd}>Registrar </Button>
+          <Button disabled={list.length > 0} onClick={toggleOpenAdd}>
+            Registrar
+          </Button>
         </Box>
       </Box>
       <Box>
         <Grid container spacing={2}>
           {list.length === 0 ? (
-            <EmptyState message="Ese trabajador no tiene situacial habitacional" />
+            <EmptyState message="Este trabajador no tiene situación habitacional" />
           ) : (
             list.map((item) => (
               <CardHousingSituation

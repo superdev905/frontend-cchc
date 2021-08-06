@@ -14,8 +14,8 @@ const useStyles = makeStyles(() => ({
     backgroundColor: '#F5F8FA'
   },
   message: {
-    fontWeight: 500,
-    fontSize: 15,
+    fontWeight: 'bold',
+    fontSize: 16,
     opacity: 0.7
   }
 }))

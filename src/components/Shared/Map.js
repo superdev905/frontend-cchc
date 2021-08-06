@@ -22,22 +22,15 @@ const useStyles = makeStyles((theme) => ({
 
 mapboxgl.workerClass = MapboxWorker
 
-const Map = ({
-  height,
-  zoom,
-  longitude,
-  latitude,
-  markers,
-  disabled,
-  showMarkers
-}) => {
+const Map = ({ height, zoom, longitude, latitude, markers, showMarkers }) => {
   const classes = useStyles()
   const [viewport, setViewport] = useState({
     width: '100%',
     height: '100%',
     latitude,
     longitude,
-    zoom
+    zoom,
+    showZoom: true
   })
 
   const renderMarkers = () => {
@@ -73,9 +66,7 @@ const Map = ({
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_API}
         {...viewport}
         onViewportChange={(e) => {
-          if (!disabled) {
-            setViewport(e)
-          }
+          setViewport(e)
         }}
       >
         {showMarkers && renderMarkers()}

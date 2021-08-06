@@ -44,18 +44,20 @@ const PensionSituation = ({
       belongs_to_recognize: type === 'UPDATE' ? data.belongs_to_recognize : '',
       pension_amount: type === 'UPDATE' ? data.pension_amount : ''
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       submitFunction(values)
         .then(() => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, {
             variant: 'success'
           })
-          onClose()
-          changeSuccess(true)
-          if (successFunction) {
-            successFunction()
-          }
+          changeSuccess(true, () => {
+            onClose()
+            resetForm()
+            if (successFunction) {
+              successFunction()
+            }
+          })
         })
         .catch((err) => {
           formik.setSubmitting(false)

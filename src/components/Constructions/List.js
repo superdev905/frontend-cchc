@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid } from '@material-ui/core'
 import constructionAction from '../../state/actions/constructions'
 import { DataTable } from '../Shared'
-import { SearchInput, Wrapper, StatusChip, Button } from '../UI'
+import { SearchInput, Wrapper, StatusChip, Button, Select } from '../UI'
 import ConstructionModal from './CreateModal'
 import { useToggle } from '../../hooks'
 
@@ -13,18 +13,27 @@ const List = ({ ...props }) => {
 
   const { open, toggleOpen } = useToggle()
   const [loading, setLoading] = useState(false)
-  const { list, filters } = useSelector((state) => state.constructions)
+  const [filters, setFilters] = useState({
+    skip: 0,
+    limit: 30,
+    search: '',
+    status: ''
+  })
+  const { list } = useSelector((state) => state.constructions)
 
   const searchChange = (e) => {
-    dispatch(
-      constructionAction.updateFilters({ ...filters, search: e.target.value })
-    )
+    setFilters({ ...filters, search: e.target.value })
+  }
+
+  const handleStatusChange = (e) => {
+    setFilters({ ...filters, status: e.target.value })
   }
 
   const createConstruction = (values) =>
     dispatch(
       constructionAction.createConstruction({
         ...values,
+        state: 'ACTIVE',
         typology_id: values.typology_id || null
       })
     )
@@ -50,15 +59,28 @@ const List = ({ ...props }) => {
   return (
     <div>
       <Wrapper>
-        <Grid container>
-          <Grid item xs={6}>
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={2}>
+            <Select name="status" onChange={handleStatusChange}>
+              <option value="">Todos</option>
+              {[
+                { key: 'VIGENTE', name: 'Vigente' },
+                { key: 'NO_VIGENTE', name: 'No vigente' }
+              ].map((item) => (
+                <option key={`employee--filters-${item.key}`} value={item.key}>
+                  {item.name}
+                </option>
+              ))}
+            </Select>
+          </Grid>
+          <Grid item xs={12} md={4}>
             <SearchInput
               value={filters.search}
               placeholder="Buscar por: razón social, rut"
               onChange={searchChange}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <Box display="flex" justifyContent="flex-end">
               <Button onClick={toggleOpen}>Nueva obra</Button>
             </Box>
@@ -77,13 +99,9 @@ const List = ({ ...props }) => {
           progressPending={loading}
           columns={[
             {
-              name: 'Razón social',
-              selector: 'business_name',
+              name: 'Nombre',
+              selector: 'name',
               sortable: true
-            },
-            {
-              name: 'Rut',
-              selector: 'rut'
             },
             {
               name: 'Estado',
@@ -91,9 +109,9 @@ const List = ({ ...props }) => {
               cell: (row) => (
                 <StatusChip
                   {...row}
-                  success={row.state === 'VIGENTE'}
-                  error={row.state === 'NO_VIGENTE'}
-                  label={row.state === 'VIGENTE' ? 'Vigente' : 'No vigente'}
+                  success={row.status === 'VIGENTE'}
+                  error={row.status === 'NO_VIGENTE'}
+                  label={row.status === 'VIGENTE' ? 'Vigente' : 'No vigente'}
                 />
               ),
               hide: 'md'
