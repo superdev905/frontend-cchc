@@ -18,14 +18,17 @@ const PensionSituation = () => {
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
 
-  const createSituation = (values) =>
-    dispatch(
+  const createSituation = (values) => {
+    if (!values.pension_amount) {
+      delete values.pension_amount
+    }
+    return dispatch(
       employeesActions.createPensionSituation({
         ...values,
         employee_id: parseInt(idEmployee, 10)
       })
     )
-
+  }
   const updateSituation = (values) =>
     dispatch(
       employeesActions.updatePensionSituation(current.id, {

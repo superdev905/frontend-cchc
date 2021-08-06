@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
@@ -29,6 +29,10 @@ const useStyles = makeStyles(() => ({
     marginBottom: 5
   }
 }))
+
+const disabilitySchema = Yup.object().shape({
+  credential_disability: Yup.string().required('Seleccione opción')
+})
 
 const validationSchema = Yup.object().shape({
   run: Yup.string()
@@ -64,12 +68,17 @@ const EmployeeModal = ({
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const [hasDisability, setHasDisability] = useState(
+    type === 'UPDATE' ? data.disability === 'SI' : false
+  )
   const { enqueueSnackbar } = useSnackbar()
   const { maritalStatus, nationalities, scholarshipList, banks, rshList } =
     useSelector((state) => state.common)
   const formik = useFormik({
     validateOnMount: true,
-    validationSchema,
+    validationSchema: hasDisability
+      ? validationSchema.concat(disabilitySchema)
+      : validationSchema,
     initialValues: {
       run: type === 'UPDATE' ? data.run : '',
       names: type === 'UPDATE' ? data.names : '',
@@ -107,8 +116,11 @@ const EmployeeModal = ({
   useEffect(() => {
     if (formik.values.disability === 'NO') {
       formik.setFieldValue('credential_disability', '')
+      setHasDisability(false)
+    } else {
+      setHasDisability(true)
     }
-  }, [formik.values.disability])
+  }, [formik.values.disability, hasDisability])
 
   useEffect(() => {
     dispatch(commonActions.getMaritalStatuses())
@@ -325,6 +337,7 @@ const EmployeeModal = ({
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
                 <Select
+                  required={hasDisability}
                   label="Crendencial de discapacidad"
                   name="credential_disability"
                   value={formik.values.credential_disability}

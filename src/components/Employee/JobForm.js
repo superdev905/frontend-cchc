@@ -108,7 +108,7 @@ const HousingForm = ({
       const currentCons = constructions.find(
         (item) => item.id === parseInt(formik.values.construction_id, 10)
       )
-      formik.setFieldValue('construction_name', currentCons.name || '')
+      formik.setFieldValue('construction_name', currentCons?.name || '')
     }
   }, [formik.values.construction_id, constructions])
 

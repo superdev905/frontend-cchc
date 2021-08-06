@@ -33,20 +33,26 @@ const PensionSituation = () => {
           specDetailName: item.specialty_detail.description,
           certEntity: item.certifying_entity
             ? item.certifying_entity.description
-            : '',
-          certDate: formatDate(item.certificated_date)
+            : 'Sin entidad',
+          certDate: item.certificated_date
+            ? formatDate(item.certificated_date)
+            : 'Sin fecha'
         }))
       )
     })
   }
 
-  const createEvent = (values) =>
-    dispatch(
+  const createEvent = (values) => {
+    if (!values.certificated_date) {
+      delete values.certificated_date
+    }
+    return dispatch(
       employeesActions.createSpecialization({
         ...values,
         employee_id: parseInt(idEmployee, 10)
       })
     )
+  }
 
   const updateEvent = (values) =>
     dispatch(

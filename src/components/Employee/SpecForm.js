@@ -15,8 +15,14 @@ const validationSchema = Yup.object().shape({
   specialty_detail_id: Yup.number().required('Seleccione especialidad'),
   is_self_taught: Yup.string().required('Seleccione opción'),
   certifying_entity_id: Yup.number(),
-  is_certificated: Yup.string(),
+  is_certificated: Yup.string().required('Seleccion opción')
+})
+
+const certificationDateRequired = Yup.object().shape({
   certificated_date: Yup.date().required('Seleccione fecha')
+})
+const certificationDateNotRequired = Yup.object().shape({
+  certificated_date: Yup.date().notRequired()
 })
 
 const HousingForm = ({
@@ -32,13 +38,19 @@ const HousingForm = ({
 
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
+  const [isCertified, setIsCertified] = useState(
+    type === 'UPDATE' ? data.is_certificated === 'SI' : false
+  )
   const [subSpec, setSubSpec] = useState([])
   const { isMobile } = useSelector((state) => state.ui)
   const { specList, entities } = useSelector((state) => state.common)
 
   const formik = useFormik({
+    enableReinitialize: true,
     validateOnMount: true,
-    validationSchema,
+    validationSchema: isCertified
+      ? validationSchema.concat(certificationDateRequired)
+      : validationSchema.concat(certificationDateNotRequired),
     initialValues: {
       specialty_id: type === 'UPDATE' ? data.specialty_id : '',
       specialty_detail_id: type === 'UPDATE' ? data.specialty_detail_id : '',
@@ -75,12 +87,18 @@ const HousingForm = ({
         })
     }
   })
+  console.log(formik.errors, isCertified)
 
   useEffect(() => {
     if (formik.values.is_certificated === 'NO') {
+      setIsCertified(false)
       formik.setFieldTouched('certifying_entity_id', '')
+      formik.setFieldTouched('certificated_date', '')
+      formik.setFieldTouched('certifying_entity_id', '')
+    } else {
+      setIsCertified(true)
     }
-  }, [formik.values.is_certificated])
+  }, [formik.values.is_certificated, isCertified])
 
   useEffect(() => {
     if (formik.values.specialty_id && specList.length > 0) {
@@ -187,6 +205,7 @@ const HousingForm = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <Select
+                required
                 label="Certificado"
                 name="is_certificated"
                 onChange={formik.handleChange}
@@ -235,7 +254,8 @@ const HousingForm = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <DatePicker
-                required
+                required={isCertified}
+                disabled={!isCertified}
                 label="Fecha de certificación"
                 value={formik.values.certificated_date}
                 helperText={
