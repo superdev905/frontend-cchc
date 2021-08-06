@@ -108,7 +108,9 @@ const EmployeeModal = ({
           autoHideDuration: 1500
         })
         onClose()
-        successFunction(result)
+        if (successFunction) {
+          successFunction(result)
+        }
       })
     }
   })

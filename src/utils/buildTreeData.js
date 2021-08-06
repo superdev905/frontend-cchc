@@ -10,7 +10,6 @@ const removeEmptyChildren = (data) => {
 }
 
 const searchFromTree = (mainNode, element, matchingTitle) => {
-  console.log(matchingTitle, mainNode)
   if (element.id === matchingTitle) {
     return mainNode
   } else if (element.children) {
