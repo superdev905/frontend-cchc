@@ -9,6 +9,8 @@ import { Box } from '@material-ui/core'
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import { Wrapper } from '../../components/UI'
+import { useToggle } from '../../hooks'
+import { EventForm } from '../../components/Assistance'
 
 const locales = {
   es
@@ -23,7 +25,9 @@ const localizer = dateFnsLocalizer({
 
 const EventsCalendar = () => {
   const [currentDate] = useState(new Date())
-  const [events, setEvents] = useState([
+  const [currentSlot, setCurrentSlot] = useState(null)
+  const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const [events] = useState([
     {
       id: 0,
       title: 'All Day Event very long title',
@@ -39,13 +43,8 @@ const EventsCalendar = () => {
       desc: 'Big conference for important people'
     }
   ])
+  console.log(currentSlot)
 
-  const handleSelectSlot = (e) => {
-    console.log(e)
-    const temp = [...events]
-    temp.push({ ...e, title: 'Example' })
-    setEvents(temp)
-  }
   return (
     <div>
       <Wrapper>
@@ -57,10 +56,17 @@ const EventsCalendar = () => {
             views={['month', 'work_week', 'day', 'agenda']}
             startAccessor="start"
             endAccessor="end"
-            onSelectSlot={handleSelectSlot}
+            onSelectSlot={(e) => {
+              toggleOpenAdd()
+              console.log(e)
+              setCurrentSlot(e)
+            }}
           />
         </Box>
       </Wrapper>
+      {currentSlot && openAdd && (
+        <EventForm data={currentSlot} open={openAdd} onClose={toggleOpenAdd} />
+      )}
     </div>
   )
 }
