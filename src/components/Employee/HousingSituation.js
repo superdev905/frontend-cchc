@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { useToggle } from '../../hooks'
+import { useSuccess, useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
 import { Button, EmptyState, Wrapper } from '../UI'
 import HousingSituationForm from './HousingSituationForm'
@@ -12,12 +13,21 @@ import { ConfirmDelete } from '../Shared'
 const PensionSituation = () => {
   const dispatch = useDispatch()
   const { idEmployee } = useParams()
+  const { enqueueSnackbar } = useSnackbar()
+  const { success, changeSuccess } = useSuccess()
   const [list, setList] = useState([])
   const [current, setCurrent] = useState(null)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
 
+  const fetchData = () => {
+    dispatch(
+      employeesActions.getHousingSituation({ employee_id: idEmployee })
+    ).then((data) => {
+      setList(data)
+    })
+  }
   const createSituation = (values) =>
     dispatch(
       employeesActions.createHousingSituation({
@@ -40,14 +50,20 @@ const PensionSituation = () => {
         state: 'DELETED'
       })
     )
-
-  const fetchData = () => {
-    dispatch(
-      employeesActions.getHousingSituation({ employee_id: idEmployee })
-    ).then((data) => {
-      setList(data)
-    })
-  }
+      .then(() => {
+        changeSuccess(true, () => {
+          toggleOpenDelete()
+          enqueueSnackbar('Situación habitacional elimado exitosamente', {
+            variant: 'success'
+          })
+          fetchData()
+        })
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, {
+          variant: 'error'
+        })
+      })
 
   useEffect(() => {
     fetchData()
@@ -109,6 +125,7 @@ const PensionSituation = () => {
         <ConfirmDelete
           open={openDelete}
           onClose={toggleOpenDelete}
+          success={success}
           onConfirm={() => patchSituation(current.id)}
           message={
             <Typography variant="h6">

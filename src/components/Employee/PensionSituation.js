@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { useToggle } from '../../hooks'
+import { useSuccess, useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
 import { Button, EmptyState, Wrapper } from '../UI'
 import PensionSituationForm from './PensionSituationForm'
@@ -13,10 +14,20 @@ const PensionSituation = () => {
   const dispatch = useDispatch()
   const { idEmployee } = useParams()
   const [list, setList] = useState([])
+  const { enqueueSnackbar } = useSnackbar()
+  const { success, changeSuccess } = useSuccess()
   const [current, setCurrent] = useState(null)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+
+  const fetchData = () => {
+    dispatch(
+      employeesActions.getPensionSituation({ employee_id: idEmployee })
+    ).then((data) => {
+      setList(data)
+    })
+  }
 
   const createSituation = (values) => {
     if (!values.pension_amount) {
@@ -43,14 +54,20 @@ const PensionSituation = () => {
         state: 'DELETED'
       })
     )
-
-  const fetchData = () => {
-    dispatch(
-      employeesActions.getPensionSituation({ employee_id: idEmployee })
-    ).then((data) => {
-      setList(data)
-    })
-  }
+      .then(() => {
+        changeSuccess(true, () => {
+          toggleOpenDelete()
+          enqueueSnackbar('Situación provisional elimado exitosamente', {
+            variant: 'success'
+          })
+          fetchData()
+        })
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, {
+          variant: 'error'
+        })
+      })
 
   useEffect(() => {
     fetchData()
@@ -108,6 +125,7 @@ const PensionSituation = () => {
       {current && openDelete && (
         <ConfirmDelete
           open={openDelete}
+          success={success}
           onClose={toggleOpenDelete}
           onConfirm={() => patchSituation(current.id)}
           message={
