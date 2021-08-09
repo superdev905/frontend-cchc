@@ -10,6 +10,7 @@ import { rutValidation } from '../../validations'
 import commonActions from '../../state/actions/common'
 import { decisionList, genderList } from '../../config'
 import SelectableCard from '../UI/SelectableCard/SelectableCard'
+import { useSuccess } from '../../hooks'
 
 const validationSchema = Yup.object().shape({
   run: Yup.string().test('validRUN', 'Ingrese run válido', (v) => {
@@ -42,6 +43,7 @@ const EmployeeModal = ({
 }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
+  const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
   const {
     maritalStatus,
@@ -70,14 +72,18 @@ const EmployeeModal = ({
       rsh_percentage_id: type === 'UPDATE' ? data.rsh_percentage_id : '',
       legal_charge: type === 'UPDATE' ? data.legal_charge : ''
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       submitFunction(values)
         .then(() => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, {
             variant: 'success'
           })
-          successFunction()
+          changeSuccess(true, () => {
+            resetForm()
+            successFunction()
+            onClose()
+          })
         })
         .catch((err) => {
           enqueueSnackbar(err, {
@@ -303,7 +309,7 @@ const EmployeeModal = ({
                 error={formik.touched.job_id && Boolean(formik.errors.job_id)}
                 helperText={formik.touched.job_id && formik.errors.job_id}
               >
-                <option value="">Seleccione parentesco</option>
+                <option value="">Seleccione opción</option>
                 {activities.map((item, i) => (
                   <option key={`relationship-${i}-${item.id}`} value={item.id}>
                     {item.description}
@@ -385,6 +391,8 @@ const EmployeeModal = ({
             <SubmitButton
               onClick={formik.handleSubmit}
               disabled={!formik.isValid}
+              success={success}
+              loading={formik.isSubmitting}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} datos`}
             </SubmitButton>

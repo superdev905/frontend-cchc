@@ -33,23 +33,38 @@ const PensionSituation = () => {
           specDetailName: item.specialty_detail.description,
           certEntity: item.certifying_entity
             ? item.certifying_entity.description
-            : '',
-          certDate: formatDate(item.certificated_date)
+            : 'Sin entidad',
+          certDate: item.certificated_date
+            ? formatDate(item.certificated_date)
+            : 'Sin fecha'
         }))
       )
     })
   }
 
-  const createEvent = (values) =>
-    dispatch(
+  const createEvent = (values) => {
+    if (!values.certificated_date) {
+      delete values.certificated_date
+    }
+    if (!values.certifying_entity_id) {
+      delete values.certifying_entity_id
+    }
+    return dispatch(
       employeesActions.createSpecialization({
         ...values,
         employee_id: parseInt(idEmployee, 10)
       })
     )
+  }
 
-  const updateEvent = (values) =>
-    dispatch(
+  const updateEvent = (values) => {
+    if (!values.certificated_date) {
+      delete values.certificated_date
+    }
+    if (!values.certifying_entity_id) {
+      delete values.certifying_entity_id
+    }
+    return dispatch(
       employeesActions.updateSpecialization(current.id, {
         ...values,
         certification_url: current.certification_url || '',
@@ -57,6 +72,7 @@ const PensionSituation = () => {
         employee_id: parseInt(idEmployee, 10)
       })
     )
+  }
   const patchEvent = (id) => {
     dispatch(
       employeesActions.patchSpecialization(id, {

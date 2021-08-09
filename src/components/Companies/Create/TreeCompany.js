@@ -23,34 +23,30 @@ const useStyles = makeStyles((theme) => ({
 export default function RecursiveTreeView({ data, selectedId, onChange }) {
   const classes = useStyles()
 
-  const renderTree = (nodes) => (
+  const renderTree = (node) => (
     <TreeItem
-      key={nodes.id}
-      nodeId={nodes.id}
+      key={node.id}
+      nodeId={node.id}
       label={
         <Box display="flex" alignItems="center" m={1}>
           <Checkbox
             color="primary"
-            checked={nodes.id === selectedId}
-            disabled={nodes.state === 'DELETED'}
-            onChange={() => onChange(nodes.id)}
+            checked={node.id === selectedId}
+            disabled={node.state === 'DELETED'}
+            onChange={() => onChange(node.id)}
           />
           <Box>
             <Typography>
               Razon social:{' '}
-              <span className={classes.businessName}>
-                {nodes.business_name}
-              </span>
+              <span className={classes.businessName}>{node.business_name}</span>
             </Typography>
-            <Typography className={classes.rut}>Rut: {nodes.rut}</Typography>
+            <Typography className={classes.rut}>Rut: {node.rut}</Typography>
           </Box>
         </Box>
       }
     >
-      {nodes.children_business
-        ? Object.keys(nodes.children_business).map((node) =>
-            renderTree(nodes.children_business[node])
-          )
+      {node.children && node.children.length > 0
+        ? node.children.map((item) => renderTree(item))
         : null}
     </TreeItem>
   )

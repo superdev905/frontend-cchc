@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Box, Grid } from '@material-ui/core'
 import companiesActions from '../../../state/actions/companies'
-import { ActionsTable, Button, SearchInput, Wrapper } from '../../UI'
+import { ActionsTable, Button, SearchInput, Select, Wrapper } from '../../UI'
 import CreateCompany from '../Create'
 import { DataTable } from '../../Shared'
 import StatusChip from '../../UI/StatusChip'
@@ -11,9 +11,13 @@ import StatusChip from '../../UI/StatusChip'
 const List = ({ ...props }) => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
-  const { list, showCreateModal, filters } = useSelector(
-    (state) => state.companies
-  )
+  const [filters, setFilters] = useState({
+    skip: 0,
+    limit: 30,
+    search: '',
+    state: ''
+  })
+  const { list, showCreateModal } = useSelector((state) => state.companies)
 
   const toggleCreateModal = () => {
     dispatch(companiesActions.toggleCreateModal(showCreateModal))
@@ -28,13 +32,15 @@ const List = ({ ...props }) => {
 
   const onSearchChange = (e) => {
     const { value } = e.target
-    dispatch(
-      companiesActions.updateFilters({
-        ...filters,
-        search: value.toString(),
-        page: 0
-      })
-    )
+
+    setFilters({
+      ...filters,
+      search: value.toString(),
+      page: 0
+    })
+  }
+  const handleStatusChange = (e) => {
+    setFilters({ ...filters, state: e.target.value })
   }
 
   const fetchCompanies = () => {
@@ -56,8 +62,24 @@ const List = ({ ...props }) => {
     <Box>
       <Wrapper>
         <Box>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={6}>
+          <Grid container spacing={1} alignItems="center">
+            <Grid item xs={12} md={2}>
+              <Select name="status" onChange={handleStatusChange}>
+                <option value="">Todos</option>
+                {[
+                  { key: 'CREATED', name: 'Activos' },
+                  { key: 'DELETED', name: 'Eliminados' }
+                ].map((item) => (
+                  <option
+                    key={`employee--filters-${item.key}`}
+                    value={item.key}
+                  >
+                    {item.name}
+                  </option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={4}>
               <SearchInput
                 value={filters.search}
                 onChange={onSearchChange}

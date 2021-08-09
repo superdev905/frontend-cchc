@@ -9,7 +9,8 @@ const initialState = {
   filters: {
     skip: 0,
     limit: 20,
-    search: ''
+    search: '',
+    state: ''
   }
 }
 

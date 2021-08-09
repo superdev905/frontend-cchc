@@ -46,7 +46,9 @@ const CardSituation = ({ data, onEdit, onDelete }) => {
                 label={`Pertenece a reconocer: ${data.belongs_to_recognize}`}
               />
             </Box>
-            <Typography>Monto de pensión: {data.pension_amount}</Typography>
+            <Typography>
+              Monto de pensión: {data.pension_amount || 'Sin pensión'}
+            </Typography>
           </Box>
         </CardContent>
         <OptionsMenu

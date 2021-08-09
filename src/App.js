@@ -28,8 +28,8 @@ function App() {
           center
           centerVertically
           size={80}
-          height={window.innerHeight}
-          width={window.innerWidth}
+          height={`${window.innerHeight}px`}
+          width={`${window.innerWidth}px`}
         />
       }
     >

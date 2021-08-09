@@ -173,7 +173,14 @@ const StepOne = () => {
                 parentCompany?.business_name || formik.values.parent_business_id
               }
               onChange={formik.handleChange}
-              onClick={toggleOpen}
+              onClick={() => {
+                if (
+                  formik.values.type &&
+                  formik.values.type !== 'EMPRESA PRINCIPAL'
+                ) {
+                  toggleOpen()
+                }
+              }}
               disabled
               placeholder="Sin empresa madre"
             />
@@ -254,7 +261,7 @@ const StepOne = () => {
           success={success}
           disabled={!formik.isValid || formik.isSubmitting}
         >
-          {create.type === 'UPDATE' ? 'Actualidar' : 'Crear'} empresa
+          {create.type === 'UPDATE' ? 'Actualizar' : 'Crear'} empresa
         </SubmitButton>
       </Box>
     </Box>

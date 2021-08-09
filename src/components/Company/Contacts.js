@@ -41,6 +41,7 @@ const Contacts = ({ ...props }) => {
     dispatch(
       contactActions.updateContact(currentContact.id, {
         ...values,
+        state: currentContact.state,
         email: values.email.toLowerCase(),
         business_id: parseInt(idCompany, 10)
       })
@@ -48,7 +49,7 @@ const Contacts = ({ ...props }) => {
 
   const handleContactDelete = (id) => {
     setDeleting(true)
-    dispatch(contactActions.deleteContact(id))
+    dispatch(contactActions.patchContact(id, { state: 'DELETED' }))
       .then(() => {
         setDeleting(false)
         changeSuccess(true)

@@ -3,12 +3,15 @@ import { useState } from 'react'
 const useSuccess = (status = false) => {
   const [success, setSuccess] = useState(status)
 
-  const changeSuccess = (value) => {
+  const changeSuccess = (value, callBack) => {
     if (value) {
       setSuccess(true)
       setTimeout(() => {
         setSuccess(false)
-      }, 1000)
+        if (callBack) {
+          callBack()
+        }
+      }, 500)
     } else {
       setSuccess(value)
     }

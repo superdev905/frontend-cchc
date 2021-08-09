@@ -79,9 +79,9 @@ const updateConstruction = (constructionId, values) => () =>
       })
   })
 
-const deleteConstruction = (constructionId) => () =>
+const patchConstruction = (constructionId, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.delete(`/constructions/${constructionId}`)
+    Axios.patch(`/constructions/${constructionId}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -218,12 +218,23 @@ const deleteContact = (id) => () =>
         reject(err.response.data)
       })
   })
+const patchContact = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`/construction_contacts/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
 
 export default {
   getConstructions,
   createConstruction,
   updateConstruction,
-  deleteConstruction,
+  patchConstruction,
   getConstruction,
   createConstructionTypology,
   getConstructionTypology,
@@ -235,5 +246,6 @@ export default {
   createContact,
   updateContact,
   deleteContact,
+  patchContact,
   updateFilters
 }

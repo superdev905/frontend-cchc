@@ -6,13 +6,16 @@ import { formatDate } from '../../formatters'
 import { useToggle } from '../../hooks'
 import { EmployeeForm } from '../Employees'
 
-const Details = ({ loading, fetchFunction }) => {
+const Details = ({ loading }) => {
   const dispatch = useDispatch()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { employee } = useSelector((state) => state.employees)
 
   const updateEmployeeInfo = (values) =>
     dispatch(employeesActions.updateEmployee(employee.id, values))
+  const getEmployeeDetails = () => {
+    dispatch(employeesActions.getEmployeeDetails(employee.id))
+  }
 
   return (
     <Box>
@@ -101,14 +104,18 @@ const Details = ({ loading, fetchFunction }) => {
               >
                 Información adicional
               </Typography>
-              <LabeledRow label={'Discapacidad'}>
+
+              <LabeledRow width={200} label={'Discapacidad'}>
                 <Text loading={loading}>{employee?.disability}</Text>
               </LabeledRow>
-              <LabeledRow label={'Credencial discapacidad'}>
+              <LabeledRow width={200} label={'Credencial discapacidad'}>
                 <Text loading={loading}>{employee?.credential_disability}</Text>
               </LabeledRow>
-              <LabeledRow label={'Vivo'}>
+              <LabeledRow width={200} label={'Vivo'}>
                 <Text loading={loading}>{employee?.alive}</Text>
+              </LabeledRow>
+              <LabeledRow width={200} label={'Pertenece a RECONOCER'}>
+                <Text loading={loading}>{employee?.recognize}</Text>
               </LabeledRow>
             </Grid>
           </Grid>
@@ -122,7 +129,7 @@ const Details = ({ loading, fetchFunction }) => {
           onClose={toggleOpenEdit}
           data={employee}
           submitFunction={updateEmployeeInfo}
-          successFunction={fetchFunction}
+          successFunction={getEmployeeDetails}
         />
       )}
     </Box>

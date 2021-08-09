@@ -108,9 +108,16 @@ const CustomDatePicker = ({
   label,
   required,
   disabled,
+  disabledFuture,
   ...props
 }) => {
   const classes = useStyles({ disabled })
+  const [today] = useState(new Date())
+  const [maxDate] = useState({
+    year: today.getFullYear(),
+    month: today.getMonth() + 1,
+    day: today.getDate()
+  })
   const [selectedDate, setSelectedDate] = useState(value || null)
   const [selectDay, setSelectDay] = useState(setCalendarFormat(value))
   const { open, anchorEl, handleOpen, handleClose } = useMenu()
@@ -167,6 +174,7 @@ const CustomDatePicker = ({
           onChange={handleSelected}
           shouldHighlightWeekends
           locale={ESLocale}
+          maximumDate={disabledFuture ? maxDate : null}
         />
       </Menu>
     </Box>
@@ -176,6 +184,7 @@ const CustomDatePicker = ({
 CustomDatePicker.defaultProps = {
   required: false,
   placeholder: 'Seleccione fecha',
-  disabled: false
+  disabled: false,
+  disabledFuture: true
 }
 export default CustomDatePicker

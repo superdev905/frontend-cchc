@@ -33,19 +33,22 @@ const Details = ({ loading }) => {
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <Box>
+              {construction && construction.state === 'DELETED' && (
+                <Box marginBottom="10px">
+                  <StatusChip label="Esta obra fue eliminada" error />
+                </Box>
+              )}
+
               <Typography className={classes.heading}>Información</Typography>
               <Box>
                 <LabeledRow label="Razón social">
-                  <Text loading={loading}> {construction?.business_name}</Text>
+                  <Text loading={loading}> {construction?.name}</Text>
                 </LabeledRow>
                 {construction && construction.name && (
                   <LabeledRow label="Nombre">
                     <Text loading={loading}>{construction?.name}</Text>
                   </LabeledRow>
                 )}
-                <LabeledRow label="Rut">
-                  <Text loading={loading}> {construction?.rut}</Text>
-                </LabeledRow>
                 <LabeledRow label="Sector económico">
                   <Text loading={loading}>
                     {construction?.economic_sector?.name}
@@ -56,9 +59,9 @@ const Details = ({ loading }) => {
                 </LabeledRow>
                 <LabeledRow label="Estado">
                   <StatusChip
-                    success={construction?.state === 'VIGENTE'}
+                    success={construction?.status === 'VIGENTE'}
                     label={
-                      construction?.state === 'VIGENTE'
+                      construction?.status === 'VIGENTE'
                         ? 'Vigente'
                         : 'No vigente'
                     }

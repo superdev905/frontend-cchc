@@ -21,6 +21,26 @@ const FamiliarGroup = () => {
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const { success, changeSuccess } = useSuccess()
 
+  const fetchRelatives = () => {
+    setLoading(true)
+    dispatch(employeesActions.getEmployeeRelatives(employee.run))
+      .then((list) => {
+        setLoading(false)
+        setTableData(
+          list.map((item) => ({
+            ...item,
+            surnames: `${item.paternal_surname} ${item.maternal_surname}`,
+            born_date_string: formatDate(item.born_date),
+            run_string: item.run || 'Sin RUN',
+            country: item.nationality.description,
+            marital_status: item.marital_status.description
+          }))
+        )
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
   const createRelative = (values) =>
     dispatch(
       employeesActions.createRelative({
@@ -47,31 +67,14 @@ const FamiliarGroup = () => {
       .then(() => {
         setDeleting(false)
         changeSuccess(true)
+        toggleOpenDelete()
+        fetchRelatives()
       })
       .catch(() => {
         setDeleting(false)
       })
   }
-  const fetchRelatives = () => {
-    setLoading(true)
-    dispatch(employeesActions.getEmployeeRelatives(employee.run))
-      .then((list) => {
-        setLoading(false)
-        setTableData(
-          list.map((item) => ({
-            ...item,
-            surnames: `${item.paternal_surname} ${item.maternal_surname}`,
-            born_date_string: formatDate(item.born_date),
-            run_string: item.run || 'Sin RUN',
-            country: item.nationality.description,
-            marital_status: item.marital_status.description
-          }))
-        )
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
+
   useEffect(() => {
     if (employee) {
       fetchRelatives()

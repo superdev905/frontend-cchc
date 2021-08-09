@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { useToggle } from '../../hooks'
+import { useSuccess, useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
-import { Button, Wrapper } from '../UI'
+import { Button, EmptyState, Wrapper } from '../UI'
 import PensionSituationForm from './PensionSituationForm'
 import CardPensionSituation from './CardPensionSituation'
 import { ConfirmDelete } from '../Shared'
@@ -13,19 +14,32 @@ const PensionSituation = () => {
   const dispatch = useDispatch()
   const { idEmployee } = useParams()
   const [list, setList] = useState([])
+  const { enqueueSnackbar } = useSnackbar()
+  const { success, changeSuccess } = useSuccess()
   const [current, setCurrent] = useState(null)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
 
-  const createSituation = (values) =>
+  const fetchData = () => {
     dispatch(
+      employeesActions.getPensionSituation({ employee_id: idEmployee })
+    ).then((data) => {
+      setList(data)
+    })
+  }
+
+  const createSituation = (values) => {
+    if (!values.pension_amount) {
+      delete values.pension_amount
+    }
+    return dispatch(
       employeesActions.createPensionSituation({
         ...values,
         employee_id: parseInt(idEmployee, 10)
       })
     )
-
+  }
   const updateSituation = (values) =>
     dispatch(
       employeesActions.updatePensionSituation(current.id, {
@@ -40,14 +54,20 @@ const PensionSituation = () => {
         state: 'DELETED'
       })
     )
-
-  const fetchData = () => {
-    dispatch(
-      employeesActions.getPensionSituation({ employee_id: idEmployee })
-    ).then((data) => {
-      setList(data)
-    })
-  }
+      .then(() => {
+        changeSuccess(true, () => {
+          toggleOpenDelete()
+          enqueueSnackbar('Situación provisional elimado exitosamente', {
+            variant: 'success'
+          })
+          fetchData()
+        })
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, {
+          variant: 'error'
+        })
+      })
 
   useEffect(() => {
     fetchData()
@@ -65,19 +85,23 @@ const PensionSituation = () => {
       </Box>
       <Box>
         <Grid container spacing={2}>
-          {list.map((item) => (
-            <CardPensionSituation
-              data={item}
-              onEdit={() => {
-                setCurrent(item)
-                toggleOpenEdit()
-              }}
-              onDelete={() => {
-                setCurrent(item)
-                toggleOpenDelete()
-              }}
-            />
-          ))}
+          {list.length === 0 ? (
+            <EmptyState message="Este trabajador no tiene una situación previsonal" />
+          ) : (
+            list.map((item) => (
+              <CardPensionSituation
+                data={item}
+                onEdit={() => {
+                  setCurrent(item)
+                  toggleOpenEdit()
+                }}
+                onDelete={() => {
+                  setCurrent(item)
+                  toggleOpenDelete()
+                }}
+              />
+            ))
+          )}
         </Grid>
       </Box>
       <PensionSituationForm
@@ -101,6 +125,7 @@ const PensionSituation = () => {
       {current && openDelete && (
         <ConfirmDelete
           open={openDelete}
+          success={success}
           onClose={toggleOpenDelete}
           onConfirm={() => patchSituation(current.id)}
           message={

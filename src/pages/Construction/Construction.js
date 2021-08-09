@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, IconButton } from '@material-ui/core'
+import { Box, IconButton, Typography } from '@material-ui/core'
 import { ArrowBack as ArrowBackIcon } from '@material-ui/icons/'
 import constructionActions from '../../state/actions/constructions'
 import { Button, PageHeading, Text } from '../../components/UI'
@@ -26,7 +26,7 @@ const Construction = () => {
 
   const deleteConstruction = (id) => {
     setDeleting(true)
-    dispatch(constructionActions.deleteConstruction(id))
+    dispatch(constructionActions.patchConstruction(id, { state: 'DELETED' }))
       .then(() => {
         setDeleting(false)
         changeSuccess(true)
@@ -45,6 +45,7 @@ const Construction = () => {
     dispatch(
       constructionActions.updateConstruction(idConstruction, {
         ...values,
+        state: construction.state,
         typology_id: values.typology_id || null,
         business_id: construction.business_id
       })
@@ -72,11 +73,15 @@ const Construction = () => {
             <ArrowBackIcon />
           </IconButton>
           <Text loading={loading}>
-            <PageHeading>{construction?.business_name}</PageHeading>{' '}
+            <PageHeading>{construction?.name}</PageHeading>
           </Text>
         </Box>
         <Box>
-          <Button danger onClick={toggleOpenDelete}>
+          <Button
+            danger
+            disabled={construction?.state === 'DELETED'}
+            onClick={toggleOpenDelete}
+          >
             Eliminar
           </Button>
           <Button onClick={toggleOpenUpdate}>Editar</Button>
@@ -92,10 +97,10 @@ const Construction = () => {
           success={success}
           onConfirm={() => deleteConstruction(construction.id)}
           message={
-            <span>
+            <Typography variant="h6">
               ¿Estás seguro de eliminar
-              <strong> {construction.business_name}</strong>?
-            </span>
+              <strong> {construction.name}</strong>?
+            </Typography>
           }
         />
       )}

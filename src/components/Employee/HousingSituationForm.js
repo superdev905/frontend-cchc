@@ -43,18 +43,21 @@ const HousingForm = ({
       type_subsidy_id: type === 'UPDATE' ? data.type_subsidy_id : '',
       description: type === 'UPDATE' ? data.description : ''
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       submitFunction(values)
         .then(() => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, {
             variant: 'success'
           })
-          onClose()
-          changeSuccess(true)
-          if (successFunction) {
-            successFunction()
-          }
+
+          changeSuccess(true, () => {
+            resetForm()
+            onClose()
+            if (successFunction) {
+              successFunction()
+            }
+          })
         })
         .catch((err) => {
           formik.setSubmitting(false)

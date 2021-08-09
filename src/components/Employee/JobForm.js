@@ -59,12 +59,13 @@ const HousingForm = ({
           enqueueSnackbar(successMessage, {
             variant: 'success'
           })
-          onClose()
-          resetForm()
-          changeSuccess(true)
-          if (successFunction) {
-            successFunction()
-          }
+          changeSuccess(true, () => {
+            onClose()
+            resetForm()
+            if (successFunction) {
+              successFunction()
+            }
+          })
         })
         .catch((err) => {
           formik.setSubmitting(false)
@@ -107,7 +108,7 @@ const HousingForm = ({
       const currentCons = constructions.find(
         (item) => item.id === parseInt(formik.values.construction_id, 10)
       )
-      formik.setFieldValue('construction_name', currentCons.business_name || '')
+      formik.setFieldValue('construction_name', currentCons?.name || '')
     }
   }, [formik.values.construction_id, constructions])
 
@@ -198,7 +199,7 @@ const HousingForm = ({
                 <option value="">Seleccione una opción</option>
                 {constructions.map((item, index) => (
                   <option key={`type-home--${index}`} value={`${item.id}`}>
-                    {`${item.business_name}`}
+                    {`${item.name}`}
                   </option>
                 ))}
               </Select>
