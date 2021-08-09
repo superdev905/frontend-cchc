@@ -10,10 +10,13 @@ import {
   Delete as DeleteIcon,
   Edit as EditIcon,
   MoreHoriz as MoreIcon,
-  Close as CloseIcon
+  Close as CloseIcon,
+  Fullscreen as FullscreenIcon
 } from '@material-ui/icons'
 import { formatDate, formatHours } from '../../formatters'
 import { Button } from '../UI'
+import { OptionsMenu } from '../Shared'
+import { useMenu } from '../../hooks'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,8 +26,22 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const EventPreview = ({ open, onClose, anchorEl, event, onDelete, onEdit }) => {
+const EventPreview = ({
+  open,
+  onClose,
+  anchorEl,
+  event,
+  onDelete,
+  onEdit,
+  onCancel
+}) => {
   const classes = useStyles()
+  const {
+    open: openOptions,
+    handleOpen,
+    handleClose,
+    anchorEl: anchorElOptions
+  } = useMenu()
   return (
     <Menu
       classes={{ paper: classes.root }}
@@ -44,7 +61,7 @@ const EventPreview = ({ open, onClose, anchorEl, event, onDelete, onEdit }) => {
       <Box p={1}>
         <Box display="flex" justifyContent="flex-end">
           <IconButton onClick={onEdit}>
-            <EditIcon />
+            <EditIcon fontSize="small" />
           </IconButton>
           <IconButton
             onClick={() => {
@@ -52,13 +69,13 @@ const EventPreview = ({ open, onClose, anchorEl, event, onDelete, onEdit }) => {
               onClose()
             }}
           >
-            <DeleteIcon />
+            <DeleteIcon fontSize="small" />
           </IconButton>
-          <IconButton>
-            <MoreIcon />
+          <IconButton onClick={handleOpen}>
+            <MoreIcon fontSize="small" />
           </IconButton>
           <IconButton onClick={onClose}>
-            <CloseIcon />
+            <CloseIcon fontSize="small" />
           </IconButton>
         </Box>
         <Box p={2}>
@@ -75,11 +92,26 @@ const EventPreview = ({ open, onClose, anchorEl, event, onDelete, onEdit }) => {
             size="small"
             variant="outlined"
             disabled={event.status === 'CANCELADO'}
+            onClick={onCancel}
           >
-            Cancelar
+            Cancelar evento
           </Button>
         </Box>
       </Box>
+      <OptionsMenu
+        open={openOptions}
+        onClose={handleClose}
+        anchorEl={anchorElOptions}
+        customOptions={[
+          {
+            label: 'Ver página completa',
+            icon: FullscreenIcon,
+            onClick: () => {
+              console.log('sss')
+            }
+          }
+        ]}
+      />
     </Menu>
   )
 }

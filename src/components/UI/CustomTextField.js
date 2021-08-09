@@ -5,13 +5,13 @@ import { Box, InputLabel, TextField, makeStyles } from '@material-ui/core'
 const useStyles = makeStyles((theme) => ({
   label: {
     fontSize: '15px',
-    color: theme.palette.common.black,
-    opacity: 0.8
+    color: theme.palette.gray.gray600
   },
   input: ({ gray, error }) => ({
     '& input': {
       backgroundColor: gray ? '#F5F8FA' : 'transparent',
-      color: error ? theme.palette.error.main : theme.palette.common.black
+      color: error ? theme.palette.error.main : theme.palette.common.black,
+      border: `1px solid ${theme.palette.gray.gray50}`
     }
   })
 }))

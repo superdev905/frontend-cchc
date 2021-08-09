@@ -37,9 +37,21 @@ const getEvents =
         })
     })
 
-const updateEvent = (values) => () =>
+const updateEvent = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${serviceEndpoint}/assistance-visits`, values)
+    Axios.put(`${serviceEndpoint}/assistance-visits/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchEvent = (idEvent, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${serviceEndpoint}/assistance-visits/${idEvent}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -65,5 +77,6 @@ export default {
   getEvents,
   createEvent,
   updateEvent,
-  deleteEvent
+  deleteEvent,
+  patchEvent
 }

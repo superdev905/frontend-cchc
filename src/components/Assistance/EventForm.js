@@ -9,10 +9,11 @@ import companiesActions from '../../state/actions/companies'
 import commonActions from '../../state/actions/common'
 import { DatePicker, Dialog } from '../Shared'
 import { Button, Select, SubmitButton, TextArea, TextField } from '../UI'
+import { formatHours } from '../../formatters'
 
 const validationSchema = Yup.object().shape({
   type_id: Yup.number().required('Seleccione tipo de evento'),
-  title: Yup.string(),
+  title: Yup.string().required('Ingrese título'),
   date: Yup.date().nullable().required('Seleccione fecha de evento'),
   start_date: Yup.date().nullable().required('Slecciona fecha de inicio'),
   end_date: Yup.date().nullable().required('Slecciona fecha de fin'),
@@ -34,7 +35,8 @@ const EventForm = ({
   type,
   event,
   submitFunction,
-  successFunction
+  successFunction,
+  changeDateTrigger
 }) => {
   const dispatch = useDispatch()
   const [selectedCompany, setSelectedCompany] = useState(null)
@@ -47,11 +49,12 @@ const EventForm = ({
     validateOnMount: true,
     validationSchema,
     initialValues: {
+      title: type === 'CREATE' ? '' : event.title,
       type_id: type === 'CREATE' ? '' : event.type_id,
       status: type === 'CREATE' ? 'PROGRAMADA' : event.status,
-      date: type === 'CREATE' ? data.start : event.date,
-      start_date: type === 'CREATE' ? data.start : event.start_date,
-      end_date: type === 'CREATE' ? data.end : event.end_date,
+      date: type === 'CREATE' ? new Date(data.start) : event.date,
+      start_date: type === 'CREATE' ? new Date(data.start) : event.start_date,
+      end_date: type === 'CREATE' ? new Date(data.end) : event.end_date,
       shift_id: type === 'CREATE' ? '' : event.shift_id,
       shift_name: type === 'CREATE' ? '' : event.shift_name,
       assigned_id: type === 'CREATE' ? '' : event.assigned_id,
@@ -62,7 +65,11 @@ const EventForm = ({
       observation: type === 'CREATE' ? '' : event.observation
     },
     onSubmit: (values, { resetForm }) => {
-      submitFunction(values).then(() => {
+      submitFunction({
+        ...values,
+        start_date: new Date(values.start_date).toISOString(),
+        end_date: new Date(values.end_date).toISOString()
+      }).then(() => {
         formik.setSubmitting(false)
         resetForm()
         onClose()
@@ -73,10 +80,6 @@ const EventForm = ({
     }
   })
 
-  const getHours = (dateString) => {
-    const date = new Date(dateString)
-    return date.toLocaleTimeString()
-  }
   const onCompanySelect = (__, values) => {
     setSelectedCompany(values)
     if (values) {
@@ -95,24 +98,40 @@ const EventForm = ({
   }
 
   useEffect(() => {
-    dispatch(companiesActions.getCompanies({}, false)).then((list) => {
-      setCompanies(list)
-    })
-    dispatch(commonActions.getEventTypes())
-    dispatch(commonActions.getShiftList())
+    changeDateTrigger(formik.values.date)
+  }, [formik.values.date])
 
+  useEffect(() => {
     if (type === 'CREATE' && user) {
       formik.setFieldValue('assigned_id', user.id)
       formik.setFieldValue('created_by', user.id)
     }
-  }, [open, type, user])
+  }, [type, user])
+
+  useEffect(() => {
+    if (open) {
+      dispatch(companiesActions.getCompanies({}, false)).then((list) => {
+        setCompanies(list)
+      })
+      dispatch(commonActions.getEventTypes())
+      dispatch(commonActions.getShiftList())
+    }
+  }, [type, user])
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
-      <Typography>Nuevo evento</Typography>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <TextField placeholder="Título del evento" />
+          <TextField
+            placeholder="Título del evento"
+            name="title"
+            label="Título"
+            required
+            value={formik.values.title}
+            onChange={formik.handleChange}
+            error={formik.touched.title && Boolean(formik.errors.title)}
+            helperText={formik.touched.title && formik.errors.title}
+          />
         </Grid>
         <Grid item xs={12}>
           <Box display="flex" alignItems="center">
@@ -125,6 +144,7 @@ const EventForm = ({
         </Grid>
         <Grid item xs={12}>
           <DatePicker
+            disabledFuture={false}
             label="Fecha"
             required
             value={formik.values.date}
@@ -136,15 +156,18 @@ const EventForm = ({
         <Grid item xs={12} md={6}>
           <TextField
             label="Hora de inicio"
-            inputProps={{ readOnly: true }}
-            value={getHours(formik.values.start_date)}
+            type="time"
+            value={formatHours(formik.values.start_date)}
+            onChange={(__, date) => {
+              console.log(date)
+            }}
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             label="Hora de fin"
-            inputProps={{ readOnly: true }}
-            value={getHours(formik.values.end_date)}
+            type="time"
+            value={formatHours(formik.values.end_date)}
           />
         </Grid>
         <Grid item xs={12} md={6}>

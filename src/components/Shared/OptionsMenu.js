@@ -18,10 +18,32 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const OptionsMenu = ({ open, anchorEl, onClose, onEdit, onDelete }) => {
+const OptionsMenu = ({
+  open,
+  anchorEl,
+  onClose,
+  onEdit,
+  onDelete,
+  customOptions
+}) => {
   const classes = useStyles()
   return (
     <Menu open={open} onClose={onClose} anchorEl={anchorEl} elevation={2}>
+      {customOptions.map((item, index) => (
+        <MenuItem
+          key={`custom-option-${index}`}
+          className={classes.itemRoot}
+          onClick={() => {
+            onClose()
+            item.onClick()
+          }}
+        >
+          <ListItemIcon className={classes.iconRoot}>
+            <item.icon fontSize="small" />
+          </ListItemIcon>
+          {item.label}
+        </MenuItem>
+      ))}
       {onEdit && (
         <MenuItem
           className={classes.itemRoot}
@@ -53,4 +75,9 @@ const OptionsMenu = ({ open, anchorEl, onClose, onEdit, onDelete }) => {
     </Menu>
   )
 }
+
+OptionsMenu.defaultProps = {
+  customOptions: []
+}
+
 export default OptionsMenu
