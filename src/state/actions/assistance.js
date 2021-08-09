@@ -49,8 +49,21 @@ const updateEvent = (values) => () =>
       })
   })
 
+const deleteEvent = (idEvent) => () =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`${serviceEndpoint}/assistance-visits/${idEvent}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getEvents,
   createEvent,
-  updateEvent
+  updateEvent,
+  deleteEvent
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useSnackbar } from 'notistack'
 import format from 'date-fns/format'
 import parse from 'date-fns/parse'
 import startOfWeek from 'date-fns/startOfWeek'
@@ -35,12 +36,14 @@ const localizer = dateFnsLocalizer({
 
 const EventsCalendar = () => {
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const { open: openPreview, handleClose, handleOpen, anchorEl } = useMenu()
   const { listEvents } = useSelector((state) => state.assistance)
   const [events, setEvents] = useState([])
   const [currentSlot, setCurrentSlot] = useState(null)
   const [currentEvent, setCurrentEvent] = useState(null)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
 
   const fetchEvents = () => {
     dispatch(assistanceActions.getEvents())
@@ -48,7 +51,18 @@ const EventsCalendar = () => {
 
   const onCreateEvent = (values) =>
     dispatch(assistanceActions.createEvent(values))
-  /**
+
+  const onDeleteEvent = (id) => {
+    dispatch(assistanceActions.deleteEvent(id))
+      .then(() => {
+        enqueueSnackbar('Evento eliminado', { variant: 'success' })
+        fetchEvents()
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, { variant: 'error' })
+      })
+  }
+
   const onUpdateEvent = (values) =>
     dispatch(
       assistanceActions.updateEvent({
@@ -56,7 +70,6 @@ const EventsCalendar = () => {
         created_by: currentEvent.created_by
       })
     )
-     */
 
   useEffect(() => {
     setEvents(
@@ -109,13 +122,27 @@ const EventsCalendar = () => {
           submitFunction={onCreateEvent}
         />
       )}
+      {currentEvent && openEdit && (
+        <EventForm
+          type="UPDATE"
+          event={currentEvent}
+          open={openEdit}
+          onClose={toggleOpenEdit}
+          submitFunction={onUpdateEvent}
+        />
+      )}
       {currentEvent && openPreview && (
         <EventPreview
           anchorEl={anchorEl}
-          type="UPDATE"
           event={currentEvent}
           open={openPreview}
           onClose={handleClose}
+          onDelete={onDeleteEvent}
+          onEdit={() => {
+            handleClose()
+            setCurrentEvent(currentEvent)
+            toggleOpenEdit()
+          }}
         />
       )}
     </div>

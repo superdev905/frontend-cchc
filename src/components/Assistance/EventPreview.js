@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const EventPreview = ({ open, onClose, anchorEl, event }) => {
+const EventPreview = ({ open, onClose, anchorEl, event, onDelete, onEdit }) => {
   const classes = useStyles()
   return (
     <Menu
@@ -43,10 +43,15 @@ const EventPreview = ({ open, onClose, anchorEl, event }) => {
     >
       <Box p={1}>
         <Box display="flex" justifyContent="flex-end">
-          <IconButton>
+          <IconButton onClick={onEdit}>
             <EditIcon />
           </IconButton>
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              onDelete(event.id)
+              onClose()
+            }}
+          >
             <DeleteIcon />
           </IconButton>
           <IconButton>
