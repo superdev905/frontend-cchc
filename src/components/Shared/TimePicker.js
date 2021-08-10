@@ -7,7 +7,8 @@ const useStyles = makeStyles((theme) => ({
     '& input': {
       padding: `20px ${theme.spacing(2)}px`,
       fontSize: 18,
-      width: '100%'
+      width: '100%',
+      color: theme.palette.common.black
     }
   }
 }))

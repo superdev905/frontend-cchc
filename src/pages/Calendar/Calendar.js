@@ -194,8 +194,10 @@ const EventsCalendar = () => {
               toolbar: CalendarToolbar
             }}
             onSelectSlot={(e) => {
-              toggleOpenAdd()
-              setCurrentSlot(e)
+              if (calendarView !== 'month') {
+                toggleOpenAdd()
+                setCurrentSlot(e)
+              }
             }}
             eventPropGetter={(event) => {
               const { backgroundColor, border } = getBgColor(event)

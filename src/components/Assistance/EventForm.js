@@ -106,6 +106,27 @@ const EventForm = ({
   }
 
   useEffect(() => {
+    if (formik.values.shift_id) {
+      const current = shiftList.find(
+        (item) => item.id === parseInt(formik.values.shift_id, 10)
+      )
+      const currentStartTime = current.start_time.split(':')
+      const currentEndTime = current.end_time.split(':')
+      const startHour = currentStartTime[0]
+      const startMinute = currentStartTime[1]
+      const tempStartDate = new Date(formik.values.start_date)
+      tempStartDate.setHours(startHour)
+      tempStartDate.setMinutes(startMinute)
+      const tempEndDate = new Date(formik.values.end_date)
+      tempEndDate.setHours(currentEndTime[0])
+      tempEndDate.setMinutes(currentEndTime[1])
+
+      formik.setFieldValue('start_date', tempStartDate)
+      formik.setFieldValue('end_date', tempEndDate)
+    }
+  }, [formik.values.shift_id])
+
+  useEffect(() => {
     changeDateTrigger(new Date(formik.values.date))
     const targetDate = new Date(formik.values.date)
     const year = targetDate.getFullYear()
@@ -185,6 +206,24 @@ const EventForm = ({
           </Box>
         </Grid>
         <Grid item xs={12}>
+          <Select
+            label="Jornada"
+            name="shift_id"
+            required
+            value={formik.values.shift_id}
+            onChange={formik.handleChange}
+            error={formik.touched.shift_id && Boolean(formik.errors.shift_id)}
+            helperText={formik.touched.shift_id && formik.errors.shift_id}
+          >
+            <option value="">Seleccione jornada </option>
+            {shiftList.map((item) => (
+              <option key={`shift-type-${item.id}`} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </Select>
+        </Grid>
+        <Grid item xs={12}>
           <DatePicker
             disabledFuture={false}
             label="Fecha"
@@ -245,24 +284,7 @@ const EventForm = ({
             ))}
           </Select>
         </Grid>
-        <Grid item xs={12}>
-          <Select
-            label="Jornada"
-            name="shift_id"
-            required
-            value={formik.values.shift_id}
-            onChange={formik.handleChange}
-            error={formik.touched.shift_id && Boolean(formik.errors.shift_id)}
-            helperText={formik.touched.shift_id && formik.errors.shift_id}
-          >
-            <option value="">Seleccione jornada </option>
-            {shiftList.map((item) => (
-              <option key={`shift-type-${item.id}`} value={item.id}>
-                {item.name}
-              </option>
-            ))}
-          </Select>
-        </Grid>
+
         <Grid item xs={12} md={6}>
           <Autocomplete
             options={companies}
