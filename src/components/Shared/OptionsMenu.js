@@ -33,6 +33,7 @@ const OptionsMenu = ({
         <MenuItem
           key={`custom-option-${index}`}
           className={classes.itemRoot}
+          disabled={item.disabled}
           onClick={() => {
             onClose()
             item.onClick()

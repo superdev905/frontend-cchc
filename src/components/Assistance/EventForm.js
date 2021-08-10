@@ -4,12 +4,18 @@ import { useFormik } from 'formik'
 import { differenceInHours } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux'
 import { Avatar, Box, Grid, Typography } from '@material-ui/core'
-import { Autocomplete } from '@material-ui/lab'
+import { Alert, Autocomplete } from '@material-ui/lab'
 import companiesActions from '../../state/actions/companies'
 import commonActions from '../../state/actions/common'
-import { DatePicker, Dialog } from '../Shared'
-import { Button, Select, SubmitButton, TextArea, TextField } from '../UI'
-import { formatHours } from '../../formatters'
+import { DatePicker, Dialog, TimePicker } from '../Shared'
+import {
+  Button,
+  Select,
+  SubmitButton,
+  TextArea,
+  TextField,
+  InputLabel
+} from '../UI'
 
 const validationSchema = Yup.object().shape({
   type_id: Yup.number().required('Seleccione tipo de evento'),
@@ -36,7 +42,8 @@ const EventForm = ({
   event,
   submitFunction,
   successFunction,
-  changeDateTrigger
+  changeDateTrigger,
+  reschedule
 }) => {
   const dispatch = useDispatch()
   const [selectedCompany, setSelectedCompany] = useState(null)
@@ -67,38 +74,56 @@ const EventForm = ({
     onSubmit: (values, { resetForm }) => {
       submitFunction({
         ...values,
+        status: reschedule ? 'REPROGRAMADA' : values.status,
         start_date: new Date(values.start_date).toISOString(),
         end_date: new Date(values.end_date).toISOString()
       }).then(() => {
         formik.setSubmitting(false)
-        resetForm()
-        onClose()
+
         if (successFunction) {
           successFunction()
         }
+        onClose()
+        resetForm()
       })
     }
   })
 
   const onCompanySelect = (__, values) => {
     setSelectedCompany(values)
-    if (values) {
-      formik.setFieldValue('business_id', values.id)
-      formik.setFieldValue('business_name', values.business_name)
-      setSelectedCons(null)
-    }
+    const idCompany = values ? values.id : ''
+    const nameCompany = values ? values.business_name : ''
+
+    formik.setFieldValue('business_id', idCompany)
+    formik.setFieldValue('business_name', nameCompany)
+    setSelectedCons(null)
   }
 
   const onConstructionChange = (__, values) => {
+    formik.setFieldValue('construction_id', values?.id || '')
+    formik.setFieldValue('construction_name', values?.name || '')
     setSelectedCons(values)
-    if (values) {
-      formik.setFieldValue('construction_id', values.id)
-      formik.setFieldValue('construction_name', values.name)
-    }
   }
 
   useEffect(() => {
-    changeDateTrigger(formik.values.date)
+    changeDateTrigger(new Date(formik.values.date))
+    const targetDate = new Date(formik.values.date)
+    const year = targetDate.getFullYear()
+    const month = targetDate.getMonth()
+    const dayNumber = targetDate.getDate()
+    const tempStartDate = new Date(formik.values.start_date)
+    const tempEndDate = new Date(formik.values.end_date)
+
+    tempStartDate.setFullYear(year)
+    tempStartDate.setMonth(month)
+    tempStartDate.setDate(dayNumber)
+
+    tempEndDate.setFullYear(year)
+    tempEndDate.setMonth(month)
+    tempEndDate.setDate(dayNumber)
+
+    formik.setFieldValue('start_date', tempStartDate)
+    formik.setFieldValue('end_date', tempEndDate)
   }, [formik.values.date])
 
   useEffect(() => {
@@ -106,7 +131,17 @@ const EventForm = ({
       formik.setFieldValue('assigned_id', user.id)
       formik.setFieldValue('created_by', user.id)
     }
-  }, [type, user])
+    if (type === 'UPDATE' && companies.length > 0) {
+      const targetCompany = companies.find(
+        (item) => item.id === formik.values.business_id
+      )
+      setSelectedCompany(targetCompany)
+      const listCons = targetCompany.constructions
+      setSelectedCons(
+        listCons.find((item) => item.id === formik.values.construction_id)
+      )
+    }
+  }, [type, user, companies])
 
   useEffect(() => {
     if (open) {
@@ -116,10 +151,17 @@ const EventForm = ({
       dispatch(commonActions.getEventTypes())
       dispatch(commonActions.getShiftList())
     }
-  }, [type, user])
+  }, [open])
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
+      {reschedule && (
+        <Box paddingBottom="10px">
+          <Alert severity="warning">
+            <strong>Este evento será reprogramado</strong>
+          </Alert>
+        </Box>
+      )}
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
@@ -154,20 +196,25 @@ const EventForm = ({
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField
-            label="Hora de inicio"
-            type="time"
-            value={formatHours(formik.values.start_date)}
-            onChange={(__, date) => {
-              console.log(date)
+          <InputLabel required>Hora de inicio</InputLabel>
+          <TimePicker
+            value={formik.values.start_date}
+            onChange={(date) => {
+              if (date < formik.values.end_date) {
+                formik.setFieldValue('start_date', new Date(date))
+              }
             }}
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField
-            label="Hora de fin"
-            type="time"
-            value={formatHours(formik.values.end_date)}
+          <InputLabel required>Hora de fin</InputLabel>
+          <TimePicker
+            value={formik.values.end_date}
+            onChange={(date) => {
+              if (date > formik.values.start_date) {
+                formik.setFieldValue('end_date', new Date(date))
+              }
+            }}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -182,7 +229,7 @@ const EventForm = ({
         </Grid>
         <Grid item xs={12}>
           <Select
-            label="Tipo"
+            label="Tipo de evento"
             name="type_id"
             required
             value={formik.values.type_id}
@@ -294,7 +341,8 @@ const EventForm = ({
 }
 
 EventForm.defaultProps = {
-  type: 'CREATE'
+  type: 'CREATE',
+  reschedule: false
 }
 
 export default memo(EventForm)

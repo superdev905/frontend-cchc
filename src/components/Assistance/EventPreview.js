@@ -14,7 +14,7 @@ import {
   Fullscreen as FullscreenIcon
 } from '@material-ui/icons'
 import { formatDate, formatHours } from '../../formatters'
-import { Button } from '../UI'
+import { Button, LabeledRow, StatusChip } from '../UI'
 import { OptionsMenu } from '../Shared'
 import { useMenu } from '../../hooks'
 
@@ -23,6 +23,13 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       minWidth: '500px'
     }
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 5
+  },
+  info: {
+    color: theme.palette.gray.gray600
   }
 }))
 
@@ -33,7 +40,8 @@ const EventPreview = ({
   event,
   onDelete,
   onEdit,
-  onCancel
+  onCancel,
+  onReschedule
 }) => {
   const classes = useStyles()
   const {
@@ -79,15 +87,40 @@ const EventPreview = ({
           </IconButton>
         </Box>
         <Box p={2}>
-          <Typography style={{ fontSize: '20px' }}>{event.title}</Typography>
-          <Typography>
-            {`${formatDate(event.date)}, ${formatHours(
-              event.start_date
-            )} - ${formatHours(event.end_date)}`}
-          </Typography>
+          <Typography className={classes.title}>{event.title}</Typography>
+          <Box className={classes.info}>
+            <Typography>
+              {`${formatDate(event.date)}, ${formatHours(
+                event.start_date
+              )} - ${formatHours(event.end_date)}`}
+            </Typography>
+            <LabeledRow label="Empresa:" width={80}>
+              {event.business_name}
+            </LabeledRow>
+            <LabeledRow label="Obra:" width={80}>
+              {event.construction_name}
+            </LabeledRow>
+            <LabeledRow label="Estado:" width={80}>
+              <StatusChip
+                label={`${event.status.charAt(0).toUpperCase()}${event.status
+                  .slice(1)
+                  .toLowerCase()}`}
+                success={event.status !== 'CANCELADA'}
+                error={event.status === 'CANCELADA'}
+              />
+            </LabeledRow>
+          </Box>
         </Box>
         <Divider />
         <Box display="flex" justifyContent="flex-end">
+          <Button
+            size="small"
+            variant="outlined"
+            disabled={event.status === 'CANCELADO'}
+            onClick={onReschedule}
+          >
+            Reprogramar
+          </Button>
           <Button
             size="small"
             variant="outlined"
@@ -106,9 +139,8 @@ const EventPreview = ({
           {
             label: 'Ver página completa',
             icon: FullscreenIcon,
-            onClick: () => {
-              console.log('sss')
-            }
+            disabled: true,
+            onClick: () => {}
           }
         ]}
       />

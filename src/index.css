@@ -25,3 +25,16 @@ html {
   width: 100%;
   height: 100%;
 }
+.rc-time-picker-panel {
+  z-index: 999999 !important;
+}
+.rc-time-picker-panel-input {
+  font-size: 18px;
+  padding: 20px 16px;
+}
+.rc-time-picker-panel-select {
+  font-size: 17px !important;
+}
+.rc-time-picker {
+  width: 100%;
+}
