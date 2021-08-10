@@ -1,7 +1,7 @@
 const config = {
   prod: {
     API_BASE:
-      'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5000/api/v1'
+      'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5103/api/v1'
   },
   test: {
     API_BASE: 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5000'
