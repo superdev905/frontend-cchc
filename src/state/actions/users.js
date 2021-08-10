@@ -4,7 +4,7 @@ import usersTypes from '../types/users'
 
 const usersEndpoint = `${
   process.env.REACT_APP_NODE_ENV === 'production'
-    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5500'
+    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5102'
     : 'http://localhost:5500'
 }/api/v1`
 

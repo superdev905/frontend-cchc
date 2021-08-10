@@ -4,7 +4,7 @@ import assistanceTypes from '../types/assistance'
 
 const serviceEndpoint = `${
   process.env.REACT_APP_NODE_ENV === 'production'
-    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:8000'
+    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5101'
     : 'http://localhost:5100'
 }/api/v1`
 

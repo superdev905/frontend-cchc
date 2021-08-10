@@ -4,7 +4,7 @@ import employeesTypes from '../types/employees'
 
 const employeeEndpoint = `${
   process.env.REACT_APP_NODE_ENV === 'production'
-    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:8000'
+    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5104'
     : 'http://localhost:8000'
 }/api/v1`
 

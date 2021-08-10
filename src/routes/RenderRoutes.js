@@ -19,6 +19,7 @@ function RenderRoutes() {
       })
       .catch(() => {
         setLoading(false)
+        window.location.reload()
         window.localStorage.clear()
       })
   }
@@ -27,6 +28,7 @@ function RenderRoutes() {
     if (isAuthenticated) {
       authenticateUser()
     } else if (!isAuthenticated) {
+      window.location.reload()
       window.localStorage.clear()
     }
   }, [isAuthenticated])

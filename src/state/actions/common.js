@@ -3,13 +3,13 @@ import commonTypes from '../types/common'
 
 const employeeEndpoint = `${
   process.env.REACT_APP_NODE_ENV === 'production'
-    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:8000'
+    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5104'
     : 'http://localhost:8000'
 }/api/v1`
 
 const parametersEndpoint = `${
   process.env.REACT_APP_NODE_ENV === 'production'
-    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5100'
+    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5105'
     : 'http://localhost:5200'
 }/api/v1`
 
