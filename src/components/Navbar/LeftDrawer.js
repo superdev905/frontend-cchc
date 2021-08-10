@@ -50,6 +50,11 @@ const commonRoutes = [
     icon: <EmployeeIcon />
   },
   {
+    title: 'Asistencia',
+    path: '/assistance',
+    icon: <EmployeeIcon />
+  },
+  {
     title: 'Configuración',
     path: '/settings',
     icon: <SettingsIcon />

@@ -9,6 +9,7 @@ import {
   Typography
 } from '@material-ui/core'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
+import Edit from '@material-ui/icons/Edit'
 import { useMenu } from '../../hooks'
 import { OptionsMenu } from '../Shared'
 import { LabeledRow, Text } from '../UI'
@@ -19,11 +20,6 @@ const useStyles = makeStyles(() => ({
   },
   deleted: {
     opacity: 0.6
-  },
-  btnMore: {
-    position: 'absolute',
-    top: 15,
-    right: 15
   },
   title: {
     fontSize: 18,
@@ -44,6 +40,9 @@ const ContactCard = ({ contact, loading, onEdit, onDelete }) => {
       >
         <IconButton className={classes.btnMore} onClick={handleOpen}>
           <MoreVertIcon />
+        </IconButton>
+        <IconButton className={classes.btnMore} onClick={onEdit}>
+          <Edit />
         </IconButton>
         <CardContent>
           <Box>
