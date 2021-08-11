@@ -17,7 +17,8 @@ import {
   Settings as SettingsIcon,
   BusinessCenter as BusinessIcon,
   People as UserIcon,
-  AssignmentInd as EmployeeIcon
+  AssignmentInd as EmployeeIcon,
+  Assignment as AssistanceIcon
 } from '@material-ui/icons'
 import clsx from 'clsx'
 
@@ -52,7 +53,7 @@ const commonRoutes = [
   {
     title: 'Asistencia',
     path: '/assistance',
-    icon: <EmployeeIcon />
+    icon: <AssistanceIcon />
   },
   {
     title: 'Configuración',

@@ -64,10 +64,10 @@ const PensionSituation = () => {
     if (!values.certifying_entity_id) {
       delete values.certifying_entity_id
     }
+    console.log(values)
     return dispatch(
       employeesActions.updateSpecialization(current.id, {
         ...values,
-        certification_url: current.certification_url || '',
         state: current.state,
         employee_id: parseInt(idEmployee, 10)
       })
