@@ -16,6 +16,7 @@
     "connected-react-router": "^6.9.1",
     "date-fns": "^2.23.0",
     "filepond": "^4.28.2",
+    "filepond-plugin-file-validate-type": "^1.2.6",
     "filepond-plugin-image-preview": "^4.6.7",
     "filepond-plugin-pdf-preview": "^1.0.4",
     "formik": "^2.2.9",
