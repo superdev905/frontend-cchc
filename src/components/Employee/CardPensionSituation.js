@@ -7,10 +7,9 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
+import Edit from '@material-ui/icons/Edit'
+import Delete from '@material-ui/icons/Delete'
 import { StatusChip } from '../UI'
-import { useMenu } from '../../hooks'
-import { OptionsMenu } from '../Shared'
 import { formatCurrency } from '../../formatters'
 
 const useStyles = makeStyles(() => ({
@@ -19,20 +18,29 @@ const useStyles = makeStyles(() => ({
   },
   btnMore: {
     position: 'absolute',
-    top: 15,
+    top: 0,
     right: 15
+  },
+  btnMore2: {
+    position: 'absolute',
+    top: 0,
+    right: -5
   }
 }))
 
 const CardSituation = ({ data, onEdit, onDelete }) => {
   const classes = useStyles()
-  const { open, anchorEl, handleOpen, handleClose } = useMenu()
+
   return (
     <Grid item xs={12} md={4}>
       <Card>
         <CardContent className={classes.root}>
-          <IconButton className={classes.btnMore} onClick={handleOpen}>
-            <MoreVertIcon />
+          <IconButton className={classes.btnMore} onClick={onEdit}>
+            <Edit />
+          </IconButton>
+
+          <IconButton className={classes.btnMore2} onClick={onDelete}>
+            <Delete />
           </IconButton>
           <Box p={2}>
             <Typography>AFP/ISP: {data.afp_isp.description}</Typography>
@@ -55,13 +63,6 @@ const CardSituation = ({ data, onEdit, onDelete }) => {
             </Typography>
           </Box>
         </CardContent>
-        <OptionsMenu
-          open={open}
-          onClose={handleClose}
-          anchorEl={anchorEl}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
       </Card>
     </Grid>
   )
