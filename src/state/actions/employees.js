@@ -2,7 +2,7 @@ import queryString from 'query-string'
 import Axios from '../../Axios'
 import employeesTypes from '../types/employees'
 
-const employeeEndpoint = `${
+export const employeeEndpoint = `${
   process.env.REACT_APP_NODE_ENV === 'production'
     ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5104'
     : 'http://localhost:8000'
@@ -15,7 +15,11 @@ const getEmployees =
       Axios.get(`${employeeEndpoint}/employees?${queryString.stringify(query)}`)
         .then((response) => {
           const { data } = response
-          dispatch({ type: employeesTypes.GET_EMPLOYEES, payload: data })
+          dispatch({ type: employeesTypes.GET_EMPLOYEES, payload: data.docs })
+          dispatch({
+            type: employeesTypes.SET_EMPLOYEES_TOTAL,
+            payload: data.total
+          })
           resolve(data)
         })
         .catch((err) => {

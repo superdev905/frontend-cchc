@@ -2,11 +2,17 @@ import { useState } from 'react'
 import { FilePond, registerPlugin } from 'react-filepond'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import FilePondPluginPdfPreview from 'filepond-plugin-pdf-preview'
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
 import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 import Axios from '../../Axios'
+import { employeeEndpoint } from '../../state/actions/employees'
 
-registerPlugin(FilePondPluginImagePreview, FilePondPluginPdfPreview)
+registerPlugin(
+  FilePondPluginImagePreview,
+  FilePondPluginPdfPreview,
+  FilePondPluginFileValidateType
+)
 
 const FileUploader = ({ onSuccess }) => {
   const [fileS, setFile] = useState(null)
@@ -20,12 +26,13 @@ const FileUploader = ({ onSuccess }) => {
         // eslint-disable-next-line
         process: (fieldName, file, metadata, load, error, progress, abort) => {
           // set data
+
           const formData = new FormData()
           formData.append('file', file, file.name)
 
           Axios({
             method: 'post',
-            url: 'http://localhost:8000/api/v1/file',
+            url: `${employeeEndpoint}/file`,
             data: formData,
             onUploadProgress: (e) => {
               progress(e.lengthComputable, e.loaded, e.total)
@@ -54,7 +61,7 @@ const FileUploader = ({ onSuccess }) => {
         }
       }}
       name="files"
-      acceptedFileTypes={['.png', '.jpg', '.pdf']}
+      acceptedFileTypes={['application/pdf', 'image/*']}
       labelIdle='Selecciona un <span class="filepond--label-action">archivo</span>'
     />
   )

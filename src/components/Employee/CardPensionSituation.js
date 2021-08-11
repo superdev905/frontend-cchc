@@ -11,6 +11,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { StatusChip } from '../UI'
 import { useMenu } from '../../hooks'
 import { OptionsMenu } from '../Shared'
+import { formatCurrency } from '../../formatters'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -47,7 +48,10 @@ const CardSituation = ({ data, onEdit, onDelete }) => {
               />
             </Box>
             <Typography>
-              Monto de pensión: {data.pension_amount || 'Sin pensión'}
+              Monto de pensión:{' '}
+              {data.pension_amount
+                ? formatCurrency(data.pension_amount)
+                : 'Sin pensión'}
             </Typography>
           </Box>
         </CardContent>

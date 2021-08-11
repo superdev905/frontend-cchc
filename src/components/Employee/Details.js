@@ -91,7 +91,9 @@ const Details = ({ loading }) => {
                 <Text loading={loading}>{employee?.rsh}</Text>
               </LabeledRow>
               <LabeledRow label={'RSH %'}>
-                <Text loading={loading}>{employee?.rsh_percentage}</Text>
+                <Text loading={loading}>
+                  {employee?.rsh_percentage || `---`}
+                </Text>
               </LabeledRow>
             </Grid>
             <Grid item xs={12} md={6}>

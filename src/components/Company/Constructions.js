@@ -110,9 +110,11 @@ const Details = ({ ...props }) => {
                   cell: (row) => (
                     <StatusChip
                       {...row}
-                      success={row.state === 'VIGENTE'}
-                      error={row.state === 'NO_VIGENTE'}
-                      label={row.state === 'VIGENTE' ? 'Vigente' : 'No vigente'}
+                      success={row.status === 'VIGENTE'}
+                      error={row.status === 'NO_VIGENTE'}
+                      label={
+                        row.status === 'VIGENTE' ? 'Vigente' : 'No vigente'
+                      }
                     />
                   ),
                   hide: 'md'

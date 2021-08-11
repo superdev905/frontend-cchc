@@ -80,7 +80,9 @@ const PensionSituation = () => {
           <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
             Situación provisional
           </Typography>
-          <Button onClick={toggleOpenAdd}>Registrar </Button>
+          <Button disabled={list.length > 0} onClick={toggleOpenAdd}>
+            Registrar{' '}
+          </Button>
         </Box>
       </Box>
       <Box>

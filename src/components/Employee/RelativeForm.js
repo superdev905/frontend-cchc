@@ -94,6 +94,12 @@ const EmployeeModal = ({
   })
 
   useEffect(() => {
+    if (formik.values.rsh === 'NO') {
+      formik.setFieldValue('rsh_percentage_id', 1)
+    }
+  }, [formik.values.rsh])
+
+  useEffect(() => {
     if (open) {
       dispatch(commonActions.getMaritalStatuses())
       dispatch(commonActions.getNationalities())
@@ -363,6 +369,7 @@ const EmployeeModal = ({
                 name="rsh_percentage_id"
                 value={formik.values.rsh_percentage_id}
                 onChange={formik.handleChange}
+                disabled={formik.values.rsh === 'NO'}
                 error={
                   formik.touched.rsh_percentage_id &&
                   Boolean(formik.errors.rsh_percentage_id)
