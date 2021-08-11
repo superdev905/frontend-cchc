@@ -16,7 +16,6 @@ const useStyles = makeStyles(() => ({
   root: {
     position: 'relative'
   },
-
   btnMore: {
     position: 'absolute',
     top: 20,
@@ -39,19 +38,26 @@ const ContactCard = ({ contact, loading, onEdit, onDelete }) => {
           contact.state === 'DELETED' && classes.deleted
         )}
       >
-        <Box className={classes.btnMore}>
-          <IconButton onClick={onEdit}>
-            <Edit />
-          </IconButton>
-          <IconButton onClick={onDelete}>
-            <Delete />
-          </IconButton>
+        <Box
+          p={2}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography className={classes.title}>
+            Informacion de contacto #{contact?.id}
+          </Typography>
+          <Box>
+            <IconButton onClick={onEdit}>
+              <Edit />
+            </IconButton>
+            <IconButton onClick={onDelete}>
+              <Delete />
+            </IconButton>
+          </Box>
         </Box>
         <CardContent>
           <Box>
-            <Typography className={classes.title}>
-              Informacion de contacto #{contact?.id}
-            </Typography>
             <LabeledRow label="Dirección">
               <Text loading={loading}>{contact?.address}</Text>
             </LabeledRow>
