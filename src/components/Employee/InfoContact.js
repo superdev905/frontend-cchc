@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { useToggle } from '../../hooks'
+import { useSuccess, useToggle } from '../../hooks'
 import { Button, EmptyState, Wrapper } from '../UI'
 import ContactForm from './ContactForm'
 import ContactCard from './ContactCard'
@@ -10,8 +11,11 @@ import { ConfirmDelete } from '../Shared'
 
 const InfoContact = () => {
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [contacts, setContacts] = useState([])
+  const { success, changeSuccess } = useSuccess()
   const [currentContact, setCurrentContact] = useState(null)
   const { employee } = useSelector((state) => state.employees)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
@@ -36,12 +40,6 @@ const InfoContact = () => {
       })
     )
 
-  const blockContact = () =>
-    dispatch(
-      employeesActions.patchEmployeeContact(currentContact.id, {
-        state: 'DELETED'
-      })
-    )
   const fetchContacts = (run) => {
     setLoading(true)
     dispatch(employeesActions.getEmployeeContact({ employee_run: run }))
@@ -51,6 +49,27 @@ const InfoContact = () => {
       })
       .catch(() => {
         setLoading(false)
+      })
+  }
+  const blockContact = () => {
+    setDeleting(true)
+    dispatch(
+      employeesActions.patchEmployeeContact(currentContact.id, {
+        state: 'DELETED'
+      })
+    )
+      .then(() => {
+        enqueueSnackbar('Contacto eliminado', { variant: 'success' })
+        setDeleting(false)
+        changeSuccess(true, () => {
+          toggleOpenDelete()
+          fetchContacts(employee.run)
+        })
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, { variant: 'success' })
+        setDeleting(false)
+        toggleOpenDelete()
       })
   }
 
@@ -115,6 +134,8 @@ const InfoContact = () => {
           open={openDelete}
           onClose={toggleOpenDelete}
           onConfirm={() => blockContact(currentContact.id)}
+          success={success}
+          loading={deleting}
           message={
             <Typography>
               ¿Estás seguro de eliminar la información de contacto?
