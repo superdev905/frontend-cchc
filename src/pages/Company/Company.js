@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { useSnackbar } from 'notistack'
 import { Box, IconButton, Typography } from '@material-ui/core'
 import { ArrowBack as ArrowBackIcon } from '@material-ui/icons/'
 import companiesActions from '../../state/actions/companies'
@@ -13,11 +14,15 @@ import CompanyModal from '../../components/Companies/Create'
 const Company = ({ children }) => {
   const dispatch = useDispatch()
   const history = useHistory()
+  const { enqueueSnackbar } = useSnackbar()
   const { idCompany } = useParams()
   const { company } = useSelector((state) => state.companies)
   const [deleting, setDeleting] = useState(false)
+  const [errorDelete, setErrorDelete] = useState('')
   const { open, toggleOpen } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { open: openErrorDelete, toggleOpen: toggleOpenErrorDelete } =
+    useToggle()
   const { success, changeSuccess } = useSuccess()
   const goBack = () => {
     history.push('/companies')
@@ -32,13 +37,18 @@ const Company = ({ children }) => {
     dispatch(companiesActions.blockCompany(idCompany))
       .then(() => {
         setDeleting(false)
-        changeSuccess(true)
-        fetchCompanyDetails()
-        toggleOpen()
+        changeSuccess(true, () => {
+          fetchCompanyDetails()
+          toggleOpen()
+          enqueueSnackbar('Empresa eliminada', { variant: 'success' })
+        })
       })
-      .catch(() => {
+      .catch((err) => {
         setDeleting(false)
         toggleOpen()
+        setErrorDelete(err)
+        toggleOpenErrorDelete()
+        enqueueSnackbar(err, { variant: 'error' })
       })
   }
   useEffect(() => {
@@ -84,6 +94,23 @@ const Company = ({ children }) => {
           open={openEdit}
           successFunction={fetchCompanyDetails}
           onClose={toggleOpenEdit}
+        />
+      )}
+      {errorDelete && openErrorDelete && (
+        <ConfirmDelete
+          open={openErrorDelete}
+          message={
+            <Box>
+              <Typography variant="h6">
+                <strong>Error al eliminar</strong>
+              </Typography>
+              <Typography>{errorDelete}</Typography>
+            </Box>
+          }
+          event="SHOW"
+          confirmText="Aceptar"
+          onConfirm={toggleOpenErrorDelete}
+          onClose={toggleOpenErrorDelete}
         />
       )}
     </div>

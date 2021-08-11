@@ -21,14 +21,16 @@ const ListEmployees = () => {
     state: ''
   })
   const { open, toggleOpen } = useToggle()
-  const { list: listEmployees } = useSelector((state) => state.employees)
+  const { list: listEmployees, totalDocs } = useSelector(
+    (state) => state.employees
+  )
 
   const handleSearchChange = (e) => {
-    setFilters({ ...filters, search: e.target.value })
+    setFilters({ ...filters, skip: 0, search: e.target.value })
   }
 
   const handleStateChange = (e) => {
-    setFilters({ ...filters, state: e.target.value })
+    setFilters({ ...filters, skip: 0, state: e.target.value })
   }
 
   const fetchEmployees = () => {
@@ -36,7 +38,8 @@ const ListEmployees = () => {
     dispatch(
       employeesActions.getEmployees({
         ...filters,
-        search: filters.search.trim()
+        search: filters.search.trim(),
+        include_total: true
       })
     )
       .then(() => {
@@ -157,6 +160,16 @@ const ListEmployees = () => {
           data={tableData}
           pagination
           onRowClicked={onRowClick}
+          paginationRowsPerPageOptions={[30, 40]}
+          paginationPerPage={filters.limit}
+          paginationServer={true}
+          onChangeRowsPerPage={(limit) => {
+            setFilters({ ...filters, limit })
+          }}
+          onChangePage={(page) => {
+            setFilters({ ...filters, skip: page })
+          }}
+          paginationTotalRows={totalDocs}
         />
         <EmployeeForm
           open={open}

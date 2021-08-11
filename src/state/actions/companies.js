@@ -135,6 +135,18 @@ const deleteDivision = (divisionId) => () =>
       })
   })
 
+const getRelatedCompanies = (companyId) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`/business/related?parent_id=${companyId}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
 const getDivisions = (companyId) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`/sub_business?business_id=${companyId}`)
@@ -185,7 +197,7 @@ const blockCompany = (id) => () =>
         resolve(data.data)
       })
       .catch((err) => {
-        reject(err.response.data)
+        reject(err.response.data.detail)
       })
   })
 
@@ -218,5 +230,6 @@ export default {
   updateCompany,
   getTreeCompanies,
   getMainCompany,
-  getAvailableCompanies
+  getAvailableCompanies,
+  getRelatedCompanies
 }

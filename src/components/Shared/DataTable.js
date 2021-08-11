@@ -59,6 +59,9 @@ const CustomDataTable = ({
         </Box>
       }
       {...props}
+      paginationComponentOptions={{
+        rowsPerPageText: 'Datos por página'
+      }}
     />
   )
 }

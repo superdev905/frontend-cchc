@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import * as Yup from 'yup'
 import { useSnackbar } from 'notistack'
 import { useFormik } from 'formik'
+import { useParams } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import commonActions from '../../state/actions/common'
@@ -45,6 +46,7 @@ const ConstructionModal = ({
 }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
+  const { idCompany } = useParams()
   const [treeData, setTreeData] = useState([])
   const [communes, setCommunes] = useState([])
   const [companies, setCompanies] = useState([])
@@ -163,6 +165,15 @@ const ConstructionModal = ({
       )
     }
   }, [formik.values.billing_business_id, companies])
+
+  useEffect(() => {
+    if (idCompany && companies.length > 0) {
+      formik.setFieldValue('business_selected_id', idCompany)
+      setSelectedCompany(
+        companies.find((item) => item.id === parseInt(idCompany, 10))
+      )
+    }
+  }, [idCompany, companies])
 
   useEffect(() => {
     if (selectedCompany) {

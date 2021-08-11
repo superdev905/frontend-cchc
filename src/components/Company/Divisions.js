@@ -1,51 +1,24 @@
 import { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { useHistory, useParams } from 'react-router-dom'
 import { Box, Chip, Typography } from '@material-ui/core'
 import companyActions from '../../state/actions/companies'
-import { ActionsTable, Button, EmptyState, Wrapper } from '../UI'
-import DivisionModal from '../Companies/Division/Modal'
-import { useSuccess, useToggle } from '../../hooks'
-import { ConfirmDelete, DataTable } from '../Shared'
+import { ActionsTable, EmptyState, StatusChip, Wrapper } from '../UI'
+import { DataTable } from '../Shared'
 import useStyles from './styles'
 
-const Details = ({ ...props }) => {
+const Details = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const { idCompany } = props.match.params
+  const { idCompany } = useParams()
+  const history = useHistory()
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
-  const { divisions } = useSelector((state) => state.companies)
-  const { open: openCreate, toggleOpen: toggleOpenCreate } = useToggle()
-  const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
-  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
-  const [currentDivision, setCurrentDivision] = useState(null)
-  const { success, changeSuccess } = useSuccess()
-  const [deleting, setDeleting] = useState(false)
 
-  const onEditClick = (division) => {
-    setCurrentDivision(division)
-    toggleOpenUpdate()
+  const onViewClick = (item) => {
+    history.push(`/company/${item.id}/details`)
   }
 
-  const onDelete = (division) => {
-    setCurrentDivision(division)
-    toggleOpenDelete()
-  }
-
-  const deleteDivision = (id) => {
-    setDeleting(true)
-    dispatch(companyActions.deleteDivision(id))
-      .then(() => {
-        setDeleting(false)
-        changeSuccess(true)
-        toggleOpenDelete()
-        dispatch(companyActions.getDivisions(idCompany))
-      })
-      .catch(() => {
-        setDeleting(false)
-      })
-  }
   const columns = [
     {
       name: 'Razón social',
@@ -63,6 +36,19 @@ const Details = ({ ...props }) => {
       hide: 'md'
     },
     {
+      name: 'Estado',
+      selector: 'state',
+      hide: 'md',
+      center: true,
+      cell: (row) => (
+        <StatusChip
+          label={row.state === 'CREATED' ? 'Activo' : 'Eliminado'}
+          error={row.state !== 'CREATED'}
+          success={row.state === 'CREATED'}
+        />
+      )
+    },
+    {
       name: 'Fecha de creación',
       selector: 'createDate',
       hide: 'md'
@@ -71,80 +57,50 @@ const Details = ({ ...props }) => {
       name: '',
       selector: '',
       right: true,
-      cell: (row) => (
-        <ActionsTable
-          {...row}
-          onEdit={() => onEditClick(row)}
-          onDelete={() => onDelete(row)}
-        />
-      )
+      cell: (row) => <ActionsTable {...row} onView={() => onViewClick(row)} />
     }
   ]
 
   useEffect(() => {
     setLoading(true)
-    dispatch(companyActions.getDivisions(idCompany))
-      .then(() => {
+    dispatch(companyActions.getRelatedCompanies(idCompany))
+      .then((list) => {
         setLoading(false)
+        setTableData(
+          list.map((item) => ({
+            ...item,
+            createDate: new Date(item.created_at).toLocaleDateString('es-CL', {
+              dateStyle: 'long'
+            })
+          }))
+        )
       })
       .catch(() => {
         setLoading(false)
       })
   }, [])
 
-  useEffect(() => {
-    setTableData(
-      divisions.map((item) => ({
-        ...item,
-        createDate: new Date(item.created_at).toLocaleDateString('es-CL', {
-          dateStyle: 'long'
-        })
-      }))
-    )
-  }, [divisions])
-
   return (
     <Box>
       <Wrapper>
         <Box display="flex" justifyContent="space-between">
           <Typography className={classes.heading}>Divisiones</Typography>
-          <Button onClick={toggleOpenCreate}>Agregar</Button>
         </Box>
 
         <Box>
           {!loading && tableData.length > 0 ? (
-            <DataTable columns={columns} data={tableData} />
+            <DataTable
+              progressPending={loading}
+              columns={columns}
+              data={tableData}
+            />
           ) : (
             <EmptyState message={'Esta empresa no tiene subempresas'} />
           )}
         </Box>
       </Wrapper>
-      <DivisionModal open={openCreate} onClose={toggleOpenCreate} />
-      {currentDivision && openUpdate && (
-        <DivisionModal
-          type="UPDATE"
-          open={openUpdate}
-          onClose={toggleOpenUpdate}
-          division={currentDivision}
-        />
-      )}
-      {currentDivision && openDelete && (
-        <ConfirmDelete
-          open={openDelete}
-          onClose={toggleOpenDelete}
-          loading={deleting}
-          success={success}
-          onConfirm={() => deleteDivision(currentDivision.id)}
-          message={
-            <span>
-              ¿Estás seguro de eliminar
-              <strong>{currentDivision.business_name}</strong>?
-            </span>
-          }
-        />
-      )}
     </Box>
   )
 }
 
-export default withRouter(Details)
+export default Details

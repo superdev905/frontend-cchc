@@ -8,7 +8,7 @@ import employeesActions from '../../state/actions/employees'
 import { ActionsTable, Button, Wrapper } from '../UI'
 import JobForm from './JobForm'
 import { ConfirmDelete, DataTable } from '../Shared'
-import { formatDate } from '../../formatters'
+import { formatCurrency, formatDate } from '../../formatters'
 
 const PensionSituation = () => {
   const dispatch = useDispatch()
@@ -29,7 +29,7 @@ const PensionSituation = () => {
           ...item,
           startDate: formatDate(item.admission_date),
           endDate: formatDate(item.leave_date),
-          stringSalary: `$ ${item.salary}`
+          stringSalary: formatCurrency(item.salary)
         }))
       )
     })

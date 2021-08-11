@@ -125,6 +125,12 @@ const EmployeeModal = ({
   }, [formik.values.disability, hasDisability])
 
   useEffect(() => {
+    if (formik.values.rsh === 'NO') {
+      formik.setFieldValue('rsh_percentage', '')
+    }
+  }, [formik.values.rsh])
+
+  useEffect(() => {
     dispatch(commonActions.getMaritalStatuses())
     dispatch(commonActions.getNationalities())
     dispatch(commonActions.getScholarship())
@@ -445,6 +451,7 @@ const EmployeeModal = ({
                 <Select
                   label="RSH %"
                   name="rsh_percentage"
+                  disabled={formik.values.rsh === 'NO'}
                   value={formik.values.rsh_percentage}
                   onChange={formik.handleChange}
                   error={
