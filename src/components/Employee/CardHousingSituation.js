@@ -14,16 +14,6 @@ const useStyles = makeStyles(() => ({
   root: {
     position: 'relative'
   },
-  btnMore: {
-    position: 'absolute',
-    top: 0,
-    right: 15
-  },
-  btnMore2: {
-    position: 'absolute',
-    top: 0,
-    right: -5
-  },
   title: {
     fontSize: 18,
     fontWeight: 'bold'
@@ -33,16 +23,17 @@ const useStyles = makeStyles(() => ({
 const CardSituation = ({ data, onEdit, onDelete }) => {
   const classes = useStyles()
   return (
-    <Grid item xs={12} md={4}>
+    <Grid item xs={12} md={6}>
       <Card>
         <CardContent className={classes.root}>
-          <IconButton className={classes.btnMore} onClick={onEdit}>
-            <Edit />
-          </IconButton>
-
-          <IconButton className={classes.btnMore2} onClick={onDelete}>
-            <Delete />
-          </IconButton>
+          <Box display="flex" justifyContent="flex-end">
+            <IconButton onClick={onEdit}>
+              <Edit />
+            </IconButton>
+            <IconButton onClick={onDelete}>
+              <Delete />
+            </IconButton>
+          </Box>
           <Box p={2}>
             <Typography>
               Tipo de vivienda: {data.type_home.description}
@@ -53,6 +44,7 @@ const CardSituation = ({ data, onEdit, onDelete }) => {
             <Typography>
               Tipo de subsidio: {data.type_subsidy.description}
             </Typography>
+            <Typography>Descripción: {data.description}</Typography>
           </Box>
         </CardContent>
       </Card>

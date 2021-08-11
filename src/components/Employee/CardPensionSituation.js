@@ -20,11 +20,6 @@ const useStyles = makeStyles(() => ({
     position: 'absolute',
     top: 0,
     right: 15
-  },
-  btnMore2: {
-    position: 'absolute',
-    top: 0,
-    right: -5
   }
 }))
 
@@ -35,13 +30,15 @@ const CardSituation = ({ data, onEdit, onDelete }) => {
     <Grid item xs={12} md={4}>
       <Card>
         <CardContent className={classes.root}>
-          <IconButton className={classes.btnMore} onClick={onEdit}>
-            <Edit />
-          </IconButton>
+          <Box display="flex" justifyContent="flex-end">
+            <IconButton onClick={onEdit}>
+              <Edit />
+            </IconButton>
 
-          <IconButton className={classes.btnMore2} onClick={onDelete}>
-            <Delete />
-          </IconButton>
+            <IconButton onClick={onDelete}>
+              <Delete />
+            </IconButton>
+          </Box>
           <Box p={2}>
             <Typography>AFP/ISP: {data.afp_isp.description}</Typography>
             <Typography>
