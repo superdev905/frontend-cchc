@@ -8,22 +8,25 @@ import {
   makeStyles,
   Typography
 } from '@material-ui/core'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
-import { useMenu } from '../../hooks'
-import { OptionsMenu } from '../Shared'
+import Edit from '@material-ui/icons/Edit'
+import Delete from '@material-ui/icons/Delete'
 import { LabeledRow, Text } from '../UI'
 
 const useStyles = makeStyles(() => ({
   root: {
     position: 'relative'
   },
-  deleted: {
-    opacity: 0.6
-  },
+
   btnMore: {
     position: 'absolute',
-    top: 15,
-    right: 15
+    top: 20,
+    right: 20
+  },
+
+  btnMore2: {
+    position: 'absolute',
+    top: 20,
+    right: -5
   },
   title: {
     fontSize: 18,
@@ -33,7 +36,7 @@ const useStyles = makeStyles(() => ({
 
 const ContactCard = ({ contact, loading, onEdit, onDelete }) => {
   const classes = useStyles()
-  const { open, anchorEl, handleOpen, handleClose } = useMenu()
+
   return (
     <Grid item xs={12} md={6}>
       <Card
@@ -42,8 +45,11 @@ const ContactCard = ({ contact, loading, onEdit, onDelete }) => {
           contact.state === 'DELETED' && classes.deleted
         )}
       >
-        <IconButton className={classes.btnMore} onClick={handleOpen}>
-          <MoreVertIcon />
+        <IconButton className={classes.btnMore} onClick={onEdit}>
+          <Edit />
+        </IconButton>
+        <IconButton className={classes.btnMore2} onClick={onDelete}>
+          <Delete />
         </IconButton>
         <CardContent>
           <Box>
@@ -80,13 +86,6 @@ const ContactCard = ({ contact, loading, onEdit, onDelete }) => {
           </Box>
         </CardContent>
       </Card>
-      <OptionsMenu
-        open={open}
-        onClose={handleClose}
-        anchorEl={anchorEl}
-        onEdit={onEdit}
-        onDelete={onDelete}
-      />
     </Grid>
   )
 }
