@@ -45,10 +45,10 @@ const PensionSituation = () => {
 
   const updateEvent = (values) => {
     if (!values.leave_date) {
-      delete values.leave_date
+      values.leave_date = null
     }
     if (!values.leave_motive) {
-      delete values.leave_motive
+      values.leave_motive = ''
     }
     dispatch(
       employeesActions.updateEmployeeJob(current.id, {

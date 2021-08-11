@@ -42,7 +42,12 @@ const PensionSituation = ({
       afp_isp_id: type === 'UPDATE' ? data.afp_isp_id : '',
       is_pensioner: type === 'UPDATE' ? data.is_pensioner : '',
       belongs_to_recognize: type === 'UPDATE' ? data.belongs_to_recognize : '',
-      pension_amount: type === 'UPDATE' ? data.pension_amount : ''
+      pension_amount:
+        type === 'UPDATE'
+          ? `${
+              parseInt(data.pension_amount, 10) === 0 ? '' : data.pension_amount
+            }`
+          : ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction(values)

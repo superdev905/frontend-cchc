@@ -281,7 +281,7 @@ const HousingForm = ({
               <InputLabel style={{ fontSize: '15px', marginBottom: '10px' }}>
                 Certificado
               </InputLabel>
-              {formik.values.certification_url ? (
+              {formik.values.certification_url && type === 'UPDATE' ? (
                 <Box p={2}>
                   <FileThumbnail
                     fileName={formik.values.certification_url}
