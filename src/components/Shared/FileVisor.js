@@ -98,11 +98,11 @@ const FileVisor = ({ open, onClose, fileName }) => {
       <DialogContent>
         {loading ? (
           <>
-            <CircularProgress size={40} thickness={5} color={'primary'} />
+            <CircularProgress size={40} thickness={5} />
           </>
         ) : (
           <Box>
-            {fileType === 'pdf' ? (
+            {fileType === 'application/pdf' ? (
               <Box textAlign="center" className={classes.fileWrapper}>
                 <Document file={imgData}>
                   <Page pageNumber={pageNumber} />

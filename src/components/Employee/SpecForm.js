@@ -4,10 +4,16 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography, InputLabel } from '@material-ui/core'
-import { DatePicker, Dialog, FileUploader } from '../Shared'
+import {
+  DatePicker,
+  Dialog,
+  FileThumbnail,
+  FileUploader,
+  FileVisor
+} from '../Shared'
 import { Button, Select, SubmitButton } from '../UI'
 import commonActions from '../../state/actions/common'
-import { useSuccess } from '../../hooks'
+import { useSuccess, useToggle } from '../../hooks'
 import { decisionList } from '../../config'
 
 const validationSchema = Yup.object().shape({
@@ -38,6 +44,7 @@ const HousingForm = ({
 
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
+  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
   const [isCertified, setIsCertified] = useState(
     type === 'UPDATE' ? data.is_certificated === 'SI' : false
   )
@@ -274,11 +281,25 @@ const HousingForm = ({
               <InputLabel style={{ fontSize: '15px', marginBottom: '10px' }}>
                 Certificado
               </InputLabel>
-              <FileUploader
-                onSuccess={(url) => {
-                  formik.setFieldValue('certification_url', url)
-                }}
-              />
+              {formik.values.certification_url ? (
+                <Box p={2}>
+                  <FileThumbnail
+                    fileName={formik.values.certification_url}
+                    onView={() => {
+                      toggleOpenVisor()
+                    }}
+                    onDelete={() => {
+                      formik.setFieldValue('certification_url', '')
+                    }}
+                  />
+                </Box>
+              ) : (
+                <FileUploader
+                  onSuccess={(url) => {
+                    formik.setFieldValue('certification_url', url)
+                  }}
+                />
+              )}
             </Grid>
           </Grid>
 
@@ -296,6 +317,14 @@ const HousingForm = ({
             </SubmitButton>
           </Box>
         </Box>
+        {type === 'UPDATE' && formik.values.certification_url && openVisor && (
+          <FileVisor
+            fileName
+            open={openVisor}
+            onClose={toggleOpenVisor}
+            fileName={formik.values.certification_url}
+          />
+        )}
       </Box>
     </Dialog>
   )
