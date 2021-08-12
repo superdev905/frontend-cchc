@@ -14,7 +14,7 @@ registerPlugin(
   FilePondPluginFileValidateType
 )
 
-const FileUploader = ({ onSuccess }) => {
+const FileUploader = ({ onSuccess, onStart }) => {
   const [fileS, setFile] = useState(null)
   return (
     <FilePond
@@ -29,7 +29,6 @@ const FileUploader = ({ onSuccess }) => {
 
           const formData = new FormData()
           formData.append('file', file, file.name)
-
           Axios({
             method: 'post',
             url: `${employeeEndpoint}/file`,
@@ -59,6 +58,9 @@ const FileUploader = ({ onSuccess }) => {
             }
           }
         }
+      }}
+      onaddfilestart={() => {
+        onStart()
       }}
       name="files"
       acceptedFileTypes={['application/pdf', 'image/*']}

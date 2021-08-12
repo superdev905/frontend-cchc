@@ -94,8 +94,9 @@ const InfoContact = () => {
           )}
           <Grid container spacing={2}>
             {!loading &&
-              contacts.map((item) => (
+              contacts.map((item, index) => (
                 <ContactCard
+                  index={index + 1}
                   key={`contact-${item.id}`}
                   contact={item}
                   onEdit={() => {

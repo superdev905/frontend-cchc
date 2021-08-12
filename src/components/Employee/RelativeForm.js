@@ -95,7 +95,7 @@ const EmployeeModal = ({
 
   useEffect(() => {
     if (formik.values.rsh === 'NO') {
-      formik.setFieldValue('rsh_percentage_id', 1)
+      formik.setFieldValue('rsh_percentage_id', '')
     }
   }, [formik.values.rsh])
 

@@ -27,7 +27,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const ContactCard = ({ contact, loading, onEdit, onDelete }) => {
+const ContactCard = ({ contact, loading, onEdit, onDelete, index }) => {
   const classes = useStyles()
 
   return (
@@ -45,7 +45,7 @@ const ContactCard = ({ contact, loading, onEdit, onDelete }) => {
           alignItems="center"
         >
           <Typography className={classes.title}>
-            Informacion de contacto #{contact?.id}
+            Informacion de contacto #{index}
           </Typography>
           <Box>
             <IconButton onClick={onEdit}>
