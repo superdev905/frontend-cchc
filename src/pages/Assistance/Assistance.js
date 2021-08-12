@@ -1,12 +1,16 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { Box } from '@material-ui/core'
 import { DataTable } from '../../components/Shared'
 import assistanceActions from '../../state/actions/assistance'
 import { Button, PageHeading, Wrapper } from '../../components/UI'
+import { formatDate } from '../../formatters'
 
 const Assistance = () => {
   const history = useHistory()
+  const [tableData, setTableData] = useState([])
+  const { listEvents } = useSelector((state) => state.assistance)
 
   const dispatch = useDispatch()
   const launchCalendar = () => {
@@ -16,6 +20,12 @@ const Assistance = () => {
   const fetchList = () => {
     dispatch(assistanceActions.getEvents())
   }
+  useEffect(() => {
+    setTableData(
+      listEvents.map((item) => ({ ...item, dateEvent: formatDate(item.date) }))
+    )
+  }, [listEvents])
+
   useEffect(() => {
     fetchList()
   }, [])
@@ -32,20 +42,20 @@ const Assistance = () => {
             </Button>
           </Box>
           <DataTable
-            data={[]}
+            data={tableData}
             columns={[
               {
                 name: 'Fecha de evento',
-                selector: 'run',
+                selector: 'dateEvent',
                 sortable: true
               },
               {
                 name: 'Empresa',
-                selector: 'names'
+                selector: 'business_name'
               },
               {
                 name: 'Obra',
-                selector: 'last_name',
+                selector: 'construction_name',
                 hide: 'md'
               }
             ]}
