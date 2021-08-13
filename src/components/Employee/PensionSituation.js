@@ -31,7 +31,7 @@ const PensionSituation = () => {
 
   const createSituation = (values) => {
     if (!values.pension_amount) {
-      delete values.pension_amount
+      values.pension_amount = 0
     }
     return dispatch(
       employeesActions.createPensionSituation({
@@ -40,14 +40,19 @@ const PensionSituation = () => {
       })
     )
   }
-  const updateSituation = (values) =>
-    dispatch(
+  const updateSituation = (values) => {
+    if (!values.pension_amount) {
+      values.pension_amount = 0
+    }
+    return dispatch(
       employeesActions.updatePensionSituation(current.id, {
-        ...current,
+        state: current.state,
+        is_main: current.is_main,
         ...values,
         employee_id: parseInt(idEmployee, 10)
       })
     )
+  }
   const patchSituation = (id) =>
     dispatch(
       employeesActions.patchPensionSituation(id, {

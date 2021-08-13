@@ -7,31 +7,33 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
-import { useMenu } from '../../hooks'
-import { OptionsMenu } from '../Shared'
+import Delete from '@material-ui/icons/Delete'
+import Edit from '@material-ui/icons/Edit'
 
 const useStyles = makeStyles(() => ({
   root: {
     position: 'relative'
   },
-  btnMore: {
-    position: 'absolute',
-    top: 15,
-    right: 15
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold'
   }
 }))
 
 const CardSituation = ({ data, onEdit, onDelete }) => {
   const classes = useStyles()
-  const { open, anchorEl, handleOpen, handleClose } = useMenu()
   return (
-    <Grid item xs={12} md={4}>
+    <Grid item xs={12} md={6}>
       <Card>
         <CardContent className={classes.root}>
-          <IconButton className={classes.btnMore} onClick={handleOpen}>
-            <MoreVertIcon />
-          </IconButton>
+          <Box display="flex" justifyContent="flex-end">
+            <IconButton onClick={onEdit}>
+              <Edit />
+            </IconButton>
+            <IconButton onClick={onDelete}>
+              <Delete />
+            </IconButton>
+          </Box>
           <Box p={2}>
             <Typography>
               Tipo de vivienda: {data.type_home.description}
@@ -42,15 +44,9 @@ const CardSituation = ({ data, onEdit, onDelete }) => {
             <Typography>
               Tipo de subsidio: {data.type_subsidy.description}
             </Typography>
+            <Typography>Descripción: {data.description}</Typography>
           </Box>
         </CardContent>
-        <OptionsMenu
-          open={open}
-          onClose={handleClose}
-          anchorEl={anchorEl}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
       </Card>
     </Grid>
   )

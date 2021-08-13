@@ -191,10 +191,12 @@ const ConstructionModal = ({
       dispatch(constructionsActions.getTypologies())
       dispatch(constructionsActions.getSectors())
 
-      dispatch(companiesActions.getCompanies({}, false)).then((list) => {
-        setCompanies(list)
-        setTreeData(buildTreeData(list))
-      })
+      dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
+        (list) => {
+          setCompanies(list)
+          setTreeData(buildTreeData(list))
+        }
+      )
     }
   }, [open, type, selectClient])
 

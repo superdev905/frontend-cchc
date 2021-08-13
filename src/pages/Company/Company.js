@@ -19,6 +19,7 @@ const Company = ({ children }) => {
   const { company } = useSelector((state) => state.companies)
   const [deleting, setDeleting] = useState(false)
   const [errorDelete, setErrorDelete] = useState('')
+  const [errorDocs, setErrorDocs] = useState([])
   const { open, toggleOpen } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openErrorDelete, toggleOpen: toggleOpenErrorDelete } =
@@ -46,9 +47,10 @@ const Company = ({ children }) => {
       .catch((err) => {
         setDeleting(false)
         toggleOpen()
-        setErrorDelete(err)
+        setErrorDelete(err.message)
         toggleOpenErrorDelete()
-        enqueueSnackbar(err, { variant: 'error' })
+        enqueueSnackbar(err.message, { variant: 'error' })
+        setErrorDocs(err.docs)
       })
   }
   useEffect(() => {
@@ -105,6 +107,18 @@ const Company = ({ children }) => {
                 <strong>Error al eliminar</strong>
               </Typography>
               <Typography>{errorDelete}</Typography>
+              <Box p={2}>
+                {errorDocs.map((item) => (
+                  <Typography
+                    align="left"
+                    style={{ fontSize: '17px' }}
+                    component="li"
+                    key={`item-${item.id}`}
+                  >
+                    {item.name}
+                  </Typography>
+                ))}
+              </Box>
             </Box>
           }
           event="SHOW"

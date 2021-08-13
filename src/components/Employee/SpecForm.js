@@ -4,6 +4,7 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography, InputLabel } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 import {
   DatePicker,
   Dialog,
@@ -44,6 +45,7 @@ const HousingForm = ({
 
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
+  const [uploading, setUploading] = useState(false)
   const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
   const [isCertified, setIsCertified] = useState(
     type === 'UPDATE' ? data.is_certificated === 'SI' : false
@@ -119,6 +121,7 @@ const HousingForm = ({
 
   useEffect(() => {
     if (open) {
+      setUploading(false)
       dispatch(commonActions.getEntities())
       dispatch(commonActions.getSpecList())
     }
@@ -281,7 +284,7 @@ const HousingForm = ({
               <InputLabel style={{ fontSize: '15px', marginBottom: '10px' }}>
                 Certificado
               </InputLabel>
-              {formik.values.certification_url ? (
+              {formik.values.certification_url && type === 'UPDATE' ? (
                 <Box p={2}>
                   <FileThumbnail
                     fileName={formik.values.certification_url}
@@ -295,13 +298,23 @@ const HousingForm = ({
                 </Box>
               ) : (
                 <FileUploader
+                  onStart={() => {
+                    setUploading(true)
+                  }}
                   onSuccess={(url) => {
+                    setUploading(false)
                     formik.setFieldValue('certification_url', url)
                   }}
                 />
               )}
             </Grid>
           </Grid>
+          {uploading && (
+            <Alert severity="warning">
+              Espera a que al archivo se suba para{' '}
+              {type === 'UPDATE' ? 'actualizar' : 'crear'} la especialidad
+            </Alert>
+          )}
 
           <Box textAlign="center" marginTop="10px">
             <Button onClick={onClose} variant="outlined">
@@ -309,7 +322,7 @@ const HousingForm = ({
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
-              disabled={!formik.isValid || formik.isSubmitting}
+              disabled={!formik.isValid || formik.isSubmitting || uploading}
               loading={formik.isSubmitting}
               success={success}
             >

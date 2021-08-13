@@ -20,7 +20,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const ActionGroup = ({ onEdit, onDelete, onView, moreOptions }) => {
+const ActionGroup = ({
+  onEdit,
+  onDelete,
+  disabledDelete,
+  onView,
+  moreOptions
+}) => {
   const classes = useStyles()
   return (
     <Box className={classes.root}>
@@ -44,7 +50,7 @@ const ActionGroup = ({ onEdit, onDelete, onView, moreOptions }) => {
         </IconButton>
       )}
       {onDelete && (
-        <IconButton onClick={onDelete}>
+        <IconButton onClick={onDelete} disabled={disabledDelete}>
           <DeleteIcon className={classes.btnDelete} />
         </IconButton>
       )}
@@ -53,7 +59,8 @@ const ActionGroup = ({ onEdit, onDelete, onView, moreOptions }) => {
 }
 
 ActionGroup.defaultProps = {
-  moreOptions: []
+  moreOptions: [],
+  disabledDelete: false
 }
 
 ActionGroup.propTypes = {
