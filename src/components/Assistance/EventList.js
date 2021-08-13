@@ -13,10 +13,12 @@ const EventList = () => {
   const [currentDate] = useState(new Date())
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
+  const { user } = useSelector((state) => state.auth)
   const [filters, setFilters] = useState({
     skip: 0,
     size: 30,
     status: 'PROGRAMADA',
+    user_id: user?.id,
     start_date: new Date(startOfDay(currentDate)).toISOString()
   })
   const { listEvents, totalEvents: totalPages } = useSelector(

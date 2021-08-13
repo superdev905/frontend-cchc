@@ -31,7 +31,7 @@ const validationSchema = Yup.object().shape({
   construction_id: Yup.number().required('Seleccione obra'),
   business_name: Yup.string().required('Seleccione nombre de empresa'),
   construction_name: Yup.string().required('Seleccione nombre de obra'),
-  observation: Yup.string().required('Ingres observación de evento')
+  observation: Yup.string().required('Ingrese observación de evento')
 })
 
 const EventForm = ({
