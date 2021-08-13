@@ -8,12 +8,13 @@ import { Alert } from '@material-ui/lab'
 import {
   DatePicker,
   Dialog,
+  FilePicker,
   FileThumbnail,
-  FileUploader,
   FileVisor
 } from '../Shared'
 import { Button, Select, SubmitButton } from '../UI'
 import commonActions from '../../state/actions/common'
+import filesAction from '../../state/actions/files'
 import { useSuccess, useToggle } from '../../hooks'
 import { decisionList } from '../../config'
 
@@ -46,6 +47,7 @@ const HousingForm = ({
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const [uploading, setUploading] = useState(false)
+  const [uploadFile, setUploadFile] = useState(null)
   const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
   const [isCertified, setIsCertified] = useState(
     type === 'UPDATE' ? data.is_certificated === 'SI' : false
@@ -69,9 +71,18 @@ const HousingForm = ({
       certificated_date: type === 'UPDATE' ? data.certificated_date : '',
       certification_url: type === 'UPDATE' ? data.certification_url : ''
     },
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: async (values, { resetForm }) => {
+      formik.setSubmitting(true)
+      let resultUpload = null
+      if (uploadFile) {
+        const formData = new FormData()
+        formData.append('file', uploadFile, uploadFile.name)
+        resultUpload = await dispatch(filesAction.uploadFile(formData))
+      }
+
       submitFunction({
         ...values,
+        certification_url: resultUpload ? resultUpload.filename : '',
         certifying_entity_id: values.certifying_entity_id || null
       })
         .then(() => {
@@ -79,13 +90,12 @@ const HousingForm = ({
           enqueueSnackbar(successMessage, {
             variant: 'success'
           })
-
+          if (successFunction) {
+            successFunction()
+          }
           changeSuccess(true, () => {
             onClose()
             resetForm()
-            if (successFunction) {
-              successFunction()
-            }
           })
         })
         .catch((err) => {
@@ -297,15 +307,13 @@ const HousingForm = ({
                   />
                 </Box>
               ) : (
-                <FileUploader
-                  onStart={() => {
-                    setUploading(true)
-                  }}
-                  onSuccess={(url) => {
-                    setUploading(false)
-                    formik.setFieldValue('certification_url', url)
-                  }}
-                />
+                <>
+                  <FilePicker
+                    onChangeImage={(e) => {
+                      setUploadFile(e)
+                    }}
+                  />
+                </>
               )}
             </Grid>
           </Grid>
@@ -322,9 +330,9 @@ const HousingForm = ({
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
+              success={success}
               disabled={!formik.isValid || formik.isSubmitting || uploading}
               loading={formik.isSubmitting}
-              success={success}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} datos`}
             </SubmitButton>

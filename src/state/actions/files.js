@@ -19,6 +19,20 @@ const getFile = (fileKey) => () =>
       })
   })
 
+const uploadFile = (formData) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${employeeEndpoint}/file/`, formData)
+      .then((response) => {
+        const { data } = response
+
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
+  uploadFile,
   getFile
 }
