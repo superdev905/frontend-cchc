@@ -104,7 +104,7 @@ const List = ({ ...props }) => {
               sortable: true
             },
             {
-              name: 'Estado',
+              name: 'Vigencia',
               selector: 'is_partner',
               cell: (row) => (
                 <StatusChip

@@ -8,18 +8,30 @@ import {
   makeStyles,
   Typography
 } from '@material-ui/core'
+<<<<<<< HEAD
 import Edit from '@material-ui/icons/Edit'
 import Delete from '@material-ui/icons/Delete'
+=======
+import MoreVertIcon from '@material-ui/icons/MoreVert'
+import Edit from '@material-ui/icons/Edit'
+import { useMenu } from '../../hooks'
+import { OptionsMenu } from '../Shared'
+>>>>>>> assistance
 import { LabeledRow, Text } from '../UI'
 
 const useStyles = makeStyles(() => ({
   root: {
     position: 'relative'
   },
+<<<<<<< HEAD
   btnMore: {
     position: 'absolute',
     top: 20,
     right: 20
+=======
+  deleted: {
+    opacity: 0.6
+>>>>>>> assistance
   },
   title: {
     fontSize: 18,
@@ -38,6 +50,7 @@ const ContactCard = ({ contact, loading, onEdit, onDelete, index }) => {
           contact.state === 'DELETED' && classes.deleted
         )}
       >
+<<<<<<< HEAD
         <Box
           p={2}
           display="flex"
@@ -56,6 +69,14 @@ const ContactCard = ({ contact, loading, onEdit, onDelete, index }) => {
             </IconButton>
           </Box>
         </Box>
+=======
+        <IconButton className={classes.btnMore} onClick={handleOpen}>
+          <MoreVertIcon />
+        </IconButton>
+        <IconButton className={classes.btnMore} onClick={onEdit}>
+          <Edit />
+        </IconButton>
+>>>>>>> assistance
         <CardContent>
           <Box>
             <LabeledRow label="Dirección">

@@ -57,7 +57,7 @@ const Details = ({ ...props }) => {
 
   const deleteConstruction = (id) => {
     setDeleting(true)
-    dispatch(constructionActions.deleteConstruction(id))
+    dispatch(constructionActions.patchConstruction(id, { state: 'DELETED' }))
       .then(() => {
         setDeleting(false)
         changeSuccess(true)
@@ -105,7 +105,7 @@ const Details = ({ ...props }) => {
                   sortable: true
                 },
                 {
-                  name: 'Estado',
+                  name: 'Vigencia',
                   selector: '',
                   cell: (row) => (
                     <StatusChip
@@ -131,6 +131,7 @@ const Details = ({ ...props }) => {
                   cell: (row) => (
                     <ActionsTable
                       {...row}
+                      disabledDelete={row.state === 'DELETED'}
                       onEdit={() => onEditClick(row)}
                       onDelete={() => onDelete(row)}
                       onView={() => {

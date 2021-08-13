@@ -52,7 +52,7 @@ const EventsCalendar = () => {
     end_date: endOfWeek(currentDate)
   })
   const { open: openPreview, handleClose, handleOpen, anchorEl } = useMenu()
-  const { listEvents } = useSelector((state) => state.assistance)
+  const { calendarEvents } = useSelector((state) => state.assistance)
   const { user } = useSelector((state) => state.auth)
   const [events, setEvents] = useState([])
   const [currentSlot, setCurrentSlot] = useState(null)
@@ -66,7 +66,7 @@ const EventsCalendar = () => {
 
   const fetchEvents = (query) => {
     dispatch(
-      assistanceActions.getEvents({
+      assistanceActions.getCalendarEvents({
         ...query,
         start_date: query.start_date
           ? new Date(query.start_date).toISOString()
@@ -133,13 +133,13 @@ const EventsCalendar = () => {
 
   useEffect(() => {
     setEvents(
-      listEvents.map((item) => ({
+      calendarEvents.map((item) => ({
         ...item,
         start: new Date(item.start_date),
         end: new Date(item.end_date)
       }))
     )
-  }, [listEvents])
+  }, [calendarEvents])
 
   useEffect(() => {
     if (calendarView === 'month') {

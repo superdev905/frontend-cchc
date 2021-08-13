@@ -20,6 +20,25 @@ const createEvent = (values) => () =>
       })
   })
 
+const getCalendarEvents =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${serviceEndpoint}/assistance-visits/calendar?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({ type: assistanceTypes.GET_CALENDAR_EVENTS, payload: data })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const getEvents =
   (query = {}) =>
   (dispatch) =>
@@ -29,13 +48,33 @@ const getEvents =
       )
         .then((response) => {
           const { data } = response
-          dispatch({ type: assistanceTypes.GET_EVENTS, payload: data })
+          dispatch({
+            type: assistanceTypes.GET_EVENTS_LIST,
+            payload: data.items
+          })
+          dispatch({
+            type: assistanceTypes.SET_EVENTS_TOTALS,
+            payload: data.total
+          })
           resolve(data)
         })
         .catch((err) => {
           reject(err.response.data.detail)
         })
     })
+
+const getEventDetails = (idEvent) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${serviceEndpoint}/assistance-visits/${idEvent}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: assistanceTypes.GET_VISIT_DETAILS, payload: data })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 const updateEvent = (id, values) => () =>
   new Promise((resolve, reject) => {
@@ -74,9 +113,11 @@ const deleteEvent = (idEvent) => () =>
   })
 
 export default {
-  getEvents,
+  getCalendarEvents,
   createEvent,
   updateEvent,
   deleteEvent,
-  patchEvent
+  patchEvent,
+  getEvents,
+  getEventDetails
 }

@@ -67,7 +67,6 @@ const PensionSituation = () => {
     return dispatch(
       employeesActions.updateSpecialization(current.id, {
         ...values,
-        certification_url: current.certification_url || '',
         state: current.state,
         employee_id: parseInt(idEmployee, 10)
       })
