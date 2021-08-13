@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { startOfDay } from 'date-fns'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box } from '@material-ui/core'
@@ -9,13 +10,14 @@ import { formatDate } from '../../formatters'
 
 const EventList = () => {
   const history = useHistory()
+  const [currentDate] = useState(new Date())
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({
     skip: 0,
     size: 30,
     status: 'PROGRAMADA',
-    start_date: new Date().toISOString()
+    start_date: new Date(startOfDay(currentDate)).toISOString()
   })
   const { listEvents, totalEvents: totalPages } = useSelector(
     (state) => state.assistance
