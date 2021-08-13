@@ -15,7 +15,7 @@ const Details = ({ ...props }) => {
   const dispatch = useDispatch()
   const { idCompany } = props.match.params
   const [tableData, setTableData] = useState([])
-  const { constructions } = useSelector((state) => state.companies)
+  const { constructions, company } = useSelector((state) => state.companies)
   const { open: openCreate, toggleOpen: toggleOpenCreate } = useToggle()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
@@ -90,7 +90,12 @@ const Details = ({ ...props }) => {
       <Wrapper>
         <Box display="flex" justifyContent="space-between">
           <Typography className={classes.heading}>Obras</Typography>
-          <Button onClick={toggleOpenCreate}>Agregar</Button>
+          <Button
+            onClick={toggleOpenCreate}
+            disabled={company?.state === 'DELETED'}
+          >
+            Agregar
+          </Button>
         </Box>
 
         <Box>

@@ -13,7 +13,7 @@ const ContactList = ({ ...props }) => {
   const { idConstruction } = props.match.params
   const [currentContact, setCurrentContact] = useState(null)
   const [deleting, setDeleting] = useState(false)
-  const { contacts } = useSelector((state) => state.constructions)
+  const { contacts, construction } = useSelector((state) => state.constructions)
   const { open, toggleOpen } = useToggle()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
@@ -61,7 +61,12 @@ const ContactList = ({ ...props }) => {
         <Typography style={{ fontSize: 18, fontWeight: 'bold' }}>
           Contactos de obra
         </Typography>
-        <Button onClick={toggleOpen}>Nuevo contacto</Button>
+        <Button
+          disabled={construction?.status === 'NO_VIGENTE'}
+          onClick={toggleOpen}
+        >
+          Nuevo contacto
+        </Button>
       </Box>
 
       {contacts.length === 0 ? (

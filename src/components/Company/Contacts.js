@@ -16,7 +16,7 @@ const Contacts = ({ ...props }) => {
   const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
   const { idCompany } = props.match.params
-  const { contacts } = useSelector((state) => state.companies)
+  const { contacts, company } = useSelector((state) => state.companies)
   const [deleting, setDeleting] = useState(false)
   const { success, changeSuccess } = useSuccess()
   const [currentContact, setCurrentContact] = useState(null)
@@ -73,7 +73,12 @@ const Contacts = ({ ...props }) => {
       <Wrapper>
         <Box display="flex" justifyContent="space-between">
           <Typography className={classes.heading}>Contactos</Typography>
-          <Button onClick={toggleOpenCreate}>Crear nuevo</Button>
+          <Button
+            disabled={company?.state === 'DELETED'}
+            onClick={toggleOpenCreate}
+          >
+            Crear nuevo
+          </Button>
         </Box>
         <Box>
           {contacts.length === 0 ? (
