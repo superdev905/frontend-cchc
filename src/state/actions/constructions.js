@@ -167,21 +167,25 @@ const deleteConstructionTypology = (id) => () =>
       })
   })
 
-const getContacts = (idConstruction) => (dispatch) =>
-  new Promise((resolve, reject) => {
-    Axios.get(`/construction_contacts?construction_id=${idConstruction}`)
-      .then((response) => {
-        const { data } = response
-        dispatch({
-          type: constructionTypes.GET_CONSTRUCTIONS_CONTACTS,
-          payload: data
+const getContacts =
+  (idConstruction, handleDispatch = true) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`/construction_contacts?construction_id=${idConstruction}`)
+        .then((response) => {
+          const { data } = response
+          if (handleDispatch) {
+            dispatch({
+              type: constructionTypes.GET_CONSTRUCTIONS_CONTACTS,
+              payload: data
+            })
+          }
+          resolve(data)
         })
-        resolve(data)
-      })
-      .catch((err) => {
-        reject(err.response.data)
-      })
-  })
+        .catch((err) => {
+          reject(err.response.data)
+        })
+    })
 
 const createContact = (values) => () =>
   new Promise((resolve, reject) => {

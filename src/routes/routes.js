@@ -14,6 +14,7 @@ const Constructions = lazy(() => import('../pages/Constructions'))
 const Users = lazy(() => import('../pages/Users'))
 const Calendar = lazy(() => import('../pages/Calendar'))
 const Assistance = lazy(() => import('../pages/Assistance'))
+const Visit = lazy(() => import('../pages/Visit'))
 
 const routes = [
   {
@@ -128,7 +129,7 @@ const routes = [
     )
   },
   {
-    path: '/assistance',
+    path: '/visits',
     key: 'ASSISTANCE',
     exact: true,
     component: ({ authenticated }) => (
@@ -137,6 +138,22 @@ const routes = [
         yes={() => (
           <Layout>
             <Assistance />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: `/visit/:idVisit`,
+    key: 'VISIT-PAGE',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SIMPLE_USER']}
+        yes={() => (
+          <Layout>
+            <Visit />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}

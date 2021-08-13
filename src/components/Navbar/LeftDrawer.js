@@ -51,8 +51,8 @@ const commonRoutes = [
     icon: <EmployeeIcon />
   },
   {
-    title: 'Asistencia',
-    path: '/assistance',
+    title: 'Visitas',
+    path: '/visits',
     icon: <AssistanceIcon />
   },
   {
