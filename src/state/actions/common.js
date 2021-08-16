@@ -265,6 +265,18 @@ const getShiftList = () => (dispatch) =>
       })
   })
 
+const getShiftDetails = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${parametersEndpoint}/shift/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 export default {
   getRegions,
   getCharges,
@@ -284,5 +296,6 @@ export default {
   getSpecList,
   getEntities,
   getEventTypes,
-  getShiftList
+  getShiftList,
+  getShiftDetails
 }

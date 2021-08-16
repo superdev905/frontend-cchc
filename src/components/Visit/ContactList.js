@@ -30,7 +30,7 @@ const ContactList = () => {
 
   return (
     <Wrapper>
-      <Box p={2}>
+      <Box p={1}>
         <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>
           Contactos de obra
         </Typography>
@@ -68,7 +68,5 @@ const ContactList = () => {
     </Wrapper>
   )
 }
-
-ContactList.propTypes = {}
 
 export default ContactList

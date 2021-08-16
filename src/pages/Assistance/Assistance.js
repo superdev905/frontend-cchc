@@ -4,7 +4,7 @@ import { PageHeading } from '../../components/UI'
 
 const Assistance = () => (
   <Box>
-    <PageHeading>Asistencias</PageHeading>
+    <PageHeading>Próximas visitas</PageHeading>
 
     <EventList />
   </Box>

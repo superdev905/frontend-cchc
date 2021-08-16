@@ -2,7 +2,12 @@ import { useParams, useHistory } from 'react-router-dom'
 import { Box, IconButton } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { PageHeading } from '../../components/UI'
-import { ContactList } from '../../components/Visit'
+import {
+  VisitDetails,
+  ContactList,
+  AttendedEmployees,
+  AttendEmployees
+} from '../../components/Visit'
 
 const Visit = () => {
   const { idVisit } = useParams()
@@ -19,7 +24,10 @@ const Visit = () => {
         </IconButton>
         <PageHeading>Visita {idVisit}</PageHeading>
       </Box>
+      <VisitDetails />
       <ContactList />
+      <AttendedEmployees />
+      <AttendEmployees />
     </Box>
   )
 }
