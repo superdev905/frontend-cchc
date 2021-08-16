@@ -4,7 +4,8 @@ const initialState = {
   calendarEvents: [],
   listEvents: [],
   totalEvents: 0,
-  visit: null
+  visit: null,
+  showModal: false
 }
 
 const assistanceReducer = (state = initialState, { type, payload }) => {
@@ -17,6 +18,8 @@ const assistanceReducer = (state = initialState, { type, payload }) => {
       return { ...state, totalEvents: payload }
     case assistanceTypes.GET_VISIT_DETAILS:
       return { ...state, visit: payload }
+    case assistanceTypes.ASSISTANCE_TYPE_TOGGLE:
+      return { ...state, showModal: payload }
     default:
       return state
   }

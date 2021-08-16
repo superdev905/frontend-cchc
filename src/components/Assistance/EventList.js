@@ -107,6 +107,12 @@ const EventList = () => {
           />
         </Wrapper>
       </Box>
+
+      <Box display="flex" justifyContent="flex-end">
+        <Button onClick={launchCalendar} size="small">
+          Ver tipos de asistencias
+        </Button>
+      </Box>
     </Box>
   )
 }

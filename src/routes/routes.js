@@ -15,6 +15,7 @@ const Users = lazy(() => import('../pages/Users'))
 const Calendar = lazy(() => import('../pages/Calendar'))
 const Assistance = lazy(() => import('../pages/Assistance'))
 const Visit = lazy(() => import('../pages/Visit'))
+const AssistanceType = lazy(() => import('../pages/Assistance/AssistanceType'))
 
 const routes = [
   {
@@ -154,6 +155,22 @@ const routes = [
         yes={() => (
           <Layout>
             <Visit />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/assistance-type',
+    key: 'ASSISTANCE-TYPE',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SIMPLE_USER']}
+        yes={() => (
+          <Layout>
+            <AssistanceType />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}
