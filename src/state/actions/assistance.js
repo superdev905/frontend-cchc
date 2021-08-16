@@ -8,6 +8,9 @@ const serviceEndpoint = `${
     : 'http://localhost:5100'
 }/api/v1`
 
+const toggleModal = (value) => (dispatch) =>
+  dispatch({ type: assistanceTypes.ASSISTANCE_TYPE_TOGGLE, payload: !value })
+
 const createEvent = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${serviceEndpoint}/assistance-visits`, values)
@@ -112,12 +115,25 @@ const deleteEvent = (idEvent) => () =>
       })
   })
 
+const createAttentionType = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`/attention-types`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 export default {
+  toggleModal,
   getCalendarEvents,
   createEvent,
   updateEvent,
   deleteEvent,
   patchEvent,
   getEvents,
-  getEventDetails
+  getEventDetails,
+  createAttentionType
 }
