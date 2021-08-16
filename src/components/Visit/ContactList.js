@@ -1,7 +1,7 @@
 import { Box, Typography } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import constructionsActions from '../../state/actions/constructions'
 import assistanceActions from '../../state/actions/assistance'
 import { DataTable } from '../Shared'
@@ -9,6 +9,7 @@ import { Wrapper } from '../UI'
 
 const ContactList = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const { idVisit } = useParams()
   const [contactList, setContactList] = useState([])
   const { visit } = useSelector((state) => state.assistance)
@@ -27,6 +28,10 @@ const ContactList = () => {
         )
       })
   }, [visit])
+
+  const assistanceTypes = () => {
+    history.push('/assistance-type')
+  }
 
   return (
     <Wrapper>
@@ -65,6 +70,11 @@ const ContactList = () => {
         ]}
         data={contactList}
       />
+      <Box display="flex" justifyContent="flex-end">
+        <Button onClick={assistanceTypes} size="small">
+          Atenciones en Obras
+        </Button>
+      </Box>
     </Wrapper>
   )
 }
