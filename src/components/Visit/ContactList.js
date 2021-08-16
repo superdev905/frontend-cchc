@@ -1,22 +1,18 @@
 import { Box, Typography } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+import { useLocation } from 'react-router-dom/cjs/react-router-dom.min'
 import constructionsActions from '../../state/actions/constructions'
-import assistanceActions from '../../state/actions/assistance'
 import { DataTable } from '../Shared'
-import { Wrapper } from '../UI'
+import { Wrapper, Button } from '../UI'
 
 const ContactList = () => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const { idVisit } = useParams()
+  const location = useLocation()
   const [contactList, setContactList] = useState([])
   const { visit } = useSelector((state) => state.assistance)
-
-  useEffect(() => {
-    dispatch(assistanceActions.getEventDetails(idVisit))
-  }, [])
 
   useEffect(() => {
     if (visit)
@@ -30,15 +26,17 @@ const ContactList = () => {
   }, [visit])
 
   const assistanceTypes = () => {
-    history.push('/assistance-type')
+    history.push(`${location.pathname}/assistance-type`)
   }
 
   return (
     <Wrapper>
-      <Box p={2}>
+      <Box p={1} display="flex" justifyContent="space-between">
         <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>
           Contactos de obra
         </Typography>
+
+        <Button onClick={assistanceTypes}>Atenciones en Obras</Button>
       </Box>
       <DataTable
         columns={[
@@ -70,15 +68,8 @@ const ContactList = () => {
         ]}
         data={contactList}
       />
-      <Box display="flex" justifyContent="flex-end">
-        <Button onClick={assistanceTypes} size="small">
-          Atenciones en Obras
-        </Button>
-      </Box>
     </Wrapper>
   )
 }
-
-ContactList.propTypes = {}
 
 export default ContactList

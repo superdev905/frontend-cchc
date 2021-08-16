@@ -117,7 +117,7 @@ const deleteEvent = (idEvent) => () =>
 
 const createAttentionType = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`/attention-types`, values)
+    Axios.post(`/assistance-types`, values)
       .then((response) => {
         const { data } = response
         resolve(data)

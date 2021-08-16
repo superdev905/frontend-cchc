@@ -1,11 +1,12 @@
 import * as Yup from 'yup'
+import { useEffect } from 'react'
 import { useFormik } from 'formik'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Dialog } from '../../Shared'
 import { Button, SubmitButton, TextField, Select } from '../../UI'
 import { useSuccess } from '../../../hooks'
-import attentionTypes from '../../../config/Attention'
+import commonActions from '../../../state/actions/common'
 
 const validationSchema = Yup.object({
   attention_type_id: Yup.number().required('Seleccione tipo de Atención'),
@@ -20,8 +21,11 @@ const AssistanceType = ({
   submitFunction,
   successFunction
 }) => {
+  const dispatch = useDispatch()
   const { isMobile } = useSelector((state) => state.ui)
   const { success, changeSuccess } = useSuccess()
+  const { assistanceTypes } = useSelector((state) => state.common)
+
   const formik = useFormik({
     validateOnMount: true,
     enableReinitialize: true,
@@ -46,6 +50,10 @@ const AssistanceType = ({
         })
     }
   })
+
+  useEffect(() => {
+    dispatch(commonActions.getAssistanceTypes())
+  }, [open])
 
   //  const onAttentionType = (values) => dispatch(AssistanceType.createAttentionType(values))
 
@@ -84,7 +92,7 @@ const AssistanceType = ({
               }
             >
               <option value="">Seleccione tipo</option>
-              {attentionTypes.map((item, i) => (
+              {assistanceTypes.map((item, i) => (
                 <option key={`attention-type-${i}`} value={item.name}>
                   {item.name}
                 </option>

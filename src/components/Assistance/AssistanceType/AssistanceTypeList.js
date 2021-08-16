@@ -1,6 +1,5 @@
 import { useState } from 'react'
 // import { useLocation, useHistory } from 'react-router-dom'
-// import { useSelector } from 'react-redux'
 import { Box } from '@material-ui/core'
 // import assistanceActions from '../../../state/actions/assistance'
 import { Button, Wrapper } from '../../UI'
@@ -9,11 +8,9 @@ import { useToggle } from '../../../hooks'
 import AssistanceType from './AssistanceType'
 
 const AssistanceTypeList = () => {
-  // const dispatch = useDispatch()
   const [tableData] = useState([])
   const [loading] = useState(false)
   const { open, toggleOpen } = useToggle()
-  // const { user } = useSelector((state) => state.auth)
 
   /*
   const { showModal } = useSelector((state) => state.assistance)

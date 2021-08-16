@@ -23,6 +23,18 @@ const getUsers =
         })
     })
 
+const getUserDetails = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${usersEndpoint}/users/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const createUser = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${usersEndpoint}/users`, values)
@@ -59,4 +71,4 @@ const patchUser = (id, values) => () =>
       })
   })
 
-export default { getUsers, createUser, updateUser, patchUser }
+export default { getUsers, createUser, updateUser, patchUser, getUserDetails }

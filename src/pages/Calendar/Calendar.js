@@ -223,22 +223,6 @@ const EventsCalendar = () => {
           changeDateTrigger={onNavigate}
         />
       )}
-      {currentEvent && openEdit && (
-        <EventForm
-          type="UPDATE"
-          event={currentEvent}
-          open={openEdit}
-          onClose={toggleOpenEdit}
-          submitFunction={onUpdateEvent}
-          successFunction={() => {
-            fetchEvents(filters)
-            setRescheduleStatus(false)
-          }}
-          successMessage={'Evento actualizado'}
-          changeDateTrigger={onNavigate}
-          reschedule={rescheduleStatus}
-        />
-      )}
       {currentEvent && openPreview && (
         <EventPreview
           anchorEl={anchorEl}
@@ -256,7 +240,6 @@ const EventsCalendar = () => {
           onReschedule={() => {
             setRescheduleStatus(true)
             handleClose()
-            setCurrentEvent(currentEvent)
             toggleOpenEdit()
           }}
           onCancel={() => {
@@ -266,6 +249,23 @@ const EventsCalendar = () => {
           }}
         />
       )}
+      {currentEvent && openEdit && (
+        <EventForm
+          type="UPDATE"
+          event={currentEvent}
+          open={openEdit}
+          onClose={toggleOpenEdit}
+          submitFunction={onUpdateEvent}
+          successFunction={() => {
+            fetchEvents(filters)
+            setRescheduleStatus(false)
+          }}
+          successMessage={'Evento actualizado'}
+          changeDateTrigger={onNavigate}
+          reschedule={rescheduleStatus}
+        />
+      )}
+
       {currentEvent && openConfirmDelete && (
         <ConfirmDelete
           open={openConfirmDelete}

@@ -106,7 +106,7 @@ const EventForm = ({
   }
 
   useEffect(() => {
-    if (formik.values.shift_id) {
+    if (formik.values.shift_id && type === 'CREATE') {
       const current = shiftList.find(
         (item) => item.id === parseInt(formik.values.shift_id, 10)
       )
