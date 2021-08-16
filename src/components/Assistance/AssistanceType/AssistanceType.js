@@ -47,6 +47,8 @@ const AssistanceType = ({
     }
   })
 
+  //  const onAttentionType = (values) => dispatch(AssistanceType.createAttentionType(values))
+
   return (
     <Dialog
       open={open}
@@ -64,7 +66,7 @@ const AssistanceType = ({
           Tipo de Atención
         </Typography>
         <Grid container>
-          <Grid item xs={12} md={12} lg={4}>
+          <Grid item xs={12} md={12} lg={12}>
             <Select
               fullWidth
               label="Tipo de Atención"
@@ -90,7 +92,7 @@ const AssistanceType = ({
             </Select>
           </Grid>
 
-          <Grid item xs={12} md={12} lg={4}>
+          <Grid item xs={12} md={12} lg={12}>
             <TextField
               label="Cantidad"
               name="amount"

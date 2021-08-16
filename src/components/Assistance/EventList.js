@@ -30,10 +30,6 @@ const EventList = () => {
     history.push('/calendar')
   }
 
-  const assistanceTypes = () => {
-    history.push('/assistance-type')
-  }
-
   const fetchList = () => {
     setLoading(true)
     dispatch(assistanceActions.getEvents(filters)).then(() => {
@@ -110,12 +106,6 @@ const EventList = () => {
             paginationTotalRows={totalPages}
           />
         </Wrapper>
-      </Box>
-
-      <Box display="flex" justifyContent="flex-end">
-        <Button onClick={assistanceTypes} size="small">
-          Atenciones en Obras
-        </Button>
       </Box>
     </Box>
   )

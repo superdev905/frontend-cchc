@@ -115,6 +115,17 @@ const deleteEvent = (idEvent) => () =>
       })
   })
 
+const createAttentionType = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`/attention-types`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 export default {
   toggleModal,
   getCalendarEvents,
@@ -123,5 +134,6 @@ export default {
   deleteEvent,
   patchEvent,
   getEvents,
-  getEventDetails
+  getEventDetails,
+  createAttentionType
 }

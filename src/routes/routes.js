@@ -162,7 +162,7 @@ const routes = [
     )
   },
   {
-    path: '/assistance-type',
+    path: `/visit/:idVisit/assistance-type`,
     key: 'ASSISTANCE-TYPE',
     exact: true,
     component: ({ authenticated }) => (
