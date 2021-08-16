@@ -277,6 +277,18 @@ const getShiftDetails = (id) => () =>
       })
   })
 
+const getAssistanceTypes = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${parametersEndpoint}/assistance-type`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_ASSISTANCE_TYPES, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 export default {
   getRegions,
   getCharges,
@@ -297,5 +309,6 @@ export default {
   getEntities,
   getEventTypes,
   getShiftList,
-  getShiftDetails
+  getShiftDetails,
+  getAssistanceTypes
 }
