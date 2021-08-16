@@ -1,21 +1,14 @@
 import { Box, Typography } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
 import constructionsActions from '../../state/actions/constructions'
-import assistanceActions from '../../state/actions/assistance'
 import { DataTable } from '../Shared'
 import { Wrapper } from '../UI'
 
 const ContactList = () => {
   const dispatch = useDispatch()
-  const { idVisit } = useParams()
   const [contactList, setContactList] = useState([])
   const { visit } = useSelector((state) => state.assistance)
-
-  useEffect(() => {
-    dispatch(assistanceActions.getEventDetails(idVisit))
-  }, [])
 
   useEffect(() => {
     if (visit)
