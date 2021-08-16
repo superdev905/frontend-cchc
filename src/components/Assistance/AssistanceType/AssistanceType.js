@@ -2,13 +2,14 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSelector } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { Dialog } from '../../../Shared'
-import { Button, SubmitButton, TextField } from '../../../UI'
-import { useSuccess } from '../../../../hooks'
+import { Dialog } from '../../Shared'
+import { Button, SubmitButton, TextField, Select } from '../../UI'
+import { useSuccess } from '../../../hooks'
+import attentionTypes from '../../../config/Attention'
 
 const validationSchema = Yup.object({
   attention_type_id: Yup.number().required('Seleccione tipo de Atención'),
-  amount: Yup.number().required('Ingrese cantidad'),
+  amount: Yup.number().required('Ingrese cantidad')
 })
 
 const AssistanceType = ({
@@ -27,7 +28,7 @@ const AssistanceType = ({
     validationSchema,
     initialValues: {
       attention_type_id: type === 'UPDATE' ? data.attention_type_id : '',
-      amount: type === 'UPDATE' ? data.amount : '',
+      amount: type === 'UPDATE' ? data.amount : ''
     },
     onSubmit: (values) => {
       submitFunction(values)
@@ -45,6 +46,7 @@ const AssistanceType = ({
         })
     }
   })
+
   return (
     <Dialog
       open={open}
@@ -62,8 +64,9 @@ const AssistanceType = ({
           Tipo de Atención
         </Typography>
         <Grid container>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={12} lg={4}>
             <Select
+              fullWidth
               label="Tipo de Atención"
               name="attention_type_id"
               required
@@ -74,19 +77,20 @@ const AssistanceType = ({
                 Boolean(formik.errors.attention_type_id)
               }
               helperText={
-                formik.touched.attention_type_id && formik.errors.attention_type_id
+                formik.touched.attention_type_id &&
+                formik.errors.attention_type_id
               }
             >
-              <option value="">Seleccione tipo de Atención</option>
-              {types.map((item, i) => (
-                <option key={`type-${i}-${item.id}`} value={item.id}>
-                  {item.description}
+              <option value="">Seleccione tipo</option>
+              {attentionTypes.map((item, i) => (
+                <option key={`attention-type-${i}`} value={item.name}>
+                  {item.name}
                 </option>
               ))}
             </Select>
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={12} lg={4}>
             <TextField
               label="Cantidad"
               name="amount"
@@ -94,14 +98,8 @@ const AssistanceType = ({
               value={formik.values.amount}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={
-                formik.touched.amount &&
-                Boolean(formik.errors.amount)
-              }
-              helperText={
-                formik.touched.amount &&
-                formik.errors.amount
-              }
+              error={formik.touched.amount && Boolean(formik.errors.amount)}
+              helperText={formik.touched.amount && formik.errors.amount}
             />
           </Grid>
         </Grid>

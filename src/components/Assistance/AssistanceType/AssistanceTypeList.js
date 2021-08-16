@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Box } from '@material-ui/core'
-import assistanceActions from '../../../state/actions/assistance'
+// import assistanceActions from '../../../state/actions/assistance'
 import { Button, Wrapper } from '../../UI'
 import { DataTable } from '../../Shared'
+import { useToggle } from '../../../hooks'
+import AssistanceType from './AssistanceType'
 
 const AssistanceTypeList = () => {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
   const history = useHistory()
   const [tableData] = useState([])
   const [loading] = useState(false)
+  const { open, toggleOpen } = useToggle()
   const { user } = useSelector((state) => state.auth)
   const [filters, setFilters] = useState({
     skip: 0,
@@ -19,11 +22,13 @@ const AssistanceTypeList = () => {
     user_id: user?.id
   })
 
+  /*
   const { showModal } = useSelector((state) => state.assistance)
   const attentionTypeClick = () => {
     console.log('ver modal')
     dispatch(assistanceActions.toggleModal(showModal))
   }
+  */
 
   const { totalEvents: totalPages } = useSelector((state) => state.assistance)
 
@@ -36,7 +41,7 @@ const AssistanceTypeList = () => {
       <Box marginTop="10px">
         <Wrapper>
           <Box display="flex" justifyContent="flex-end">
-            <Button onClick={attentionTypeClick} size="small">
+            <Button onClick={toggleOpen} size="small">
               Tipo de Atención
             </Button>
           </Box>
@@ -70,6 +75,8 @@ const AssistanceTypeList = () => {
             paginationTotalRows={totalPages}
           />
         </Wrapper>
+
+        <AssistanceType open={open} onClose={toggleOpen} />
       </Box>
     </Box>
   )
