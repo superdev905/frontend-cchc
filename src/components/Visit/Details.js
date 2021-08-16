@@ -56,7 +56,7 @@ const Details = ({ fetching }) => {
             </LabeledRow>
             <LabeledRow label="Estado:">
               <Text loaderWidth="80%" loading={fetching}>
-                {visit ? <StatusChip label={visit.status} /> : ''}
+                {visit ? <StatusChip success label={visit.status} /> : ''}
               </Text>
             </LabeledRow>
           </Grid>

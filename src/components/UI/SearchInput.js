@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 8,
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: '#F5F8FA',
+    backgroundColor: theme.palette.gray.gray100,
     borderRadius: 5,
     marginTop: 5,
     [theme.breakpoints.up('md')]: {
