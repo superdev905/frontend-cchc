@@ -1,16 +1,18 @@
 import * as Yup from 'yup'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 import { Dialog } from '../../Shared'
-import { Button, SubmitButton, TextField, Select } from '../../UI'
+import { Button, SubmitButton, TextField } from '../../UI'
 import { useSuccess } from '../../../hooks'
 import commonActions from '../../../state/actions/common'
 
 const validationSchema = Yup.object({
-  attention_type_id: Yup.number().required('Seleccione tipo de Atención'),
-  amount: Yup.number().required('Ingrese cantidad')
+  type_id: Yup.number().required(''),
+  type_name: Yup.string().required('Seleccione tipo de Atención'),
+  quantity: Yup.number().required('Ingrese cantidad')
 })
 
 const AssistanceType = ({
@@ -25,14 +27,16 @@ const AssistanceType = ({
   const { isMobile } = useSelector((state) => state.ui)
   const { success, changeSuccess } = useSuccess()
   const { assistanceTypes } = useSelector((state) => state.common)
+  const [selectedType, setSelectedType] = useState(null)
 
   const formik = useFormik({
     validateOnMount: true,
     enableReinitialize: true,
     validationSchema,
     initialValues: {
-      attention_type_id: type === 'UPDATE' ? data.attention_type_id : '',
-      amount: type === 'UPDATE' ? data.amount : ''
+      type_id: type === 'UPDATE' ? data.type_id : '',
+      type_name: type === 'UPDATE' ? data.type_name : '',
+      quantity: type === 'UPDATE' ? data.quantity : ''
     },
     onSubmit: (values) => {
       submitFunction(values)
@@ -52,10 +56,20 @@ const AssistanceType = ({
   })
 
   useEffect(() => {
-    dispatch(commonActions.getAssistanceTypes())
+    if (open) {
+      dispatch(commonActions.getAssistanceTypes({}, false)).then(() => {})
+    }
   }, [open])
 
-  //  const onAttentionType = (values) => dispatch(AssistanceType.createAttentionType(values))
+  useEffect(() => {
+    if (formik.values.type_id && assistanceTypes.length > 0) {
+      const currentType = assistanceTypes.find(
+        (item) => item.id === parseInt(formik.values.type_id, 10)
+      )
+      formik.setFieldValue('type_name', currentType.name)
+      setSelectedType(currentType)
+    }
+  }, [formik.values.type_id, assistanceTypes])
 
   return (
     <Dialog
@@ -71,45 +85,42 @@ const AssistanceType = ({
           variant="h6"
           style={{ marginBottom: '15px' }}
         >
-          Tipo de Atención
+          {type === 'UPDATE' ? 'Actualizar ' : 'Crear '}
+          atención en obra
         </Typography>
-        <Grid container>
-          <Grid item xs={12} md={12} lg={12}>
-            <Select
-              fullWidth
-              label="Tipo de Atención"
-              name="attention_type_id"
-              required
-              value={formik.values.attention_type_id}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.attention_type_id &&
-                Boolean(formik.errors.attention_type_id)
-              }
-              helperText={
-                formik.touched.attention_type_id &&
-                formik.errors.attention_type_id
-              }
-            >
-              <option value="">Seleccione tipo</option>
-              {assistanceTypes.map((item, i) => (
-                <option key={`attention-type-${i}`} value={item.name}>
-                  {item.name}
-                </option>
-              ))}
-            </Select>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Autocomplete
+              options={assistanceTypes}
+              value={selectedType || ''}
+              getOptionLabel={(option) => option.name}
+              onChange={(__, option) => {
+                formik.setFieldValue('type_id', option ? option.id : '')
+                formik.setFieldValue('type_name', option ? option.name : '')
+              }}
+              renderOption={(option) => (
+                <Box>
+                  <Typography>
+                    <strong>{option.name}</strong>
+                  </Typography>
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField {...params} label="Seleccionar tipo" />
+              )}
+            />
           </Grid>
 
           <Grid item xs={12} md={12} lg={12}>
             <TextField
               label="Cantidad"
-              name="amount"
+              name="quantity"
               required
-              value={formik.values.amount}
+              value={formik.values.quantity}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={formik.touched.amount && Boolean(formik.errors.amount)}
-              helperText={formik.touched.amount && formik.errors.amount}
+              error={formik.touched.quantity && Boolean(formik.errors.quantity)}
+              helperText={formik.touched.quantity && formik.errors.quantity}
             />
           </Grid>
         </Grid>
@@ -123,7 +134,7 @@ const AssistanceType = ({
             disabled={!formik.isValid || formik.isSubmitting}
             success={success}
           >
-            Aceptar
+            {type === 'UPDATE' ? 'Actualizar' : 'Crear'}
           </SubmitButton>
         </Box>
       </Box>
