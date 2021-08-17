@@ -5,7 +5,8 @@ const initialState = {
   listEvents: [],
   totalEvents: 0,
   visit: null,
-  showModal: false
+  showModal: false,
+  assistanceConstructionList: []
 }
 
 const assistanceReducer = (state = initialState, { type, payload }) => {
@@ -20,6 +21,8 @@ const assistanceReducer = (state = initialState, { type, payload }) => {
       return { ...state, visit: payload }
     case assistanceTypes.ASSISTANCE_TYPE_TOGGLE:
       return { ...state, showModal: payload }
+    case assistanceTypes.GET_ASSISTANCE_CONSTRUCTION:
+      return { ...state, assistanceConstructionList: payload }
     default:
       return state
   }

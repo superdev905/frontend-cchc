@@ -115,9 +115,44 @@ const deleteEvent = (idEvent) => () =>
       })
   })
 
-const createAttentionType = (values) => () =>
+const createConstructionAttention = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`/assistance-types`, values)
+    console.log('jsidsinbs')
+    Axios.post(`${serviceEndpoint}/assistance-construction`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+const getConstructionAttention =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${serviceEndpoint}/assistance-construction?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: assistanceTypes.GET_ASSISTANCE_CONSTRUCTION,
+            payload: data
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const updateConstructionAttention = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${serviceEndpoint}/assistance-construction/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -135,5 +170,7 @@ export default {
   patchEvent,
   getEvents,
   getEventDetails,
-  createAttentionType
+  createConstructionAttention,
+  getConstructionAttention,
+  updateConstructionAttention
 }

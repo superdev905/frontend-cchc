@@ -1,54 +1,122 @@
-import { useState } from 'react'
-// import { useLocation, useHistory } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import { Box } from '@material-ui/core'
-// import assistanceActions from '../../../state/actions/assistance'
-import { Button, Wrapper } from '../../UI'
+import { ActionsTable, Button, Wrapper } from '../../UI'
 import { DataTable } from '../../Shared'
-import { useToggle } from '../../../hooks'
 import AssistanceType from './AssistanceType'
+import assistanceActions from '../../../state/actions/assistance'
+import { useToggle } from '../../../hooks'
 
 const AssistanceTypeList = () => {
-  const [tableData] = useState([])
-  const [loading] = useState(false)
-  const { open, toggleOpen } = useToggle()
+  const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
+  const [currentData, setCurrentData] = useState(null)
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { idVisit } = useParams()
 
-  /*
-  const { showModal } = useSelector((state) => state.assistance)
-  const attentionTypeClick = () => {
-    console.log('ver modal')
+  const { assistanceConstructionList, showModal } = useSelector(
+    (state) => state.assistance
+  )
+  const { user } = useSelector((state) => state.auth)
+
+  const toggleModal = () => {
     dispatch(assistanceActions.toggleModal(showModal))
   }
-  */
+
+  const addButtonClick = () => {
+    dispatch(assistanceActions.toggleModal(showModal))
+  }
+
+  const createAssistanceConstruction = (data) =>
+    dispatch(
+      assistanceActions.createConstructionAttention({
+        ...data,
+        created_by: user.id,
+        visit_id: idVisit
+      })
+    )
+
+  const updateAssistanceConstruction = (data) =>
+    dispatch(
+      assistanceActions.updateConstructionAttention(currentData.id, {
+        ...data,
+        created_by: user.id,
+        visit_id: idVisit
+      })
+    )
+
+  const fetchConstructionType = () => {
+    setLoading(true)
+    dispatch(assistanceActions.getConstructionAttention())
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
+  useEffect(() => {
+    fetchConstructionType()
+  }, [])
 
   return (
     <Box>
       <Box marginTop="10px">
         <Wrapper>
           <Box display="flex" justifyContent="flex-end">
-            <Button onClick={toggleOpen} size="small">
+            <Button onClick={addButtonClick} size="small">
               Tipo de Atención
             </Button>
           </Box>
           <DataTable
-            data={tableData}
             progressPending={loading}
             highlightOnHover
             pointerOnHover
             columns={[
               {
                 name: 'Tipo de Atención',
-                selector: '',
+                selector: 'type_name',
                 sortable: true
               },
               {
                 name: 'Cantidad',
-                selector: ''
+                selector: 'quantity'
+              },
+              {
+                right: true,
+                cell: (row) => (
+                  <ActionsTable
+                    onEdit={() => {
+                      setCurrentData(row)
+                      toggleOpenEdit()
+                    }}
+                  />
+                )
               }
             ]}
+            data={assistanceConstructionList}
           />
         </Wrapper>
 
-        <AssistanceType open={open} onClose={toggleOpen} />
+        <AssistanceType
+          open={showModal}
+          onClose={toggleModal}
+          submitFunction={createAssistanceConstruction}
+          successFunction={fetchConstructionType}
+        />
+
+        {currentData && openEdit && (
+          <AssistanceType
+            open={openEdit}
+            onClose={toggleOpenEdit}
+            submitFunction={updateAssistanceConstruction}
+            successFunction={fetchConstructionType}
+            type={'UPDATE'}
+            data={currentData}
+          />
+        )}
       </Box>
     </Box>
   )
