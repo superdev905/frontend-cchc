@@ -51,7 +51,7 @@ const AssistanceTypeList = () => {
 
   const fetchConstructionType = () => {
     setLoading(true)
-    dispatch(assistanceActions.getConstructionAttention())
+    dispatch(assistanceActions.getConstructionAttention({ visit_id: idVisit }))
       .then(() => {
         setLoading(false)
       })
@@ -87,9 +87,7 @@ const AssistanceTypeList = () => {
       <Box marginTop="10px">
         <Wrapper>
           <Box display="flex" justifyContent="flex-end">
-            <Button onClick={addButtonClick} size="small">
-              Tipo de Atención
-            </Button>
+            <Button onClick={addButtonClick}>Nueva atención</Button>
           </Box>
           <DataTable
             progressPending={loading}

@@ -4,7 +4,7 @@ import { PageHeading } from '../../../components/UI'
 
 const AssistanceType = () => (
   <Box>
-    <PageHeading>Asistencias - Empresa</PageHeading>
+    <PageHeading>Asistencias en obra</PageHeading>
     <AssistanceTypeList />
   </Box>
 )

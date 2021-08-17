@@ -117,7 +117,6 @@ const deleteEvent = (idEvent) => () =>
 
 const createConstructionAttention = (values) => () =>
   new Promise((resolve, reject) => {
-    console.log('jsidsinbs')
     Axios.post(`${serviceEndpoint}/assistance-construction`, values)
       .then((response) => {
         const { data } = response
