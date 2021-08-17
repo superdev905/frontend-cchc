@@ -3,16 +3,19 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { Box } from '@material-ui/core'
 import { ActionsTable, Button, Wrapper } from '../../UI'
-import { DataTable } from '../../Shared'
+import { ConfirmDelete, DataTable } from '../../Shared'
+import { useToggle, useSuccess } from '../../../hooks'
 import AssistanceType from './AssistanceType'
 import assistanceActions from '../../../state/actions/assistance'
-import { useToggle } from '../../../hooks'
 
 const AssistanceTypeList = () => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
   const [currentData, setCurrentData] = useState(null)
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const [deleting, setDeleting] = useState(false)
+  const { success, changeSuccess } = useSuccess()
   const { idVisit } = useParams()
 
   const { assistanceConstructionList, showModal } = useSelector(
@@ -57,9 +60,27 @@ const AssistanceTypeList = () => {
       })
   }
 
+  const deleteAssistance = (id) => {
+    setDeleting(true)
+    dispatch(assistanceActions.deleteConstructionAttention(id))
+      .then(() => {
+        setDeleting(false)
+        toggleOpenDelete()
+        changeSuccess(false)
+        setCurrentData(null)
+        fetchConstructionType()
+      })
+      .catch(() => {
+        setDeleting(false)
+        changeSuccess(false)
+      })
+  }
+
   useEffect(() => {
     fetchConstructionType()
   }, [])
+
+  console.log(currentData)
 
   return (
     <Box>
@@ -92,6 +113,10 @@ const AssistanceTypeList = () => {
                       setCurrentData(row)
                       toggleOpenEdit()
                     }}
+                    onDelete={() => {
+                      setCurrentData(row)
+                      toggleOpenDelete()
+                    }}
                   />
                 )
               }
@@ -115,6 +140,22 @@ const AssistanceTypeList = () => {
             successFunction={fetchConstructionType}
             type={'UPDATE'}
             data={currentData}
+          />
+        )}
+
+        {currentData && openDelete && (
+          <ConfirmDelete
+            open={openDelete}
+            onClose={toggleOpenDelete}
+            loading={deleting}
+            success={success}
+            onConfirm={() => deleteAssistance(currentData.id)}
+            message={
+              <span>
+                ¿Estás seguro de eliminar
+                <strong>{currentData.type_name}</strong>?
+              </span>
+            }
           />
         )}
       </Box>

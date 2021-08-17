@@ -161,6 +161,18 @@ const updateConstructionAttention = (id, values) => () =>
         reject(err)
       })
   })
+
+const deleteConstructionAttention = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`${serviceEndpoint}/assistance-construction/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 export default {
   toggleModal,
   getCalendarEvents,
@@ -172,5 +184,6 @@ export default {
   getEventDetails,
   createConstructionAttention,
   getConstructionAttention,
-  updateConstructionAttention
+  updateConstructionAttention,
+  deleteConstructionAttention
 }
