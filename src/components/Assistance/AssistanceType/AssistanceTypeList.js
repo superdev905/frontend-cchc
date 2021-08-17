@@ -48,7 +48,7 @@ const AssistanceTypeList = () => {
 
   const fetchConstructionType = () => {
     setLoading(true)
-    dispatch(assistanceActions.getConstructionAttention())
+    dispatch(assistanceActions.getConstructionAttention({ visit_id: idVisit }))
       .then(() => {
         setLoading(false)
       })
