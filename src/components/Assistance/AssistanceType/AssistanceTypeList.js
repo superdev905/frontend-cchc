@@ -66,9 +66,7 @@ const AssistanceTypeList = () => {
       <Box marginTop="10px">
         <Wrapper>
           <Box display="flex" justifyContent="flex-end">
-            <Button onClick={addButtonClick} size="small">
-              Tipo de Atención
-            </Button>
+            <Button onClick={addButtonClick}>Nueva atención</Button>
           </Box>
           <DataTable
             progressPending={loading}

@@ -85,8 +85,8 @@ const AssistanceType = ({
           variant="h6"
           style={{ marginBottom: '15px' }}
         >
-          {type === 'UPDATE' ? 'Actualizar' : 'Crear'}
-          Tipo de Atención
+          {type === 'UPDATE' ? 'Actualizar ' : 'Crear '}
+          atención en obra
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -134,7 +134,7 @@ const AssistanceType = ({
             disabled={!formik.isValid || formik.isSubmitting}
             success={success}
           >
-            Crear
+            {type === 'UPDATE' ? 'Actualizar' : 'Crear'}
           </SubmitButton>
         </Box>
       </Box>
