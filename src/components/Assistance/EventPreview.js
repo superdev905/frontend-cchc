@@ -41,7 +41,8 @@ const EventPreview = ({
   onDelete,
   onEdit,
   onCancel,
-  onReschedule
+  onReschedule,
+  onFinished
 }) => {
   const classes = useStyles()
   const {
@@ -128,6 +129,14 @@ const EventPreview = ({
             onClick={onCancel}
           >
             Cancelar evento
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            disabled={event.status === 'TERMINADO'}
+            onClick={onFinished}
+          >
+            Terminado
           </Button>
         </Box>
       </Box>
