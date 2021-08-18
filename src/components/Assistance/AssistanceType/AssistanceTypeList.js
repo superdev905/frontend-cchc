@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { Box } from '@material-ui/core'
 import { ActionsTable, Button, Wrapper } from '../../UI'
 import { ConfirmDelete, DataTable } from '../../Shared'
 import { useToggle, useSuccess } from '../../../hooks'
+
 import AssistanceType from './AssistanceType'
 import assistanceActions from '../../../state/actions/assistance'
+import WorkerInterventionRecord from '../InterventionRegistration/WorkerInterventionRecord'
 
 const AssistanceTypeList = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const [loading, setLoading] = useState(false)
   const [currentData, setCurrentData] = useState(null)
+  const { open: openRegistration, toggleOpen: toggleOpenRegistration } =
+    useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const [deleting, setDeleting] = useState(false)
@@ -76,6 +81,13 @@ const AssistanceTypeList = () => {
       })
   }
 
+  const createIntervention = (values) =>
+    dispatch(assistanceActions.createInterventionRegistration(values))
+
+  const afterCreateIntervention = (createData) => {
+    history.push(`/management/${createData.id}/info`)
+  }
+
   useEffect(() => {
     fetchConstructionType()
   }, [])
@@ -121,6 +133,9 @@ const AssistanceTypeList = () => {
             ]}
             data={assistanceConstructionList}
           />
+          <Box display="flex" justifyContent="flex-end">
+            <Button onClick={toggleOpenRegistration}>Registrar </Button>
+          </Box>
         </Wrapper>
 
         <AssistanceType
@@ -156,6 +171,14 @@ const AssistanceTypeList = () => {
             }
           />
         )}
+
+        <WorkerInterventionRecord
+          open={openRegistration}
+          onClose={toggleOpenRegistration}
+          submitFunction={createIntervention}
+          successMessage="Ficha de trabajador creado correctamente"
+          successFunction={afterCreateIntervention}
+        />
       </Box>
     </Box>
   )

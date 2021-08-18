@@ -289,6 +289,45 @@ const getAssistanceTypes = () => (dispatch) =>
         reject(err)
       })
   })
+
+const getTopics = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${parametersEndpoint}/topics`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_TOPICS, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+const getManagement = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${parametersEndpoint}/management`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_MANAGEMENT, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+const getAreas = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${parametersEndpoint}/areas`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_AREAS, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 export default {
   getRegions,
   getCharges,
@@ -310,5 +349,8 @@ export default {
   getEventTypes,
   getShiftList,
   getShiftDetails,
-  getAssistanceTypes
+  getAssistanceTypes,
+  getTopics,
+  getManagement,
+  getAreas
 }
