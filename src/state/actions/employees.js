@@ -9,17 +9,19 @@ export const employeeEndpoint = `${
 }/api/v1`
 
 const getEmployees =
-  (query = {}) =>
+  (query = {}, handleDispatch = true) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
       Axios.get(`${employeeEndpoint}/employees?${queryString.stringify(query)}`)
         .then((response) => {
           const { data } = response
-          dispatch({ type: employeesTypes.GET_EMPLOYEES, payload: data.docs })
-          dispatch({
-            type: employeesTypes.SET_EMPLOYEES_TOTAL,
-            payload: data.total
-          })
+          if (handleDispatch) {
+            dispatch({ type: employeesTypes.GET_EMPLOYEES, payload: data.docs })
+            dispatch({
+              type: employeesTypes.SET_EMPLOYEES_TOTAL,
+              payload: data.total
+            })
+          }
           resolve(data)
         })
         .catch((err) => {
