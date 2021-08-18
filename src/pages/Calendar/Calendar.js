@@ -103,7 +103,7 @@ const EventsCalendar = () => {
   const onFinishedEvent = () => {
     setLoading(true)
     dispatch(
-      assistanceActions.finishEvent(currentEvent.id, { status: 'TERMINADA' })
+      assistanceActions.patchEvent(currentEvent.id, { status: 'TERMINADA' })
     )
       .then(() => {
         setLoading(false)
