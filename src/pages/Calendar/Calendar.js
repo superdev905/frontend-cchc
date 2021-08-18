@@ -62,6 +62,7 @@ const EventsCalendar = () => {
   const { open: openConfirmDelete, toggleOpen: toggleOpenConfirmDelete } =
     useToggle()
   const { open: openCancel, toggleOpen: toggleOpenCancel } = useToggle()
+  const { open: openFinish, toggleOpen: toggleOpenFinish } = useToggle()
   const { success, changeSuccess } = useSuccess()
 
   const fetchEvents = (query) => {
@@ -91,6 +92,26 @@ const EventsCalendar = () => {
           enqueueSnackbar('Evento cancelado', { variant: 'success' })
           handleClose()
           toggleOpenCancel()
+        })
+      })
+      .catch((err) => {
+        setLoading(false)
+        enqueueSnackbar(err, { variant: 'error' })
+      })
+  }
+
+  const onFinishedEvent = () => {
+    setLoading(true)
+    dispatch(
+      assistanceActions.finishEvent(currentEvent.id, { status: 'TERMINADA' })
+    )
+      .then(() => {
+        setLoading(false)
+        fetchEvents(filters)
+        changeSuccess(true, () => {
+          enqueueSnackbar('Evento terminado', { variant: 'success' })
+          handleClose()
+          toggleOpenFinish()
         })
       })
       .catch((err) => {
@@ -247,6 +268,11 @@ const EventsCalendar = () => {
             setCurrentEvent(currentEvent)
             toggleOpenCancel()
           }}
+          onFinished={() => {
+            handleClose()
+            setCurrentEvent(currentEvent)
+            toggleOpenFinish()
+          }}
         />
       )}
       {currentEvent && openEdit && (
@@ -293,6 +319,24 @@ const EventsCalendar = () => {
           message={
             <span>
               ¿Estás seguro de cancelar este evento:
+              <strong>{currentEvent.title}</strong>?
+            </span>
+          }
+        />
+      )}
+
+      {currentEvent && openFinish && (
+        <ConfirmDelete
+          event="FINISH"
+          confirmText="Aceptar"
+          open={openFinish}
+          success={success}
+          onClose={toggleOpenFinish}
+          loading={loading}
+          onConfirm={() => onFinishedEvent()}
+          message={
+            <span>
+              ¿Estás seguro de terminar este evento:
               <strong>{currentEvent.title}</strong>?
             </span>
           }

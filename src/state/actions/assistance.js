@@ -103,6 +103,18 @@ const patchEvent = (idEvent, values) => () =>
       })
   })
 
+const finishEvent = (idEvent) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${serviceEndpoint}/assistance-visits/${idEvent}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const deleteEvent = (idEvent) => () =>
   new Promise((resolve, reject) => {
     Axios.delete(`${serviceEndpoint}/assistance-visits/${idEvent}`)
@@ -184,5 +196,6 @@ export default {
   createConstructionAttention,
   getConstructionAttention,
   updateConstructionAttention,
-  deleteConstructionAttention
+  deleteConstructionAttention,
+  finishEvent
 }
