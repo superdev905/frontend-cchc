@@ -161,9 +161,9 @@ const updateConstructionAttention = (id, values) => () =>
       })
   })
 
-const deleteConstructionAttention = (id, values) => () =>
+const deleteConstructionAttention = (id) => () =>
   new Promise((resolve, reject) => {
-    Axios.delete(`${serviceEndpoint}/assistance-construction/${id}`, values)
+    Axios.delete(`${serviceEndpoint}/assistance-construction/${id}`)
       .then((response) => {
         const { data } = response
         resolve(data)
