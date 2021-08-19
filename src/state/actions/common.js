@@ -290,12 +290,12 @@ const getAssistanceTypes = () => (dispatch) =>
       })
   })
 
-const getTopics = () => (dispatch) =>
+const getAreas = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${parametersEndpoint}/topics`)
+    Axios.get(`${parametersEndpoint}/areas`)
       .then((response) => {
         const { data } = response
-        dispatch({ type: commonTypes.GET_TOPICS, payload: data })
+        dispatch({ type: commonTypes.GET_AREAS, payload: data })
         resolve()
       })
       .catch((err) => {
@@ -316,18 +316,19 @@ const getManagement = () => (dispatch) =>
       })
   })
 
-const getAreas = () => (dispatch) =>
+const getTopics = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${parametersEndpoint}/areas`)
+    Axios.get(`${parametersEndpoint}/topics`)
       .then((response) => {
         const { data } = response
-        dispatch({ type: commonTypes.GET_AREAS, payload: data })
+        dispatch({ type: commonTypes.GET_TOPICS, payload: data })
         resolve()
       })
       .catch((err) => {
         reject(err)
       })
   })
+
 export default {
   getRegions,
   getCharges,
@@ -350,7 +351,7 @@ export default {
   getShiftList,
   getShiftDetails,
   getAssistanceTypes,
-  getTopics,
+  getAreas,
   getManagement,
-  getAreas
+  getTopics
 }

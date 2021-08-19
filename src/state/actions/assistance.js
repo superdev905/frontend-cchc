@@ -171,10 +171,11 @@ const deleteConstructionAttention = (id) => () =>
 
 const createInterventionRegistration = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${serviceEndpoint}/`, values)
+    Axios.post(`${serviceEndpoint}/assistance`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
+        console.log('crear')
       })
       .catch((err) => {
         reject(err.response.data.detail)

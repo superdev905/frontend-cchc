@@ -1,9 +1,17 @@
-import { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, Grid, Typography } from '@material-ui/core'
+import {
+  Box,
+  Grid,
+  Typography,
+  InputLabel,
+  FormControlLabel,
+  Radio
+} from '@material-ui/core'
+import CloudUploadOutlinedIcon from '@material-ui/icons/CloudUploadOutlined'
 import { DatePicker, Dialog } from '../../Shared'
 import { Button, Select, SubmitButton, TextField } from '../../UI'
 import commonActions from '../../../state/actions/common'
@@ -11,20 +19,21 @@ import commonActions from '../../../state/actions/common'
 
 const validationSchema = Yup.object().shape({
   date: Yup.date().required('Seleccione fecha'),
-  place: Yup.string().required('Ingrese lugar'),
+  attention_place: Yup.string().required('Ingrese lugar'),
   business_name: Yup.string().required('Ingrese empresa'),
   construction_name: Yup.string().required('Ingrese obra'),
-  area: Yup.string().required('Seleccione area'),
-  topic: Yup.string().required('Seleccione tema'),
+  topic: Yup.string().required('Seleccione topic'),
+  area: Yup.string().required('Seleccione tema'),
   management: Yup.string().required('Seleccione gestión'),
-  state: Yup.string().required('Seleccione estado'),
-  business_report: Yup.string().required(),
+  status: Yup.string().required('Seleccione estado'),
+  company_report: Yup.string().required('Seleccione opcion'),
   contact_method: Yup.number().required('Seleccione metodo de contacto'),
-  social_case: Yup.string().required('Seleccione caso social'),
-  case: Yup.number('Seleccione caso'),
-  intervention_plan: Yup.string('Seleccione plan de intervención '),
-  professional: Yup.string('Ingrese profesional'),
-  observations: Yup.string('Ingrese observaciones')
+  is_social_case: Yup.string().required('Seleccione caso social'),
+  case_id: Yup.number('Seleccione caso'),
+  task_id: Yup.number('Seleccione plan de intervención '),
+  assigned_id: Yup.string('Ingrese profesional'),
+  observation: Yup.string('Ingrese observaciones')
+  // attached_url: Yup.mixed().required()
 })
 
 const WorkerInterventionRecord = ({
@@ -38,28 +47,31 @@ const WorkerInterventionRecord = ({
 }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
-  const { nationalities, topicsList, managementList, areasList } = useSelector(
-    (state) => state.common
-  )
+  const { areas, managementList } = useSelector((state) => state.common)
+  const { user } = useSelector((state) => state.auth)
+  const [topics, setTopics] = useState([])
+  //  const [file, setFile] = useState(null)
+
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
     initialValues: {
       date: type === 'UPDATE' ? data.date : '',
-      place: type === 'UPDATE' ? data.place : '',
+      attention_place: type === 'UPDATE' ? data.attention_place : '',
       business_name: type === 'UPDATE' ? data.business_name : '',
       construction_name: type === 'UPDATE' ? data.construction_name : '',
-      area: type === 'UPDATE' ? data.area : '',
-      topic: type === 'UPDATE' ? data.topic : null,
-      management: type === 'UPDATE' ? data.management : '',
-      state: type === 'UPDATE' ? data.state : '',
-      business_report: type === 'UPDATE' ? data.business_report : '',
+      area: type === 'UPDATE' ? data.topic_id : null,
+      topic: type === 'UPDATE' ? data.area_id : '',
+      management: type === 'UPDATE' ? data.management_id : '',
+      status: type === 'UPDATE' ? data.status : '',
+      company_report: type === 'UPDATE' ? data.company_report : '',
       contact_method: type === 'UPDATE' ? data.contact_method : '',
-      social_case: type === 'UPDATE' ? data.social_case : '',
-      case: type === 'UPDATE' ? data.case : '',
-      intervention_plan: type === 'UPDATE' ? data.intervention_plan : '',
-      professional: type === 'UPDATE' ? data.professional : '',
-      observations: type === 'UPDATE' ? data.observations : ''
+      is_social_case: type === 'UPDATE' ? data.is_social_case : '',
+      case_id: type === 'UPDATE' ? data.case_id : '',
+      task_id: type === 'UPDATE' ? data.task_id : '',
+      assigned_id: type === 'UPDATE' ? data.assigned_id : '',
+      observation: type === 'UPDATE' ? data.observation : '',
+      attached_url: type === 'UPDATE' ? data.attached_url : ''
     },
     onSubmit: (values) => {
       submitFunction(values).then((result) => {
@@ -76,13 +88,42 @@ const WorkerInterventionRecord = ({
     }
   })
 
+  const handleSelectChange = (e) => {
+    const { name, value } = e.target
+    switch (name) {
+      case 'area': {
+        const area = areas.find((item) => item.id === parseInt(value, 10))
+        setTopics(area.topics)
+        // setAreas(area?.areas || [])
+        formik.setFieldValue('area', area.id)
+        break
+      }
+      case 'topic': {
+        const topic = topics.find((item) => item.id === parseInt(value, 10))
+        formik.setFieldValue('topic', topic.id)
+        break
+      }
+      default:
+        throw new Error('Error')
+    }
+  }
+
   useEffect(() => {
-    dispatch(commonActions.getTopics())
-    dispatch(commonActions.getManagement())
+    if (formik.values.area && areas.length > 0) {
+      handleSelectChange({
+        target: { name: 'area', value: formik.values.area }
+      })
+    }
+  }, [formik.values.area, areas])
+
+  useEffect(() => {
     dispatch(commonActions.getAreas())
+    dispatch(commonActions.getManagement())
+    dispatch(commonActions.getTopics())
     dispatch(commonActions.getNationalities())
   }, [])
 
+  console.log(formik.errors)
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
       <Box>
@@ -107,17 +148,23 @@ const WorkerInterventionRecord = ({
             <Grid item xs={12} md={6} lg={3}>
               <Select
                 label="Lugar"
-                name="place"
+                name="attention_place"
                 required
-                value={formik.values.place}
+                value={formik.values.attention_place}
                 onChange={formik.handleChange}
-                error={formik.touched.place && Boolean(formik.errors.place)}
-                helperText={formik.touched.place && formik.errors.place}
+                error={
+                  formik.touched.attention_place &&
+                  Boolean(formik.errors.attention_place)
+                }
+                helperText={
+                  formik.touched.attention_place &&
+                  formik.errors.attention_place
+                }
               >
                 <option value="">Seleccione Lugar</option>
-                {topicsList.map((item, i) => (
-                  <option key={`place-${i}-${item.id}`} value={item.id}>
-                    {item.description}
+                {['lugar 1', 'lugar 2', 'lugar 3'].map((item, i) => (
+                  <option key={`plce-${i}-${item}`} value={item}>
+                    {item}
                   </option>
                 ))}
               </Select>
@@ -138,9 +185,9 @@ const WorkerInterventionRecord = ({
                 }
               >
                 <option value="">Seleccione empresa</option>
-                {nationalities.map((item, i) => (
-                  <option key={`company-${i}-${item.id}`} value={item.id}>
-                    {item.description}
+                {['empresa 1', 'empresa 2', 'empresa 3'].map((item, i) => (
+                  <option key={`company-${i}-${item}`} value={item}>
+                    {item}
                   </option>
                 ))}
               </Select>
@@ -162,12 +209,9 @@ const WorkerInterventionRecord = ({
                 }
               >
                 <option value="">Seleccione obra</option>
-                {nationalities.map((item, i) => (
-                  <option
-                    key={`construction-name-${i}-${item.id}`}
-                    value={item.id}
-                  >
-                    {item.description}
+                {['obra 1', 'obra 2', 'obra 3'].map((item, i) => (
+                  <option key={`construction-${i}-${item}`} value={item}>
+                    {item}
                   </option>
                 ))}
               </Select>
@@ -178,14 +222,15 @@ const WorkerInterventionRecord = ({
                 name="area"
                 required
                 value={formik.values.area}
-                onChange={formik.handleChange}
+                // onChange={formik.handleChange}
+                onChange={handleSelectChange}
                 error={formik.touched.area && Boolean(formik.errors.area)}
                 helperText={formik.touched.area && formik.errors.area}
               >
-                <option value="">Seleccione Area</option>
-                {areasList.map((item, i) => (
-                  <option key={`area-${i}-${item.id}`} value={item.id}>
-                    {item.description}
+                <option value={`INVALID`}>Seleccione area</option>
+                {areas.map((item, index) => (
+                  <option key={`area--${index}`} value={`${item.id}`}>
+                    {item.name}
                   </option>
                 ))}
               </Select>
@@ -196,14 +241,15 @@ const WorkerInterventionRecord = ({
                 name="topic"
                 required
                 value={formik.values.topic}
-                onChange={formik.handleChange}
+                onChange={handleSelectChange}
+                // onChange={formik.handleChange}
                 error={formik.touched.topic && Boolean(formik.errors.topic)}
                 helperText={formik.touched.topic && formik.errors.topic}
               >
-                <option value="">Seleccione tema</option>
-                {topicsList.map((item, i) => (
-                  <option key={`topic-${i}-${item.id}`} value={item.id}>
-                    {item.description}
+                <option value={`INVALID`}>Seleccione tema</option>
+                {topics.map((item, index) => (
+                  <option key={`area--${index}`} value={`${item.id}`}>
+                    {item.name}
                   </option>
                 ))}
               </Select>
@@ -225,7 +271,7 @@ const WorkerInterventionRecord = ({
                 <option value="">Seleccione gestion</option>
                 {managementList.map((item, i) => (
                   <option key={`management-${i}-${item.id}`} value={item.id}>
-                    {item.description}
+                    {item.name}
                   </option>
                 ))}
               </Select>
@@ -233,17 +279,17 @@ const WorkerInterventionRecord = ({
             <Grid item xs={12} md={6} lg={3}>
               <Select
                 label="Estado"
-                name="state"
+                name="status"
                 required
-                value={formik.values.state}
+                value={formik.values.status}
                 onChange={formik.handleChange}
-                error={formik.touched.state && Boolean(formik.errors.state)}
-                helperText={formik.touched.state && formik.errors.state}
+                error={formik.touched.status && Boolean(formik.errors.status)}
+                helperText={formik.touched.status && formik.errors.status}
               >
                 <option value="">Seleccione estado</option>
-                {nationalities.map((item, i) => (
-                  <option key={`state-${i}-${item.id}`} value={item.id}>
-                    {item.description}
+                {['estado 1', 'estado 2', 'estado 3'].map((item, i) => (
+                  <option key={`status-${i}-${item}`} value={item}>
+                    {item}
                   </option>
                 ))}
               </Select>
@@ -251,30 +297,35 @@ const WorkerInterventionRecord = ({
 
             <Grid container spacing={2} item xs={12} md={12} lg={12}>
               <Grid item xs={12} md={3} lg={3}>
-                <Select
-                  label="Informe Empresa"
-                  name="business_report"
-                  value={formik.values.business_report}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched.business_report &&
-                    Boolean(formik.errors.business_report)
-                  }
-                  helperText={
-                    formik.touched.business_report &&
-                    formik.errors.business_report
-                  }
-                >
-                  <option value="">Seleccione informe de empresa</option>
-                  {areasList.map((item, i) => (
-                    <option
-                      key={`business-report-${i}-${item}`}
-                      value={item.id}
-                    >
-                      {item.description}
-                    </option>
-                  ))}
-                </Select>
+                <InputLabel required>Informe Empresa</InputLabel>
+                <Box>
+                  <FormControlLabel
+                    value="end"
+                    control={
+                      <Radio
+                        color="primary"
+                        checked={formik.values.company_report === 'SI'}
+                        onChange={() => {
+                          formik.setFieldValue('company_report', 'SI')
+                        }}
+                      />
+                    }
+                    label="SI"
+                  />
+                  <FormControlLabel
+                    value="end"
+                    control={
+                      <Radio
+                        color="primary"
+                        checked={formik.values.company_report === 'NO'}
+                        onChange={() => {
+                          formik.setFieldValue('company_report', 'NO')
+                        }}
+                      />
+                    }
+                    label="NO"
+                  />
+                </Box>
               </Grid>
               <Grid item xs={12} md={3} lg={3}>
                 <Select
@@ -292,10 +343,82 @@ const WorkerInterventionRecord = ({
                     formik.errors.contact_method
                   }
                 >
-                  <option value="">Seleccione metodo de contacto</option>
-                  {nationalities.map((item, i) => (
-                    <option key={`contact-${i}-${item.id}`} value={item.id}>
-                      {item.description}
+                  <option value="">Seleccione método</option>
+                  {[1, 2, 3].map((item, i) => (
+                    <option key={`status-${i}-${item}`} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </Select>
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={2} item xs={12} md={12} lg={12}>
+              <Grid item xs={12} md={3} lg={3}>
+                <InputLabel required>Caso Social</InputLabel>
+                <Box>
+                  <FormControlLabel
+                    value="end"
+                    control={
+                      <Radio
+                        color="primary"
+                        checked={formik.values.is_social_case === 'SI'}
+                        onChange={() => {
+                          formik.setFieldValue('is_social_case', 'SI')
+                        }}
+                      />
+                    }
+                    label="SI"
+                  />
+                  <FormControlLabel
+                    value="end"
+                    control={
+                      <Radio
+                        color="primary"
+                        checked={formik.values.is_social_case === 'NO'}
+                        onChange={() => {
+                          formik.setFieldValue('is_social_case', 'NO')
+                        }}
+                      />
+                    }
+                    label="NO"
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={3} lg={3}>
+                <Select
+                  label="Caso"
+                  name="case_id"
+                  value={formik.values.case_id}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.case_id && Boolean(formik.errors.case_id)
+                  }
+                  helperText={formik.touched.case_id && formik.errors.case_id}
+                >
+                  <option value="">Seleccione caso</option>
+                  {[1, 2, 3].map((item, i) => (
+                    <option key={`case_id-${i}-${item}`} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </Select>
+              </Grid>
+              <Grid item xs={12} md={3} lg={3}>
+                <Select
+                  label="Plan de Intervención"
+                  name="task_id"
+                  value={formik.values.task_id}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.task_id && Boolean(formik.errors.task_id)
+                  }
+                  helperText={formik.touched.task_id && formik.errors.task_id}
+                >
+                  <option value="">Seleccione plan de intervención</option>
+                  {[1, 2, 3].map((item, i) => (
+                    <option key={`plan-${i}-${item}`} value={item}>
+                      {item}
                     </option>
                   ))}
                 </Select>
@@ -303,99 +426,43 @@ const WorkerInterventionRecord = ({
             </Grid>
 
             <Grid item xs={12} md={6} lg={3}>
-              <Select
-                label="Caso Social"
-                name="social_case"
-                required
-                value={formik.values.social_case}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.social_case &&
-                  Boolean(formik.errors.social_case)
-                }
-                helperText={
-                  formik.touched.social_case && formik.errors.social_case
-                }
-              >
-                <option value="">Seleccione Caso Social</option>
-                {topicsList.map((item, i) => (
-                  <option key={`social-case-${i}-${item.id}`} value={item.id}>
-                    {item.description}
-                  </option>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <Select
-                label="Caso"
-                name="case"
-                value={formik.values.case}
-                onChange={formik.handleChange}
-                error={formik.touched.case && Boolean(formik.errors.case)}
-                helperText={formik.touched.case && formik.errors.case}
-              >
-                <option value="">Seleccione caso</option>
-                {['caso 1', 'caso 2', 'caso 3'].map((item, i) => (
-                  <option key={`case-${i}-${item}`} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <Select
-                label="Plan de Intervención"
-                name="intervention_plan"
-                value={formik.values.intervention_plan}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.intervention_plan &&
-                  Boolean(formik.errors.intervention_plan)
-                }
-                helperText={
-                  formik.touched.intervention_plan &&
-                  formik.errors.intervention_plan
-                }
-              >
-                <option value="">Seleccione plan de intervención</option>
-                {['Plan 1', 'Plan 2', 'Plan 3'].map((item, i) => (
-                  <option key={`plan-${i}-${item}`} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
               <TextField
                 label="Profesional"
-                name="professional"
-                value={formik.values.professional}
+                name="assigned_id"
+                value={user?.names}
                 onChange={formik.handleChange}
                 error={
-                  formik.touched.professional &&
-                  Boolean(formik.errors.professional)
+                  formik.touched.assigned_id &&
+                  Boolean(formik.errors.assigned_id)
                 }
                 helperText={
-                  formik.touched.professional && formik.errors.professional
+                  formik.touched.assigned_id && formik.errors.assigned_id
                 }
               />
             </Grid>
             <Grid item xs={12} md={12} lg={12}>
               <TextField
                 label="Observaciones"
-                name="observations"
-                value={formik.values.observations}
+                name="observation"
+                value={formik.values.observation}
                 onChange={formik.handleChange}
                 error={
-                  formik.touched.observations &&
-                  Boolean(formik.errors.observations)
+                  formik.touched.observation &&
+                  Boolean(formik.errors.observation)
                 }
                 helperText={
-                  formik.touched.observations && formik.errors.observations
+                  formik.touched.observation && formik.errors.observation
                 }
               />
             </Grid>
+            <Grid item xs={12} md={12} lg={12}>
+              <Button fullWidth variant="outlined" component="label">
+                <CloudUploadOutlinedIcon />
+                <input type="file" hidden />
+              </Button>
+            </Grid>
           </Grid>
+
           <Box textAlign="center" marginTop="10px">
             <Button onClick={onClose} variant="outlined">
               Cancelar

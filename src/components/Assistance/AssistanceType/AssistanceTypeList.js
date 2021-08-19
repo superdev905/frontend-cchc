@@ -80,12 +80,19 @@ const AssistanceTypeList = () => {
         changeSuccess(false)
       })
   }
-
-  const createIntervention = (values) =>
+  const createIntervention = (values) => {
+    setLoading(true)
     dispatch(assistanceActions.createInterventionRegistration(values))
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
 
   const afterCreateIntervention = (createData) => {
-    history.push(`/management/${createData.id}/info`)
+    history.push(`/assistance/${createData.id}`)
   }
 
   useEffect(() => {
