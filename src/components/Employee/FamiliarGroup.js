@@ -96,20 +96,20 @@ const FamiliarGroup = () => {
             columns={[
               {
                 name: 'Nombres',
-                selector: 'names',
+                selector: (row) => row.names,
                 sortable: true
               },
               {
                 name: 'Apellidos',
-                selector: 'surnames'
+                selector: (row) => row.surnames
               },
               {
                 name: 'Run',
-                selector: 'run_string'
+                selector: (row) => row.run_string
               },
               {
                 name: 'Estado',
-                selector: 'state',
+                selector: (row) => row.state,
                 hide: 'md',
                 center: true,
                 cell: (row) => (
@@ -122,27 +122,26 @@ const FamiliarGroup = () => {
               },
               {
                 name: 'Sexo',
-                selector: 'gender',
+                selector: (row) => row.gender,
                 hide: 'md'
               },
               {
                 name: 'Fecha de nacimiento',
-                selector: 'born_date_string',
+                selector: (row) => row.born_date_string,
                 hide: 'md'
               },
               {
                 name: 'Nacionalidad',
-                selector: 'country',
+                selector: (row) => row.country,
                 hide: 'md'
               },
               {
                 name: 'Estado civil',
-                selector: 'marital_status',
+                selector: (row) => row.marital_status,
                 hide: 'md'
               },
               {
                 name: '',
-                selector: '',
                 right: true,
                 cell: (row) => (
                   <ActionsTable

@@ -90,41 +90,40 @@ const PensionSituation = () => {
           columns={[
             {
               name: 'Nombre de empresa',
-              selector: 'business_name',
+              selector: (row) => row.business_name,
               sortable: true
             },
             {
               name: 'Nombre de Obra',
-              selector: 'construction_name',
+              selector: (row) => row.construction_name,
               sortable: true
             },
             {
               name: 'Fecha de inicio',
-              selector: 'startDate'
+              selector: (row) => row.startDate
             },
             {
               name: 'Fecha de fin',
-              selector: 'endDate'
+              selector: (row) => row.endDate
             },
 
             {
               name: 'Plazo de contrato',
-              selector: 'contract_term',
+              selector: (row) => row.contract_term,
               hide: 'md'
             },
             {
               name: 'Tipo de contrato',
-              selector: 'contract_type',
+              selector: (row) => row.contract_type,
               hide: 'md'
             },
             {
               name: 'Ingreso',
-              selector: 'stringSalary',
+              selector: (row) => row.stringSalary,
               hide: 'md'
             },
             {
               name: '',
-              selector: '',
               right: true,
               cell: (row) => (
                 <ActionsTable

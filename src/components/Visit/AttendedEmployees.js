@@ -49,17 +49,17 @@ const ContactList = () => {
         columns={[
           {
             name: 'Run',
-            selector: 'run',
+            selector: (row) => row.run,
             sortable: true
           },
           {
             name: 'Nombres',
-            selector: 'fullName',
+            selector: (row) => row.fullName,
             sortable: true
           },
           {
             name: 'Apellidos',
-            selector: 'lastName'
+            selector: (row) => row.lastName
           }
         ]}
         data={[]}
@@ -87,17 +87,17 @@ const ContactList = () => {
           columns={[
             {
               name: 'Run',
-              selector: 'run',
+              selector: (row) => row.run,
               sortable: true
             },
             {
               name: 'Nombres',
-              selector: 'fullName',
+              selector: (row) => row.fullName,
               sortable: true
             },
             {
               name: 'Apellidos',
-              selector: 'lastName'
+              selector: (row) => row.lastName
             },
             {
               name: '',

@@ -24,6 +24,17 @@ const Construction = () => {
   const { success, changeSuccess } = useSuccess()
   const { construction } = useSelector((state) => state.constructions)
 
+  const getConstructionDetails = () => {
+    setLoading(true)
+    dispatch(constructionActions.getConstruction(idConstruction))
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
   const deleteConstruction = (id) => {
     setDeleting(true)
     dispatch(constructionActions.patchConstruction(id, { state: 'DELETED' }))
@@ -31,6 +42,7 @@ const Construction = () => {
         setDeleting(false)
         changeSuccess(true)
         toggleOpenDelete()
+        getConstructionDetails()
       })
       .catch(() => {
         setDeleting(false)
@@ -50,17 +62,6 @@ const Construction = () => {
         business_id: construction.business_id
       })
     )
-
-  const getConstructionDetails = () => {
-    setLoading(true)
-    dispatch(constructionActions.getConstruction(idConstruction))
-      .then(() => {
-        setLoading(false)
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
 
   useEffect(() => {
     getConstructionDetails()
