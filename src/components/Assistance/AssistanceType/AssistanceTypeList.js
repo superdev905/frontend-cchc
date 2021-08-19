@@ -96,12 +96,12 @@ const AssistanceTypeList = () => {
             columns={[
               {
                 name: 'Tipo de Atención',
-                selector: 'type_name',
+                selector: (row) => row.type_name,
                 sortable: true
               },
               {
                 name: 'Cantidad',
-                selector: 'quantity'
+                selector: (row) => row.quantity
               },
               {
                 right: true,

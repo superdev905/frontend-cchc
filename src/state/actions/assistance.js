@@ -13,7 +13,7 @@ const toggleModal = (value) => (dispatch) =>
 
 const createEvent = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${serviceEndpoint}/assistance-visits`, values)
+    Axios.post(`${serviceEndpoint}/visits`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -28,9 +28,7 @@ const getCalendarEvents =
   (dispatch) =>
     new Promise((resolve, reject) => {
       Axios.get(
-        `${serviceEndpoint}/assistance-visits/calendar?${queryString.stringify(
-          query
-        )}`
+        `${serviceEndpoint}/visits/calendar?${queryString.stringify(query)}`
       )
         .then((response) => {
           const { data } = response
@@ -46,9 +44,7 @@ const getEvents =
   (query = {}) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
-      Axios.get(
-        `${serviceEndpoint}/assistance-visits?${queryString.stringify(query)}`
-      )
+      Axios.get(`${serviceEndpoint}/visits?${queryString.stringify(query)}`)
         .then((response) => {
           const { data } = response
           dispatch({
@@ -68,7 +64,7 @@ const getEvents =
 
 const getEventDetails = (idEvent) => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${serviceEndpoint}/assistance-visits/${idEvent}`)
+    Axios.get(`${serviceEndpoint}/visits/${idEvent}`)
       .then((response) => {
         const { data } = response
         dispatch({ type: assistanceTypes.GET_VISIT_DETAILS, payload: data })
@@ -81,7 +77,7 @@ const getEventDetails = (idEvent) => (dispatch) =>
 
 const updateEvent = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${serviceEndpoint}/assistance-visits/${id}`, values)
+    Axios.put(`${serviceEndpoint}/visits/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -93,7 +89,7 @@ const updateEvent = (id, values) => () =>
 
 const patchEvent = (idEvent, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.patch(`${serviceEndpoint}/assistance-visits/${idEvent}`, values)
+    Axios.patch(`${serviceEndpoint}/visits/${idEvent}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -105,7 +101,7 @@ const patchEvent = (idEvent, values) => () =>
 
 const finishEvent = (idEvent) => () =>
   new Promise((resolve, reject) => {
-    Axios.patch(`${serviceEndpoint}/assistance-visits/${idEvent}`)
+    Axios.patch(`${serviceEndpoint}/visits/${idEvent}`)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -117,7 +113,7 @@ const finishEvent = (idEvent) => () =>
 
 const deleteEvent = (idEvent) => () =>
   new Promise((resolve, reject) => {
-    Axios.delete(`${serviceEndpoint}/assistance-visits/${idEvent}`)
+    Axios.delete(`${serviceEndpoint}/visits/${idEvent}`)
       .then((response) => {
         const { data } = response
         resolve(data)

@@ -22,22 +22,22 @@ const Details = () => {
   const columns = [
     {
       name: 'Razón social',
-      selector: 'business_name',
+      selector: (row) => row.business_name,
       sortable: true
     },
     {
       name: 'Rut',
-      selector: 'rut'
+      selector: (row) => row.rut
     },
     {
       name: 'Empresa socia',
-      selector: 'is_partner',
+      selector: (row) => row.is_partner,
       cell: (row) => <Chip {...row} label={row.is_partner}></Chip>,
       hide: 'md'
     },
     {
       name: 'Estado',
-      selector: 'state',
+      selector: (row) => row.state,
       hide: 'md',
       center: true,
       cell: (row) => (
@@ -50,12 +50,11 @@ const Details = () => {
     },
     {
       name: 'Fecha de creación',
-      selector: 'createDate',
+      selector: (row) => row.createDate,
       hide: 'md'
     },
     {
       name: '',
-      selector: '',
       right: true,
       cell: (row) => <ActionsTable {...row} onView={() => onViewClick(row)} />
     }

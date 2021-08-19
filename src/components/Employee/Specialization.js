@@ -105,31 +105,31 @@ const PensionSituation = () => {
             columns={[
               {
                 name: 'Nombre de especialidad',
-                selector: 'specName',
+                selector: (row) => row.specName,
                 sortable: true
               },
               {
                 name: 'Detalle de especialidad',
-                selector: 'specDetailName',
+                selector: (row) => row.specDetailName,
                 sortable: true
               },
               {
                 name: 'Autodidacta',
-                selector: 'is_self_taught'
+                selector: (row) => row.is_self_taught
               },
               {
                 name: 'Certificado',
-                selector: 'is_certificated'
+                selector: (row) => row.is_certificated
               },
 
               {
                 name: 'Entidad certificadora',
-                selector: 'certEntity',
+                selector: (row) => row.certEntity,
                 hide: 'md'
               },
               {
                 name: 'Fecha de certificación',
-                selector: 'certDate',
+                selector: (row) => row.certDate,
                 hide: 'md'
               },
 

@@ -12,12 +12,16 @@ const List = ({ ...props }) => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({
-    skip: 0,
-    limit: 30,
+    page: 1,
+    size: 30,
     search: '',
     state: ''
   })
-  const { list, showCreateModal } = useSelector((state) => state.companies)
+  const {
+    list,
+    showCreateModal,
+    total: totalDocs
+  } = useSelector((state) => state.companies)
 
   const toggleCreateModal = () => {
     dispatch(companiesActions.toggleCreateModal(showCreateModal))
@@ -36,7 +40,7 @@ const List = ({ ...props }) => {
     setFilters({
       ...filters,
       search: value.toString(),
-      page: 0
+      page: 1
     })
   }
   const handleStatusChange = (e) => {
@@ -107,22 +111,21 @@ const List = ({ ...props }) => {
           columns={[
             {
               name: 'Razón social',
-              selector: 'business_name',
+              selector: (row) => row.business_name,
               sortable: true
             },
             {
               name: 'Rut',
-              selector: 'rut'
+              selector: (row) => row.rut
             },
             {
               name: 'Correo',
-              selector: 'email',
-
+              selector: (row) => row.email,
               hide: 'md'
             },
             {
               name: 'Estado',
-              selector: 'state',
+              selector: (row) => row.state,
               hide: 'md',
               center: true,
               cell: (row) => (
@@ -135,7 +138,7 @@ const List = ({ ...props }) => {
             },
             {
               name: 'Dirección',
-              selector: 'address',
+              selector: (row) => row.address,
               hide: 'md'
             },
             {
@@ -144,8 +147,18 @@ const List = ({ ...props }) => {
             }
           ]}
           data={list}
-          pagination
           onRowClicked={handleRowClick}
+          pagination
+          paginationRowsPerPageOptions={[30, 40]}
+          paginationPerPage={filters.size}
+          paginationServer={true}
+          onChangeRowsPerPage={(limit) => {
+            setFilters({ ...filters, size: limit })
+          }}
+          onChangePage={(page) => {
+            setFilters({ ...filters, page })
+          }}
+          paginationTotalRows={totalDocs}
         />
       </Wrapper>
 

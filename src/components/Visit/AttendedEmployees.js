@@ -22,29 +22,29 @@ const ContactList = () => (
       columns={[
         {
           name: 'Run',
-          selector: 'full_name',
+          selector: (row) => row.full_name,
           sortable: true
         },
         {
           name: 'Nombres',
-          selector: 'full_name',
+          selector: (row) => row.full_name,
           sortable: true
         },
         {
           name: 'Apellidos',
-          selector: 'charge'
+          selector: (row) => row.charge
         },
         {
           name: 'Nacionalidad',
-          selector: 'email'
+          selector: (row) => row.email
         },
         {
           name: 'Sexo',
-          selector: 'email'
+          selector: (row) => row.email
         },
         {
           name: 'Fecha de nacimiento',
-          selector: 'email'
+          selector: (row) => row.email
         }
       ]}
       data={[]}

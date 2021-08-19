@@ -68,17 +68,16 @@ const List = () => {
           columns={[
             {
               name: 'Región',
-              selector: 'name',
+              selector: (row) => row.name,
               sortable: true
             },
             {
               name: 'Comunas',
-              selector: 'communesCount',
+              selector: (row) => row.communesCount,
               sortable: true
             },
             {
               name: '',
-              selector: '',
               right: true,
               cell: (row) => (
                 <ActionsTable

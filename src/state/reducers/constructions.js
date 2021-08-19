@@ -2,6 +2,7 @@ import constructionTypes from '../types/construction'
 
 const initialState = {
   list: [],
+  total: 0,
   typologies: [],
   sectors: [],
   construction: null,
@@ -18,6 +19,8 @@ const constructionReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case constructionTypes.GET_CONSTRUCTIONS:
       return { ...state, list: payload }
+    case constructionTypes.SET_CONSTRUCTIONS_TOTAL:
+      return { ...state, total: payload }
     case constructionTypes.GET_CONSTRUCTIONS_TYPOLOGIES:
       return { ...state, typologies: payload }
     case constructionTypes.GET_CONSTRUCTIONS_ECONOMIC_SECTOR:

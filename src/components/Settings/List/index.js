@@ -63,7 +63,7 @@ const List = () => {
               columns={[
                 {
                   name: 'Nombre de Tipología',
-                  selector: 'name',
+                  selector: (row) => row.name,
                   sortable: true
                 },
                 {
