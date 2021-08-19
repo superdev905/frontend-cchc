@@ -1,55 +1,124 @@
+import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
+import {
+  AddCircleOutline as AddIcon,
+  Edit as EditIcon
+} from '@material-ui/icons'
+import employeesAction from '../../state/actions/employees'
 import { DataTable } from '../Shared'
-import { SearchInput, Wrapper } from '../UI'
+import { Button, RutTextField, Wrapper } from '../UI'
 
-const ContactList = () => (
-  <Wrapper>
-    <Box p={1}>
-      <Typography
-        style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}
-      >
-        Trabajadores atendidos
-      </Typography>
+const ContactList = () => {
+  const dispatch = useDispatch()
+  const [searchUser, setSearchUser] = useState('')
+  const [searchResult, setSearchResult] = useState([])
 
-      <Grid spacing={2}>
-        <Grid item xs={12} md={5}>
-          <SearchInput placeholder="Busca por: Nombre, Run" />
+  useEffect(() => {
+    if (searchUser) {
+      dispatch(
+        employeesAction.getEmployees(
+          { search: searchUser, state: 'CREATED' },
+          false
+        )
+      ).then((result) => {
+        setSearchResult(
+          result.map((item) => ({
+            ...item,
+            fullName: `${item.names}`,
+            lastName: `${item.paternal_surname} ${item.maternal_surname}`
+          }))
+        )
+      })
+    } else {
+      setSearchResult([])
+    }
+  }, [searchUser])
+
+  return (
+    <Wrapper>
+      <Box p={1}>
+        <Typography
+          style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}
+        >
+          Trabajadores atendidos
+        </Typography>
+      </Box>
+      <DataTable
+        emptyMessage="No hay trabajadores atendidos"
+        columns={[
+          {
+            name: 'Run',
+            selector: (row) => row.run,
+            sortable: true
+          },
+          {
+            name: 'Nombres',
+            selector: (row) => row.fullName,
+            sortable: true
+          },
+          {
+            name: 'Apellidos',
+            selector: (row) => row.lastName
+          }
+        ]}
+        data={[]}
+      />
+      <Box marginTop="20px">
+        <Typography style={{ marginBottom: '20px' }}>
+          Agregar nuevo trabajador
+        </Typography>
+        <Grid spacing={2}>
+          <Grid item xs={12} md={4}>
+            <RutTextField
+              label="Buscar trabajador"
+              placeholder="Rut"
+              value={searchUser}
+              onChange={(e) => {
+                setSearchUser(e.target.value)
+              }}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
-    <DataTable
-      emptyMessage="No hay trabajadores atendidos"
-      columns={[
-        {
-          name: 'Run',
-          selector: (row) => row.full_name,
-          sortable: true
-        },
-        {
-          name: 'Nombres',
-          selector: (row) => row.full_name,
-          sortable: true
-        },
-        {
-          name: 'Apellidos',
-          selector: (row) => row.charge
-        },
-        {
-          name: 'Nacionalidad',
-          selector: (row) => row.email
-        },
-        {
-          name: 'Sexo',
-          selector: (row) => row.email
-        },
-        {
-          name: 'Fecha de nacimiento',
-          selector: (row) => row.email
-        }
-      ]}
-      data={[]}
-    />
-  </Wrapper>
-)
+
+        <DataTable
+          overflow={false}
+          emptyMessage="No se encontraron trabajadores"
+          columns={[
+            {
+              name: 'Run',
+              selector: (row) => row.run,
+              sortable: true
+            },
+            {
+              name: 'Nombres',
+              selector: (row) => row.fullName,
+              sortable: true
+            },
+            {
+              name: 'Apellidos',
+              selector: (row) => row.lastName
+            },
+            {
+              name: '',
+              right: true,
+              cell: () => (
+                <Box>
+                  <Button size="small" startIcon={<EditIcon />}>
+                    Trabajos
+                  </Button>
+                  <Button size="small" startIcon={<AddIcon />}>
+                    Atención
+                  </Button>
+                </Box>
+              )
+            }
+          ]}
+          data={searchResult}
+        />
+      </Box>
+    </Wrapper>
+  )
+}
 
 export default ContactList

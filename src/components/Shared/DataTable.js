@@ -14,8 +14,12 @@ const useStyles = makeStyles(() => ({
 }))
 
 const customStyles = {
+  table: {
+    style: { width: '100%' }
+  },
   headCells: {
     style: {
+      width: '100%',
       fontSize: '14px',
       color: '#334D6E',
       fontWeight: 'bold'

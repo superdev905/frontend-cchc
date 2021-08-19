@@ -23,22 +23,28 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const SearchInput = ({ placeholder, onChange, id, value }) => {
+const SearchInput = ({ placeholder, onChange, id, value, CustomInput }) => {
   const classes = useStyles()
 
   return (
     <Box className={classes.root}>
       <SearchIcon style={{ fill: '#C2CFE0' }} />
-      <InputBase
-        className={classes.input}
-        id={id}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        inputProps={{ 'aria-label': 'search input' }}
-      />
+      {
+        <CustomInput
+          className={classes.input}
+          id={id}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          inputProps={{ 'aria-label': 'search input' }}
+        />
+      }
     </Box>
   )
+}
+
+SearchInput.defaultProps = {
+  CustomInput: InputBase
 }
 
 export default SearchInput
