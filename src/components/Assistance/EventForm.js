@@ -166,9 +166,11 @@ const EventForm = ({
 
   useEffect(() => {
     if (open) {
-      dispatch(companiesActions.getCompanies({}, false)).then((list) => {
-        setCompanies(list)
-      })
+      dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
+        (list) => {
+          setCompanies(list)
+        }
+      )
       dispatch(commonActions.getEventTypes())
       dispatch(commonActions.getShiftList())
     }
@@ -289,7 +291,8 @@ const EventForm = ({
           <Autocomplete
             options={companies}
             value={selectedCompany || ''}
-            getOptionLabel={(option) => option.business_name}
+            getOptionSelected={(option, value) => option.id === value.id}
+            getOptionLabel={(option) => option.business_name || ''}
             onChange={onCompanySelect}
             renderOption={(option) => (
               <Box>
@@ -310,14 +313,22 @@ const EventForm = ({
         </Grid>
         <Grid item xs={12} md={6}>
           <Autocomplete
-            options={selectedCompany?.constructions || []}
+            options={
+              selectedCompany
+                ? selectedCompany.constructions.filter(
+                    (item) =>
+                      item.status !== 'NO_VIGENTE' && item.state !== 'DELETED'
+                  )
+                : []
+            }
             value={selectedCons || ''}
-            getOptionLabel={(option) => option.name}
+            getOptionSelected={(option, value) => option.id === value.id}
+            getOptionLabel={(option) => option.name || ''}
             onChange={onConstructionChange}
             renderOption={(option) => (
               <Box>
                 <Typography>
-                  <strong>{option.name}</strong>
+                  <strong>{option.name || ''}</strong>
                 </Typography>
               </Box>
             )}

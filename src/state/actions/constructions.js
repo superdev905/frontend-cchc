@@ -101,10 +101,14 @@ const getConstructions =
           if (handleDispatch) {
             dispatch({
               type: constructionTypes.GET_CONSTRUCTIONS,
-              payload: data
+              payload: data.items
+            })
+            dispatch({
+              type: constructionTypes.SET_CONSTRUCTIONS_TOTAL,
+              payload: data.total
             })
           }
-          resolve(data)
+          resolve(data.items)
         })
         .catch((err) => {
           reject(err.response.data)

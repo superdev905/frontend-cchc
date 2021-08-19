@@ -93,24 +93,24 @@ const EventList = () => {
             columns={[
               {
                 name: 'Fecha',
-                selector: 'dateEvent',
+                selector: (row) => row.dateEvent,
                 sortable: true
               },
               {
                 name: 'Estado',
-                selector: 'status'
+                selector: (row) => row.status
               },
               {
                 name: 'Titulo',
-                selector: 'title'
+                selector: (row) => row.title
               },
               {
                 name: 'Empresa',
-                selector: 'business_name'
+                selector: (row) => row.business_name
               },
               {
                 name: 'Obra',
-                selector: 'construction_name',
+                selector: (row) => row.construction_name,
                 hide: 'md'
               }
             ]}

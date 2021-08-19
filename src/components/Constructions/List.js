@@ -14,12 +14,12 @@ const List = ({ ...props }) => {
   const { open, toggleOpen } = useToggle()
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({
-    skip: 0,
-    limit: 30,
+    page: 1,
+    size: 30,
     search: '',
     status: ''
   })
-  const { list } = useSelector((state) => state.constructions)
+  const { list, total: totalDocs } = useSelector((state) => state.constructions)
 
   const searchChange = (e) => {
     setFilters({ ...filters, search: e.target.value })
@@ -100,12 +100,12 @@ const List = ({ ...props }) => {
           columns={[
             {
               name: 'Nombre',
-              selector: 'name',
+              selector: (row) => row.name,
               sortable: true
             },
             {
               name: 'Vigencia',
-              selector: 'is_partner',
+              selector: (row) => row.is_partner,
               cell: (row) => (
                 <StatusChip
                   {...row}
@@ -118,18 +118,28 @@ const List = ({ ...props }) => {
             },
             {
               name: 'Dirección',
-              selector: 'address',
+              selector: (row) => row.address,
               hide: 'md'
             },
             {
               name: 'Empresa',
-              selector: 'business.business_name',
+              selector: (row) => row.business.business_name,
               hide: 'md'
             }
           ]}
           data={list}
           onRowClicked={handleRowClick}
           pagination
+          paginationRowsPerPageOptions={[30, 40]}
+          paginationPerPage={filters.size}
+          paginationServer={true}
+          onChangeRowsPerPage={(limit) => {
+            setFilters({ ...filters, size: limit })
+          }}
+          onChangePage={(page) => {
+            setFilters({ ...filters, page })
+          }}
+          paginationTotalRows={totalDocs}
         />
       </Wrapper>
       <ConstructionModal

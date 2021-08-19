@@ -33,10 +33,14 @@ const getCompanies =
           if (handleDispatch) {
             dispatch({
               type: businessTypes.GET_BUSINESSES,
-              payload: data
+              payload: data.items
+            })
+            dispatch({
+              type: businessTypes.SET_BUSINESSES_TOTAL,
+              payload: data.total
             })
           }
-          resolve(data)
+          resolve(data.items)
         })
         .catch((err) => {
           reject(err)
@@ -47,7 +51,7 @@ const getAvailableCompanies = () => () =>
     Axios.get(`/business?state=CREATED`)
       .then((response) => {
         const { data } = response
-        resolve(data)
+        resolve(data.items)
       })
       .catch((err) => {
         reject(err)
@@ -180,7 +184,7 @@ const getConstructions = (companyId) => (dispatch) =>
         const { data } = response
         dispatch({
           type: businessTypes.BUSINESS_GET_CONSTRUCTIONS,
-          payload: data
+          payload: data.items
         })
         resolve()
       })
