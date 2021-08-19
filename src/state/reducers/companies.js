@@ -2,6 +2,7 @@ import businessTypes from '../types/companies'
 
 const initialState = {
   list: [],
+  total: 0,
   showCreateModal: false,
   filters: {
     page: 0,
@@ -21,6 +22,8 @@ const companiesReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case businessTypes.GET_BUSINESSES:
       return { ...state, list: payload }
+    case businessTypes.SET_BUSINESSES_TOTAL:
+      return { ...state, total: payload }
     case businessTypes.BUSINESS_TOGGLE_CREATE:
       return { ...state, showCreateModal: payload }
     case businessTypes.BUSINESS_UPDATE_FILTERS:

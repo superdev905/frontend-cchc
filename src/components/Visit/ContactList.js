@@ -42,28 +42,28 @@ const ContactList = () => {
         columns={[
           {
             name: 'Nombres',
-            selector: 'full_name',
+            selector: (row) => row.full_name,
             sortable: true
           },
           {
             name: 'Cargo',
-            selector: 'charge'
+            selector: (row) => row.charge
           },
           {
             name: 'Correo',
-            selector: 'email'
+            selector: (row) => row.email
           },
           {
             name: 'Móvil',
-            selector: 'cell_phone'
+            selector: (row) => row.cell_phone
           },
           {
             name: 'Oficina',
-            selector: 'office_phone'
+            selector: (row) => row.office_phone
           },
           {
             name: 'Otro',
-            selector: 'other_phone'
+            selector: (row) => row.other_phone
           }
         ]}
         data={contactList}

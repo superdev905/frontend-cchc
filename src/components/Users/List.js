@@ -141,21 +141,20 @@ const List = () => {
         columns={[
           {
             name: 'Nombres',
-            selector: 'names',
+            selector: (row) => row.names,
             sortable: true
           },
           {
             name: 'Apellidos',
-            selector: 'lastName'
+            selector: (row) => row.lastName
           },
           {
             name: 'Correo',
-            selector: 'email',
+            selector: (row) => row.email,
             hide: 'md'
           },
           {
             name: '',
-            selector: '',
             hide: 'md',
             center: true,
             cell: (row) => (
@@ -168,7 +167,6 @@ const List = () => {
           },
           {
             name: '',
-            selector: '',
             right: true,
             cell: (row) => (
               <ActionsTable

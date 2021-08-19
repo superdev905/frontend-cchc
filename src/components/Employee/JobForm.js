@@ -197,11 +197,16 @@ const HousingForm = ({
                 }
               >
                 <option value="">Seleccione una opción</option>
-                {constructions.map((item, index) => (
-                  <option key={`type-home--${index}`} value={`${item.id}`}>
-                    {`${item.name}`}
-                  </option>
-                ))}
+                {constructions
+                  .filter(
+                    (item) =>
+                      item.status !== 'NO_VIGENTE' && item.state !== 'DELETED'
+                  )
+                  .map((item, index) => (
+                    <option key={`type-home--${index}`} value={`${item.id}`}>
+                      {`${item.name}`}
+                    </option>
+                  ))}
               </Select>
             </Grid>
             <Grid item xs={12} md={6}>

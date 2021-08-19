@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
 import { Box, Typography } from '@material-ui/core'
 import companyActions from '../../state/actions/companies'
 import constructionActions from '../../state/actions/constructions'
@@ -13,6 +14,7 @@ import useStyles from './styles'
 const Details = ({ ...props }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const { idCompany } = props.match.params
   const [tableData, setTableData] = useState([])
   const { constructions, company } = useSelector((state) => state.companies)
@@ -62,6 +64,7 @@ const Details = ({ ...props }) => {
         setDeleting(false)
         changeSuccess(true)
         toggleOpenDelete()
+        enqueueSnackbar('Obra eliminada', { variant: 'success' })
         dispatch(companyActions.getConstructions(idCompany))
       })
       .catch(() => {
@@ -106,12 +109,11 @@ const Details = ({ ...props }) => {
               columns={[
                 {
                   name: 'Nombre',
-                  selector: 'name',
+                  selector: (row) => row.name,
                   sortable: true
                 },
                 {
                   name: 'Vigencia',
-                  selector: '',
                   cell: (row) => (
                     <StatusChip
                       {...row}
@@ -126,12 +128,11 @@ const Details = ({ ...props }) => {
                 },
                 {
                   name: 'Dirección',
-                  selector: 'address',
+                  selector: (row) => row.address,
                   hide: 'md'
                 },
                 {
                   name: '',
-                  selector: '',
                   right: true,
                   cell: (row) => (
                     <ActionsTable

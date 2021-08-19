@@ -126,26 +126,25 @@ const ListEmployees = () => {
           columns={[
             {
               name: 'Run',
-              selector: 'run',
+              selector: (row) => row.run,
               sortable: true
             },
             {
               name: 'Nombres',
-              selector: 'names'
+              selector: (row) => row.names
             },
             {
               name: 'Apellidos',
-              selector: 'last_name',
+              selector: (row) => row.last_name,
               hide: 'md'
             },
             {
               name: 'Fecha de nacimiento',
-              selector: 'born_date',
+              selector: (row) => row.born_date,
               hide: 'md'
             },
             {
               name: 'Estado',
-              selector: '',
               hide: 'md',
 
               cell: (row) => (
