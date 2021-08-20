@@ -18,7 +18,7 @@ const Details = ({ loading }) => {
   }
 
   return (
-    <Box>
+    <Box width="100%">
       <Wrapper>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>

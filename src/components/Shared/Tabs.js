@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Box, makeStyles, Tabs, Tab } from '@material-ui/core'
+import { Box, makeStyles, Tabs, Tab, Grid } from '@material-ui/core'
 
 function a11yProps(index) {
   return {
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: 'bold',
       opacity: 0.9,
       minWidth: 0,
-      padding: `10px`,
+      //  padding: `10px`,
       textTransform: 'inherit',
       [theme.breakpoints.up('md')]: {
         padding: `${theme.spacing(2)}px ${theme.spacing(2)}px`
@@ -44,7 +44,7 @@ const CustomTabs = ({ children, value, onChange, tabs }) => {
   const classes = useStyles()
 
   return (
-    <Box>
+    <Grid>
       <Box className={classes.root}>
         <Tabs
           value={value}
@@ -64,8 +64,8 @@ const CustomTabs = ({ children, value, onChange, tabs }) => {
           ))}
         </Tabs>
       </Box>
-      <Box>{children}</Box>
-    </Box>
+      <Grid container>{children}</Grid>
+    </Grid>
   )
 }
 

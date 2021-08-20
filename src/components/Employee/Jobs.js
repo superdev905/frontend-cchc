@@ -75,106 +75,112 @@ const PensionSituation = () => {
   }, [])
 
   return (
-    <Wrapper>
-      <Box>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
-            Historial de trabajos
-          </Typography>
-          <Button onClick={toggleOpenAdd}>Nuevo trabajo </Button>
+    <Box width="100%">
+      <Wrapper>
+        <Box>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
+              Historial de trabajos
+            </Typography>
+            <Button onClick={toggleOpenAdd}>Nuevo trabajo </Button>
+          </Box>
         </Box>
-      </Box>
-      <Box>
-        <DataTable
-          emptyMessage="Este trabajador no tiene trabajos en su historial "
-          columns={[
-            {
-              name: 'Nombre de empresa',
-              selector: (row) => row.business_name,
-              sortable: true
-            },
-            {
-              name: 'Nombre de Obra',
-              selector: (row) => row.construction_name,
-              sortable: true
-            },
-            {
-              name: 'Fecha de inicio',
-              selector: (row) => row.startDate
-            },
-            {
-              name: 'Fecha de fin',
-              selector: (row) => row.endDate
-            },
+        <Box>
+          <DataTable
+            emptyMessage="Este trabajador no tiene trabajos en su historial "
+            columns={[
+              {
+                name: 'Nombre de empresa',
+                selector: (row) => row.business_name,
+                sortable: true
+              },
+              {
+                name: 'Nombre de Obra',
+                selector: (row) => row.construction_name,
+                sortable: true
+              },
+              {
+                name: 'Fecha de inicio',
+                selector: (row) => row.startDate
+              },
+              {
+                name: 'Fecha de fin',
+                selector: (row) => row.endDate
+              },
 
-            {
-              name: 'Plazo de contrato',
-              selector: (row) => row.contract_term,
-              hide: 'md'
-            },
-            {
-              name: 'Tipo de contrato',
-              selector: (row) => row.contract_type,
-              hide: 'md'
-            },
-            {
-              name: 'Ingreso',
-              selector: (row) => row.stringSalary,
-              hide: 'md'
-            },
-            {
-              name: '',
-              right: true,
-              cell: (row) => (
-                <ActionsTable
-                  {...row}
-                  onEdit={() => {
-                    setCurrent(row)
-                    toggleOpenEdit()
-                  }}
-                  onDelete={() => {
-                    setCurrent(row)
-                    toggleOpenDelete()
-                  }}
-                />
-              )
-            }
-          ]}
-          data={list}
-          pagination
-        />
-      </Box>
-      <JobForm
-        successMessage="Especialización creado"
-        open={openAdd}
-        onClose={toggleOpenAdd}
-        submitFunction={createEvent}
-        successFunction={fetchData}
-      />
-      {current && openEdit && (
+              {
+                name: 'Plazo de contrato',
+                selector: (row) => row.contract_term,
+                hide: 'md'
+              },
+              {
+                name: 'Tipo de contrato',
+                selector: (row) => row.contract_type,
+                hide: 'md'
+              },
+              {
+                name: 'Ingreso',
+                selector: (row) => row.stringSalary,
+                hide: 'md'
+              },
+              {
+                name: '',
+                right: true,
+                cell: (row) => (
+                  <ActionsTable
+                    {...row}
+                    onEdit={() => {
+                      setCurrent(row)
+                      toggleOpenEdit()
+                    }}
+                    onDelete={() => {
+                      setCurrent(row)
+                      toggleOpenDelete()
+                    }}
+                  />
+                )
+              }
+            ]}
+            data={list}
+            pagination
+          />
+        </Box>
         <JobForm
-          type="UPDATE"
-          successMessage="Especialización actualizado"
-          open={openEdit}
-          onClose={toggleOpenEdit}
-          submitFunction={updateEvent}
-          data={current}
+          successMessage="Especialización creado"
+          open={openAdd}
+          onClose={toggleOpenAdd}
+          submitFunction={createEvent}
           successFunction={fetchData}
         />
-      )}
-      {current && openDelete && (
-        <ConfirmDelete
-          open={openDelete}
-          onClose={toggleOpenDelete}
-          onConfirm={() => patchEvent(current.id)}
-          message={
-            <Typography variant="h6">
-              ¿Estás seguro de eliminar esta especialización?
-            </Typography>
-          }
-        />
-      )}
-    </Wrapper>
+        {current && openEdit && (
+          <JobForm
+            type="UPDATE"
+            successMessage="Especialización actualizado"
+            open={openEdit}
+            onClose={toggleOpenEdit}
+            submitFunction={updateEvent}
+            data={current}
+            successFunction={fetchData}
+          />
+        )}
+        {current && openDelete && (
+          <ConfirmDelete
+            open={openDelete}
+            onClose={toggleOpenDelete}
+            onConfirm={() => patchEvent(current.id)}
+            message={
+              <Typography variant="h6">
+                ¿Estás seguro de eliminar esta especialización?
+              </Typography>
+            }
+          />
+        )}
+      </Wrapper>
+    </Box>
   )
 }
 
