@@ -13,9 +13,10 @@ const Construction = lazy(() => import('../pages/Construction'))
 const Constructions = lazy(() => import('../pages/Constructions'))
 const Users = lazy(() => import('../pages/Users'))
 const Calendar = lazy(() => import('../pages/Calendar'))
-const Assistance = lazy(() => import('../pages/Assistance'))
+const Visits = lazy(() => import('../pages/Visits'))
 const Visit = lazy(() => import('../pages/Visit'))
-const AssistanceType = lazy(() => import('../pages/Assistance/AssistanceType'))
+const AssistanceType = lazy(() => import('../pages/Visits/AssistanceType'))
+const Assistance = lazy(() => import('../pages/Assistance'))
 
 const routes = [
   {
@@ -138,7 +139,7 @@ const routes = [
         availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
-            <Assistance />
+            <Visits />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}
@@ -171,6 +172,22 @@ const routes = [
         yes={() => (
           <Layout>
             <AssistanceType />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: `/visit/:idVisit/assistance/:idAssistance`,
+    key: 'ASSISTANCE-TYPE',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SIMPLE_USER']}
+        yes={() => (
+          <Layout>
+            <Assistance />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}
