@@ -42,7 +42,8 @@ const EventPreview = ({
   onEdit,
   onCancel,
   onReschedule,
-  onFinished
+  onFinished,
+  onStart
 }) => {
   const classes = useStyles()
   const {
@@ -51,6 +52,7 @@ const EventPreview = ({
     handleClose,
     anchorEl: anchorElOptions
   } = useMenu()
+
   return (
     <Menu
       classes={{ paper: classes.root }}
@@ -117,7 +119,15 @@ const EventPreview = ({
           <Button
             size="small"
             variant="outlined"
-            disabled={event.status === 'CANCELADO'}
+            disabled={event.status === 'CANCELADA'}
+            onClick={onCancel}
+          >
+            Cancelar
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            disabled={event.status === 'CANCELADA'}
             onClick={onReschedule}
           >
             Reprogramar
@@ -125,18 +135,18 @@ const EventPreview = ({
           <Button
             size="small"
             variant="outlined"
-            disabled={event.status === 'CANCELADO'}
-            onClick={onCancel}
+            disabled={event.status === 'TERMINADA'}
+            onClick={onStart}
           >
-            Cancelar evento
+            Iniciar
           </Button>
           <Button
             size="small"
             variant="outlined"
-            disabled={event.status === 'TERMINADO'}
+            disabled={event.status === 'TERMINADA'}
             onClick={onFinished}
           >
-            Terminado
+            Completar
           </Button>
         </Box>
       </Box>

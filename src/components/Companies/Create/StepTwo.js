@@ -12,6 +12,7 @@ import useStyles from './styles'
 
 import { businessTypes, decisionList } from '../../../config'
 import ParentBusiness from './ParentBusiness'
+import { buildTreeData } from '../../../utils/buildTreeData'
 
 const validationSchema = Yup.object({
   type: Yup.string().required('Seleccione tipo'),
@@ -130,11 +131,9 @@ const StepOne = () => {
   }, [listCompanies, formik.values.parent_business_id])
 
   useEffect(() => {
-    dispatch(companiesActions.getTreeCompanies()).then((list) => {
-      setMainCompanies(list)
-    })
     dispatch(companiesActions.getAvailableCompanies()).then((list) => {
       setListCompanies(list)
+      setMainCompanies(buildTreeData(list))
     })
   }, [])
   const goBack = () => {

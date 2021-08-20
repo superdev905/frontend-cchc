@@ -32,10 +32,12 @@ const localizer = dateFnsLocalizer({
 })
 
 const getBgColor = (event) => {
-  if (event.status === 'PROGRAMADA')
+  if (event.status === 'PROGRAMADA' || event.status === 'REPROGRAMADA')
     return { backgroundColor: '#aed5ff', border: `3px solid #076af9` }
-  if (event.status === 'REPROGRAMADA')
-    return { backgroundColor: '#d9d3fc', border: `3px solid #7F6BD4` }
+  if (event.status === 'TERMINADA')
+    return { backgroundColor: '#81d88d', border: `3px solid #48C659` }
+  if (event.status === 'INICIADA' || event.status === 'PAUSA')
+    return { backgroundColor: '#f6e68f', border: `3px solid #F2DB5C` }
   return { backgroundColor: '#FFEBF6', border: `3px solid #ED61B0` }
 }
 
@@ -63,6 +65,7 @@ const EventsCalendar = () => {
     useToggle()
   const { open: openCancel, toggleOpen: toggleOpenCancel } = useToggle()
   const { open: openFinish, toggleOpen: toggleOpenFinish } = useToggle()
+  const { open: openStart, toggleOpen: toggleOpenStart } = useToggle()
   const { success, changeSuccess } = useSuccess()
 
   const fetchEvents = (query) => {
@@ -120,6 +123,28 @@ const EventsCalendar = () => {
       })
   }
 
+  const onStartEvent = () => {
+    setLoading(true)
+    dispatch(
+      assistanceActions.patchEvent(currentEvent.id, { status: 'INICIADA' })
+    )
+      .then(() => {
+        setLoading(false)
+        fetchEvents(filters)
+        changeSuccess(true, () => {
+          enqueueSnackbar('Evento actualizado a iniciado', {
+            variant: 'success'
+          })
+          handleClose()
+          toggleOpenStart()
+        })
+      })
+      .catch((err) => {
+        setLoading(false)
+        enqueueSnackbar(err, { variant: 'error' })
+      })
+  }
+
   const onCreateEvent = (values) =>
     dispatch(assistanceActions.createEvent(values))
 
@@ -150,6 +175,22 @@ const EventsCalendar = () => {
 
   const onNavigate = (targetDate) => {
     setCalendarDate(targetDate)
+  }
+
+  const handleSelectSlot = (e) => {
+    if (new Date(e.start) >= currentDate) {
+      toggleOpenAdd()
+      setCurrentSlot(e)
+    } else {
+      enqueueSnackbar(
+        'No puedes visitas o tareas programar para fechas pasadas',
+        {
+          variant: 'info',
+          autoHideDuration: 1000,
+          preventDuplicate: false
+        }
+      )
+    }
   }
 
   useEffect(() => {
@@ -214,12 +255,7 @@ const EventsCalendar = () => {
               event: EventCard,
               toolbar: CalendarToolbar
             }}
-            onSelectSlot={(e) => {
-              if (calendarView !== 'month') {
-                toggleOpenAdd()
-                setCurrentSlot(e)
-              }
-            }}
+            onSelectSlot={handleSelectSlot}
             eventPropGetter={(event) => {
               const { backgroundColor, border } = getBgColor(event)
 
@@ -272,6 +308,11 @@ const EventsCalendar = () => {
             handleClose()
             setCurrentEvent(currentEvent)
             toggleOpenFinish()
+          }}
+          onStart={() => {
+            handleClose()
+            setCurrentEvent(currentEvent)
+            toggleOpenStart()
           }}
         />
       )}
@@ -336,8 +377,25 @@ const EventsCalendar = () => {
           onConfirm={() => onFinishedEvent()}
           message={
             <span>
-              ¿Estás seguro de terminar este evento:
-              <strong>{currentEvent.title}</strong>?
+              ¿Estás seguro de completar este evento:
+              <strong>{` ${currentEvent.title}`}</strong>?
+            </span>
+          }
+        />
+      )}
+      {currentEvent && openStart && (
+        <ConfirmDelete
+          event="START"
+          confirmText="Aceptar"
+          open={openStart}
+          success={success}
+          onClose={toggleOpenFinish}
+          loading={loading}
+          onConfirm={() => onStartEvent()}
+          message={
+            <span>
+              ¿Estás seguro de iniciar este evento:
+              <strong>{` ${currentEvent.title}`}</strong>?
             </span>
           }
         />

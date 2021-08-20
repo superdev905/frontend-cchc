@@ -187,6 +187,7 @@ const ConstructionModal = ({
 
   useEffect(() => {
     if (open) {
+      setCompanyBill(null)
       dispatch(commonActions.getRegions())
       dispatch(constructionsActions.getTypologies())
       dispatch(constructionsActions.getSectors())

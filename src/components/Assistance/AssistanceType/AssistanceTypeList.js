@@ -99,8 +99,6 @@ const AssistanceTypeList = () => {
     fetchConstructionType()
   }, [])
 
-  console.log(currentData)
-
   return (
     <Box>
       <Box marginTop="10px">
