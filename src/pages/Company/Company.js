@@ -49,7 +49,6 @@ const Company = ({ children }) => {
         toggleOpen()
         setErrorDelete(err.message)
         toggleOpenErrorDelete()
-        enqueueSnackbar(err.message, { variant: 'error' })
         setErrorDocs(err.docs)
       })
   }
@@ -115,7 +114,15 @@ const Company = ({ children }) => {
                     component="li"
                     key={`item-${item.id}`}
                   >
-                    {item.name}
+                    <a
+                      href={`/${
+                        item.type === 'construction' ? 'obras' : 'company'
+                      }/${item.id}${
+                        item.type === 'construction' ? '' : '/details'
+                      }`}
+                    >
+                      {item.name}
+                    </a>
                   </Typography>
                 ))}
               </Box>

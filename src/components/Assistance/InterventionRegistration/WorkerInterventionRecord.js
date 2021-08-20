@@ -110,7 +110,6 @@ const WorkerInterventionRecord = ({
         const area = areas.find((item) => item.id === parseInt(value, 10))
         setTopics(area.topics)
         // setAreas(area?.areas || [])
-        console.log(area)
         formik.setFieldValue('area_id', area.id)
         formik.setFieldValue('area_name', area.name)
         break
@@ -467,6 +466,7 @@ const WorkerInterventionRecord = ({
 
               <FilePicker
                 onChangeImage={(e) => {
+                  //  eslint-disable-next-line
                   console.log(e)
                 }}
               />

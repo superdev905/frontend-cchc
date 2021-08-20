@@ -177,21 +177,23 @@ const getContacts = (companyId) => (dispatch) =>
       })
   })
 
-const getConstructions = (companyId) => (dispatch) =>
-  new Promise((resolve, reject) => {
-    Axios.get(`/constructions?business_id=${companyId}`)
-      .then((response) => {
-        const { data } = response
-        dispatch({
-          type: businessTypes.BUSINESS_GET_CONSTRUCTIONS,
-          payload: data.items
+const getConstructions =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`/constructions?${queryString.stringify(query)}`)
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: businessTypes.BUSINESS_GET_CONSTRUCTIONS,
+            payload: data.items
+          })
+          resolve()
         })
-        resolve()
-      })
-      .catch((err) => {
-        reject(err.response.data)
-      })
-  })
+        .catch((err) => {
+          reject(err.response.data)
+        })
+    })
 
 const blockCompany = (id) => () =>
   new Promise((resolve, reject) => {
