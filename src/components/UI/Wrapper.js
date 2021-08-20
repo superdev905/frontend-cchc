@@ -3,6 +3,7 @@ import { Box, makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    width: '100%',
     backgroundColor: theme.palette.common.white,
     marginBottom: 15,
     borderRadius: 5

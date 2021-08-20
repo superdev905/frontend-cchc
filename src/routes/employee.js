@@ -5,11 +5,10 @@ import Forbidden from '../pages/Forbidden'
 import {
   EmployeeInfoContact,
   EmployeeDetails,
-  PensionSituation,
   SpecializationHistory,
   EmployeeJobs,
   EmployeeFamiliarGroup,
-  HousingSituation
+  Situation
 } from '../components/Employee'
 
 const Login = lazy(() => import('../pages/Login'))
@@ -99,8 +98,7 @@ const companyRoutes = [
         yes={() => (
           <Layout>
             <Employee>
-              <PensionSituation />
-              <HousingSituation />
+              <Situation />
             </Employee>
           </Layout>
         )}
