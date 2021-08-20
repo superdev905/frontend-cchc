@@ -169,18 +169,36 @@ const deleteConstructionAttention = (id) => () =>
       })
   })
 
-const createInterventionRegistration = (values) => () =>
+const createAssistance = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${serviceEndpoint}/assistance`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
-        console.log('crear')
       })
       .catch((err) => {
         reject(err.response.data.detail)
       })
   })
+
+const getAssistanceList =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`${serviceEndpoint}/assistance?${queryString.stringify(query)}`)
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: assistanceTypes.GET_ATTENDED_EMPLOYEES,
+            payload: data.items
+          })
+          resolve(data.items)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 export default {
   toggleModal,
   getCalendarEvents,
@@ -194,5 +212,6 @@ export default {
   getConstructionAttention,
   updateConstructionAttention,
   deleteConstructionAttention,
-  createInterventionRegistration
+  createAssistance,
+  getAssistanceList
 }

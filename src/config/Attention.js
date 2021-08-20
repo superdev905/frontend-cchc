@@ -1,7 +1,7 @@
-const attentionTypes = [
-  { key: 'TYPE_A', name: 'TIPO A' },
-  { key: 'TYPE_B', name: 'TIPO B' },
-  { key: 'TYPE_C', name: 'TIPO C' }
+const AttentionStatusList = [
+  { short: 'S', name: 'SEGUIMIENTO' },
+  { short: 'R', name: 'RESUELTO' },
+  { short: 'IM', name: 'PARA INFORME MENSUAL' }
 ]
 
-export default attentionTypes
+export default AttentionStatusList

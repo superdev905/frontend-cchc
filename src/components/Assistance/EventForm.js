@@ -178,196 +178,202 @@ const EventForm = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
-      {reschedule && (
-        <Box paddingBottom="10px">
-          <Alert severity="warning">
-            <strong>Este evento será reprogramado</strong>
-          </Alert>
-        </Box>
-      )}
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <TextField
-            placeholder="Título del evento"
-            name="title"
-            label="Título"
-            required
-            value={formik.values.title}
-            onChange={formik.handleChange}
-            error={formik.touched.title && Boolean(formik.errors.title)}
-            helperText={formik.touched.title && formik.errors.title}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Box display="flex" alignItems="center">
-            <Typography style={{ marginRight: '10px' }}>Asignado a:</Typography>
-            <Avatar>A</Avatar>
-            <Typography
-              style={{ marginLeft: '10px' }}
-            >{`${user?.names} ${user?.paternal_surname}`}</Typography>
+      <Box>
+        {reschedule && (
+          <Box paddingBottom="10px">
+            <Alert severity="warning">
+              <strong>Este evento será reprogramado</strong>
+            </Alert>
           </Box>
-        </Grid>
-        <Grid item xs={12}>
-          <Select
-            label="Jornada"
-            name="shift_id"
-            required
-            value={formik.values.shift_id}
-            onChange={formik.handleChange}
-            error={formik.touched.shift_id && Boolean(formik.errors.shift_id)}
-            helperText={formik.touched.shift_id && formik.errors.shift_id}
-          >
-            <option value="">Seleccione jornada </option>
-            {shiftList.map((item) => (
-              <option key={`shift-type-${item.id}`} value={item.id}>
-                {item.name}
-              </option>
-            ))}
-          </Select>
-        </Grid>
-        <Grid item xs={12}>
-          <DatePicker
-            disabledFuture={false}
-            label="Fecha"
-            required
-            value={formik.values.date}
-            onChange={(dateSelected) => {
-              formik.setFieldValue('date', dateSelected)
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <InputLabel required>Hora de inicio</InputLabel>
-          <TimePicker
-            value={formik.values.start_date}
-            onChange={(date) => {
-              if (date < formik.values.end_date) {
-                formik.setFieldValue('start_date', new Date(date))
-              }
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <InputLabel required>Hora de fin</InputLabel>
-          <TimePicker
-            value={formik.values.end_date}
-            onChange={(date) => {
-              if (date > formik.values.start_date) {
-                formik.setFieldValue('end_date', new Date(date))
-              }
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            label="Duración"
-            inputProps={{ readOnly: true }}
-            value={`${differenceInHours(
-              new Date(formik.values.end_date),
-              new Date(formik.values.start_date)
-            )} hrs`}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Select
-            label="Tipo de evento"
-            name="type_id"
-            required
-            value={formik.values.type_id}
-            onChange={formik.handleChange}
-            error={formik.touched.type_id && Boolean(formik.errors.type_id)}
-            helperText={formik.touched.type_id && formik.errors.type_id}
-          >
-            <option value="">Seleccione tipo </option>
-            {eventTypes.map((item) => (
-              <option value={item.id} key={`event-type-${item.id}`}>
-                {item.description}
-              </option>
-            ))}
-          </Select>
-        </Grid>
+        )}
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              placeholder="Título del evento"
+              name="title"
+              label="Título"
+              required
+              value={formik.values.title}
+              onChange={formik.handleChange}
+              error={formik.touched.title && Boolean(formik.errors.title)}
+              helperText={formik.touched.title && formik.errors.title}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Box display="flex" alignItems="center">
+              <Typography style={{ marginRight: '10px' }}>
+                Asignado a:
+              </Typography>
+              <Avatar>A</Avatar>
+              <Typography
+                style={{ marginLeft: '10px' }}
+              >{`${user?.names} ${user?.paternal_surname}`}</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Select
+              label="Jornada"
+              name="shift_id"
+              required
+              value={formik.values.shift_id}
+              onChange={formik.handleChange}
+              error={formik.touched.shift_id && Boolean(formik.errors.shift_id)}
+              helperText={formik.touched.shift_id && formik.errors.shift_id}
+            >
+              <option value="">Seleccione jornada </option>
+              {shiftList.map((item) => (
+                <option key={`shift-type-${item.id}`} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </Select>
+          </Grid>
+          <Grid item xs={12}>
+            <DatePicker
+              disabledFuture={false}
+              label="Fecha"
+              required
+              value={formik.values.date}
+              onChange={(dateSelected) => {
+                formik.setFieldValue('date', dateSelected)
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <InputLabel required>Hora de inicio</InputLabel>
+            <TimePicker
+              value={formik.values.start_date}
+              onChange={(date) => {
+                if (date < formik.values.end_date) {
+                  formik.setFieldValue('start_date', new Date(date))
+                }
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <InputLabel required>Hora de fin</InputLabel>
+            <TimePicker
+              value={formik.values.end_date}
+              onChange={(date) => {
+                if (date > formik.values.start_date) {
+                  formik.setFieldValue('end_date', new Date(date))
+                }
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              label="Duración"
+              inputProps={{ readOnly: true }}
+              value={`${differenceInHours(
+                new Date(formik.values.end_date),
+                new Date(formik.values.start_date)
+              )} hrs`}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Select
+              label="Tipo de evento"
+              name="type_id"
+              required
+              value={formik.values.type_id}
+              onChange={formik.handleChange}
+              error={formik.touched.type_id && Boolean(formik.errors.type_id)}
+              helperText={formik.touched.type_id && formik.errors.type_id}
+            >
+              <option value="">Seleccione tipo </option>
+              {eventTypes.map((item) => (
+                <option value={item.id} key={`event-type-${item.id}`}>
+                  {item.description}
+                </option>
+              ))}
+            </Select>
+          </Grid>
 
-        <Grid item xs={12} md={6}>
-          <Autocomplete
-            options={companies}
-            value={selectedCompany || ''}
-            getOptionSelected={(option, value) => option.id === value.id}
-            getOptionLabel={(option) => option.business_name || ''}
-            onChange={onCompanySelect}
-            renderOption={(option) => (
-              <Box>
-                <Typography>
-                  <strong>{option.business_name}</strong>
-                </Typography>
-                <Typography>{`Rut: ${option.rut}`}</Typography>
-              </Box>
-            )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Selecciona empresa"
-                placeholder="Nombre de empresa"
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Autocomplete
-            options={
-              selectedCompany
-                ? selectedCompany.constructions.filter(
-                    (item) =>
-                      item.status !== 'NO_VIGENTE' && item.state !== 'DELETED'
-                  )
-                : []
-            }
-            value={selectedCons || ''}
-            getOptionSelected={(option, value) => option.id === value.id}
-            getOptionLabel={(option) => option.name || ''}
-            onChange={onConstructionChange}
-            renderOption={(option) => (
-              <Box>
-                <Typography>
-                  <strong>{option.name || ''}</strong>
-                </Typography>
-              </Box>
-            )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Selecciona obra"
-                placeholder="Nombre de obra"
-              />
-            )}
-          />
-        </Grid>
+          <Grid item xs={12} md={6}>
+            <Autocomplete
+              options={companies}
+              value={selectedCompany || ''}
+              getOptionSelected={(option, value) => option.id === value.id}
+              getOptionLabel={(option) => option.business_name || ''}
+              onChange={onCompanySelect}
+              renderOption={(option) => (
+                <Box>
+                  <Typography>
+                    <strong>{option.business_name}</strong>
+                  </Typography>
+                  <Typography>{`Rut: ${option.rut}`}</Typography>
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Selecciona empresa"
+                  placeholder="Nombre de empresa"
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Autocomplete
+              options={
+                selectedCompany
+                  ? selectedCompany.constructions.filter(
+                      (item) =>
+                        item.status !== 'NO_VIGENTE' && item.state !== 'DELETED'
+                    )
+                  : []
+              }
+              value={selectedCons || ''}
+              getOptionSelected={(option, value) => option.id === value.id}
+              getOptionLabel={(option) => option.name || ''}
+              onChange={onConstructionChange}
+              renderOption={(option) => (
+                <Box>
+                  <Typography>
+                    <strong>{option.name || ''}</strong>
+                  </Typography>
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Selecciona obra"
+                  placeholder="Nombre de obra"
+                />
+              )}
+            />
+          </Grid>
 
-        <Grid item xs={12}>
-          <TextArea
-            name="observation"
-            value={formik.values.observation}
-            required
-            label="Observaciones"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.observation && Boolean(formik.errors.observation)
-            }
-            helperText={formik.touched.observation && formik.errors.observation}
-          />
+          <Grid item xs={12}>
+            <TextArea
+              name="observation"
+              value={formik.values.observation}
+              required
+              label="Observaciones"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.observation && Boolean(formik.errors.observation)
+              }
+              helperText={
+                formik.touched.observation && formik.errors.observation
+              }
+            />
+          </Grid>
         </Grid>
-      </Grid>
-      <Box textAlign="center">
-        <Button variant="outlined" onClick={onClose}>
-          Cancelar
-        </Button>
-        <SubmitButton
-          loading={formik.isSubmitting}
-          onClick={formik.handleSubmit}
-          disabled={!formik.isValid || formik.isSubmitting}
-        >
-          {`${type === 'CREATE' ? 'Crear' : 'Actualizar'} evento`}
-        </SubmitButton>
+        <Box textAlign="center">
+          <Button variant="outlined" onClick={onClose}>
+            Cancelar
+          </Button>
+          <SubmitButton
+            loading={formik.isSubmitting}
+            onClick={formik.handleSubmit}
+            disabled={!formik.isValid || formik.isSubmitting}
+          >
+            {`${type === 'CREATE' ? 'Crear' : 'Actualizar'} evento`}
+          </SubmitButton>
+        </Box>
       </Box>
     </Dialog>
   )

@@ -6,7 +6,8 @@ const initialState = {
   totalEvents: 0,
   visit: null,
   showModal: false,
-  assistanceConstructionList: []
+  assistanceConstructionList: [],
+  attendedEmployeeList: []
 }
 
 const assistanceReducer = (state = initialState, { type, payload }) => {
@@ -23,6 +24,8 @@ const assistanceReducer = (state = initialState, { type, payload }) => {
       return { ...state, showModal: payload }
     case assistanceTypes.GET_ASSISTANCE_CONSTRUCTION:
       return { ...state, assistanceConstructionList: payload }
+    case assistanceTypes.GET_ATTENDED_EMPLOYEES:
+      return { ...state, attendedEmployeeList: payload }
     default:
       return state
   }
