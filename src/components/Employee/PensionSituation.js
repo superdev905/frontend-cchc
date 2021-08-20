@@ -2,23 +2,16 @@ import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import { useSuccess, useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
-import { Button, EmptyState } from '../UI'
+import { Button, EmptyState, Wrapper } from '../UI'
 import PensionSituationForm from './PensionSituationForm'
 import CardPensionSituation from './CardPensionSituation'
 import { ConfirmDelete } from '../Shared'
 
-const useStyles = makeStyles(() => ({
-  Grid: {
-    textAlign: 'center'
-  }
-}))
-
 const PensionSituation = () => {
   const dispatch = useDispatch()
-  const classes = useStyles()
   const { idEmployee } = useParams()
   const [list, setList] = useState([])
   const { enqueueSnackbar } = useSnackbar()
@@ -86,35 +79,33 @@ const PensionSituation = () => {
   }, [])
 
   return (
-    <Box width="50%" component="div" display="inline" className={classes.Grid}>
+    <Wrapper>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
           Situación provisional
         </Typography>
+        <Button disabled={list.length > 0} onClick={toggleOpenAdd}>
+          Registrar{' '}
+        </Button>
       </Box>
       <Box>
-        <Grid container spacing={2}>
-          {list.length === 0 ? (
-            <EmptyState message="Este trabajador no tiene una situación previsonal" />
-          ) : (
-            list.map((item) => (
-              <CardPensionSituation
-                data={item}
-                onEdit={() => {
-                  setCurrent(item)
-                  toggleOpenEdit()
-                }}
-                onDelete={() => {
-                  setCurrent(item)
-                  toggleOpenDelete()
-                }}
-              />
-            ))
-          )}
-          <Button disabled={list.length > 0} onClick={toggleOpenAdd}>
-            Registrar{' '}
-          </Button>
-        </Grid>
+        {list.length === 0 ? (
+          <EmptyState message="Este trabajador no tiene una situación previsonal" />
+        ) : (
+          list.map((item) => (
+            <CardPensionSituation
+              data={item}
+              onEdit={() => {
+                setCurrent(item)
+                toggleOpenEdit()
+              }}
+              onDelete={() => {
+                setCurrent(item)
+                toggleOpenDelete()
+              }}
+            />
+          ))
+        )}
       </Box>
       <PensionSituationForm
         successMessage="Situación previsional creado"
@@ -147,7 +138,7 @@ const PensionSituation = () => {
           }
         />
       )}
-    </Box>
+    </Wrapper>
   )
 }
 

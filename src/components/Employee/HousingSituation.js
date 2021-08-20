@@ -2,23 +2,15 @@ import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import { useSuccess, useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
-import { Button, EmptyState } from '../UI'
+import { Button, EmptyState, Wrapper } from '../UI'
 import HousingSituationForm from './HousingSituationForm'
 import CardHousingSituation from './CardHousingSituation'
 import { ConfirmDelete } from '../Shared'
 
-const useStyles = makeStyles(() => ({
-  Grid: {
-    textAlign: 'center',
-    display: 'inline'
-  }
-}))
-
 const PensionSituation = () => {
-  const classes = useStyles()
   const dispatch = useDispatch()
   const { idEmployee } = useParams()
   const { enqueueSnackbar } = useSnackbar()
@@ -78,36 +70,34 @@ const PensionSituation = () => {
   }, [])
 
   return (
-    <Box display="inline" className={classes.Grid}>
+    <Wrapper>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
           Situación habitacional
         </Typography>
+        <Button disabled={list.length > 0} onClick={toggleOpenAdd}>
+          Registrar
+        </Button>
       </Box>
       <Box>
-        <Grid container spacing={2}>
-          {list.length === 0 ? (
-            <EmptyState message="Este trabajador no tiene situación habitacional" />
-          ) : (
-            list.map((item) => (
-              <CardHousingSituation
-                key={`item-housing-${item.id}`}
-                data={item}
-                onEdit={() => {
-                  setCurrent(item)
-                  toggleOpenEdit()
-                }}
-                onDelete={() => {
-                  setCurrent(item)
-                  toggleOpenDelete()
-                }}
-              />
-            ))
-          )}
-          <Button disabled={list.length > 0} onClick={toggleOpenAdd}>
-            Registrar
-          </Button>
-        </Grid>
+        {list.length === 0 ? (
+          <EmptyState message="Este trabajador no tiene situación habitacional" />
+        ) : (
+          list.map((item) => (
+            <CardHousingSituation
+              key={`item-housing-${item.id}`}
+              data={item}
+              onEdit={() => {
+                setCurrent(item)
+                toggleOpenEdit()
+              }}
+              onDelete={() => {
+                setCurrent(item)
+                toggleOpenDelete()
+              }}
+            />
+          ))
+        )}
       </Box>
       <HousingSituationForm
         successMessage="Situación habitacional creado"
@@ -140,7 +130,7 @@ const PensionSituation = () => {
           }
         />
       )}
-    </Box>
+    </Wrapper>
   )
 }
 

@@ -27,7 +27,7 @@ const CardSituation = ({ data, onEdit, onDelete }) => {
   const classes = useStyles()
 
   return (
-    <Grid item xs={12} md={4}>
+    <Grid item xs={12} md={12}>
       <Card>
         <CardContent className={classes.root}>
           <Box display="flex" justifyContent="flex-end">

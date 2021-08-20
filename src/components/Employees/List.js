@@ -2,9 +2,7 @@ import { Box, Grid } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import validator from 'validator'
-import { clean, format } from 'rut.js'
-import { formatDate } from '../../formatters'
+import { formatDate, formatSearchWithRut } from '../../formatters'
 import { useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
 import { DataTable } from '../Shared'
@@ -28,14 +26,11 @@ const ListEmployees = () => {
   )
 
   const handleSearchChange = (e) => {
-    console.log(e.target.value)
-    setFilters({ ...filters, skip: 0, search: e.target.value })
-
-    if (validator.isInt(e.target.value)) {
-      console.log('numero')
-      clean(e.target.value)
-      format(e.target.value)
-    }
+    setFilters({
+      ...filters,
+      skip: 0,
+      search: formatSearchWithRut(e.target.value)
+    })
   }
 
   const handleStateChange = (e) => {
