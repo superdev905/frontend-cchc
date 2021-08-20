@@ -89,122 +89,124 @@ const PensionSituation = () => {
   }, [])
 
   return (
-    <Wrapper>
-      <Box>
-        <Box display="flex" justifyContent="space-between">
-          <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
-            Historial de especialidades
-          </Typography>
-          <Button onClick={toggleOpenAdd}>Registrar </Button>
-        </Box>
-      </Box>
-      <Box>
+    <Box width="100%">
+      <Wrapper>
         <Box>
-          <DataTable
-            emptyMessage="Este trabajador no tiene espacialiadades en su historial "
-            columns={[
-              {
-                name: 'Nombre de especialidad',
-                selector: (row) => row.specName,
-                sortable: true
-              },
-              {
-                name: 'Detalle de especialidad',
-                selector: (row) => row.specDetailName,
-                sortable: true
-              },
-              {
-                name: 'Autodidacta',
-                selector: (row) => row.is_self_taught
-              },
-              {
-                name: 'Certificado',
-                selector: (row) => row.is_certificated
-              },
-
-              {
-                name: 'Entidad certificadora',
-                selector: (row) => row.certEntity,
-                hide: 'md'
-              },
-              {
-                name: 'Fecha de certificación',
-                selector: (row) => row.certDate,
-                hide: 'md'
-              },
-
-              {
-                name: '',
-                selector: '',
-                right: true,
-                cell: (row) => (
-                  <ActionsTable
-                    {...row}
-                    onEdit={() => {
-                      setCurrent(row)
-                      toggleOpenEdit()
-                    }}
-                    onDelete={() => {
-                      setCurrent(row)
-                      toggleOpenDelete()
-                    }}
-                    moreOptions={[
-                      {
-                        disabled: !row.certification_url,
-                        icon: <AttachFileIcon />,
-                        onClick: () => {
-                          toggleOpenVisor()
-                          setCurrent(row)
-                        }
-                      }
-                    ]}
-                  />
-                )
-              }
-            ]}
-            data={list}
-            pagination
-          />
+          <Box display="flex" justifyContent="space-between">
+            <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
+              Historial de especialidades
+            </Typography>
+            <Button onClick={toggleOpenAdd}>Registrar </Button>
+          </Box>
         </Box>
-      </Box>
-      <SpecForm
-        successMessage="Especialización creado"
-        open={openAdd}
-        onClose={toggleOpenAdd}
-        submitFunction={createEvent}
-        successFunction={fetchData}
-      />
-      {current && openEdit && (
+        <Box>
+          <Box>
+            <DataTable
+              emptyMessage="Este trabajador no tiene espacialiadades en su historial "
+              columns={[
+                {
+                  name: 'Nombre de especialidad',
+                  selector: (row) => row.specName,
+                  sortable: true
+                },
+                {
+                  name: 'Detalle de especialidad',
+                  selector: (row) => row.specDetailName,
+                  sortable: true
+                },
+                {
+                  name: 'Autodidacta',
+                  selector: (row) => row.is_self_taught
+                },
+                {
+                  name: 'Certificado',
+                  selector: (row) => row.is_certificated
+                },
+
+                {
+                  name: 'Entidad certificadora',
+                  selector: (row) => row.certEntity,
+                  hide: 'md'
+                },
+                {
+                  name: 'Fecha de certificación',
+                  selector: (row) => row.certDate,
+                  hide: 'md'
+                },
+
+                {
+                  name: '',
+                  selector: '',
+                  right: true,
+                  cell: (row) => (
+                    <ActionsTable
+                      {...row}
+                      onEdit={() => {
+                        setCurrent(row)
+                        toggleOpenEdit()
+                      }}
+                      onDelete={() => {
+                        setCurrent(row)
+                        toggleOpenDelete()
+                      }}
+                      moreOptions={[
+                        {
+                          disabled: !row.certification_url,
+                          icon: <AttachFileIcon />,
+                          onClick: () => {
+                            toggleOpenVisor()
+                            setCurrent(row)
+                          }
+                        }
+                      ]}
+                    />
+                  )
+                }
+              ]}
+              data={list}
+              pagination
+            />
+          </Box>
+        </Box>
         <SpecForm
-          type="UPDATE"
-          successMessage="Especialización actualizado"
-          open={openEdit}
-          onClose={toggleOpenEdit}
-          submitFunction={updateEvent}
-          data={current}
+          successMessage="Especialización creado"
+          open={openAdd}
+          onClose={toggleOpenAdd}
+          submitFunction={createEvent}
           successFunction={fetchData}
         />
-      )}
-      {current && openDelete && (
-        <ConfirmDelete
-          open={openDelete}
-          onClose={toggleOpenDelete}
-          onConfirm={() => patchEvent(current.id)}
-          message={
-            <Typography variant="h6">
-              ¿Estás seguro de eliminar esta especialización?
-            </Typography>
-          }
-        />
-      )}
-      {current && openVisor && (
-        <FileVisor
-          open={openVisor}
-          onClose={toggleOpenVisor}
-          fileName={current.certification_url}
-        />
-      )}
-    </Wrapper>
+        {current && openEdit && (
+          <SpecForm
+            type="UPDATE"
+            successMessage="Especialización actualizado"
+            open={openEdit}
+            onClose={toggleOpenEdit}
+            submitFunction={updateEvent}
+            data={current}
+            successFunction={fetchData}
+          />
+        )}
+        {current && openDelete && (
+          <ConfirmDelete
+            open={openDelete}
+            onClose={toggleOpenDelete}
+            onConfirm={() => patchEvent(current.id)}
+            message={
+              <Typography variant="h6">
+                ¿Estás seguro de eliminar esta especialización?
+              </Typography>
+            }
+          />
+        )}
+        {current && openVisor && (
+          <FileVisor
+            open={openVisor}
+            onClose={toggleOpenVisor}
+            fileName={current.certification_url}
+          />
+        )}
+      </Wrapper>
+    </Box>
   )
 }
 

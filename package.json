@@ -48,7 +48,9 @@
     "redux-devtools-extension": "^2.13.9",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
+    "rut.js": "^2.0.0",
     "styled-components": "^5.3.0",
+    "validator": "^13.6.0",
     "web-vitals": "^1.0.1",
     "yup": "^0.32.9"
   },

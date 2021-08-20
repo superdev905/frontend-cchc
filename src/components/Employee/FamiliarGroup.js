@@ -81,7 +81,7 @@ const FamiliarGroup = () => {
     }
   }, [employee])
   return (
-    <div>
+    <Box width="100%">
       <Wrapper>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
@@ -198,7 +198,7 @@ const FamiliarGroup = () => {
           />
         )}
       </Wrapper>
-    </div>
+    </Box>
   )
 }
 

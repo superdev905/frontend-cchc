@@ -2,15 +2,23 @@ import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
 import { useSuccess, useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
-import { Button, EmptyState, Wrapper } from '../UI'
+import { Button, EmptyState } from '../UI'
 import HousingSituationForm from './HousingSituationForm'
 import CardHousingSituation from './CardHousingSituation'
 import { ConfirmDelete } from '../Shared'
 
+const useStyles = makeStyles(() => ({
+  Grid: {
+    textAlign: 'center',
+    display: 'inline'
+  }
+}))
+
 const PensionSituation = () => {
+  const classes = useStyles()
   const dispatch = useDispatch()
   const { idEmployee } = useParams()
   const { enqueueSnackbar } = useSnackbar()
@@ -70,16 +78,11 @@ const PensionSituation = () => {
   }, [])
 
   return (
-    <Wrapper>
-      <Box>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
-            Situación habitacional
-          </Typography>
-          <Button disabled={list.length > 0} onClick={toggleOpenAdd}>
-            Registrar
-          </Button>
-        </Box>
+    <Box display="inline" className={classes.Grid}>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
+          Situación habitacional
+        </Typography>
       </Box>
       <Box>
         <Grid container spacing={2}>
@@ -101,6 +104,9 @@ const PensionSituation = () => {
               />
             ))
           )}
+          <Button disabled={list.length > 0} onClick={toggleOpenAdd}>
+            Registrar
+          </Button>
         </Grid>
       </Box>
       <HousingSituationForm
@@ -134,7 +140,7 @@ const PensionSituation = () => {
           }
         />
       )}
-    </Wrapper>
+    </Box>
   )
 }
 

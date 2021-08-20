@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { useSuccess, useToggle } from '../../hooks'
-import { Button, EmptyState, Wrapper } from '../UI'
+import { Button, EmptyState } from '../UI'
 import ContactForm from './ContactForm'
 import ContactCard from './ContactCard'
 import employeesActions from '../../state/actions/employees'
@@ -80,8 +80,8 @@ const InfoContact = () => {
   }, [employee])
 
   return (
-    <Box>
-      <Wrapper>
+    <Box width="100%">
+      <Grid>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
             Información de contacto
@@ -111,7 +111,7 @@ const InfoContact = () => {
               ))}
           </Grid>
         </Box>
-      </Wrapper>
+      </Grid>
       <ContactForm
         successMessage="Información de contacto creado"
         open={openAdd}

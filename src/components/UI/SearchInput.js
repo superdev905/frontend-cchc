@@ -1,6 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles'
 import { Box, InputBase } from '@material-ui/core/'
 import SearchIcon from '@material-ui/icons/Search'
+// import { format } from 'rut.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
     padding: 10
   }
 }))
-
 const SearchInput = ({ placeholder, onChange, id, value, CustomInput }) => {
   const classes = useStyles()
 
