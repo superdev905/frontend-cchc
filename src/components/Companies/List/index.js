@@ -7,6 +7,7 @@ import { ActionsTable, Button, SearchInput, Select, Wrapper } from '../../UI'
 import CreateCompany from '../Create'
 import { DataTable } from '../../Shared'
 import StatusChip from '../../UI/StatusChip'
+import { formatSearchWithRut } from '../../../formatters'
 
 const List = ({ ...props }) => {
   const dispatch = useDispatch()
@@ -39,7 +40,7 @@ const List = ({ ...props }) => {
 
     setFilters({
       ...filters,
-      search: value.toString(),
+      search: formatSearchWithRut(value.toString()),
       page: 1
     })
   }
