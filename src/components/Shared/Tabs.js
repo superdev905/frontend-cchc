@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Box, makeStyles, Tabs, Tab, Grid } from '@material-ui/core'
+import { Box, makeStyles, Tabs, Tab } from '@material-ui/core'
 
 function a11yProps(index) {
   return {
@@ -44,7 +44,7 @@ const CustomTabs = ({ children, value, onChange, tabs }) => {
   const classes = useStyles()
 
   return (
-    <Grid>
+    <Box>
       <Box className={classes.root}>
         <Tabs
           value={value}
@@ -64,8 +64,8 @@ const CustomTabs = ({ children, value, onChange, tabs }) => {
           ))}
         </Tabs>
       </Box>
-      <Grid container>{children}</Grid>
-    </Grid>
+      <Box container>{children}</Box>
+    </Box>
   )
 }
 

@@ -22,7 +22,7 @@ const searchWithRut = (value) => {
 
   if (validator.isInt(cleanedValue) || isRut) {
     searchFormatted =
-      cleanedValue.length > 4 ? formatRut(value) : formatShortRut(cleanedValue)
+      cleanedValue.length > 5 ? formatRut(value) : formatShortRut(cleanedValue)
   } else {
     searchFormatted = value
   }

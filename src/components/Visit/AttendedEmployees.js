@@ -1,21 +1,25 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams, useLocation } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
 import {
   AddCircleOutline as AddIcon,
-  Edit as EditIcon
+  Edit as EditIcon,
+  ArrowForward as ArrowIcon
 } from '@material-ui/icons'
 import employeesAction from '../../state/actions/employees'
 import assistanceAction from '../../state/actions/assistance'
 import { DataTable } from '../Shared'
-import { Button, RutTextField, Wrapper } from '../UI'
+import { ActionsTable, Button, TextField, Wrapper } from '../UI'
 import WorkerInterventionRecord from '../Assistance/InterventionRegistration/WorkerInterventionRecord'
 import { useToggle } from '../../hooks'
+import searchWithRut from '../../formatters/searchWithRut'
 
 const ContactList = () => {
   const dispatch = useDispatch()
   const { idVisit } = useParams()
+  const history = useHistory()
+  const { pathname } = useLocation()
   const [searchUser, setSearchUser] = useState('')
   const [selectedUser, setSelectedUser] = useState(null)
   const { open, toggleOpen } = useToggle()
@@ -98,6 +102,23 @@ const ContactList = () => {
           {
             name: 'Area',
             selector: (row) => row.area_name
+          },
+          {
+            name: '',
+            right: true,
+            cell: (row) => (
+              <ActionsTable
+                moreOptions={[
+                  {
+                    icon: <ArrowIcon />,
+                    onClick: () => {
+                      console.log('s')
+                      history.push(`${pathname}/assistance/${row.id}`)
+                    }
+                  }
+                ]}
+              />
+            )
           }
         ]}
         data={attendedList}
@@ -108,12 +129,12 @@ const ContactList = () => {
         </Typography>
         <Grid spacing={2}>
           <Grid item xs={12} md={4}>
-            <RutTextField
+            <TextField
               label="Buscar trabajador"
               placeholder="Rut"
               value={searchUser}
               onChange={(e) => {
-                setSearchUser(e.target.value)
+                setSearchUser(searchWithRut(e.target.value))
               }}
             />
           </Grid>
