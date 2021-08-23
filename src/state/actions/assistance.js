@@ -199,6 +199,24 @@ const getAssistanceList =
         })
     })
 
+const getPersonalInterventionDetails = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${serviceEndpoint}/assistance/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: assistanceTypes.GET_PERSONAL_INTERVENTION_DETAILS,
+          payload: data
+        })
+        resolve(data)
+        console.log(data)
+        console.log('pid')
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   toggleModal,
   getCalendarEvents,
@@ -213,5 +231,6 @@ export default {
   updateConstructionAttention,
   deleteConstructionAttention,
   createAssistance,
-  getAssistanceList
+  getAssistanceList,
+  getPersonalInterventionDetails
 }

@@ -183,14 +183,14 @@ const WorkerInterventionRecord = ({
             <Grid item xs={12} md={6} lg={3}>
               <TextField
                 label="Empresa"
-                value={company.business_name}
+                value={company?.business_name}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
               <TextField
                 label="Obra"
-                value={construction.name}
+                value={construction?.name}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
@@ -211,7 +211,7 @@ const WorkerInterventionRecord = ({
                 }
               >
                 <option value="">Seleccione Lugar</option>
-                {['OfICINA', 'TERRENO', 'VIRTUAL'].map((item, i) => (
+                {['OFICINA', 'TERRENO', 'VIRTUAL'].map((item, i) => (
                   <option key={`plce-${i}-${item}`} value={item}>
                     {item}
                   </option>
