@@ -134,7 +134,6 @@ const ContactList = () => {
                   {
                     icon: <ArrowIcon />,
                     onClick: () => {
-                      console.log('s')
                       history.push(`${pathname}/attended/${row.employee_id}`)
                     }
                   }

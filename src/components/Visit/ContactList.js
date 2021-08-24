@@ -1,16 +1,13 @@
 import { Box, Typography } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
-import { useLocation } from 'react-router-dom/cjs/react-router-dom.min'
 import constructionsActions from '../../state/actions/constructions'
 import { DataTable } from '../Shared'
-import { Wrapper, Button, ActionsTable } from '../UI'
+import { Wrapper } from '../UI'
 
 const ContactList = () => {
   const dispatch = useDispatch()
-  const history = useHistory()
-  const location = useLocation()
+
   const [contactList, setContactList] = useState([])
   const { visit } = useSelector((state) => state.assistance)
 
@@ -25,23 +22,12 @@ const ContactList = () => {
       })
   }, [visit])
 
-  const assistanceTypes = () => {
-    history.push(`${location.pathname}/assistance-type`)
-  }
-
-  const onViewClick = (row) => {
-    console.log(row.id)
-    history.push(`/personal-attention/${row.id}/`)
-  }
-
   return (
     <Wrapper>
       <Box p={1} display="flex" justifyContent="space-between">
         <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>
           Contactos de obra
         </Typography>
-
-        <Button onClick={assistanceTypes}>Atenciones en Obras</Button>
       </Box>
       <DataTable
         columns={[
@@ -69,13 +55,6 @@ const ContactList = () => {
           {
             name: 'Otro',
             selector: (row) => row.other_phone
-          },
-          {
-            name: '',
-            right: true,
-            cell: (row) => (
-              <ActionsTable {...row} onView={() => onViewClick(row)} />
-            )
           }
         ]}
         data={contactList}
