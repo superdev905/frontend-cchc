@@ -7,6 +7,7 @@ import { formatDate } from '../../formatters'
 import CustomButton from '../UI/CustomButton'
 import commonActions from '../../state/actions/common'
 import usersActions from '../../state/actions/users'
+import FileVisor from '../Shared/FileVisor'
 
 const AttentionView = ({ fetching }) => {
   const dispatch = useDispatch()

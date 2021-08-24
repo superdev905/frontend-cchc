@@ -210,7 +210,6 @@ const getPersonalInterventionDetails = (id) => (dispatch) =>
         })
         resolve(data)
         console.log(data)
-        console.log('pid')
       })
       .catch((err) => {
         reject(err.response.data.detail)
