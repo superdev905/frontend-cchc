@@ -11,6 +11,7 @@ import {
   AttendedEmployees,
   AttendEmployees
 } from '../../components/Visit'
+import ConstructionAttend from '../../components/Visit/ConstructionAttend/ConstructionAttend'
 
 const Visit = () => {
   const dispatch = useDispatch()
@@ -40,6 +41,7 @@ const Visit = () => {
 
       <AttendedEmployees />
       <AttendEmployees />
+      <ConstructionAttend />
       <ContactList />
     </Box>
   )

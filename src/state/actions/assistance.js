@@ -214,6 +214,7 @@ const searchEmployee =
           reject(err.response.data.detail)
         })
     })
+
 const getPersonalInterventionDetails = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${serviceEndpoint}/assistance/${id}`)
@@ -224,7 +225,6 @@ const getPersonalInterventionDetails = (id) => (dispatch) =>
           payload: data
         })
         resolve(data)
-        console.log(data)
       })
       .catch((err) => {
         reject(err.response.data.detail)
