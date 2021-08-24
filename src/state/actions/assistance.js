@@ -214,6 +214,22 @@ const searchEmployee =
           reject(err.response.data.detail)
         })
     })
+const getPersonalInterventionDetails = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${serviceEndpoint}/assistance/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: assistanceTypes.GET_PERSONAL_INTERVENTION_DETAILS,
+          payload: data
+        })
+        resolve(data)
+        console.log(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 export default {
   toggleModal,
@@ -230,5 +246,6 @@ export default {
   deleteConstructionAttention,
   createAssistance,
   getAssistanceList,
-  searchEmployee
+  searchEmployee,
+  getPersonalInterventionDetails
 }

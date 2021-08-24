@@ -211,7 +211,7 @@ const WorkerInterventionRecord = ({
                 }
               >
                 <option value="">Seleccione Lugar</option>
-                {['OfICINA', 'TERRENO', 'VIRTUAL'].map((item, i) => (
+                {['OFICINA', 'TERRENO', 'VIRTUAL'].map((item, i) => (
                   <option key={`plce-${i}-${item}`} value={item}>
                     {item}
                   </option>

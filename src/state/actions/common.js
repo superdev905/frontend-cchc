@@ -329,6 +329,19 @@ const getTopics = () => (dispatch) =>
       })
   })
 
+const getInterventionDetails = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${parametersEndpoint}/assistance/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+        console.log(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 export default {
   getRegions,
   getCharges,
@@ -353,5 +366,6 @@ export default {
   getAssistanceTypes,
   getAreas,
   getManagement,
-  getTopics
+  getTopics,
+  getInterventionDetails
 }

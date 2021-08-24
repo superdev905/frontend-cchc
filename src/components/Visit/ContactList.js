@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min'
 import constructionsActions from '../../state/actions/constructions'
 import { DataTable } from '../Shared'
-import { Wrapper, Button } from '../UI'
+import { Wrapper, Button, ActionsTable } from '../UI'
 
 const ContactList = () => {
   const dispatch = useDispatch()
@@ -27,6 +27,11 @@ const ContactList = () => {
 
   const assistanceTypes = () => {
     history.push(`${location.pathname}/assistance-type`)
+  }
+
+  const onViewClick = (row) => {
+    console.log(row.id)
+    history.push(`/personal-attention/${row.id}/`)
   }
 
   return (
@@ -64,6 +69,13 @@ const ContactList = () => {
           {
             name: 'Otro',
             selector: (row) => row.other_phone
+          },
+          {
+            name: '',
+            right: true,
+            cell: (row) => (
+              <ActionsTable {...row} onView={() => onViewClick(row)} />
+            )
           }
         ]}
         data={contactList}

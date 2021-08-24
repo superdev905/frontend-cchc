@@ -6,11 +6,14 @@ import {
   CircularProgress,
   Dialog,
   DialogContent,
+  Grid,
   IconButton,
   makeStyles,
   Typography
 } from '@material-ui/core'
+import ZoomInIcon from '@material-ui/icons/ZoomIn'
 import CloseIcon from '@material-ui/icons/Close'
+import ZoomOutIcon from '@material-ui/icons/ZoomOut'
 import PropTypes from 'prop-types'
 import fileActions from '../../state/actions/files'
 
@@ -33,17 +36,22 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  closeIcon: {
+  Icon: {
+    fill: theme.palette.common.white
+  },
+  ZoomInIcon: {
     fill: theme.palette.common.white
   },
   image: {
-    width: '50%',
-    height: '50%'
+    width: '70%',
+    height: 'auto'
   },
   fileWrapper: {
     '& canvas': {
-      margin: '0 auto'
-    }
+      margin: '0 auto',
+      width: '100%'
+    },
+    width: '100%'
   }
 }))
 
@@ -81,6 +89,7 @@ const FileVisor = ({ open, onClose, fileName }) => {
       getFileData(fileName)
     }
   }, [open, fileName])
+
   return (
     <Dialog
       open={open}
@@ -90,18 +99,26 @@ const FileVisor = ({ open, onClose, fileName }) => {
     >
       <Box p={2} className={classes.bar}>
         <Typography>{fileName}</Typography>
-        <IconButton onClick={onClose}>
-          <CloseIcon className={classes.closeIcon} />
-        </IconButton>
+        <Grid>
+          <IconButton className={classes.ZoomInIcon}>
+            <ZoomInIcon className={classes.ZoomInIcon} />
+          </IconButton>
+          <IconButton>
+            <ZoomOutIcon className={classes.Icon} />
+          </IconButton>
+          <IconButton onClick={onClose}>
+            <CloseIcon className={classes.Icon} />
+          </IconButton>
+        </Grid>
       </Box>
 
-      <DialogContent>
+      <DialogContent className={classes.content}>
         {loading ? (
           <>
             <CircularProgress size={40} thickness={5} />
           </>
         ) : (
-          <Box>
+          <Box className={classes.box}>
             {fileType === 'application/pdf' ? (
               <Box textAlign="center" className={classes.fileWrapper}>
                 <Document file={imgData}>
