@@ -231,6 +231,30 @@ const getPersonalInterventionDetails = (id) => (dispatch) =>
       })
   })
 
+const getAttention =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${serviceEndpoint}/assistance/attended?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: assistanceTypes.GET_ATTENTION_LIST,
+            payload: data.items
+          })
+          dispatch({
+            type: assistanceTypes.SET_ATTENTION_TOTALS,
+            payload: data.total
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 export default {
   toggleModal,
   getCalendarEvents,
@@ -247,5 +271,6 @@ export default {
   createAssistance,
   getAssistanceList,
   searchEmployee,
-  getPersonalInterventionDetails
+  getPersonalInterventionDetails,
+  getAttention
 }
