@@ -10,11 +10,12 @@ import JobForm from './JobForm'
 import { ConfirmDelete, DataTable } from '../Shared'
 import { formatCurrency, formatDate } from '../../formatters'
 
-const PensionSituation = () => {
+const HistoryJobs = ({ employeeId }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { idEmployee } = useParams()
   const [list, setList] = useState([])
+  const [currentEmployeeId] = useState(idEmployee || employeeId)
   const [current, setCurrent] = useState(null)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
@@ -22,7 +23,7 @@ const PensionSituation = () => {
 
   const fetchData = () => {
     dispatch(
-      employeesActions.getEmployeeJobs({ employee_id: idEmployee })
+      employeesActions.getEmployeeJobs({ employee_id: currentEmployeeId })
     ).then((data) => {
       setList(
         data.map((item) => ({
@@ -39,7 +40,7 @@ const PensionSituation = () => {
     dispatch(
       employeesActions.createEmployeeJob({
         ...values,
-        employee_id: parseInt(idEmployee, 10)
+        employee_id: parseInt(currentEmployeeId, 10)
       })
     )
 
@@ -54,7 +55,7 @@ const PensionSituation = () => {
       employeesActions.updateEmployeeJob(current.id, {
         ...values,
         state: current.state,
-        employee_id: parseInt(idEmployee, 10)
+        employee_id: parseInt(currentEmployeeId, 10)
       })
     )
   }
@@ -184,6 +185,6 @@ const PensionSituation = () => {
   )
 }
 
-PensionSituation.propTypes = {}
+HistoryJobs.propTypes = {}
 
-export default PensionSituation
+export default HistoryJobs

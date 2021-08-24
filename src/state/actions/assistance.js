@@ -199,6 +199,22 @@ const getAssistanceList =
         })
     })
 
+const searchEmployee =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${serviceEndpoint}/assistance/search?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 export default {
   toggleModal,
   getCalendarEvents,
@@ -213,5 +229,6 @@ export default {
   updateConstructionAttention,
   deleteConstructionAttention,
   createAssistance,
-  getAssistanceList
+  getAssistanceList,
+  searchEmployee
 }

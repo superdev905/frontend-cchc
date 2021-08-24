@@ -1,4 +1,5 @@
 import Axios from '../../Axios'
+import config from '../../config'
 
 const employeeEndpoint = `${
   process.env.REACT_APP_NODE_ENV === 'production'
@@ -32,7 +33,20 @@ const uploadFile = (formData) => () =>
       })
   })
 
+const uploadFileToStorage = (formData) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.parameters}/file/upload`, formData)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   uploadFile,
-  getFile
+  getFile,
+  uploadFileToStorage
 }

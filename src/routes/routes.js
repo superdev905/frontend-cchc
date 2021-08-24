@@ -17,6 +17,7 @@ const Visits = lazy(() => import('../pages/Visits'))
 const Visit = lazy(() => import('../pages/Visit'))
 const AssistanceType = lazy(() => import('../pages/Visits/AssistanceType'))
 const Assistance = lazy(() => import('../pages/Assistance'))
+const AttendedEmployee = lazy(() => import('../pages/AttendedEmployee'))
 
 const routes = [
   {
@@ -188,6 +189,22 @@ const routes = [
         yes={() => (
           <Layout>
             <Assistance />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: `/visit/:idVisit/attended/:idEmployee`,
+    key: 'ASSISTANCE-TYPE',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SIMPLE_USER']}
+        yes={() => (
+          <Layout>
+            <AttendedEmployee />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}

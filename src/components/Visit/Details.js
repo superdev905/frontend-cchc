@@ -3,7 +3,7 @@ import { Box, Grid, Typography } from '@material-ui/core'
 import { useSelector, useDispatch } from 'react-redux'
 import commonActions from '../../state/actions/common'
 import usersActions from '../../state/actions/users'
-import { LabeledRow, StatusChip, Text, Wrapper } from '../UI'
+import { LabeledRow, StatusChip, Text, Wrapper, Button } from '../UI'
 import { formatDate, formatHours } from '../../formatters'
 
 const Details = ({ fetching }) => {
@@ -30,6 +30,12 @@ const Details = ({ fetching }) => {
   }, [visit])
   return (
     <Wrapper>
+      <Box p={1} display="flex" justifyContent="flex-end">
+        <Button>Iniciar visita</Button>
+        <Button>Pausar visita</Button>
+        <Button danger>Cancelar</Button>
+        <Button>Atender trabajadores</Button>
+      </Box>
       <Box p={1}>
         <Typography
           style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}

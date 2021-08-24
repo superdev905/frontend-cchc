@@ -6,7 +6,7 @@ import { Box, Grid } from '@material-ui/core'
 import assistanceActions from '../../state/actions/assistance'
 import { Button, SearchInput, Wrapper } from '../UI'
 import { DataTable } from '../Shared'
-import { formatDate } from '../../formatters'
+import { formatDate, formatHours } from '../../formatters'
 
 const EventList = () => {
   const history = useHistory()
@@ -48,7 +48,10 @@ const EventList = () => {
     setTableData(
       listEvents.map((item) => ({
         ...item,
-        dateEvent: formatDate(item.date, {})
+        dateEvent: formatDate(item.date, {}),
+        startHour: `${formatHours(item.start_date)} - ${formatHours(
+          item.end_date
+        )}`
       }))
     )
   }, [listEvents])
@@ -94,6 +97,11 @@ const EventList = () => {
               {
                 name: 'Fecha',
                 selector: (row) => row.dateEvent,
+                sortable: true
+              },
+              {
+                name: 'Hora',
+                selector: (row) => row.startHour,
                 sortable: true
               },
               {

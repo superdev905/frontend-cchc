@@ -7,30 +7,42 @@ import {
   Edit as EditIcon,
   ArrowForward as ArrowIcon
 } from '@material-ui/icons'
-import employeesAction from '../../state/actions/employees'
 import assistanceAction from '../../state/actions/assistance'
+import { areaConfig } from '../../config'
 import { DataTable } from '../Shared'
 import { ActionsTable, Button, TextField, Wrapper } from '../UI'
 import WorkerInterventionRecord from '../Assistance/InterventionRegistration/WorkerInterventionRecord'
 import { useToggle } from '../../hooks'
 import searchWithRut from '../../formatters/searchWithRut'
+import JobsDialog from './JobsDialog'
 
 const ContactList = () => {
   const dispatch = useDispatch()
   const { idVisit } = useParams()
   const history = useHistory()
   const { pathname } = useLocation()
+  const { open: openJobs, toggleOpen: toggleOpenJobs } = useToggle()
   const [searchUser, setSearchUser] = useState('')
+  const [searching, setSearching] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
   const { open, toggleOpen } = useToggle()
   const [searchResult, setSearchResult] = useState([])
-  const { visit, attendedEmployeeList: attendedList } = useSelector(
+  const [attendedList, setAttendedList] = useState([])
+  const { visit, attendedEmployeeList } = useSelector(
     (state) => state.assistance
   )
 
   const fetchAttendedList = () => {
     dispatch(assistanceAction.getAssistanceList({ visit_id: idVisit }))
   }
+
+  const drawAreasColumns = (list) =>
+    list.map((item) => ({
+      name: item.short,
+      minWidth: 10,
+      selector: (row) => row[item.short],
+      center: true
+    }))
 
   const createAttention = (values) =>
     dispatch(
@@ -52,22 +64,34 @@ const ContactList = () => {
   }, [])
 
   useEffect(() => {
+    setAttendedList(
+      attendedEmployeeList.map((item) => ({
+        ...item,
+        fullName: `${item.employee_fullname}`
+      }))
+    )
+  }, [attendedEmployeeList])
+
+  useEffect(() => {
     if (searchUser) {
+      setSearching(true)
+      setSearchResult([])
       dispatch(
-        employeesAction.getEmployees(
-          { search: searchUser, state: 'CREATED' },
-          false
-        )
+        assistanceAction.searchEmployee({
+          employee_rut: searchUser,
+          visit_id: idVisit
+        })
       ).then((result) => {
+        setSearching(false)
         setSearchResult(
           result.map((item) => ({
             ...item,
-            fullName: `${item.names}`,
-            lastName: `${item.paternal_surname} ${item.maternal_surname}`
+            fullName: `${item.names} ${item.paternal_surname} ${item.maternal_surname}`
           }))
         )
       })
     } else {
+      setSearching(false)
       setSearchResult([])
     }
   }, [searchUser])
@@ -86,23 +110,21 @@ const ContactList = () => {
         columns={[
           {
             name: 'Run',
-            selector: (row) => row.employee_rut,
+            selector: (row) => row.employee_run,
             sortable: true
           },
           {
-            name: 'Nombres',
-            selector: (row) => row.employee_name,
+            name: 'Nombres y apellidos',
+            selector: (row) => row.fullName,
             sortable: true
           },
           {
-            name: 'Apellidos',
-            selector: (row) => row.employee_lastname,
-            sortable: true
+            name: '',
+            selector: (row) => row.tag,
+            minWidth: 10
           },
-          {
-            name: 'Area',
-            selector: (row) => row.area_name
-          },
+
+          ...drawAreasColumns(areaConfig.areaList),
           {
             name: '',
             right: true,
@@ -113,7 +135,7 @@ const ContactList = () => {
                     icon: <ArrowIcon />,
                     onClick: () => {
                       console.log('s')
-                      history.push(`${pathname}/assistance/${row.id}`)
+                      history.push(`${pathname}/attended/${row.employee_id}`)
                     }
                   }
                 ]}
@@ -123,7 +145,7 @@ const ContactList = () => {
         ]}
         data={attendedList}
       />
-      <Box marginTop="20px">
+      <Box marginTop="20px" p={1}>
         <Typography style={{ marginBottom: '20px' }}>
           Agregar nuevo trabajador
         </Typography>
@@ -141,7 +163,7 @@ const ContactList = () => {
         </Grid>
 
         <DataTable
-          overflow={false}
+          progressPending={searching}
           emptyMessage="No se encontraron trabajadores"
           columns={[
             {
@@ -150,21 +172,29 @@ const ContactList = () => {
               sortable: true
             },
             {
-              name: 'Nombres',
+              name: 'Nombres y Apellidos',
               selector: (row) => row.fullName,
               sortable: true
             },
             {
-              name: 'Apellidos',
-              selector: (row) => row.lastName
+              name: 'N',
+              selector: (row) => row.tag
             },
             {
               name: '',
               right: true,
               cell: (row) => (
                 <Box>
-                  <Button size="small" startIcon={<EditIcon />}>
-                    Trabajos
+                  <Button
+                    size="small"
+                    startIcon={<EditIcon />}
+                    disabled={row.is_old}
+                    onClick={() => {
+                      toggleOpenJobs()
+                      setSelectedUser(row)
+                    }}
+                  >
+                    Registrar
                   </Button>
                   <Button
                     size="small"
@@ -174,7 +204,7 @@ const ContactList = () => {
                       setSelectedUser(row)
                     }}
                   >
-                    Atención
+                    Atender
                   </Button>
                 </Box>
               )
@@ -191,6 +221,14 @@ const ContactList = () => {
           company={{ business_name: visit.business_name }}
           construction={{ name: visit.construction_name }}
           successFunction={fetchAttendedList}
+          successMessage="Atención creada con éxito"
+        />
+      )}
+      {selectedUser && openJobs && (
+        <JobsDialog
+          open={openJobs}
+          onClose={toggleOpenJobs}
+          employeeId={selectedUser.id}
         />
       )}
     </Wrapper>

@@ -37,9 +37,10 @@ const Visit = () => {
         <PageHeading>Visita {idVisit}</PageHeading>
       </Box>
       <VisitDetails fetching={loading} />
-      <ContactList />
+
       <AttendedEmployees />
       <AttendEmployees />
+      <ContactList />
     </Box>
   )
 }

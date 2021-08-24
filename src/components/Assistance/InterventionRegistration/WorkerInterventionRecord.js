@@ -11,17 +11,18 @@ import {
   Radio,
   Avatar
 } from '@material-ui/core'
-import { DatePicker, Dialog, FilePicker } from '../../Shared'
+import { Dialog, FilePicker } from '../../Shared'
 import {
   Button,
   Select,
   SubmitButton,
-  TextField,
   InputLabel,
-  TextArea
+  TextArea,
+  LabeledRow
 } from '../../UI'
 import commonActions from '../../../state/actions/common'
 import { AttentionStatus } from '../../../config'
+import { formatDate, formatHours } from '../../../formatters'
 
 const validationSchema = Yup.object().shape({
   date: Yup.date().required('Seleccione fecha'),
@@ -37,8 +38,8 @@ const validationSchema = Yup.object().shape({
   case_id: Yup.number('Seleccione caso'),
   task_id: Yup.number('Seleccione plan de intervención '),
   assigned_id: Yup.string('Ingrese profesional'),
-  observation: Yup.string('Ingrese observaciones')
-  // attached_url: Yup.mixed().required()
+  observation: Yup.string('Ingrese observaciones'),
+  attached_url: Yup.mixed()
 })
 
 const WorkerInterventionRecord = ({
@@ -57,7 +58,7 @@ const WorkerInterventionRecord = ({
   const { areas, managementList } = useSelector((state) => state.common)
   const { user } = useSelector((state) => state.auth)
   const [topics, setTopics] = useState([])
-  //  const [file, setFile] = useState(null)
+  const [attachedFile, setAttachedFile] = useState(null)
 
   const formik = useFormik({
     validateOnMount: true,
@@ -84,7 +85,10 @@ const WorkerInterventionRecord = ({
       observation: type === 'UPDATE' ? data.observation : '',
       attached_url: type === 'UPDATE' ? data.attached_url : ''
     },
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
+      if (attachedFile) {
+        console.log('sss')
+      }
       submitFunction({
         ...values,
         assigned_id: user.id,
@@ -149,52 +153,48 @@ const WorkerInterventionRecord = ({
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
       <Box>
         <Typography variant="h6" align="center">
-          {`${
-            type === 'UPDATE' ? 'Actualizar' : 'Crear'
-          } Registro de Intervención de personal`}
+          {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Assistencia`}
         </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6} lg={3}>
-              <DatePicker
-                disabledFuture={false}
-                label="Fecha"
-                required
-                value={formik.values.date}
-                onChange={(dateSelected) => {
-                  formik.setFieldValue('date', dateSelected)
-                }}
-              />
+            <Grid item xs={12} md={6}>
+              <Box>
+                <LabeledRow label="Fecha:">
+                  {formatDate(formik.values.date)}
+                </LabeledRow>
+                <LabeledRow label="Hora:">
+                  {formatHours(formik.values.date)}
+                </LabeledRow>
+                <LabeledRow label="Origen Sistema:">
+                  {formik.values.source_system}
+                </LabeledRow>
+                <LabeledRow label="Origen Empresa:">
+                  {formik.values.source_business}
+                </LabeledRow>
+              </Box>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <TextField
-                label="Origen sistema"
-                value={formik.values.source_system}
-                inputProps={{ readOnly: true }}
-              />
+            <Grid item xs={12} md={6}>
+              <Box>
+                <LabeledRow label="Empresa:">
+                  {company.business_name}
+                </LabeledRow>
+                <LabeledRow label="Obra:">{construction.name}</LabeledRow>
+                <LabeledRow label="Profesional:">
+                  <Box display="flex" alignItems="center">
+                    <Avatar>{user ? user.names.charAt(0) : ''}</Avatar>
+                    <Typography
+                      style={{ marginLeft: '10px' }}
+                    >{`${user?.names} ${user?.paternal_surname}`}</Typography>
+                  </Box>
+                </LabeledRow>
+              </Box>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <TextField
-                label="Origen Empresa"
-                value={formik.values.source_business}
-                inputProps={{ readOnly: true }}
-              />
+            <Grid item xs={12}>
+              <Typography>
+                <strong>Complete los siguientes campos</strong>
+              </Typography>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <TextField
-                label="Empresa"
-                value={company.business_name}
-                inputProps={{ readOnly: true }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <TextField
-                label="Obra"
-                value={construction.name}
-                inputProps={{ readOnly: true }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Select
                 label="Lugar de atención"
                 name="attention_place"
@@ -218,7 +218,7 @@ const WorkerInterventionRecord = ({
                 ))}
               </Select>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Select
                 label="Método de contacto"
                 name="contact_method"
@@ -246,7 +246,7 @@ const WorkerInterventionRecord = ({
                 ))}
               </Select>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Select
                 label="Area"
                 name="area"
@@ -264,7 +264,7 @@ const WorkerInterventionRecord = ({
                 ))}
               </Select>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Select
                 label="Tema"
                 name="topic"
@@ -285,7 +285,7 @@ const WorkerInterventionRecord = ({
                 ))}
               </Select>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Select
                 label="Gestión"
                 name="management_id"
@@ -308,7 +308,7 @@ const WorkerInterventionRecord = ({
                 ))}
               </Select>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={6} lg={4}>
               <Select
                 label="Estado"
                 name="status"
@@ -326,43 +326,40 @@ const WorkerInterventionRecord = ({
                 ))}
               </Select>
             </Grid>
-
-            <Grid container spacing={2} item xs={12} md={12} lg={12}>
-              <Grid item xs={12} md={3} lg={3}>
-                <InputLabel required>Informe Empresa</InputLabel>
-                <Box>
-                  <FormControlLabel
-                    value="end"
-                    control={
-                      <Radio
-                        color="primary"
-                        checked={formik.values.company_report === 'SI'}
-                        onChange={() => {
-                          formik.setFieldValue('company_report', 'SI')
-                        }}
-                      />
-                    }
-                    label="SI"
-                  />
-                  <FormControlLabel
-                    value="end"
-                    control={
-                      <Radio
-                        color="primary"
-                        checked={formik.values.company_report === 'NO'}
-                        onChange={() => {
-                          formik.setFieldValue('company_report', 'NO')
-                        }}
-                      />
-                    }
-                    label="NO"
-                  />
-                </Box>
-              </Grid>
+            <Grid item xs={12}>
+              <InputLabel required>Informe Empresa</InputLabel>
+              <Box>
+                <FormControlLabel
+                  value="end"
+                  control={
+                    <Radio
+                      color="primary"
+                      checked={formik.values.company_report === 'SI'}
+                      onChange={() => {
+                        formik.setFieldValue('company_report', 'SI')
+                      }}
+                    />
+                  }
+                  label="SI"
+                />
+                <FormControlLabel
+                  value="end"
+                  control={
+                    <Radio
+                      color="primary"
+                      checked={formik.values.company_report === 'NO'}
+                      onChange={() => {
+                        formik.setFieldValue('company_report', 'NO')
+                      }}
+                    />
+                  }
+                  label="NO"
+                />
+              </Box>
             </Grid>
 
             <Grid container spacing={2} item xs={12} md={12} lg={12}>
-              <Grid item xs={12} md={3} lg={3}>
+              <Grid item xs={12} md={3} lg={2}>
                 <InputLabel required>Caso Social</InputLabel>
                 <Box>
                   <FormControlLabel
@@ -393,7 +390,7 @@ const WorkerInterventionRecord = ({
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} md={3} lg={3}>
+              <Grid item xs={12} md={3} lg={4}>
                 <Select
                   label="Caso"
                   name="case_id"
@@ -412,7 +409,7 @@ const WorkerInterventionRecord = ({
                   ))}
                 </Select>
               </Grid>
-              <Grid item xs={12} md={3} lg={3}>
+              <Grid item xs={12} md={3} lg={4}>
                 <Select
                   label="Plan de Intervención"
                   name="task_id"
@@ -431,18 +428,6 @@ const WorkerInterventionRecord = ({
                   ))}
                 </Select>
               </Grid>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Box display="flex" alignItems="center">
-                <Typography style={{ marginRight: '10px' }}>
-                  Profesional:
-                </Typography>
-                <Avatar>{user ? user.names.charAt(0) : ''}</Avatar>
-                <Typography
-                  style={{ marginLeft: '10px' }}
-                >{`${user?.names} ${user?.paternal_surname}`}</Typography>
-              </Box>
             </Grid>
 
             <Grid item xs={12} md={12} lg={12}>
@@ -466,8 +451,7 @@ const WorkerInterventionRecord = ({
 
               <FilePicker
                 onChangeImage={(e) => {
-                  //  eslint-disable-next-line
-                  console.log(e)
+                  setAttachedFile(e)
                 }}
               />
             </Grid>

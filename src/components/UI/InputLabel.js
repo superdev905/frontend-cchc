@@ -4,7 +4,7 @@ import { InputLabel, makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   label: {
-    fontSize: '15px',
+    fontSize: '14px',
     color: theme.palette.gray.gray600,
     marginBottom: 5
   }
