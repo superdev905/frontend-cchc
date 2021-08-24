@@ -8,7 +8,9 @@ const initialState = {
   showModal: false,
   assistanceConstructionList: [],
   attendedEmployeeList: [],
-  attention: null
+  attention: null,
+  listAttention: [],
+  totalAttention: 0
 }
 
 const assistanceReducer = (state = initialState, { type, payload }) => {
@@ -29,6 +31,10 @@ const assistanceReducer = (state = initialState, { type, payload }) => {
       return { ...state, attendedEmployeeList: payload }
     case assistanceTypes.GET_PERSONAL_INTERVENTION_DETAILS:
       return { ...state, attention: payload }
+    case assistanceTypes.GET_ATTENTION_LIST:
+      return { ...state, listAttention: payload }
+    case assistanceTypes.SET_ATTENTION_TOTALS:
+      return { ...state, totalAttention: payload }
 
     default:
       return state
