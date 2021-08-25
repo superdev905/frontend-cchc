@@ -87,6 +87,18 @@ const getVisitStatistics = (idVisit) => () =>
       })
   })
 
+const createVisitReport = (idVisit, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${serviceEndpoint}/visits/${idVisit}/report`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const updateEvent = (id, values) => () =>
   new Promise((resolve, reject) => {
     Axios.put(`${serviceEndpoint}/visits/${id}`, values)
@@ -277,5 +289,6 @@ export default {
   searchEmployee,
   getPersonalInterventionDetails,
   getAttention,
-  getVisitStatistics
+  getVisitStatistics,
+  createVisitReport
 }

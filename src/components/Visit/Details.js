@@ -2,16 +2,31 @@ import { useEffect, useState } from 'react'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { useSelector, useDispatch } from 'react-redux'
 import commonActions from '../../state/actions/common'
+import assistanceActions from '../../state/actions/assistance'
 import usersActions from '../../state/actions/users'
 import { LabeledRow, StatusChip, Text, Wrapper, Button } from '../UI'
 import { formatDate, formatHours } from '../../formatters'
+import { useToggle } from '../../hooks'
+import ReportModal from './Report/ReportModal'
 
 const Details = ({ fetching }) => {
   const dispatch = useDispatch()
   const { visit } = useSelector((state) => state.assistance)
+  const { user } = useSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
   const [shiftDetails, setShiftDetails] = useState(null)
   const [userDetails, setUserDetails] = useState(null)
+  const { open: openReport, toggleOpen: toggleOpenReport } = useToggle()
+
+  const createReport = (values) => {
+    const data = {
+      user: `${user.names} ${user.paternal_surname} ${user.maternal_surname}`,
+      user_email: user.email,
+      user_phone: '---',
+      ...values
+    }
+    return dispatch(assistanceActions.createVisitReport(visit.id, data))
+  }
 
   useEffect(() => {
     if (visit) {
@@ -34,7 +49,12 @@ const Details = ({ fetching }) => {
         <Button>Iniciar visita</Button>
         <Button>Pausar visita</Button>
         <Button danger>Cancelar</Button>
-        <Button>Atender trabajadores</Button>
+        <Button
+          disabled={Boolean(visit?.report_key)}
+          onClick={toggleOpenReport}
+        >
+          Informar
+        </Button>
       </Box>
       <Box p={1}>
         <Typography
@@ -92,6 +112,13 @@ const Details = ({ fetching }) => {
           </Grid>
         </Grid>
       </Box>
+      {visit && openReport && (
+        <ReportModal
+          open={openReport}
+          onClose={toggleOpenReport}
+          submitFunction={createReport}
+        />
+      )}
     </Wrapper>
   )
 }
