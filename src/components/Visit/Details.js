@@ -1,17 +1,152 @@
 import { useEffect, useState } from 'react'
-import { Box, Grid, Typography } from '@material-ui/core'
 import { useSelector, useDispatch } from 'react-redux'
-import commonActions from '../../state/actions/common'
-import usersActions from '../../state/actions/users'
+import { useSnackbar } from 'notistack'
+import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
+import { endOfWeek } from 'date-fns'
+import startOfWeek from 'date-fns/startOfWeek'
 import { LabeledRow, StatusChip, Text, Wrapper, Button } from '../UI'
 import { formatDate, formatHours } from '../../formatters'
+import { useMenu, useSuccess, useToggle } from '../../hooks'
+import commonActions from '../../state/actions/common'
+import usersActions from '../../state/actions/users'
+import assistanceActions from '../../state/actions/assistance'
+
+const useStyles = makeStyles(() => ({
+  buttonYellow: {
+    '&:hover': {
+      backgroundColor: '#f6e68f',
+      border: 'none'
+    }
+  },
+  buttonCancel: {
+    '&:hover': {
+      backgroundColor: '#FFEBF6',
+      border: 'none'
+    }
+  },
+  buttonFinish: {
+    '&:hover': {
+      backgroundColor: '#90EE90',
+      border: 'none'
+    }
+  }
+}))
 
 const Details = ({ fetching }) => {
   const dispatch = useDispatch()
+  const classes = useStyles()
+  const { enqueueSnackbar } = useSnackbar()
+  const { user } = useSelector((state) => state.auth)
   const { visit } = useSelector((state) => state.assistance)
   const [loading, setLoading] = useState(false)
+  const [currentDate] = useState(new Date())
   const [shiftDetails, setShiftDetails] = useState(null)
   const [userDetails, setUserDetails] = useState(null)
+  const [currentEvent] = useState(null)
+  const { handleClose } = useMenu()
+  const { open: openCancel, toggleOpen: toggleOpenCancel } = useToggle()
+  const { open: openFinish, toggleOpen: toggleOpenFinish } = useToggle()
+  const { open: openStart, toggleOpen: toggleOpenStart } = useToggle()
+  const { success, changeSuccess } = useSuccess()
+  const [filters] = useState({
+    start_date: startOfWeek(currentDate),
+    end_date: endOfWeek(currentDate)
+  })
+
+  const fetchEvents = (query) => {
+    dispatch(
+      assistanceActions.getCalendarEvents({
+        ...query,
+        start_date: query.start_date
+          ? new Date(query.start_date).toISOString()
+          : null,
+        end_date: query.end_date
+          ? new Date(query.end_date).toISOString()
+          : null,
+        user_id: user?.id || null
+      })
+    )
+  }
+
+  const onCancelEvent = () => {
+    setLoading(true)
+    dispatch(assistanceActions.patchEvent(visit.id, { status: 'CANCELADA' }))
+      .then(() => {
+        setLoading(false)
+        fetchEvents(filters)
+        changeSuccess(true, () => {
+          enqueueSnackbar('Evento cancelado', { variant: 'success' })
+          handleClose()
+          toggleOpenCancel()
+          console.log('cancelado')
+        })
+      })
+      .catch((err) => {
+        setLoading(false)
+        enqueueSnackbar(err, { variant: 'error' })
+      })
+  }
+
+  const onFinishedEvent = () => {
+    setLoading(true)
+    dispatch(assistanceActions.patchEvent(visit.id, { status: 'TERMINADA' }))
+      .then(() => {
+        setLoading(false)
+        fetchEvents(filters)
+        changeSuccess(true, () => {
+          enqueueSnackbar('Evento terminado', { variant: 'success' })
+          handleClose()
+          toggleOpenFinish()
+          console.log('finalizado')
+        })
+      })
+      .catch((err) => {
+        setLoading(false)
+        enqueueSnackbar(err, { variant: 'error' })
+      })
+  }
+
+  const onStartEvent = () => {
+    setLoading(true)
+    dispatch(assistanceActions.patchEvent(visit.id, { status: 'INICIADA' }))
+      .then(() => {
+        setLoading(false)
+        fetchEvents(filters)
+        changeSuccess(true, () => {
+          enqueueSnackbar('Evento actualizado a iniciado', {
+            variant: 'success'
+          })
+          handleClose()
+          toggleOpenStart()
+          console.log('iniciado')
+        })
+      })
+      .catch((err) => {
+        setLoading(false)
+        enqueueSnackbar(err, { variant: 'error' })
+      })
+  }
+
+  const onPauseEvent = () => {
+    setLoading(true)
+    dispatch(assistanceActions.patchEvent(visit.id, { status: 'PAUSA' }))
+      .then(() => {
+        setLoading(false)
+        fetchEvents(filters)
+        changeSuccess(true, () => {
+          enqueueSnackbar('Evento pausado', {
+            variant: 'success'
+          })
+          handleClose()
+          toggleOpenStart()
+          console.log('pausado')
+        })
+      })
+      .catch((err) => {
+        setLoading(false)
+        enqueueSnackbar(err, { variant: 'error' })
+      })
+  }
 
   useEffect(() => {
     if (visit) {
@@ -28,12 +163,55 @@ const Details = ({ fetching }) => {
       )
     }
   }, [visit])
+
+  useEffect(() => {
+    fetchEvents(filters)
+  }, [filters])
+
   return (
     <Wrapper>
-      <Box p={1} display="flex" justifyContent="flex-end">
-        <Button>Iniciar visita</Button>
-        <Button>Pausar visita</Button>
-        <Button danger>Cancelar</Button>
+      <Box
+        p={1}
+        display="flex"
+        justifyContent="flex-end"
+        className={classes.box}
+      >
+        <Button
+          size="small"
+          variant="outlined"
+          // disabled={event.status === 'INICIADA'}
+          onClick={onStartEvent}
+          className={classes.buttonYellow}
+        >
+          Iniciar Visita
+        </Button>
+        <Button
+          size="small"
+          variant="outlined"
+          // disabled={event.status === 'PAUSA'}
+          onClick={onPauseEvent}
+          className={classes.buttonYellow}
+        >
+          Pausar Visita
+        </Button>
+        <Button
+          size="small"
+          variant="outlined"
+          // disabled={event.status === 'CANCELADA'}
+          onClick={onCancelEvent}
+          className={classes.buttonCancel}
+        >
+          Cancelar
+        </Button>
+        <Button
+          size="small"
+          variant="outlined"
+          // disabled={event.status === 'TERMINADA'}
+          onClick={onFinishedEvent}
+          className={classes.buttonFinish}
+        >
+          Completar visita
+        </Button>
         <Button>Atender trabajadores</Button>
       </Box>
       <Box p={1}>
@@ -92,6 +270,60 @@ const Details = ({ fetching }) => {
           </Grid>
         </Grid>
       </Box>
+
+      {currentEvent && openCancel && (
+        <ConfirmDelete
+          event="CANCEL"
+          confirmText="Aceptar"
+          open={openCancel}
+          success={success}
+          onClose={toggleOpenCancel}
+          loading={loading}
+          onConfirm={() => onCancelEvent()}
+          message={
+            <span>
+              ¿Estás seguro de cancelar este evento:
+              <strong>{currentEvent.title}</strong>?
+            </span>
+          }
+        />
+      )}
+
+      {currentEvent && openFinish && (
+        <ConfirmDelete
+          event="FINISH"
+          confirmText="Aceptar"
+          open={openFinish}
+          success={success}
+          onClose={toggleOpenFinish}
+          loading={loading}
+          onConfirm={() => onFinishedEvent()}
+          message={
+            <span>
+              ¿Estás seguro de completar este evento:
+              <strong>{` ${currentEvent.title}`}</strong>?
+            </span>
+          }
+        />
+      )}
+
+      {currentEvent && openStart && (
+        <ConfirmDelete
+          event="START"
+          confirmText="Aceptar"
+          open={openStart}
+          success={success}
+          onClose={toggleOpenFinish}
+          loading={loading}
+          onConfirm={() => onStartEvent()}
+          message={
+            <span>
+              ¿Estás seguro de iniciar este evento:
+              <strong>{` ${currentEvent.title}`}</strong>?
+            </span>
+          }
+        />
+      )}
     </Wrapper>
   )
 }
