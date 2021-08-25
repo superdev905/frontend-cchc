@@ -9,7 +9,8 @@ import {
   VisitDetails,
   ContactList,
   AttendedEmployees,
-  AttendEmployees
+  AttendEmployees,
+  VisitStatistics
 } from '../../components/Visit'
 import ConstructionAttend from '../../components/Visit/ConstructionAttend/ConstructionAttend'
 
@@ -42,6 +43,7 @@ const Visit = () => {
       <AttendedEmployees />
       <AttendEmployees />
       <ConstructionAttend />
+      <VisitStatistics />
       <ContactList />
     </Box>
   )
