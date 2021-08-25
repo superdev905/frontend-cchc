@@ -41,7 +41,8 @@ const ContactList = () => {
       name: item.short,
       minWidth: 10,
       selector: (row) => row[item.short],
-      center: true
+      center: true,
+      hide: 'md'
     }))
 
   const createAttention = (values) =>
@@ -106,28 +107,31 @@ const ContactList = () => {
         </Typography>
       </Box>
       <DataTable
+        bordered
         emptyMessage="No hay trabajadores atendidos"
         columns={[
           {
             name: 'Run',
             selector: (row) => row.employee_run,
-            sortable: true
+            sortable: true,
+            width: '150px'
           },
           {
             name: 'Nombres y apellidos',
             selector: (row) => row.fullName,
-            sortable: true
+            width: '250px'
           },
           {
             name: '',
-            selector: (row) => row.tag,
-            minWidth: 10
+            center: true,
+            selector: (row) => row.tag
           },
 
           ...drawAreasColumns(areaConfig.areaList),
           {
             name: '',
             right: true,
+            button: true,
             cell: (row) => (
               <ActionsTable
                 moreOptions={[

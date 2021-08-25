@@ -32,6 +32,51 @@ const customStyles = {
   }
 }
 
+const borderedStyles = {
+  table: {
+    style: {
+      width: '100%',
+      borderStyle: 'solid',
+      borderWidth: '1px',
+      borderColor: '#A0AEC0'
+    }
+  },
+  headRow: {
+    style: {
+      borderTopStyle: 'solid',
+      borderTopWidth: '1px',
+      borderTopColor: '#A0AEC0'
+    }
+  },
+  headCells: {
+    style: {
+      width: '100%',
+      fontSize: '14px',
+      color: '#334D6E',
+      fontWeight: 'bold',
+      '&:not(:last-of-type)': {
+        borderRightStyle: 'solid',
+        borderRightWidth: '1px',
+        borderRightColor: '#A0AEC0'
+      }
+    }
+  },
+  cells: {
+    style: {
+      '&:not(:last-of-type)': {
+        borderRightStyle: 'solid',
+        borderRightWidth: '1px',
+        borderRightColor: '#A0AEC0'
+      }
+    }
+  },
+  rows: {
+    style: {
+      fontSize: '15px'
+    }
+  }
+}
+
 const CustomDataTable = ({
   columns,
   data,
@@ -40,12 +85,19 @@ const CustomDataTable = ({
   loaderRows,
   styles,
   emptyMessage,
+  bordered,
   ...props
 }) => {
   const classes = useStyles()
+
+  const getStyles = () => {
+    if (bordered) return borderedStyles
+    return customStyles
+  }
+
   return (
     <DataTable
-      customStyles={{ ...customStyles, ...styles }}
+      customStyles={{ ...getStyles(), ...styles }}
       columns={columns}
       data={data}
       pagination={pagination}
@@ -73,7 +125,8 @@ CustomDataTable.defaultProps = {
   responsive: true,
   pagination: false,
   loaderRows: 5,
-  emptyMessage: 'No hay datos por mostrar'
+  emptyMessage: 'No hay datos por mostrar',
+  bordered: false
 }
 
 CustomDataTable.propTypes = {
