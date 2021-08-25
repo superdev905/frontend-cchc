@@ -234,9 +234,10 @@ const EventForm = ({
               label="Fecha"
               required
               value={formik.values.date}
-              onChange={(dateSelected) => {
-                formik.setFieldValue('date', dateSelected)
+              onChange={(selectedDate) => {
+                formik.setFieldValue('date', selectedDate)
               }}
+              disabledPast={true}
             />
           </Grid>
           <Grid item xs={12} md={6}>

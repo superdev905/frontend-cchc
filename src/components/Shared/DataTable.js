@@ -41,13 +41,6 @@ const borderedStyles = {
       borderColor: '#A0AEC0'
     }
   },
-  headRow: {
-    style: {
-      borderTopStyle: 'solid',
-      borderTopWidth: '1px',
-      borderTopColor: '#A0AEC0'
-    }
-  },
   headCells: {
     style: {
       width: '100%',

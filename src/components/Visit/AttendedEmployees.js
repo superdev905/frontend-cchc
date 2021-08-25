@@ -166,6 +166,7 @@ const ContactList = () => {
         </Grid>
 
         <DataTable
+          bordered
           progressPending={searching}
           emptyMessage="No se encontraron trabajadores"
           columns={[
