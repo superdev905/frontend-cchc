@@ -16,7 +16,7 @@ const AttendedEmployee = () => {
   const history = useHistory()
 
   const goBack = () => {
-    history.push('/employees')
+    history.goBack()
   }
 
   const getEmployee = useCallback(() => {
@@ -42,8 +42,6 @@ const AttendedEmployee = () => {
       <PersonalDetails />
       <VisitDetails />
       <AttentionDetails />
-      {idVisit}
-      {idEmployee}
     </div>
   )
 }

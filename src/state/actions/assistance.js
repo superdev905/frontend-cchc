@@ -75,6 +75,18 @@ const getEventDetails = (idEvent) => (dispatch) =>
       })
   })
 
+const getVisitStatistics = (idVisit) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${serviceEndpoint}/visits/${idVisit}/statistics`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const updateEvent = (id, values) => () =>
   new Promise((resolve, reject) => {
     Axios.put(`${serviceEndpoint}/visits/${id}`, values)
@@ -233,21 +245,13 @@ const getPersonalInterventionDetails = (id) => (dispatch) =>
 
 const getAttention =
   (query = {}) =>
-  (dispatch) =>
+  () =>
     new Promise((resolve, reject) => {
       Axios.get(
         `${serviceEndpoint}/assistance/attended?${queryString.stringify(query)}`
       )
         .then((response) => {
           const { data } = response
-          dispatch({
-            type: assistanceTypes.GET_ATTENTION_LIST,
-            payload: data.items
-          })
-          dispatch({
-            type: assistanceTypes.SET_ATTENTION_TOTALS,
-            payload: data.total
-          })
           resolve(data)
         })
         .catch((err) => {
@@ -272,5 +276,6 @@ export default {
   getAssistanceList,
   searchEmployee,
   getPersonalInterventionDetails,
-  getAttention
+  getAttention,
+  getVisitStatistics
 }

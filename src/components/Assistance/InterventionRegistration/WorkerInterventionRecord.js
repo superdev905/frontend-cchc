@@ -21,8 +21,10 @@ import {
   LabeledRow
 } from '../../UI'
 import commonActions from '../../../state/actions/common'
+import filesActions from '../../../state/actions/files'
 import { AttentionStatus } from '../../../config'
 import { formatDate, formatHours } from '../../../formatters'
+import { useSuccess } from '../../../hooks'
 
 const validationSchema = Yup.object().shape({
   date: Yup.date().required('Seleccione fecha'),
@@ -55,6 +57,7 @@ const WorkerInterventionRecord = ({
 }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
+  const { success, changeSuccess } = useSuccess()
   const { areas, managementList } = useSelector((state) => state.common)
   const { user } = useSelector((state) => state.auth)
   const [topics, setTopics] = useState([])
@@ -83,26 +86,40 @@ const WorkerInterventionRecord = ({
       task_id: type === 'UPDATE' ? data.task_id : '',
       assigned_id: type === 'UPDATE' ? data.assigned_id : '',
       observation: type === 'UPDATE' ? data.observation : '',
-      attached_url: type === 'UPDATE' ? data.attached_url : ''
+      attached_url: type === 'UPDATE' ? data.attached_url : '',
+      attached_key: type === 'UPDATE' ? data.attached_url : ''
     },
     onSubmit: async (values) => {
+      let resultUpload = null
       if (attachedFile) {
-        console.log('sss')
+        const formData = new FormData()
+        formData.append('file', attachedFile, attachedFile.name)
+        resultUpload = await dispatch(
+          filesActions.uploadFileToStorage(formData)
+        )
       }
       submitFunction({
         ...values,
+        attached_key: resultUpload
+          ? resultUpload.file_key
+          : values.attached_key,
+        attached_url: resultUpload
+          ? resultUpload.file_url
+          : values.attached_url,
         assigned_id: user.id,
         created_by: user.id
       }).then((result) => {
         formik.setSubmitting(false)
-        enqueueSnackbar(successMessage, {
-          variant: 'success',
-          autoHideDuration: 1500
+        changeSuccess(true, () => {
+          enqueueSnackbar(successMessage, {
+            variant: 'success',
+            autoHideDuration: 1500
+          })
+          onClose()
+          if (successFunction) {
+            successFunction(result)
+          }
         })
-        onClose()
-        if (successFunction) {
-          successFunction(result)
-        }
       })
     }
   })
@@ -144,6 +161,7 @@ const WorkerInterventionRecord = ({
 
   useEffect(() => {
     if (open) {
+      setAttachedFile(null)
       dispatch(commonActions.getAreas())
       dispatch(commonActions.getManagement())
     }
@@ -451,6 +469,7 @@ const WorkerInterventionRecord = ({
 
               <FilePicker
                 onChangeImage={(e) => {
+                  console.log(e)
                   setAttachedFile(e)
                 }}
               />
@@ -463,7 +482,9 @@ const WorkerInterventionRecord = ({
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
-              disabled={!formik.isValid}
+              disabled={!formik.isValid || formik.isSubmitting}
+              loading={formik.isSubmitting}
+              success={success}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Registro`}
             </SubmitButton>

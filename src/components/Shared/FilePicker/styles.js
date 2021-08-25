@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
   imgPreview: {
     width: '50%',
+    padding: 20,
     height: 300,
     borderRadius: 5,
     margin: '0 auto'
