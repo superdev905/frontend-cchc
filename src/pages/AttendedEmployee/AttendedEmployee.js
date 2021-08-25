@@ -27,7 +27,7 @@ const AttendedEmployee = () => {
     getEmployee()
   }, [idEmployee])
   return (
-    <div>
+    <Box>
       <Box display="flex" alignItems="center">
         <IconButton onClick={goBack}>
           <ArrowBackIcon />
@@ -42,7 +42,7 @@ const AttendedEmployee = () => {
       <PersonalDetails />
       <VisitDetails />
       <AttentionDetails />
-    </div>
+    </Box>
   )
 }
 
