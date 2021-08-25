@@ -24,11 +24,15 @@ const Visit = () => {
     history.goBack()
   }
 
-  useEffect(() => {
+  const getDetails = () => {
     setLoading(true)
     dispatch(assistanceActions.getEventDetails(idVisit)).then(() => {
       setLoading(false)
     })
+  }
+
+  useEffect(() => {
+    getDetails()
   }, [idVisit])
   return (
     <Box>
@@ -38,7 +42,7 @@ const Visit = () => {
         </IconButton>
         <PageHeading>Visita {idVisit}</PageHeading>
       </Box>
-      <VisitDetails fetching={loading} />
+      <VisitDetails fetching={loading} fetchDetails={getDetails} />
 
       <AttendedEmployees />
       <AttendEmployees />

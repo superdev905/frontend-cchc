@@ -1,51 +1,23 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useSnackbar } from 'notistack'
+import { Box, Grid, Typography } from '@material-ui/core'
+import { endOfWeek } from 'date-fns'
+import startOfWeek from 'date-fns/startOfWeek'
 import commonActions from '../../state/actions/common'
 import assistanceActions from '../../state/actions/assistance'
 import usersActions from '../../state/actions/users'
-import { LabeledRow, StatusChip, Text, Wrapper, Button } from '../UI'
-import { formatDate, formatHours } from '../../formatters'
-import { useToggle } from '../../hooks'
-import ReportModal from './Report/ReportModal'
-import { useSnackbar } from 'notistack'
-import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
-import { endOfWeek } from 'date-fns'
-import startOfWeek from 'date-fns/startOfWeek'
 import { LabeledRow, StatusChip, Text, Wrapper, Button } from '../UI'
 import { formatDate, formatHours } from '../../formatters'
 import { useMenu, useSuccess, useToggle } from '../../hooks'
-import commonActions from '../../state/actions/common'
-import usersActions from '../../state/actions/users'
-import assistanceActions from '../../state/actions/assistance'
+import ReportModal from './Report/ReportModal'
+import { ConfirmDelete } from '../Shared'
 
-const useStyles = makeStyles(() => ({
-  buttonYellow: {
-    '&:hover': {
-      backgroundColor: '#f6e68f',
-      border: 'none'
-    }
-  },
-  buttonCancel: {
-    '&:hover': {
-      backgroundColor: '#FFEBF6',
-      border: 'none'
-    }
-  },
-  buttonFinish: {
-    '&:hover': {
-      backgroundColor: '#90EE90',
-      border: 'none'
-    }
-  }
-}))
-
-const Details = ({ fetching }) => {
+const Details = ({ fetching, fetchDetails }) => {
   const dispatch = useDispatch()
-  const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
   const { user } = useSelector((state) => state.auth)
   const { visit } = useSelector((state) => state.assistance)
-  const { user } = useSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
   const [currentDate] = useState(new Date())
   const [shiftDetails, setShiftDetails] = useState(null)
@@ -61,7 +33,7 @@ const Details = ({ fetching }) => {
     }
     return dispatch(assistanceActions.createVisitReport(visit.id, data))
   }
-  const [currentEvent] = useState(null)
+
   const { handleClose } = useMenu()
   const { open: openCancel, toggleOpen: toggleOpenCancel } = useToggle()
   const { open: openFinish, toggleOpen: toggleOpenFinish } = useToggle()
@@ -98,6 +70,7 @@ const Details = ({ fetching }) => {
           handleClose()
           toggleOpenCancel()
           console.log('cancelado')
+          fetchDetails()
         })
       })
       .catch((err) => {
@@ -116,6 +89,7 @@ const Details = ({ fetching }) => {
           enqueueSnackbar('Evento terminado', { variant: 'success' })
           handleClose()
           toggleOpenFinish()
+          fetchDetails()
           console.log('finalizado')
         })
       })
@@ -137,6 +111,7 @@ const Details = ({ fetching }) => {
           })
           handleClose()
           toggleOpenStart()
+          fetchDetails()
           console.log('iniciado')
         })
       })
@@ -145,7 +120,7 @@ const Details = ({ fetching }) => {
         enqueueSnackbar(err, { variant: 'error' })
       })
   }
-
+  /*  
   const onPauseEvent = () => {
     setLoading(true)
     dispatch(assistanceActions.patchEvent(visit.id, { status: 'PAUSA' }))
@@ -165,7 +140,7 @@ const Details = ({ fetching }) => {
         setLoading(false)
         enqueueSnackbar(err, { variant: 'error' })
       })
-  }
+  } */
 
   useEffect(() => {
     if (visit) {
@@ -190,59 +165,17 @@ const Details = ({ fetching }) => {
   return (
     <Wrapper>
       <Box p={1} display="flex" justifyContent="flex-end">
-        <Button>Iniciar visita</Button>
-        <Button>Pausar visita</Button>
-        <Button danger>Cancelar</Button>
+        <Button danger onClick={toggleOpenCancel}>
+          Cancelar
+        </Button>
+        <Button onClick={toggleOpenStart}>Iniciar visita</Button>
+        <Button onClick={toggleOpenFinish}>Completar visita</Button>
         <Button
           disabled={Boolean(visit?.report_key)}
           onClick={toggleOpenReport}
         >
           Informar
         </Button>
-      </Box>
-      <Box
-        p={1}
-        display="flex"
-        justifyContent="flex-end"
-        className={classes.box}
-      >
-        <Button
-          size="small"
-          variant="outlined"
-          // disabled={event.status === 'INICIADA'}
-          onClick={onStartEvent}
-          className={classes.buttonYellow}
-        >
-          Iniciar Visita
-        </Button>
-        <Button
-          size="small"
-          variant="outlined"
-          // disabled={event.status === 'PAUSA'}
-          onClick={onPauseEvent}
-          className={classes.buttonYellow}
-        >
-          Pausar Visita
-        </Button>
-        <Button
-          size="small"
-          variant="outlined"
-          // disabled={event.status === 'CANCELADA'}
-          onClick={onCancelEvent}
-          className={classes.buttonCancel}
-        >
-          Cancelar
-        </Button>
-        <Button
-          size="small"
-          variant="outlined"
-          // disabled={event.status === 'TERMINADA'}
-          onClick={onFinishedEvent}
-          className={classes.buttonFinish}
-        >
-          Completar visita
-        </Button>
-        <Button>Atender trabajadores</Button>
       </Box>
       <Box p={1}>
         <Typography
@@ -308,7 +241,7 @@ const Details = ({ fetching }) => {
         />
       )}
 
-      {currentEvent && openCancel && (
+      {visit && openCancel && (
         <ConfirmDelete
           event="CANCEL"
           confirmText="Aceptar"
@@ -320,13 +253,13 @@ const Details = ({ fetching }) => {
           message={
             <span>
               ¿Estás seguro de cancelar este evento:
-              <strong>{currentEvent.title}</strong>?
+              <strong>{visit.title}</strong>?
             </span>
           }
         />
       )}
 
-      {currentEvent && openFinish && (
+      {visit && openFinish && (
         <ConfirmDelete
           event="FINISH"
           confirmText="Aceptar"
@@ -338,25 +271,25 @@ const Details = ({ fetching }) => {
           message={
             <span>
               ¿Estás seguro de completar este evento:
-              <strong>{` ${currentEvent.title}`}</strong>?
+              <strong>{` ${visit.title}`}</strong>?
             </span>
           }
         />
       )}
 
-      {currentEvent && openStart && (
+      {visit && openStart && (
         <ConfirmDelete
           event="START"
           confirmText="Aceptar"
           open={openStart}
           success={success}
-          onClose={toggleOpenFinish}
+          onClose={toggleOpenStart}
           loading={loading}
           onConfirm={() => onStartEvent()}
           message={
             <span>
               ¿Estás seguro de iniciar este evento:
-              <strong>{` ${currentEvent.title}`}</strong>?
+              <strong>{` ${visit.title}`}</strong>?
             </span>
           }
         />
