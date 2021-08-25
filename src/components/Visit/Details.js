@@ -38,6 +38,8 @@ const Details = ({ fetching, fetchDetails }) => {
   const { open: openCancel, toggleOpen: toggleOpenCancel } = useToggle()
   const { open: openFinish, toggleOpen: toggleOpenFinish } = useToggle()
   const { open: openStart, toggleOpen: toggleOpenStart } = useToggle()
+  //  const { open: openPause, toggleOpen: toggleOpenPause } = useToggle()
+
   const { success, changeSuccess } = useSuccess()
   const [filters] = useState({
     start_date: startOfWeek(currentDate),
@@ -165,17 +167,36 @@ const Details = ({ fetching, fetchDetails }) => {
   return (
     <Wrapper>
       <Box p={1} display="flex" justifyContent="flex-end">
-        <Button danger onClick={toggleOpenCancel}>
+        <Button
+          danger
+          onClick={toggleOpenCancel}
+          disabled={Boolean(visit?.status === 'CANCELADA')}
+          disabled={Boolean(visit?.status === 'TERMINADA')}
+        >
           Cancelar
         </Button>
-        <Button onClick={toggleOpenStart}>Iniciar visita</Button>
-        <Button onClick={toggleOpenFinish}>Completar visita</Button>
+        <Button
+          onClick={toggleOpenStart}
+          disabled={Boolean(visit?.status === 'CANCELADA')}
+          disabled={Boolean(visit?.status === 'TERMINADA')}
+        >
+          Iniciar visita
+        </Button>
+        <Button
+          onClick={toggleOpenFinish}
+          disabled={Boolean(visit?.status !== 'INICIADA')}
+        >
+          Completar visita
+        </Button>
         <Button
           disabled={Boolean(visit?.report_key)}
           onClick={toggleOpenReport}
         >
           Informar
         </Button>
+        {/* 
+          <Button onClick={toggleOpenPause}>Pausar visita</Button>
+        */}
       </Box>
       <Box p={1}>
         <Typography
@@ -294,6 +315,25 @@ const Details = ({ fetching, fetchDetails }) => {
           }
         />
       )}
+      {/* 
+      {visit && openPause && (
+        <ConfirmDelete
+          event="PAUSE"
+          confirmText="Aceptar"
+          open={openPause}
+          success={success}
+          onClose={toggleOpenPause}
+          loading={loading}
+          onConfirm={() => onPauseEvent()}
+          message={
+            <span>
+              ¿Estás seguro de pausar este evento:
+              <strong>{` ${visit.title}`}</strong>?
+            </span>
+          }
+        />
+      )}
+      */}
     </Wrapper>
   )
 }
