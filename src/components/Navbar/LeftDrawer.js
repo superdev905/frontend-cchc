@@ -20,6 +20,7 @@ import {
   AssignmentInd as EmployeeIcon,
   Assignment as AssistanceIcon
 } from '@material-ui/icons'
+import BorderColorIcon from '@material-ui/icons/BorderColor'
 import clsx from 'clsx'
 
 const useStyles = makeStyles((theme) => ({
@@ -55,6 +56,7 @@ const commonRoutes = [
     path: '/visits',
     icon: <AssistanceIcon />
   },
+  { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
   {
     title: 'Configuración',
     path: '/settings',
