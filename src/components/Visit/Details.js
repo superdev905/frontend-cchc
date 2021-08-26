@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
 import { endOfWeek } from 'date-fns'
 import startOfWeek from 'date-fns/startOfWeek'
 import commonActions from '../../state/actions/common'
@@ -13,8 +13,21 @@ import { useMenu, useSuccess, useToggle } from '../../hooks'
 import ReportModal from './Report/ReportModal'
 import { ConfirmDelete } from '../Shared'
 
+const useStyles = makeStyles(() => ({
+  Cancel: {
+    backgroundColor: '#E74C3C'
+  },
+  Complete: {
+    backgroundColor: '#81d88d'
+  },
+  Start: {
+    backgroundColor: '#f6e68f'
+  }
+}))
+
 const Details = ({ fetching, fetchDetails }) => {
   const dispatch = useDispatch()
+  const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
   const { user } = useSelector((state) => state.auth)
   const { visit } = useSelector((state) => state.assistance)
@@ -275,6 +288,9 @@ const Details = ({ fetching, fetchDetails }) => {
             <span>
               ¿Estás seguro de cancelar este evento:
               <strong>{visit.title}</strong>?
+              <Box>
+                <Text className={classes.Cancel}>CANCELAR</Text>
+              </Box>
             </span>
           }
         />
@@ -293,6 +309,9 @@ const Details = ({ fetching, fetchDetails }) => {
             <span>
               ¿Estás seguro de completar este evento:
               <strong>{` ${visit.title}`}</strong>?
+              <Box>
+                <Text className={classes.Complete}>COMPLETAR</Text>
+              </Box>
             </span>
           }
         />
@@ -311,6 +330,9 @@ const Details = ({ fetching, fetchDetails }) => {
             <span>
               ¿Estás seguro de iniciar este evento:
               <strong>{` ${visit.title}`}</strong>?
+              <Box>
+                <Text className={classes.Start}>INICIAR</Text>
+              </Box>
             </span>
           }
         />
