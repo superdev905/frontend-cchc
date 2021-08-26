@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { startOfDay, subDays } from 'date-fns'
+import { startOfWeek, subDays } from 'date-fns'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid } from '@material-ui/core'
@@ -7,6 +7,7 @@ import assistanceActions from '../../state/actions/assistance'
 import { Button, SearchInput, Wrapper } from '../UI'
 import { DataTable } from '../Shared'
 import { formatDate, formatHours } from '../../formatters'
+import VisitStatusChip from './VisitStatusChip'
 
 const EventList = () => {
   const history = useHistory()
@@ -20,7 +21,7 @@ const EventList = () => {
     status: 'PROGRAMADA',
     search: '',
     user_id: user?.id,
-    start_date: new Date(subDays(startOfDay(currentDate), 1)).toISOString()
+    start_date: new Date(subDays(startOfWeek(currentDate), 1)).toISOString()
   })
   const { listEvents, totalEvents: totalPages } = useSelector(
     (state) => state.assistance
@@ -106,7 +107,11 @@ const EventList = () => {
               },
               {
                 name: 'Estado',
-                selector: (row) => row.status
+                selector: (row) => (
+                  <Box>
+                    <VisitStatusChip visit={row} />
+                  </Box>
+                )
               },
               {
                 name: 'Titulo',
