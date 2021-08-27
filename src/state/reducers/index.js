@@ -10,6 +10,7 @@ import regions from './regions'
 import employees from './employees'
 import users from './users'
 import assistance from './assistance'
+import poll from './poll'
 
 const reducers = (history) =>
   combineReducers({
@@ -23,6 +24,7 @@ const reducers = (history) =>
     employees,
     users,
     assistance,
+    poll,
     router: connectRouter(history)
   })
 

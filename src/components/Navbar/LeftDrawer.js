@@ -56,12 +56,12 @@ const commonRoutes = [
     path: '/visits',
     icon: <AssistanceIcon />
   },
-  { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
   {
     title: 'Configuración',
     path: '/settings',
     icon: <SettingsIcon />
-  }
+  },
+  { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> }
 ]
 
 const LeftDrawer = ({ ...props }) => {
