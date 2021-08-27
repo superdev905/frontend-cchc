@@ -12,7 +12,9 @@ import commonActions from '../../../state/actions/common'
 const validationSchema = Yup.object({
   type_id: Yup.number().required(''),
   type_name: Yup.string().required('Seleccione tipo de Atención'),
-  quantity: Yup.number().required('Ingrese cantidad')
+  quantity: Yup.number('Ingrese número')
+    .min(1, 'La cantidad deber ser mayor a 1')
+    .required('Ingrese cantidad')
 })
 
 const AssistanceType = ({
@@ -61,6 +63,12 @@ const AssistanceType = ({
     if (actionType === 'VIEW') return 'Atención en obra'
     if (actionType === 'UPDATE') return 'Actualizar atención en obra'
     return 'Crear atención en obra'
+  }
+  const validNumber = (num) => {
+    if (num === '') return 0
+    if (Number.isNaN(num)) return 0
+    if (num * 1 < 0) return 0
+    return parseInt(num, 10)
   }
 
   useEffect(() => {
@@ -111,7 +119,7 @@ const AssistanceType = ({
             <Autocomplete
               options={assistanceTypes}
               value={selectedType || ''}
-              getOptionLabel={(option) => option.name}
+              getOptionLabel={(option) => option.name || ''}
               onChange={(__, option) => {
                 formik.setFieldValue('type_id', option ? option.id : '')
                 formik.setFieldValue('type_name', option ? option.name : '')
@@ -134,7 +142,10 @@ const AssistanceType = ({
               name="quantity"
               required
               value={formik.values.quantity}
-              onChange={formik.handleChange}
+              onChange={(e) => {
+                formik.setFieldValue('quantity', validNumber(e.target.value))
+                formik.setFieldTouched('quantity')
+              }}
               onBlur={formik.handleBlur}
               error={formik.touched.quantity && Boolean(formik.errors.quantity)}
               helperText={formik.touched.quantity && formik.errors.quantity}

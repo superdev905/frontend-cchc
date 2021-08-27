@@ -12,7 +12,9 @@ import commonActions from '../../../state/actions/common'
 const validationSchema = Yup.object({
   type_id: Yup.number().required(''),
   type_name: Yup.string().required('Seleccione tipo de Atención'),
-  quantity: Yup.number().required('Ingrese cantidad')
+  quantity: Yup.number('Ingrese número válido')
+    .min(1)
+    .required('Ingrese cantidad')
 })
 
 const AssistanceType = ({
