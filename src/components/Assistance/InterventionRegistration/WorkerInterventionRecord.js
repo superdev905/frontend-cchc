@@ -44,6 +44,8 @@ const validationSchema = Yup.object().shape({
   attached_url: Yup.mixed()
 })
 
+const attentionPlaces = ['OFICINA', 'TERRENO', 'VIRTUAL']
+
 const WorkerInterventionRecord = ({
   open,
   onClose,
@@ -53,7 +55,8 @@ const WorkerInterventionRecord = ({
   successMessage,
   successFunction,
   company,
-  construction
+  construction,
+  visitShift
 }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
@@ -145,11 +148,18 @@ const WorkerInterventionRecord = ({
     }
   }
 
+  const setAttentionPlace = (shiftName) => {
+    if (shiftName === 'COVID') return 'VIRTUAL'
+    if (shiftName === 'AT.CESANTES') return 'OFICINA'
+    return 'TERRENO'
+  }
+
   useEffect(() => {
     if (type === 'CREATE') {
       formik.setFieldValue('date', new Date())
+      formik.setFieldValue('attention_place', setAttentionPlace(visitShift))
     }
-  }, [type])
+  }, [type, visitShift])
 
   useEffect(() => {
     if (formik.values.area_id && areas.length > 0) {
@@ -229,7 +239,7 @@ const WorkerInterventionRecord = ({
                 }
               >
                 <option value="">Seleccione Lugar</option>
-                {['OFICINA', 'TERRENO', 'VIRTUAL'].map((item, i) => (
+                {attentionPlaces.map((item, i) => (
                   <option key={`plce-${i}-${item}`} value={item}>
                     {item}
                   </option>

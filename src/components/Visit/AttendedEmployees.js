@@ -220,6 +220,7 @@ const ContactList = () => {
       {visit && open && (
         <WorkerInterventionRecord
           open={open}
+          visitShift={visit.shift.name}
           onClose={toggleOpen}
           submitFunction={createAttention}
           company={{ business_name: visit.business_name }}

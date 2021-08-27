@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { useSelector, useDispatch } from 'react-redux'
-import commonActions from '../../state/actions/common'
 import usersActions from '../../state/actions/users'
 import { LabeledRow, StatusChip, Text, Wrapper } from '../UI'
 import { formatDate, formatHours } from '../../formatters'
@@ -10,16 +9,11 @@ const VisitDetails = ({ fetching }) => {
   const dispatch = useDispatch()
   const { visit } = useSelector((state) => state.assistance)
   const [loading, setLoading] = useState(false)
-  const [shiftDetails, setShiftDetails] = useState(null)
   const [userDetails, setUserDetails] = useState(null)
 
   useEffect(() => {
     if (visit) {
       setLoading(true)
-      dispatch(commonActions.getShiftDetails(visit.shift_id)).then((result) => {
-        setShiftDetails(result)
-        setLoading(false)
-      })
       dispatch(usersActions.getUserDetails(visit.assigned_id)).then(
         (result) => {
           setLoading(false)
@@ -52,7 +46,7 @@ const VisitDetails = ({ fetching }) => {
               </Text>
             </LabeledRow>
             <LabeledRow label="Jornada:">
-              <Text loading={loading || fetching}>{shiftDetails?.name} </Text>
+              <Text loading={loading || fetching}>{visit?.shift?.name} </Text>
             </LabeledRow>
             <LabeledRow label="Estado:">
               <Text loaderWidth="80%" loading={fetching}>
