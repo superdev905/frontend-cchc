@@ -1,13 +1,13 @@
 import pollTypes from '../types/poll'
 
 const initialState = {
-  allPoll: []
+  pollList: []
 }
 
 const pollReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case pollTypes.GET_POLLS:
-      return { ...state, allPoll: payload }
+      return { ...state, pollList: payload }
     default:
       return state
   }

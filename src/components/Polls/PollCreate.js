@@ -3,16 +3,18 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 import { DatePicker, Dialog } from '../Shared'
 import { Button, Select, SubmitButton, TextField } from '../UI'
 import { useSuccess } from '../../hooks'
+import { statusList } from '../../config'
 
 const validationSchema = Yup.object().shape({
-  title: Yup.string().required('Seleccione obra'),
-  //  start_date: Yup.date().required('Seleccione fecha de ingreso'),
-  //  end_date: Yup.date().nullable(),
-  state: Yup.string().nullable(),
-  modules: Yup.string().required('Seleccione obra')
+  title: Yup.string().required('Ingrese título de encuesta'),
+  start_date: Yup.date().required('Ingrese fecha de ingreso'),
+  end_date: Yup.date().required('Ingrese fecha de fin'),
+  status: Yup.string().required('Selecciona status'),
+  modules: Yup.array().of(Yup.string()).required('Seleccione obra')
 })
 
 const PollCreate = ({
@@ -35,12 +37,12 @@ const PollCreate = ({
       title: type === 'UPDATE' ? data.title : '',
       start_date: type === 'UPDATE' ? data.start_date : '',
       end_date: type === 'UPDATE' ? data.end_date : '',
-      modules: type === 'UPDATE' ? data.modules : '',
-      state: type === 'UPDATE' ? data.state : ''
+      modules: type === 'UPDATE' ? data.modules : [],
+      status: type === 'UPDATE' ? data.status : ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction(values)
-        .then(() => {
+        .then((result) => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, {
             variant: 'success'
@@ -49,7 +51,7 @@ const PollCreate = ({
             onClose()
             resetForm()
             if (successFunction) {
-              successFunction()
+              successFunction(result)
             }
           })
         })
@@ -72,8 +74,9 @@ const PollCreate = ({
           <Grid container spacing={2}>
             <Grid item xs={12} md={12}>
               <TextField
-                label="Title"
+                label="Título de encuesta"
                 name="title"
+                required
                 onChange={formik.handleChange}
                 value={formik.values.title}
                 error={formik.touched.title && Boolean(formik.errors.title)}
@@ -87,6 +90,7 @@ const PollCreate = ({
                 required
                 onChange={(date) => {
                   formik.setFieldValue('start_date', date)
+                  formik.setFieldTouched('start_date')
                 }}
                 error={
                   formik.touched.start_date && Boolean(formik.errors.start_date)
@@ -98,11 +102,12 @@ const PollCreate = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <DatePicker
-                label="Fecha de termino"
+                label="Fecha de Fin"
                 value={formik.values.end_date}
                 required
                 onChange={(date) => {
                   formik.setFieldValue('end_date', date)
+                  formik.setFieldTouched('end_date')
                 }}
                 error={
                   formik.touched.end_date && Boolean(formik.errors.end_date)
@@ -110,40 +115,45 @@ const PollCreate = ({
                 helperText={formik.touched.end_date && formik.errors.end_date}
               />
             </Grid>
+
             <Grid item xs={12} md={6}>
               <Select
-                label="Modulos"
-                name="modules"
-                onChange={formik.handleChange}
-                value={formik.values.modules}
+                label="Estado"
+                name="status"
                 required
-                error={formik.touched.modules && Boolean(formik.errors.modules)}
-                helperText={formik.touched.modules && formik.errors.modules}
+                onChange={formik.handleChange}
+                value={formik.values.status}
+                error={formik.touched.status && Boolean(formik.errors.status)}
+                helperText={formik.touched.status && formik.errors.status}
               >
                 <option value="">Seleccione una opción</option>
-                {['VISITAS', 'EMPRESAS', 'OBRAS'].map((item, index) => (
-                  <option key={`contract-type--${index}`} value={`${item}`}>
-                    {item}
+                {statusList.map((item, index) => (
+                  <option key={`status--${index}`} value={`${item.key}`}>
+                    {item.name}
                   </option>
                 ))}
               </Select>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Select
-                label="Estado"
-                name="state"
-                onChange={formik.handleChange}
-                value={formik.values.state}
-                error={formik.touched.state && Boolean(formik.errors.state)}
-                helperText={formik.touched.state && formik.errors.state}
-              >
-                <option value="">Seleccione una opción</option>
-                {['ESTADO', 'ESTADO 2', 'ESTADO 3'].map((item, index) => (
-                  <option key={`type--${index}`} value={`${item}`}>
-                    {item}
-                  </option>
-                ))}
-              </Select>
+            <Grid item xs={12}>
+              <Autocomplete
+                multiple
+                id="modules"
+                options={['VISITAS', 'EMPRESAS', 'OBRAS']}
+                defaultValue={formik.values.modules}
+                onChange={(__, e) => {
+                  formik.setFieldValue('modules', e)
+                  formik.setFieldTouched('modules')
+                }}
+                getOptionLabel={(option) => option}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Modulos"
+                    required
+                    placeholder="Módulo"
+                  />
+                )}
+              />
             </Grid>
           </Grid>
 

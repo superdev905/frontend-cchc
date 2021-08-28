@@ -1,34 +1,32 @@
 import queryString from 'query-string'
 import Axios from '../../Axios'
-// import pollTypes from '../types/poll'
+import pollTypes from '../types/poll'
+import config from '../../config'
 
-const pollEndpoint = `${
-  process.env.REACT_APP_NODE_ENV === 'production'
-    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5107'
-    : 'http://localhost:8000'
-}/api/v1`
+const getPolls =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`${config.services.poll}/polls?${queryString.stringify(query)}`)
+        .then((response) => {
+          const { data } = response
+          dispatch({ type: pollTypes.GET_POLLS, payload: data })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
 
-const getPolls = (query) => () =>
-  new Promise((resolve, reject) => {
-    Axios.get(`/poll?${queryString.stringify(query)}`)
-      .then(() => {
-        resolve()
-      })
-      .catch((err) => {
-        reject(err)
-      })
-  })
 const createPoll = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${pollEndpoint}/poll`, values)
+    Axios.post(`${config.services.poll}/polls`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
-        console.log('crear')
       })
       .catch((err) => {
         reject(err.response.data.detail)
-        console.log(err)
       })
   })
 

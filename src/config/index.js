@@ -22,6 +22,9 @@ const config = {
     }/api/v1`,
     parameters: `${
       env === 'production' ? `${BASEURL.prod}:5105` : `${BASEURL.dev}:5200`
+    }/api/v1`,
+    poll: `${
+      env === 'production' ? `${BASEURL.prod}:5190` : `${BASEURL.dev}:5190`
     }/api/v1`
   }
 }
@@ -34,3 +37,4 @@ export { default as genderList } from './genderList'
 export { default as usersConfig } from './users'
 export { default as AttentionStatus } from './Attention'
 export { default as areaConfig } from './area'
+export { default as statusList } from './statusList'
