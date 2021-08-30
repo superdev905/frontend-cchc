@@ -25,15 +25,17 @@ const createPoll = (values) => () =>
       .then((response) => {
         const { data } = response
         resolve(data)
+        console.log(data)
       })
       .catch((err) => {
         reject(err.response.data.detail)
+        console.log('error')
       })
   })
 
 const updatePoll = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`/poll/${id}`, values)
+    Axios.put(`${config.services.poll}/polls/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -43,8 +45,61 @@ const updatePoll = (id, values) => () =>
       })
   })
 
+const getPollDetails = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.poll}/polls/${id}`)
+      .then((response) => {
+        const { data } = response
+        console.log('poll Details')
+        console.log(data)
+        dispatch({ type: pollTypes.GET_POLL_DETAILS, payload: data })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+        console.log(err)
+      })
+  })
+
+/*
+const getPollDetails =
+  (pollId, handleDispatch = true) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`/polls/${pollId}`)
+        .then((response) => {
+          const { data } = response
+          console.log('sjskjbs')
+          if (handleDispatch) {
+            dispatch({
+              type: pollTypes.GET_POLL_DETAILS,
+              payload: data
+            })
+          }
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data)
+        })
+    })
+*/
+const getQuestionTypes = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.poll}/question-types`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: pollTypes.GET_QUESTION_TYPES, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 export default {
   getPolls,
   createPoll,
-  updatePoll
+  updatePoll,
+  getQuestionTypes,
+  getPollDetails
 }

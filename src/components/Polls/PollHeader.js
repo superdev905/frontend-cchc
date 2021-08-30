@@ -48,8 +48,8 @@ const PollHeader = () => {
     })
   }
 
-  const redirectToPoll = (poll) => {
-    history.push(`/polls/${poll.id}`)
+  const redirectToPoll = (id) => {
+    history.push(`/polls/${id}`)
   }
 
   useEffect(() => {

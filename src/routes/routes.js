@@ -19,6 +19,7 @@ const AssistanceType = lazy(() => import('../pages/Visits/AssistanceType'))
 const Assistance = lazy(() => import('../pages/Assistance'))
 const AttendedEmployee = lazy(() => import('../pages/AttendedEmployee'))
 const Polls = lazy(() => import('../pages/Polls/Polls'))
+const Poll = lazy(() => import('../pages/Poll/Poll'))
 
 const routes = [
   {
@@ -222,6 +223,22 @@ const routes = [
         yes={() => (
           <Layout>
             <Polls />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: `/polls/:idPolls`,
+    key: 'POLL',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SIMPLE_USER']}
+        yes={() => (
+          <Layout>
+            <Poll />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}

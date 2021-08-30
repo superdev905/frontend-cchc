@@ -120,6 +120,7 @@ const PollCard = ({ loader, poll }) => {
                   ))}
                 </Box>
                 <Box>
+                  <Typography>{poll.id}</Typography>
                   <Typography className={classes.title}>
                     {poll.title}
                   </Typography>
