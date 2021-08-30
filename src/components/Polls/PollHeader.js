@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import { Box, Grid } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Select, SearchInput, Wrapper } from '../UI'
@@ -10,6 +11,7 @@ import { statusList } from '../../config'
 
 const PollHeader = () => {
   const dispatch = useDispatch()
+
   const { user } = useSelector((state) => state.auth)
   const { pollList } = useSelector((state) => state.poll)
   const [loading, setLoading] = useState(false)
@@ -26,6 +28,8 @@ const PollHeader = () => {
       setLoading(false)
     })
   }
+
+  const redirectToPoll = (poll) => {}
 
   useEffect(() => {
     fetchPolls()
