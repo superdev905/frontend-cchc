@@ -61,28 +61,6 @@ const getPollDetails = (id) => (dispatch) =>
       })
   })
 
-/*
-const getPollDetails =
-  (pollId, handleDispatch = true) =>
-  (dispatch) =>
-    new Promise((resolve, reject) => {
-      Axios.get(`/polls/${pollId}`)
-        .then((response) => {
-          const { data } = response
-          console.log('sjskjbs')
-          if (handleDispatch) {
-            dispatch({
-              type: pollTypes.GET_POLL_DETAILS,
-              payload: data
-            })
-          }
-          resolve(data)
-        })
-        .catch((err) => {
-          reject(err.response.data)
-        })
-    })
-*/
 const getQuestionTypes = () => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.poll}/question-types`)

@@ -1,4 +1,4 @@
-import { Avatar, Grid, Typography } from '@material-ui/core'
+import { Avatar, Box, Grid, Typography } from '@material-ui/core'
 
 const AnswerRow = () => (
   <Box>
