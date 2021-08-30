@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const PollCard = ({ loader, poll }) => {
+const PollCard = ({ loader, poll, onClick }) => {
   const classes = useStyles()
   return (
     <Box className={classes.root}>
@@ -80,7 +80,7 @@ const PollCard = ({ loader, poll }) => {
           </>
         ) : (
           <Box p={2} display="flex" alignItems="center">
-            <Grid container>
+            <Grid container onClick={onClick}>
               <Grid item xs={7}>
                 <Box marginBottom="10px">
                   {poll.modules.map((item) => (
@@ -88,6 +88,7 @@ const PollCard = ({ loader, poll }) => {
                   ))}
                 </Box>
                 <Box>
+                  <Typography>{poll.id}</Typography>
                   <Typography className={classes.title}>
                     {poll.title}
                   </Typography>

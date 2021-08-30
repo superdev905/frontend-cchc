@@ -1,24 +1,50 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { useSelector, useDispatch } from 'react-redux'
-import usersActions from '../../state/actions/users'
 import { LabeledRow, StatusChip, Text, Wrapper } from '../UI'
 import { formatDate } from '../../formatters'
-// from Visit Details
+// import pollActions from '../../state/actions/poll'
+import usersActions from '../../state/actions/users'
+
 const PollDetails = ({ fetching }) => {
   const dispatch = useDispatch()
   const { poll } = useSelector((state) => state.poll)
   const [loading, setLoading] = useState(false)
-  const [shiftDetails, setShiftDetails] = useState(null)
   const [userDetails, setUserDetails] = useState(null)
+  // const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  // const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+
+  useEffect(() => {
+    if (poll) {
+      setLoading(true)
+      dispatch(usersActions.getUserDetails(poll.created_by)).then((result) => {
+        setLoading(false)
+        setUserDetails(result)
+      })
+    }
+  }, [poll])
 
   return (
     <Wrapper>
+      <Box p={1} display="flex" justifyContent="flex-end">
+        <Button
+          danger
+          // onClick={toggleOpenEdit}
+        >
+          Editar
+        </Button>
+        <Button
+          danger
+          // onClick={toggleOpenDelete}
+        >
+          Eliminar
+        </Button>
+      </Box>
       <Box p={1}>
         <Typography
           style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}
         >
-          Detalles de visita
+          Detalles de encuesta
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>

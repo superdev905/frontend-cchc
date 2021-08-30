@@ -29,8 +29,8 @@ const PollHeader = () => {
     })
   }
 
-  const redirectToPoll = (poll) => {
-    history.push(`/polls/${poll.id}`)
+  const redirectToPoll = (id) => {
+    history.push(`/polls/${id}`)
   }
 
   useEffect(() => {
@@ -70,7 +70,13 @@ const PollHeader = () => {
             <PollCard loader />
           ) : (
             pollList.map((item) => (
-              <PollCard key={`poll-card-${item.id}`} poll={item} />
+              <PollCard
+                key={`poll-card-${item.id}`}
+                poll={item}
+                onClick={() => {
+                  redirectToPoll()
+                }}
+              />
             ))
           )}
         </Box>

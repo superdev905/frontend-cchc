@@ -227,6 +227,22 @@ const routes = [
         no={() => (authenticated ? <Forbidden /> : <Login />)}
       />
     )
+  },
+  {
+    path: `/polls/:idPolls`,
+    key: 'POLL',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SIMPLE_USER']}
+        yes={() => (
+          <Layout>
+            <Polls />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
   }
 ]
 export default routes
