@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const PollDetails = () => {
+const PollDetails = ({ fetching }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { poll } = useSelector((state) => state.poll)
