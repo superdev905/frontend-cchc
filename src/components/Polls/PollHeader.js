@@ -15,7 +15,6 @@ import pollActions from '../../state/actions/poll'
 import PollCreate from './PollCreate'
 import PollCard from './Card'
 import { statusList } from '../../config'
-import { PollAnswerRow } from '../Poll'
 
 const PollHeader = () => {
   const dispatch = useDispatch()
@@ -113,8 +112,6 @@ const PollHeader = () => {
               )}
             </>
           )}
-          <PollAnswerRow />
-
           <Pagination
             page={filters.page}
             totalCount={Math.fround(total / filters.size)}
