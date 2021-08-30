@@ -11,7 +11,7 @@ import { statusList } from '../../config'
 
 const PollHeader = () => {
   const dispatch = useDispatch()
-
+  const history = useHistory()
   const { user } = useSelector((state) => state.auth)
   const { pollList } = useSelector((state) => state.poll)
   const [loading, setLoading] = useState(false)
@@ -29,7 +29,9 @@ const PollHeader = () => {
     })
   }
 
-  const redirectToPoll = (poll) => {}
+  const redirectToPoll = (poll) => {
+    history.push(`/polls/${poll.id}`)
+  }
 
   useEffect(() => {
     fetchPolls()
@@ -78,7 +80,7 @@ const PollHeader = () => {
           onClose={toggleOpen}
           submitFunction={createPoll}
           successMessage="Encuesta creada correctamente"
-          //  successFunction={afterCreateEmployee}
+          successFunction={redirectToPoll}
         />
       </Box>
     </Wrapper>
