@@ -10,7 +10,8 @@ const getPolls =
       Axios.get(`${config.services.poll}/polls?${queryString.stringify(query)}`)
         .then((response) => {
           const { data } = response
-          dispatch({ type: pollTypes.GET_POLLS, payload: data })
+          dispatch({ type: pollTypes.GET_POLLS, payload: data.items })
+          dispatch({ type: pollTypes.SET_TOTAL_POLLS, payload: data.total })
           resolve(data)
         })
         .catch((err) => {

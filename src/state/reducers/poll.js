@@ -3,7 +3,8 @@ import pollTypes from '../types/poll'
 const initialState = {
   pollList: [],
   poll: null,
-  questionTypesList: []
+  questionTypesList: [],
+  total: 0
 }
 
 const pollReducer = (state = initialState, { type, payload }) => {
@@ -14,6 +15,8 @@ const pollReducer = (state = initialState, { type, payload }) => {
       return { ...state, poll: payload }
     case pollTypes.GET_QUESTION_TYPES:
       return { ...state, questionTypesList: payload }
+    case pollTypes.SET_TOTAL_POLLS:
+      return { ...state, total: payload }
     default:
       return state
   }

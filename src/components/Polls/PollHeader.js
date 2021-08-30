@@ -2,7 +2,14 @@ import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Box, Grid } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Select, SearchInput, Wrapper } from '../UI'
+import {
+  Button,
+  Select,
+  SearchInput,
+  Wrapper,
+  Pagination,
+  EmptyState
+} from '../UI'
 import { useToggle } from '../../hooks'
 import pollActions from '../../state/actions/poll'
 import PollCreate from './PollCreate'
@@ -13,10 +20,14 @@ const PollHeader = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const { user } = useSelector((state) => state.auth)
-  const { pollList } = useSelector((state) => state.poll)
+  const { pollList, total } = useSelector((state) => state.poll)
   const [loading, setLoading] = useState(false)
+  const [filters, setFilters] = useState({ size: 30, page: 1, search: '' })
   const { open, toggleOpen } = useToggle()
 
+  const searchChange = (e) => {
+    setFilters({ ...filters, search: e.target.value })
+  }
   const createPoll = (values) => {
     const data = { ...values, state: 'ACTIVE', created_by: user.id }
     return dispatch(pollActions.createPoll(data))
@@ -24,7 +35,9 @@ const PollHeader = () => {
 
   const fetchPolls = () => {
     setLoading(true)
-    dispatch(pollActions.getPolls()).then(() => {
+    dispatch(
+      pollActions.getPolls({ ...filters, search: filters.search.trim() })
+    ).then(() => {
       setLoading(false)
     })
   }
@@ -35,7 +48,7 @@ const PollHeader = () => {
 
   useEffect(() => {
     fetchPolls()
-  }, [])
+  }, [filters])
   return (
     <Wrapper>
       <Box p={2}>
@@ -52,9 +65,9 @@ const PollHeader = () => {
           </Grid>
           <Grid item xs={12} md={4}>
             <SearchInput
-              // value={filters.search}
-              placeholder="Buscar encuesta"
-              // onChange={searchChange}
+              value={filters.search}
+              placeholder="Buscar encuesta por título"
+              onChange={searchChange}
             />
           </Grid>
           <Grid item xs={12} md={6}>
@@ -65,20 +78,37 @@ const PollHeader = () => {
         </Grid>
 
         <Box>
-          <PollCard loader />
           {loading ? (
-            <PollCard loader />
+            <>
+              <PollCard loader />
+              <PollCard loader />
+              <PollCard loader />
+            </>
           ) : (
-            pollList.map((item) => (
-              <PollCard
-                key={`poll-card-${item.id}`}
-                poll={item}
-                onClick={() => {
-                  redirectToPoll()
-                }}
-              />
-            ))
+            <>
+              {pollList.length > 0 ? (
+                pollList.map((item) => (
+                  <PollCard key={`poll-card-${item.id}`} poll={item} />
+                ))
+              ) : (
+                <EmptyState
+                  message={
+                    filters.search
+                      ? `No se encontraron resultados para: ${filters.search}`
+                      : 'No se crearon encuestas'
+                  }
+                />
+              )}
+            </>
           )}
+
+          <Pagination
+            page={filters.page}
+            totalCount={Math.fround(total / filters.size)}
+            onPageChange={(__, value) => {
+              setFilters({ ...filters, page: value })
+            }}
+          />
         </Box>
 
         <PollCreate
