@@ -74,10 +74,44 @@ const getQuestionTypes = () => (dispatch) =>
       })
   })
 
+const createQuestions = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.poll}/poll-questions`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+        console.log(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+        console.log('error')
+      })
+  })
+
+const getQuestions =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.poll}/poll-questions?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({ type: pollTypes.GET_QUESTIONS, payload: data.items })
+          dispatch({ type: pollTypes.SET_TOTAL_QUESTIONS, payload: data.total })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 export default {
   getPolls,
   createPoll,
   updatePoll,
   getQuestionTypes,
-  getPollDetails
+  getPollDetails,
+  createQuestions,
+  getQuestions
 }
