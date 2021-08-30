@@ -82,7 +82,8 @@ const getPollDetails =
           reject(err.response.data)
         })
     })
-*/
+  */
+
 const getQuestionTypes = () => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.poll}/question-types`)

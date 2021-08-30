@@ -1,11 +1,13 @@
 import * as Yup from 'yup'
+import { useEffect } from 'react'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Dialog } from '../Shared'
 import { Button, Select, SubmitButton, TextField } from '../UI'
 import { useSuccess } from '../../hooks'
+import pollActions from '../../state/actions/poll'
 
 const validationSchema = Yup.object().shape({
   question: Yup.string().required('Ingrese pregunta'),
@@ -21,6 +23,7 @@ const QuestionCreate = ({
   successMessage,
   successFunction
 }) => {
+  const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
@@ -57,6 +60,10 @@ const QuestionCreate = ({
     }
   })
 
+  useEffect(() => {
+    dispatch(pollActions.getQuestionTypes())
+  }, [])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
       <Box>
@@ -82,7 +89,7 @@ const QuestionCreate = ({
             <Grid item xs={12} md={12}>
               <Select
                 label="Tipo de Pregunta"
-                name="question_type"
+                name="question_type_id"
                 required
                 onChange={formik.handleChange}
                 value={formik.values.question_type_id}
@@ -101,7 +108,7 @@ const QuestionCreate = ({
                     key={`question_type_id--${index}`}
                     value={`${item.key}`}
                   >
-                    {item.name}
+                    {item.display_name}
                   </option>
                 ))}
               </Select>

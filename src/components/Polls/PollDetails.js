@@ -13,8 +13,8 @@ import { useToggle } from '../../hooks'
 import { LabeledRow, StatusChip, Text, Button, Wrapper } from '../UI'
 import { formatDate } from '../../formatters'
 import usersActions from '../../state/actions/users'
-import QuestionCreate from './QuestionCreate'
 import pollActions from '../../state/actions/poll'
+import QuestionCreate from './QuestionCreate'
 
 const useStyles = makeStyles(() => ({
   iconAdd: {
@@ -45,13 +45,9 @@ const PollDetails = ({ fetching }) => {
     }
   }, [poll])
 
-  const fetchData = () => {
-    dispatch(pollActions.getPolls()).then()
+  const createQuestion = (values) => {
+    dispatch(pollActions.createQuestion(values))
   }
-
-  useEffect(() => {
-    fetchData()
-  }, [])
 
   return (
     <div>
@@ -127,7 +123,7 @@ const PollDetails = ({ fetching }) => {
         <QuestionCreate
           open={openQuestion}
           onClose={toggleOpenQuestion}
-          //  submitFunction={createPoll}
+          submitFunction={createQuestion}
           // successFunction={redirectToPoll}
         />
       </Paper>
