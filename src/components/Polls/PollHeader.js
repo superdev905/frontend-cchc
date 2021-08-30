@@ -15,6 +15,7 @@ import pollActions from '../../state/actions/poll'
 import PollCreate from './PollCreate'
 import PollCard from './Card'
 import { statusList } from '../../config'
+import { PollAnswerRow } from '../Poll'
 
 const PollHeader = () => {
   const dispatch = useDispatch()
@@ -22,7 +23,12 @@ const PollHeader = () => {
   const { user } = useSelector((state) => state.auth)
   const { pollList, total } = useSelector((state) => state.poll)
   const [loading, setLoading] = useState(false)
-  const [filters, setFilters] = useState({ size: 30, page: 1, search: '' })
+  const [filters, setFilters] = useState({
+    size: 30,
+    page: 1,
+    search: '',
+    status: ''
+  })
   const { open, toggleOpen } = useToggle()
 
   const searchChange = (e) => {
@@ -52,31 +58,37 @@ const PollHeader = () => {
   return (
     <Wrapper>
       <Box p={2}>
-        <Grid container spacing={1}>
-          <Grid item xs={12} md={2}>
-            <Select name="status">
-              <option value="">Todos</option>
-              {statusList.map((item) => (
-                <option key={`poll--filters-${item.key}`} value={item.key}>
-                  {item.name}
-                </option>
-              ))}
-            </Select>
+        <Box marginBottom="10px">
+          <Grid container spacing={1}>
+            <Grid item xs={12} md={2}>
+              <Select
+                name="status"
+                onChange={(e) => {
+                  setFilters({ ...filters, status: e.target.value })
+                }}
+              >
+                <option value="">Todos</option>
+                {statusList.map((item) => (
+                  <option key={`poll--filters-${item.key}`} value={item.key}>
+                    {item.name}
+                  </option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <SearchInput
+                value={filters.search}
+                placeholder="Buscar encuesta por título"
+                onChange={searchChange}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box display="flex" justifyContent="flex-end">
+                <Button onClick={toggleOpen}>Nueva Encuesta</Button>
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={4}>
-            <SearchInput
-              value={filters.search}
-              placeholder="Buscar encuesta por título"
-              onChange={searchChange}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box display="flex" justifyContent="flex-end">
-              <Button onClick={toggleOpen}>Nueva Encuesta</Button>
-            </Box>
-          </Grid>
-        </Grid>
-
+        </Box>
         <Box>
           {loading ? (
             <>
@@ -101,6 +113,7 @@ const PollHeader = () => {
               )}
             </>
           )}
+          <PollAnswerRow />
 
           <Pagination
             page={filters.page}
