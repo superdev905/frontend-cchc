@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const PollCard = ({ loader, poll, onClick }) => {
+const PollCard = ({ loader, poll }) => {
   const classes = useStyles()
   const history = useHistory()
 

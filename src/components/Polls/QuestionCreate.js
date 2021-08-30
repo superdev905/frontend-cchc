@@ -6,7 +6,6 @@ import { Box, Grid, Typography } from '@material-ui/core'
 import { Dialog } from '../Shared'
 import { Button, Select, SubmitButton, TextField } from '../UI'
 import { useSuccess } from '../../hooks'
-import { statusList } from '../../config'
 
 const validationSchema = Yup.object().shape({
   question: Yup.string().required('Ingrese pregunta'),
@@ -80,7 +79,7 @@ const QuestionCreate = ({
               ></TextField>
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={12}>
               <Select
                 label="Tipo de Pregunta"
                 name="question_type"
@@ -97,7 +96,7 @@ const QuestionCreate = ({
                 }
               >
                 <option value="">Seleccione una opción</option>
-                {statusList.map((item, index) => (
+                {questionTypesList.map((item, index) => (
                   <option
                     key={`question_type_id--${index}`}
                     value={`${item.key}`}
