@@ -24,7 +24,7 @@ const config = {
       env === 'production' ? `${BASEURL.prod}:5105` : `${BASEURL.dev}:5200`
     }/api/v1`,
     poll: `${
-      env === 'production' ? `${BASEURL.prod}:5190` : `${BASEURL.dev}:5190`
+      env === 'production' ? `${BASEURL.prod}:5107` : `${BASEURL.dev}:5190`
     }/api/v1`
   }
 }

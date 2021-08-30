@@ -1,16 +1,29 @@
+import CountUp from 'react-countup'
+import { useHistory } from 'react-router-dom'
 import { Box, Chip, Grid, makeStyles, Typography } from '@material-ui/core'
+import CalendarIcon from '@material-ui/icons/CalendarToday'
 import { Skeleton } from '@material-ui/lab'
-import { formatDate } from '../../formatters'
+import { formatDate, formatText } from '../../formatters'
+import { StatusChip } from '../UI'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     marginBottom: theme.spacing(2)
   },
+  flex: {
+    display: 'flex'
+  },
+  center: {
+    display: 'flex',
+    alignItems: 'center'
+  },
   paper: {
     border: `1px solid ${theme.palette.gray.gray400}`,
     borderRadius: 8,
-    minHeight: 150,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    [theme.breakpoints.up('md')]: {
+      maxHeight: 170
+    }
   },
   title: {
     fontSize: 20,
@@ -21,55 +34,69 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold'
   },
   answersTag: {
-    fontSize: 12,
+    fontSize: 14,
     opacity: 0.7
+  },
+  answersWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    [theme.breakpoints.up('md')]: {
+      justifyContent: 'flex-end'
+    }
   },
   tagLoader: {
     marginRight: 10
+  },
+  calendarIcon: {
+    color: theme.palette.gray.gray500,
+    marginRight: '5px'
   }
 }))
 
 const PollCard = ({ loader, poll }) => {
   const classes = useStyles()
+  const history = useHistory()
+
+  const handleOnClick = () => {
+    if (!loader) {
+      history.push(`/polls/${poll.id}`)
+    }
+  }
   return (
     <Box className={classes.root}>
-      <Box className={classes.paper}>
+      <Box className={classes.paper} onClick={handleOnClick}>
         {loader ? (
           <>
             <Grid container>
-              <Grid item xs={7}>
+              <Grid item xs={12} md={7}>
                 <Box p={2}>
                   <Box display="flex" marginBottom="10px">
-                    <Skeleton
-                      className={classes.tagLoader}
-                      width="5%"
-                      height="20px"
-                    ></Skeleton>
-                    <Skeleton
-                      className={classes.tagLoader}
-                      width="5%"
-                      height="20px"
-                    ></Skeleton>
-                    <Skeleton
-                      className={classes.tagLoader}
-                      width="5%"
-                      height="20px"
-                    ></Skeleton>
-                  </Box>
-                  <Box>
-                    <Skeleton width="50%" height="20px"></Skeleton>
-                    <Skeleton width="20%" height="20px"></Skeleton>
+                    {[...Array(3).keys()].map((__, index) => (
+                      <Skeleton
+                        key={`tag-loader-${index}`}
+                        className={classes.tagLoader}
+                        width="8%"
+                      ></Skeleton>
+                    ))}
                   </Box>
                   <Box>
                     <Skeleton
+                      width="60%"
+                      variant="h3"
+                      style={{ margin: '18px 0px 5px' }}
+                    ></Skeleton>
+                    <Skeleton width="20%"></Skeleton>
+                  </Box>
+                  <Box marginTop="10px">
+                    <Skeleton
                       className={classes.tagLoader}
-                      width="5%"
-                      height="20px"
+                      width="10%"
                     ></Skeleton>
                   </Box>
                 </Box>
               </Grid>
-              <Grid item xs={5}>
+              <Grid item xs={12} md={5} className={classes.answersWrapper}>
                 <Skeleton
                   className={classes.tagLoader}
                   width="20%"
@@ -81,10 +108,15 @@ const PollCard = ({ loader, poll }) => {
         ) : (
           <Box p={2} display="flex" alignItems="center">
             <Grid container>
-              <Grid item xs={7}>
+              <Grid item xs={12} md={7}>
                 <Box marginBottom="10px">
-                  {poll.modules.map((item) => (
-                    <Chip label={item.module_name} />
+                  {poll.modules.map((item, index) => (
+                    <Chip
+                      style={{ marginRight: '5px' }}
+                      color="primary"
+                      key={`module-chip-${item.id}-${index}`}
+                      label={formatText.capitalizeString(item.module_name)}
+                    />
                   ))}
                 </Box>
                 <Box>
@@ -93,22 +125,29 @@ const PollCard = ({ loader, poll }) => {
                   </Typography>
                 </Box>
                 <Box>
-                  <Typography>
+                  <Typography className={classes.center}>
+                    <CalendarIcon className={classes.calendarIcon} />
                     Fecha de fin: {formatDate(poll.end_date)}
                   </Typography>
                 </Box>
-                <Box>
-                  <Chip label={poll.status} />
+                <Box marginTop="10px">
+                  <StatusChip
+                    label={
+                      poll.status === 'NO_VIGENTE' ? 'No vigente' : 'Vigente'
+                    }
+                    success={poll.status !== 'NO_VIGENTE'}
+                    error={poll.status !== 'VIGENTE'}
+                  />
                 </Box>
               </Grid>
-              <Grid item xs={5}>
+              <Grid item xs={12} md={5} className={classes.answersWrapper}>
                 <Box display="flex" justifyContent="flex-end">
                   <Box>
                     <Typography className={classes.answers} align="center">
-                      10
+                      <CountUp duration={0.5} start={0} end={10}></CountUp>
                     </Typography>
                     <Typography className={classes.answersTag} align="center">
-                      respuestas
+                      Respuestas
                     </Typography>
                   </Box>
                 </Box>

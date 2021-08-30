@@ -9,11 +9,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const CustomPagination = ({ totalCount }) => {
+const CustomPagination = ({ totalCount, page, onPageChange }) => {
   const classes = useStyles()
   return (
     <Box className={classes.root}>
       <Pagination
+        page={page}
+        onChange={onPageChange}
         count={totalCount}
         variant="outlined"
         shape="rounded"

@@ -1,3 +1,4 @@
 export default {
-  GET_POLLS: 'GET_POLLS'
+  GET_POLLS: 'GET_POLLS',
+  SET_TOTAL_POLLS: 'SET_TOTAL_POLLS'
 }
