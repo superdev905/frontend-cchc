@@ -9,14 +9,14 @@ function a11yProps(index) {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  root: ({ fullWidth }) => ({
     flexGrow: 1,
-    width: `${window.innerWidth - 16}px`,
+    width: fullWidth ? '100%' : `${window.innerWidth - 16}px`,
     backgroundColor: theme.palette.background.paper,
     [theme.breakpoints.up('md')]: {
       width: '100%'
     }
-  },
+  }),
   tabRoot: {
     marginBottom: 15,
     minHeight: 0,
@@ -40,8 +40,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const CustomTabs = ({ children, value, onChange, tabs }) => {
-  const classes = useStyles()
+const CustomTabs = ({ children, value, onChange, tabs, fullWidth }) => {
+  const classes = useStyles({ fullWidth })
 
   return (
     <Box>
@@ -72,6 +72,7 @@ const CustomTabs = ({ children, value, onChange, tabs }) => {
 CustomTabs.propTypes = {
   tabs: PropTypes.arrayOf(PropTypes.string),
   value: PropTypes.number.isRequired,
+  fullWidth: false,
   children: PropTypes.oneOfType([
     PropTypes.element,
     PropTypes.arrayOf(PropTypes.element)

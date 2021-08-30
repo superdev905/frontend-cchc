@@ -58,7 +58,7 @@ const PollDetails = ({ fetching }) => {
                 )}
               </Text>
             </LabeledRow>
-            <LabeledRow label="Modulos:">
+            <LabeledRow label="Módulos:">
               <Text loaderWidth="80%" loading={fetching}>
                 {poll &&
                   poll.modules.map((item, index) => (

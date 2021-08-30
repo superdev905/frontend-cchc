@@ -10,6 +10,7 @@ import { Skeleton } from '@material-ui/lab'
 import pollActions from '../../state/actions/poll'
 import PollDetails from '../../components/Polls/PollDetails'
 import { PageHeading, Button, Wrapper } from '../../components/UI'
+import { PollTabs } from '../../components/Poll'
 
 const useStyles = makeStyles((theme) => ({
   head: {
@@ -79,6 +80,7 @@ const Poll = () => {
         </Box>
       </Box>
       <PollDetails fetching={loading} />
+      <PollTabs />
     </Wrapper>
   )
 }
