@@ -230,7 +230,7 @@ const routes = [
     )
   },
   {
-    path: `/polls/:idPolls`,
+    path: `/polls/:idPoll`,
     key: 'POLL',
     exact: true,
     component: ({ authenticated }) => (
