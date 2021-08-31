@@ -11,6 +11,9 @@ import pollActions from '../../state/actions/poll'
 import PollDetails from '../../components/Polls/PollDetails'
 import { PageHeading, Button, Wrapper } from '../../components/UI'
 import { PollTabs } from '../../components/Poll'
+import { useToggle, useSuccess } from '../../hooks'
+import { ConfirmDelete } from '../../components/Shared'
+import PollCreate from '../../components/Polls/PollCreate'
 
 const useStyles = makeStyles((theme) => ({
   head: {
@@ -40,6 +43,9 @@ const Poll = () => {
   const { idPoll } = useParams()
   const [loading, setLoading] = useState(false)
   const { poll } = useSelector((state) => state.poll)
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const { success, changeSuccess } = useSuccess()
 
   const fetchData = () => {
     setLoading(true)
@@ -50,6 +56,26 @@ const Poll = () => {
 
   const goBack = () => {
     history.goBack()
+  }
+
+  const updatePoll = (values, options) =>
+    dispatch(
+      pollActions.updatePoll(idPoll, {
+        ...values,
+        options: options.id
+      })
+    )
+
+  const onDelete = (id) => {
+    dispatch(pollActions.deletePoll(id))
+      .then(() => {
+        changeSuccess(true, () => {
+          toggleOpenDelete()
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   useEffect(() => {
@@ -75,12 +101,41 @@ const Poll = () => {
           </Box>
         </Box>
         <Box>
-          <Button>Editar</Button>
-          <Button danger>Eliminar</Button>
+          <Button onClick={toggleOpenEdit}>Editar</Button>
+          <Button danger onClick={toggleOpenDelete}>
+            Eliminar
+          </Button>
         </Box>
       </Box>
       <PollDetails fetching={loading} />
       <PollTabs />
+
+      {poll && openEdit && (
+        <PollCreate
+          type="UPDATE"
+          open={openEdit}
+          successMessage="Encuesta actualizada"
+          onClose={toggleOpenEdit}
+          data={poll}
+          submitFunction={updatePoll}
+          successFunction={fetchData}
+        />
+      )}
+
+      {poll && openDelete && (
+        <ConfirmDelete
+          open={openDelete}
+          onClose={toggleOpenDelete}
+          success={success}
+          message={
+            <span>
+              ¿Estás seguro de eliminar esta encuesta:{' '}
+              <strong>{poll.title}</strong>{' '}
+            </span>
+          }
+          onConfirm={() => onDelete(poll.id)}
+        />
+      )}
     </Wrapper>
   )
 }

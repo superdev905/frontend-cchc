@@ -1,3 +1,4 @@
+import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import {
   Box,
@@ -10,8 +11,12 @@ import {
   EditOutlined as EditIcon,
   DeleteOutline as DeleteIcon
 } from '@material-ui/icons'
+import { useToggle, useSuccess } from '../../../hooks'
 import QuestionOption from './QuestionOption'
 import { TextArea } from '../../UI'
+import { ConfirmDelete } from '../../Shared'
+import QuestionModal from './Modal'
+import pollActions from '../../../state/actions/poll'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,6 +58,39 @@ const useStyles = makeStyles((theme) => ({
 
 const QuestionCard = ({ question, index }) => {
   const classes = useStyles()
+  const dispatch = useDispatch()
+  const { poll } = useSelector((state) => state.poll)
+  const { user } = useSelector((state) => state.auth)
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const { success, changeSuccess } = useSuccess()
+
+  const getQuestionDetails = () => {
+    dispatch(pollActions.getQuestionDetails(question.id, poll.id))
+  }
+
+  const updateQuestion = (values, options) =>
+    dispatch(
+      pollActions.updateQuestion(question.id, {
+        ...values,
+        poll_id: poll.id,
+        created_by: user.id,
+        options: options.id
+      })
+    )
+
+  const onDelete = (id) => {
+    dispatch(pollActions.deleteQuestion(id))
+      .then(() => {
+        changeSuccess(true, () => {
+          toggleOpenDelete()
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   return (
     <Box className={classes.root}>
       <Box p={1}>
@@ -64,10 +102,10 @@ const QuestionCard = ({ question, index }) => {
             </Typography>
           </Box>
           <Box className={classes.buttons}>
-            <IconButton>
+            <IconButton onClick={toggleOpenEdit}>
               <EditIcon />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={toggleOpenDelete}>
               <DeleteIcon />
             </IconButton>
           </Box>
@@ -88,6 +126,32 @@ const QuestionCard = ({ question, index }) => {
             </>
           )}
         </Box>
+        {question && openEdit && (
+          <QuestionModal
+            type="UPDATE"
+            open={openEdit}
+            successMessage="Pregunta actualizada"
+            onClose={toggleOpenEdit}
+            data={question}
+            submitFunction={updateQuestion}
+            successFunction={getQuestionDetails}
+          />
+        )}
+
+        {question && openDelete && (
+          <ConfirmDelete
+            open={openDelete}
+            onClose={toggleOpenDelete}
+            success={success}
+            message={
+              <span>
+                ¿Estás seguro de eliminar esta pregunta:{' '}
+                <strong>{question.question}</strong>{' '}
+              </span>
+            }
+            onConfirm={() => onDelete(question.id)}
+          />
+        )}
       </Box>
     </Box>
   )

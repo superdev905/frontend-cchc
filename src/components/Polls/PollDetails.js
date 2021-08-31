@@ -1,42 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  Box,
-  Grid,
-  Typography,
-  IconButton,
-  Paper,
-  makeStyles,
-  Chip
-} from '@material-ui/core'
-import AddCircleIcon from '@material-ui/icons/AddCircle'
-import { useToggle } from '../../hooks'
+import { Box, Grid, Chip } from '@material-ui/core'
 import { LabeledRow, StatusChip, Text, EmptyState } from '../UI'
 import { formatDate, formatText } from '../../formatters'
-import QuestionCreate from './QuestionCreate'
 import pollActions from '../../state/actions/poll'
 
-const useStyles = makeStyles(() => ({
-  iconAdd: {
-    fontSize: 50
-  },
-  footer: {
-    textAlign: 'center'
-  }
-}))
-
 const PollDetails = ({ fetching }) => {
-  const classes = useStyles()
   const dispatch = useDispatch()
   const { poll } = useSelector((state) => state.poll)
-  const { open: openQuestion, toggleOpen: toggleOpenQuestion } = useToggle()
   const [loading, setLoading] = useState(false)
   const [question, setQuestion] = useState(false)
-
-  const createQuestion = (values) => {
-    const data = { ...values }
-    return dispatch(pollActions.createQuestions(data))
-  }
 
   const fetchQuestions = (id) => {
     setLoading(true)
@@ -105,24 +78,6 @@ const PollDetails = ({ fetching }) => {
       {question.length === 0 && (
         <EmptyState message="Esta encuesta no tiene preguntas" />
       )}
-
-      <Paper elevation={0} className={classes.footer}>
-        <Box p={2}>
-          <IconButton onClick={toggleOpenQuestion}>
-            <AddCircleIcon color="primary" className={classes.iconAdd} />
-          </IconButton>
-          <Typography>Nueva Pregunta</Typography>
-        </Box>
-
-        <QuestionCreate
-          open={openQuestion}
-          onClose={toggleOpenQuestion}
-          submitFunction={createQuestion}
-          successMessage="Pregunta agregada correctamente"
-
-          // successFunction={redirectToPoll}
-        />
-      </Paper>
     </Box>
   )
 }

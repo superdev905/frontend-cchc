@@ -25,7 +25,6 @@ const createPoll = (values) => () =>
       .then((response) => {
         const { data } = response
         resolve(data)
-        console.log(data)
       })
       .catch((err) => {
         reject(err.response.data.detail)
@@ -50,8 +49,6 @@ const getPollDetails = (id) => (dispatch) =>
     Axios.get(`${config.services.poll}/polls/${id}`)
       .then((response) => {
         const { data } = response
-        console.log('poll Details')
-        console.log(data)
         dispatch({ type: pollTypes.GET_POLL_DETAILS, payload: data })
         resolve(data)
       })
@@ -80,7 +77,6 @@ const createQuestions = (values) => () =>
       .then((response) => {
         const { data } = response
         resolve(data)
-        console.log(data)
       })
       .catch((err) => {
         reject(err.response.data.detail)
@@ -105,6 +101,56 @@ const getQuestions =
         })
     })
 
+const updateQuestion = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.poll}/poll-questions/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const getQuestionDetails = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.poll}/poll-questions/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: pollTypes.GET_QUESTION_DETAILS, payload: data })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+        console.log(err)
+      })
+  })
+
+const deleteQuestion = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`${config.services.poll}/poll-questions/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const deletePoll = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`${config.services.poll}/polls/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getPolls,
   createPoll,
@@ -112,5 +158,9 @@ export default {
   getQuestionTypes,
   getPollDetails,
   createQuestions,
-  getQuestions
+  getQuestions,
+  updateQuestion,
+  getQuestionDetails,
+  deleteQuestion,
+  deletePoll
 }

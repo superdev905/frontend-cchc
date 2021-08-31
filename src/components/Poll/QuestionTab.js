@@ -41,7 +41,6 @@ const QuestionTab = () => {
           index={index + 1}
         />
       ))}
-
       <AddQuestion onClick={toggleOpen} />
       <QuestionModal
         open={open}
