@@ -6,7 +6,8 @@ const initialState = {
   questionTypesList: [],
   total: 0,
   questionList: [],
-  totalQuestions: 0
+  totalQuestions: 0,
+  modulePollList: []
 }
 
 const pollReducer = (state = initialState, { type, payload }) => {
@@ -21,6 +22,8 @@ const pollReducer = (state = initialState, { type, payload }) => {
       return { ...state, total: payload }
     case pollTypes.GET_QUESTIONS:
       return { ...state, questionList: payload }
+    case pollTypes.GET_MODULE_POLLS:
+      return { ...state, modulePollList: payload }
     default:
       return state
   }

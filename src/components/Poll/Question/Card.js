@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const QuestionCard = ({ question, index }) => {
+const QuestionCard = ({ question, index, editable }) => {
   const classes = useStyles()
   return (
     <Box className={classes.root}>
@@ -63,14 +63,16 @@ const QuestionCard = ({ question, index }) => {
               {question.question}
             </Typography>
           </Box>
-          <Box className={classes.buttons}>
-            <IconButton>
-              <EditIcon />
-            </IconButton>
-            <IconButton>
-              <DeleteIcon />
-            </IconButton>
-          </Box>
+          {editable && (
+            <Box className={classes.buttons}>
+              <IconButton>
+                <EditIcon />
+              </IconButton>
+              <IconButton>
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          )}
         </Box>
         <Box className={classes.questionType}>
           Tipo de respuesta <Chip color="primary" label={question.type_name} />
@@ -80,6 +82,17 @@ const QuestionCard = ({ question, index }) => {
             <>
               <QuestionOption question="Si" disabled />
               <QuestionOption question="No" disabled />
+            </>
+          )}
+          {question.type === 'MULTIPLE_SELECTION' && (
+            <>
+              {question.options.map((item) => (
+                <QuestionOption
+                  question={item.option_name}
+                  disabled
+                  questionType={'MULTIPLE_SELECTION'}
+                />
+              ))}
             </>
           )}
           {question.type === 'TEXT' && (
@@ -96,7 +109,8 @@ const QuestionCard = ({ question, index }) => {
 QuestionCard.defaultProps = {
   question: {
     type: 'MULTIPLE_SELECTION'
-  }
+  },
+  editable: true
 }
 
 QuestionCard.propTypes = {

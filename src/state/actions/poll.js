@@ -19,6 +19,24 @@ const getPolls =
         })
     })
 
+const getModulePolls =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.poll}/polls/modules?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({ type: pollTypes.GET_MODULE_POLLS, payload: data })
+
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const createPoll = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.poll}/polls`, values)
@@ -112,5 +130,6 @@ export default {
   getQuestionTypes,
   getPollDetails,
   createQuestions,
-  getQuestions
+  getQuestions,
+  getModulePolls
 }

@@ -54,12 +54,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const PollCard = ({ loader, poll }) => {
+const PollCard = ({ loader, poll, onClick, showAnswers }) => {
   const classes = useStyles()
   const history = useHistory()
 
   const handleOnClick = () => {
-    if (!loader) {
+    if (onClick) {
+      onClick(poll)
+    } else {
       history.push(`/polls/${poll.id}`)
     }
   }
@@ -141,16 +143,18 @@ const PollCard = ({ loader, poll }) => {
                 </Box>
               </Grid>
               <Grid item xs={12} md={5} className={classes.answersWrapper}>
-                <Box display="flex" justifyContent="flex-end">
-                  <Box>
-                    <Typography className={classes.answers} align="center">
-                      <CountUp duration={0.5} start={0} end={10}></CountUp>
-                    </Typography>
-                    <Typography className={classes.answersTag} align="center">
-                      Respuestas
-                    </Typography>
+                {showAnswers && (
+                  <Box display="flex" justifyContent="flex-end">
+                    <Box>
+                      <Typography className={classes.answers} align="center">
+                        <CountUp duration={0.5} start={0} end={10}></CountUp>
+                      </Typography>
+                      <Typography className={classes.answersTag} align="center">
+                        Respuestas
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
+                )}
               </Grid>
             </Grid>
           </Box>
@@ -158,6 +162,10 @@ const PollCard = ({ loader, poll }) => {
       </Box>
     </Box>
   )
+}
+
+PollCard.defaultProps = {
+  showAnswers: true
 }
 
 export default PollCard
