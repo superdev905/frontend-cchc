@@ -58,11 +58,14 @@ const Poll = () => {
     history.goBack()
   }
 
-  const updatePoll = (values, options) =>
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  const updatePoll = (values) =>
     dispatch(
       pollActions.updatePoll(idPoll, {
-        ...values,
-        options: options.id
+        ...values
       })
     )
 
@@ -78,9 +81,6 @@ const Poll = () => {
       })
   }
 
-  useEffect(() => {
-    fetchData()
-  }, [])
   return (
     <Wrapper p={1}>
       <Box className={classes.head}>
@@ -118,7 +118,7 @@ const Poll = () => {
           onClose={toggleOpenEdit}
           data={poll}
           submitFunction={updatePoll}
-          successFunction={fetchData}
+          // successFunction={getPollDetails}
         />
       )}
 

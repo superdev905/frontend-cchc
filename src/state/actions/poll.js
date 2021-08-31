@@ -52,7 +52,7 @@ const createPoll = (values) => () =>
 
 const updatePoll = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${config.services.poll}/polls/${id}`, values)
+    Axios.put(`/polls/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -119,9 +119,9 @@ const getQuestions =
         })
     })
 
-const updateQuestion = (id, values) => () =>
+const updateQuestion = (questionId, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${config.services.poll}/poll-questions/${id}`, values)
+    Axios.put(`${config.services.poll}/poll-questions/${questionId}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -131,9 +131,9 @@ const updateQuestion = (id, values) => () =>
       })
   })
 
-const getQuestionDetails = (id) => (dispatch) =>
+const getQuestionDetails = (questionId) => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.poll}/poll-questions/${id}`)
+    Axios.get(`${config.services.poll}/poll-questions/${questionId}`)
       .then((response) => {
         const { data } = response
         dispatch({ type: pollTypes.GET_QUESTION_DETAILS, payload: data })
@@ -145,9 +145,9 @@ const getQuestionDetails = (id) => (dispatch) =>
       })
   })
 
-const deleteQuestion = (id) => () =>
+const deleteQuestion = (questionId) => () =>
   new Promise((resolve, reject) => {
-    Axios.delete(`${config.services.poll}/poll-questions/${id}`)
+    Axios.delete(`${config.services.poll}/poll-questions/${questionId}`)
       .then((response) => {
         const { data } = response
         resolve(data)
