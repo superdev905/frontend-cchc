@@ -21,8 +21,6 @@ const pollReducer = (state = initialState, { type, payload }) => {
       return { ...state, total: payload }
     case pollTypes.GET_QUESTIONS:
       return { ...state, questionList: payload }
-    case pollTypes.SET_TOTAL_QUESTIONS:
-      return { ...state, totalQuestions: payload }
     default:
       return state
   }

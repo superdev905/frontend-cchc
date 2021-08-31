@@ -97,8 +97,7 @@ const getQuestions =
       )
         .then((response) => {
           const { data } = response
-          dispatch({ type: pollTypes.GET_QUESTIONS, payload: data.items })
-          dispatch({ type: pollTypes.SET_TOTAL_QUESTIONS, payload: data.total })
+          dispatch({ type: pollTypes.GET_QUESTIONS, payload: data })
           resolve(data)
         })
         .catch((err) => {
