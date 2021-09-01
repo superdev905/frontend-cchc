@@ -196,7 +196,9 @@ const AnswerPoll = ({ poll, onBack, onNext }) => {
         ))}
       </Box>
       <Box marginTop="15px" textAlign="center">
-        <Button variant="outlined">Cancelar</Button>
+        <Button onClick={onBack} variant="outlined">
+          Cancelar
+        </Button>
         <Button onClick={() => handleSubmitPoll(questions)}>
           Enviar respuestas
         </Button>
@@ -217,6 +219,7 @@ const ModulePollsDialog = ({ open, onClose, module }) => {
 
   useEffect(() => {
     if (open) {
+      setStep(0)
       fetchModulePolls()
     }
   }, [open, module])

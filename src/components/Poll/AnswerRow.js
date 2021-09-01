@@ -1,31 +1,25 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-// import { useHistory } from 'react-router-dom'
 import {
   Avatar,
   Box,
   Grid,
   IconButton,
   makeStyles,
-  Typography,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-  Button
+  Typography
 } from '@material-ui/core'
 import ViewIcon from '@material-ui/icons/Visibility'
 import { Skeleton } from '@material-ui/lab'
 import { useSelector } from 'react-redux'
 import { formatDate } from '../../formatters'
-import { Dialog } from '../Shared'
-import AnswerCard from './AnswerCard'
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  root: ({ isMobile }) => ({
     marginBottom: theme.spacing(2),
     backgroundColor: '#F6F6F6',
-    borderRadius: 10
-  },
+    borderRadius: 10,
+    cursor: isMobile ? 'pointer' : 'inherit'
+  }),
   center: {
     display: 'flex',
     justifyContent: 'center',
@@ -88,22 +82,19 @@ const Heading = () => {
     </Box>
   )
 }
-const AnswerRow = ({ answer, loader }) => {
-  const classes = useStyles()
+const AnswerRow = ({ answer, loader, onView }) => {
   const { isMobile } = useSelector((state) => state.ui)
-  const [open, setOpen] = React.useState(false)
-  const { poll } = useSelector((state) => state.poll)
-
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
+  const classes = useStyles({ isMobile })
 
   return (
-    <Box className={classes.root}>
+    <Box
+      className={classes.root}
+      onClick={() => {
+        if (isMobile) {
+          onView()
+        }
+      }}
+    >
       <Box p={2}>
         {loader ? (
           <Grid container>
@@ -159,10 +150,7 @@ const AnswerRow = ({ answer, loader }) => {
               <Grid item xs={12} md={2}>
                 <Box className={classes.actions}>
                   <IconButton>
-                    <ViewIcon onClick={handleClickOpen} />
-                    {/*
-                    <ViewIcon onClick={onClick} />
-                  */}
+                    <ViewIcon onClick={onView} />
                   </IconButton>
                 </Box>
               </Grid>
@@ -170,26 +158,6 @@ const AnswerRow = ({ answer, loader }) => {
           </Grid>
         )}
       </Box>
-
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">
-          <strong>Respuestas de {answer.userFullName} </strong>
-          <Typography>Fecha de fin: {formatDate(poll.end_date)}</Typography>
-        </DialogTitle>
-        <hr></hr>
-        <DialogContent>
-          <AnswerCard />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Salir
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   )
 }
