@@ -34,7 +34,12 @@ const PollHeader = () => {
     setFilters({ ...filters, search: e.target.value })
   }
   const createPoll = (values) => {
-    const data = { ...values, state: 'ACTIVE', created_by: user.id }
+    const data = {
+      ...values,
+      state: 'ACTIVE',
+      created_by: user.id,
+      author: `${user.names} ${user.paternal_surname} ${user.maternal_surname}`
+    }
     return dispatch(pollActions.createPoll(data))
   }
 

@@ -67,6 +67,7 @@ const Poll = () => {
       pollActions.updatePoll(idPoll, {
         state: poll.state,
         created_by: poll.created_by,
+        author: poll.author,
         ...values
       })
     )

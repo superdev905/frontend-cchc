@@ -7,7 +7,7 @@ import { Autocomplete } from '@material-ui/lab'
 import { DatePicker, Dialog } from '../Shared'
 import { Button, Select, SubmitButton, TextField } from '../UI'
 import { useSuccess } from '../../hooks'
-import { statusList } from '../../config'
+import { moduleConfig, statusList } from '../../config'
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required('Ingrese título de encuesta'),
@@ -142,7 +142,7 @@ const PollCreate = ({
               <Autocomplete
                 multiple
                 id="modules"
-                options={['VISITAS', 'EMPRESAS', 'OBRAS']}
+                options={moduleConfig.modulesList}
                 defaultValue={formik.values.modules}
                 onChange={(__, e) => {
                   formik.setFieldValue('modules', e)

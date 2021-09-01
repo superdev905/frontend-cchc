@@ -22,7 +22,7 @@ const PollDetails = ({ fetching }) => {
               </Text>
             </LabeledRow>
             <LabeledRow label="Creado por:">
-              <Text loading={fetching}>{poll?.created_by}</Text>
+              <Text loading={fetching}>{poll?.author}</Text>
             </LabeledRow>
           </Grid>
           <Grid item xs={12} md={6}>
