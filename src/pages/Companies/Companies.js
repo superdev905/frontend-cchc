@@ -6,7 +6,7 @@ import { PollsDot } from '../../components/Polls'
 const Companies = () => (
   <Box>
     <PageHeading>
-      Empresas <PollsDot />
+      Empresas <PollsDot module="EMPRESAS" />
     </PageHeading>
     <CompaniesList />
   </Box>

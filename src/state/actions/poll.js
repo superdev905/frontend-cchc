@@ -1,3 +1,4 @@
+import { saveAs } from 'file-saver'
 import queryString from 'query-string'
 import Axios from '../../Axios'
 import pollTypes from '../types/poll'
@@ -52,7 +53,7 @@ const createPoll = (values) => () =>
 
 const updatePoll = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`/polls/${id}`, values)
+    Axios.put(`${config.services.poll}/polls/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -103,7 +104,7 @@ const createQuestions = (values) => () =>
   })
 
 const getQuestions =
-  (query = {}) =>
+  (query = {}, handleDispatch = true) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
       Axios.get(
@@ -111,7 +112,9 @@ const getQuestions =
       )
         .then((response) => {
           const { data } = response
-          dispatch({ type: pollTypes.GET_QUESTIONS, payload: data })
+          if (handleDispatch) {
+            dispatch({ type: pollTypes.GET_QUESTIONS, payload: data })
+          }
           resolve(data)
         })
         .catch((err) => {
@@ -199,6 +202,24 @@ const getPollAnswers =
         })
     })
 
+const exportData = (value) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.poll}/responses/export`, value, {
+      responseType: 'arraybuffer'
+    })
+      .then((response) => {
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+
+        saveAs(blob, `Respuestas-${value.poll_id}-${new Date().getTime()}`)
+        resolve(response.data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 export default {
   getPolls,
   createPoll,
@@ -213,5 +234,6 @@ export default {
   deletePoll,
   getModulePolls,
   answerPoll,
-  getPollAnswers
+  getPollAnswers,
+  exportData
 }

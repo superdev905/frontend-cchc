@@ -65,6 +65,8 @@ const Poll = () => {
   const updatePoll = (values) =>
     dispatch(
       pollActions.updatePoll(idPoll, {
+        state: poll.state,
+        created_by: poll.created_by,
         ...values
       })
     )
@@ -118,7 +120,7 @@ const Poll = () => {
           onClose={toggleOpenEdit}
           data={poll}
           submitFunction={updatePoll}
-          // successFunction={getPollDetails}
+          successFunction={fetchData}
         />
       )}
 

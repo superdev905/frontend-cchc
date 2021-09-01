@@ -11,6 +11,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 120,
     border: `2px dashed ${theme.palette.common.black}`,
     cursor: 'pointer',
+    marginBottom: '15px',
     '&:hover': {
       border: `2px dashed ${theme.palette.primary.main}`
     }
