@@ -1,3 +1,4 @@
+import { saveAs } from 'file-saver'
 import queryString from 'query-string'
 import Axios from '../../Axios'
 import pollTypes from '../types/poll'
@@ -199,6 +200,24 @@ const getPollAnswers =
         })
     })
 
+const exportData = (value) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.poll}/responses/export`, value, {
+      responseType: 'arraybuffer'
+    })
+      .then((response) => {
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+
+        saveAs(blob, `Respuestas-${value.poll_id}`)
+        resolve(response.data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 export default {
   getPolls,
   createPoll,
@@ -213,5 +232,6 @@ export default {
   deletePoll,
   getModulePolls,
   answerPoll,
-  getPollAnswers
+  getPollAnswers,
+  exportData
 }

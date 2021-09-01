@@ -20,6 +20,10 @@ const AnswerTab = () => {
     })
   }
 
+  const exportData = () => {
+    dispatch(pollActions.exportData({ poll_id: idPoll }))
+  }
+
   useEffect(() => {
     fetchAnswers()
   }, [])
@@ -27,7 +31,7 @@ const AnswerTab = () => {
   return (
     <Box>
       <Box display="flex" justifyContent="flex-end">
-        <Button size="small" startIcon={<GridOnIcon />}>
+        <Button size="small" startIcon={<GridOnIcon />} onClick={exportData}>
           Exportar a excel
         </Button>
       </Box>
