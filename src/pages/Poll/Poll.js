@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { useSnackbar } from 'notistack'
 import { Box, IconButton, makeStyles, Typography } from '@material-ui/core'
 import {
   CalendarToday as CalendarIcon,
@@ -41,6 +42,7 @@ const Poll = () => {
   const classes = useStyles()
   const history = useHistory()
   const { idPoll } = useParams()
+  const { enqueueSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(false)
   const { poll } = useSelector((state) => state.poll)
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
@@ -77,6 +79,8 @@ const Poll = () => {
       .then(() => {
         changeSuccess(true, () => {
           toggleOpenDelete()
+          enqueueSnackbar('Encuesta eliminada', { variant: 'success' })
+          history.push('/polls')
         })
       })
       .catch((err) => {

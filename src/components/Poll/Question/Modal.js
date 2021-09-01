@@ -34,24 +34,40 @@ const SimpleSelection = () => (
   </Box>
 )
 
-const MultipleSelection = ({ options, onChange, onAdd, onDelete }) => (
-  <Box>
-    {options.map((item) => (
-      <QuestionOption
-        questionType="MULTIPLE_SELECTION"
-        value={item.value}
-        disabled
-        editable={false}
-        onChange={(e) => onChange(e.target.value, item)}
-        onDelete={() => onDelete(item)}
-        showOptionDelete
-      />
-    ))}
-    <Box marginTop="10px" display="flex" justifyContent="flex-end">
-      <Button onClick={onAdd}>Agregar opción</Button>
+const MultipleSelection = ({ options, onChange, onAdd, onDelete, error }) => {
+  const showError = () => {
+    if (!error) return ''
+    //  eslint-disable-next-line
+    if (typeof error === 'object') return error.filter((item) => item)[0].value
+    return error
+  }
+
+  return (
+    <Box>
+      {options.map((item) => (
+        <QuestionOption
+          questionType="MULTIPLE_SELECTION"
+          value={item.value}
+          disabled
+          editable={false}
+          onChange={(e) => onChange(e.target.value, item)}
+          onDelete={() => onDelete(item)}
+          showOptionDelete
+        />
+      ))}
+      <Box>
+        <Typography
+          style={{ marginTop: '10px', fontSize: '12px', color: 'red' }}
+        >
+          {showError()}
+        </Typography>
+      </Box>
+      <Box marginTop="10px" display="flex" justifyContent="flex-end">
+        <Button onClick={onAdd}>Agregar opción</Button>
+      </Box>
     </Box>
-  </Box>
-)
+  )
+}
 
 const AnswerText = () => (
   <Box>
@@ -207,14 +223,13 @@ const QuestionModal = ({
                           index: temp.length + 1,
                           value: 'Nueva opción'
                         })
-                        console.log(temp)
                         formik.setFieldValue('options', temp)
                       }}
-                      onChange={(value, option) => {
+                      onChange={(textValue, option) => {
                         let temp = [...formik.values.options]
                         temp = temp.map((item) =>
                           item.index === option.index
-                            ? { ...item, value }
+                            ? { ...item, value: textValue }
                             : item
                         )
                         formik.setFieldValue('options', temp)
@@ -226,6 +241,7 @@ const QuestionModal = ({
                           .map((item, i) => ({ ...item, index: i + 1 }))
                         formik.setFieldValue('options', temp)
                       }}
+                      error={formik.errors.options}
                     />
                   )}
                   {currentType.key === 'TEXT' && <AnswerText />}

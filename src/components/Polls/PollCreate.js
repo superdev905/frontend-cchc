@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
@@ -14,7 +15,10 @@ const validationSchema = Yup.object().shape({
   start_date: Yup.date().required('Ingrese fecha de ingreso'),
   end_date: Yup.date().required('Ingrese fecha de fin'),
   status: Yup.string().required('Selecciona status'),
-  modules: Yup.array().of(Yup.string()).required('Seleccione obra')
+  modules: Yup.array()
+    .of(Yup.string().required('Seleccione módulo'))
+    .min(1, 'Selecciona un al menos un módulo')
+    .required('Seleccione obra')
 })
 
 const PollCreate = ({
@@ -64,6 +68,15 @@ const PollCreate = ({
         })
     }
   })
+
+  useEffect(() => {
+    if (formik.values.start_date) {
+      formik.setFieldTouched('start_date')
+    }
+    if (formik.values.end_date) {
+      formik.setFieldTouched('end_date')
+    }
+  }, [formik.values.start_date, formik.values.end_date])
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
@@ -146,7 +159,6 @@ const PollCreate = ({
                 defaultValue={formik.values.modules}
                 onChange={(__, e) => {
                   formik.setFieldValue('modules', e)
-                  formik.setFieldTouched('modules')
                 }}
                 getOptionLabel={(option) => option}
                 renderInput={(params) => (
@@ -155,6 +167,10 @@ const PollCreate = ({
                     label="Modulos"
                     required
                     placeholder="Módulo"
+                    error={
+                      formik.touched.modules && Boolean(formik.errors.modules)
+                    }
+                    helperText={formik.touched.modules && formik.errors.modules}
                   />
                 )}
               />
