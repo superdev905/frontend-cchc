@@ -1,9 +1,12 @@
 import { ListEmployees } from '../../components/Employees'
+import { PollsDot } from '../../components/Polls'
 import { PageHeading } from '../../components/UI'
 
 const Employees = () => (
   <div>
-    <PageHeading>Trabajadores</PageHeading>
+    <PageHeading>
+      Trabajadores <PollsDot module="EMPRESAS" />
+    </PageHeading>
     <ListEmployees />
   </div>
 )

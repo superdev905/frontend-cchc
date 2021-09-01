@@ -1,4 +1,5 @@
 import { Typography, makeStyles } from '@material-ui/core'
+import clsx from 'clsx'
 import PropTypes from 'prop-types'
 
 const useStyles = makeStyles((theme) => ({
@@ -14,9 +15,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const PageHeading = ({ children }) => {
+const PageHeading = ({ children, className }) => {
   const classes = useStyles()
-  return <Typography className={classes.title}>{children}</Typography>
+  return (
+    <Typography className={clsx(classes.title, className)}>
+      {children}
+    </Typography>
+  )
 }
 
 PageHeading.propTypes = {

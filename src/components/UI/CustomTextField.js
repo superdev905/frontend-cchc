@@ -32,6 +32,7 @@ const CustomTextField = ({
   inputProps,
   gray,
   className,
+  maxLength,
   ...props
 }) => {
   const classes = useStyles({ gray, error })
@@ -56,7 +57,7 @@ const CustomTextField = ({
           shrink: false
         }}
         inputProps={{
-          maxLength: 50,
+          maxLength,
           ...inputProps
         }}
         {...props}
@@ -72,6 +73,7 @@ CustomTextField.defaultProps = {
   placeholder: '',
   type: 'text',
   required: false,
+  maxLength: 50,
   inputProps: {}
 }
 
