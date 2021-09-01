@@ -82,6 +82,7 @@ const PollCreate = ({
                 value={formik.values.title}
                 error={formik.touched.title && Boolean(formik.errors.title)}
                 helperText={formik.touched.title && formik.errors.title}
+                maxLength={400}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>

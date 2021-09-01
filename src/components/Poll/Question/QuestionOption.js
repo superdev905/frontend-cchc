@@ -39,7 +39,8 @@ const QuestionOption = ({
   editable,
   onAnswer,
   onChange,
-  onDelete
+  onDelete,
+  showOptionDelete
 }) => {
   const classes = useStyles()
   return (
@@ -77,19 +78,21 @@ const QuestionOption = ({
               </Box>
             )}
           </Box>
-          {questionType === 'MULTIPLE_SELECTION' && !editable && (
-            <Box className={classes.actions}>
-              <IconButton
-                onClick={() => {
-                  if (onDelete) {
-                    onDelete()
-                  }
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-          )}
+          {questionType === 'MULTIPLE_SELECTION' &&
+            !editable &&
+            showOptionDelete && (
+              <Box className={classes.actions}>
+                <IconButton
+                  onClick={() => {
+                    if (onDelete) {
+                      onDelete()
+                    }
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
+            )}
         </Box>
       </Box>
     </Box>
@@ -97,7 +100,8 @@ const QuestionOption = ({
 }
 
 QuestionOption.defaultProps = {
-  editable: true
+  editable: true,
+  showOptionDelete: false
 }
 
 export default QuestionOption

@@ -5,7 +5,7 @@ import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Dialog } from '../../Shared'
-import { Button, Select, SubmitButton, TextArea, TextField } from '../../UI'
+import { Button, Select, SubmitButton, TextArea } from '../../UI'
 import { useSuccess } from '../../../hooks'
 import pollActions from '../../../state/actions/poll'
 import QuestionOption from './QuestionOption'
@@ -44,6 +44,7 @@ const MultipleSelection = ({ options, onChange, onAdd, onDelete }) => (
         editable={false}
         onChange={(e) => onChange(e.target.value, item)}
         onDelete={() => onDelete(item)}
+        showOptionDelete
       />
     ))}
     <Box marginTop="10px" display="flex" justifyContent="flex-end">
@@ -135,7 +136,13 @@ const QuestionModal = ({
   }, [])
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth={'md'}
+      fullWidth
+      fullScreen={isMobile}
+    >
       <Box>
         <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
           {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Pregunta`}
@@ -143,7 +150,8 @@ const QuestionModal = ({
         <Box p={2} style={{ backgroundColor: '#F6F6F6' }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={12}>
-              <TextField
+              <TextArea
+                rowsMin={1}
                 label="Pregunta"
                 name="question"
                 required
@@ -153,7 +161,7 @@ const QuestionModal = ({
                   formik.touched.question && Boolean(formik.errors.question)
                 }
                 helperText={formik.touched.question && formik.errors.question}
-              ></TextField>
+              ></TextArea>
             </Grid>
 
             <Grid item xs={12} md={12}>
