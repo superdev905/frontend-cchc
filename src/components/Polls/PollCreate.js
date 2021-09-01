@@ -65,6 +65,19 @@ const PollCreate = ({
     }
   })
 
+  if (formik.values.start_date > formik.values.end_date) {
+    enqueueSnackbar(
+      'La fecha de termino debe ser despues de la fecha de inicio',
+      {
+        variant: 'info',
+        autoHideDuration: 3000,
+        preventDuplicate: true
+      }
+    )
+  } else {
+    console.log('start date es mayor')
+  }
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
       <Box>
@@ -86,7 +99,7 @@ const PollCreate = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <DatePicker
-                label="Fecha de Incio"
+                label="Fecha de Inicio"
                 disabledFuture={false}
                 value={formik.values.start_date}
                 required
@@ -151,7 +164,7 @@ const PollCreate = ({
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Modulos"
+                    label="Módulos"
                     required
                     placeholder="Módulo"
                   />
