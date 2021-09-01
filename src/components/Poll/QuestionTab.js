@@ -31,6 +31,7 @@ const QuestionTab = () => {
 
   return (
     <Box>
+      <AddQuestion onClick={toggleOpen} />
       {questionList.map((item, index) => (
         <QuestionCard
           question={{
@@ -42,9 +43,10 @@ const QuestionTab = () => {
           textResponse=""
           selectedOptions={[]}
           simpleResponse=""
+          successFunction={getQuestions}
         />
       ))}
-      <AddQuestion onClick={toggleOpen} />
+
       <QuestionModal
         open={open}
         onClose={toggleOpen}

@@ -5,7 +5,7 @@ import { PageHeading } from '../../components/UI'
 const Constructions = () => (
   <div>
     <PageHeading>
-      Obras <PollsDot />
+      Obras <PollsDot module="OBRAS" />
     </PageHeading>
     <ConstructionList />
   </div>

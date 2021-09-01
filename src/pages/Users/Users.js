@@ -6,7 +6,7 @@ import { UserList } from '../../components/Users'
 const Users = () => (
   <Box>
     <PageHeading>
-      Usuarios <PollsDot />
+      Usuarios <PollsDot module="USUARIOS" />
     </PageHeading>
     <Wrapper>
       <UserList />

@@ -53,7 +53,7 @@ const createPoll = (values) => () =>
 
 const updatePoll = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`/polls/${id}`, values)
+    Axios.put(`${config.services.poll}/polls/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -104,7 +104,7 @@ const createQuestions = (values) => () =>
   })
 
 const getQuestions =
-  (query = {}) =>
+  (query = {}, handleDispatch = true) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
       Axios.get(
@@ -112,7 +112,9 @@ const getQuestions =
       )
         .then((response) => {
           const { data } = response
-          dispatch({ type: pollTypes.GET_QUESTIONS, payload: data })
+          if (handleDispatch) {
+            dispatch({ type: pollTypes.GET_QUESTIONS, payload: data })
+          }
           resolve(data)
         })
         .catch((err) => {
@@ -210,7 +212,7 @@ const exportData = (value) => () =>
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         })
 
-        saveAs(blob, `Respuestas-${value.poll_id}`)
+        saveAs(blob, `Respuestas-${value.poll_id}-${new Date().getTime()}`)
         resolve(response.data)
       })
       .catch((err) => {

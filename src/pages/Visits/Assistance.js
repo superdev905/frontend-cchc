@@ -6,7 +6,7 @@ import { PageHeading } from '../../components/UI'
 const Assistance = () => (
   <Box>
     <PageHeading>
-      Próximas visitas <PollsDot />
+      Próximas visitas <PollsDot module="VISITAS" />
     </PageHeading>
 
     <EventList />

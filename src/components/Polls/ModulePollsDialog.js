@@ -69,6 +69,19 @@ const AnswerPoll = ({ poll, onBack, onNext }) => {
   const [questions, setQuestions] = useState([])
   const { user } = useSelector((state) => state.auth)
 
+  const getQuestions = (idPoll) => {
+    dispatch(pollActions.getQuestions({ poll_id: idPoll })).then((result) => {
+      setQuestions(
+        result.map((item) => ({
+          ...item,
+          response_text: '',
+          response_yn: '',
+          selected_options: []
+        }))
+      )
+    })
+  }
+
   const handleTextResponse = (e, question, option) => {
     let temp = null
     if (question.type === 'TEXT') {
@@ -149,14 +162,7 @@ const AnswerPoll = ({ poll, onBack, onNext }) => {
   }
 
   useEffect(() => {
-    setQuestions(
-      poll.questions.map((item) => ({
-        ...item,
-        response_text: '',
-        response_yn: '',
-        selected_options: []
-      }))
-    )
+    getQuestions(poll.id)
   }, [poll])
 
   return (

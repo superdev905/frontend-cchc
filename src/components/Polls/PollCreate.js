@@ -37,7 +37,8 @@ const PollCreate = ({
       title: type === 'UPDATE' ? data.title : '',
       start_date: type === 'UPDATE' ? data.start_date : '',
       end_date: type === 'UPDATE' ? data.end_date : '',
-      modules: type === 'UPDATE' ? data.modules : [],
+      modules:
+        type === 'UPDATE' ? data.modules.map((item) => item.module_name) : [],
       status: type === 'UPDATE' ? data.status : ''
     },
     onSubmit: (values, { resetForm }) => {
@@ -86,6 +87,7 @@ const PollCreate = ({
             <Grid item xs={12} md={6}>
               <DatePicker
                 label="Fecha de Incio"
+                disabledFuture={false}
                 value={formik.values.start_date}
                 required
                 onChange={(date) => {
@@ -103,6 +105,7 @@ const PollCreate = ({
             <Grid item xs={12} md={6}>
               <DatePicker
                 label="Fecha de Fin"
+                disabledFuture={false}
                 value={formik.values.end_date}
                 required
                 onChange={(date) => {

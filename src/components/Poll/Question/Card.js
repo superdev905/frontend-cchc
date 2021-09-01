@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
+import { useParams } from 'react-router-dom'
 import {
   Box,
   Chip,
@@ -64,27 +65,23 @@ const QuestionCard = ({
   onAnswer,
   textResponse,
   simpleResponse,
-  selectedOptions
+  selectedOptions,
+  successFunction
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const { poll } = useSelector((state) => state.poll)
+  const { idPoll } = useParams()
   const { user } = useSelector((state) => state.auth)
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const { success, changeSuccess } = useSuccess()
 
-  const getQuestionDetails = () => {
-    dispatch(pollActions.getQuestionDetails(question.id, poll.id))
-  }
-
-  const updateQuestion = (values, options) =>
+  const updateQuestion = (values) =>
     dispatch(
       pollActions.updateQuestion(question.id, {
         ...values,
-        poll_id: poll.id,
-        created_by: user.id,
-        options: options.id
+        poll_id: idPoll,
+        created_by: user.id
       })
     )
 
@@ -93,6 +90,7 @@ const QuestionCard = ({
       .then(() => {
         changeSuccess(true, () => {
           toggleOpenDelete()
+          successFunction()
         })
       })
       .catch((err) => {
@@ -187,7 +185,7 @@ const QuestionCard = ({
             onClose={toggleOpenEdit}
             data={question}
             submitFunction={updateQuestion}
-            successFunction={getQuestionDetails}
+            successFunction={successFunction}
           />
         )}
 

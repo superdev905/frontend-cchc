@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const ModuleDot = () => {
+const ModuleDot = ({ module }) => {
   const classes = useStyles()
   const { open, toggleOpen } = useToggle()
 
@@ -28,7 +28,7 @@ const ModuleDot = () => {
       <Box className={classes.root} onClick={toggleOpen}>
         <Box className={classes.dot}></Box>
       </Box>
-      <ModulePollsDialog open={open} onClose={toggleOpen} module="EMPRESAS" />
+      <ModulePollsDialog open={open} onClose={toggleOpen} module={module} />
     </Box>
   )
 }
