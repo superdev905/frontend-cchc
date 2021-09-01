@@ -39,6 +39,9 @@ const QuestionTab = () => {
             type: item.question_type.key
           }}
           index={index + 1}
+          textResponse=""
+          selectedOptions={[]}
+          simpleResponse=""
         />
       ))}
       <AddQuestion onClick={toggleOpen} />
@@ -46,6 +49,8 @@ const QuestionTab = () => {
         open={open}
         onClose={toggleOpen}
         submitFunction={createQuestion}
+        successMessage={'Pregunta creada'}
+        successFunction={getQuestions}
       />
     </Box>
   )

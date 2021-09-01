@@ -115,6 +115,7 @@ const getQuestions =
           resolve(data)
         })
         .catch((err) => {
+          console.log(err)
           reject(err.response.data.detail)
         })
     })
@@ -169,6 +170,35 @@ const deletePoll = (id) => () =>
       })
   })
 
+const answerPoll = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.poll}/polls/answer`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getPollAnswers =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.poll}/responses?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({ type: pollTypes.GET_POLL_ANSWERS, payload: data })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 export default {
   getPolls,
   createPoll,
@@ -181,5 +211,7 @@ export default {
   getQuestionDetails,
   deleteQuestion,
   deletePoll,
-  getModulePolls
+  getModulePolls,
+  answerPoll,
+  getPollAnswers
 }

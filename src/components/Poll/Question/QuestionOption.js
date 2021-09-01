@@ -31,7 +31,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const QuestionOption = ({ questionType, question, selected, disabled }) => {
+const QuestionOption = ({
+  value,
+  questionType,
+  selected,
+  disabled,
+  editable,
+  onAnswer,
+  onChange,
+  onDelete
+}) => {
   const classes = useStyles()
   return (
     <Box className={classes.root}>
@@ -44,19 +53,39 @@ const QuestionOption = ({ questionType, question, selected, disabled }) => {
                   color="primary"
                   checked={selected}
                   disabled={disabled}
+                  onChange={onAnswer}
                 />
-                <InputBase className={classes.input} value={question} />
+                <InputBase
+                  className={classes.input}
+                  value={value}
+                  inputProps={{
+                    readOnly: editable
+                  }}
+                  onChange={onChange}
+                />
               </>
             ) : (
               <Box display="flex" alignItems="center">
-                <Radio color="primary" checked={selected} disabled={disabled} />
-                <Typography>{question}</Typography>
+                <Radio
+                  color="primary"
+                  value={value}
+                  checked={selected}
+                  disabled={disabled}
+                  onChange={onAnswer}
+                />
+                <Typography>{value}</Typography>
               </Box>
             )}
           </Box>
-          {questionType === 'MULTIPLE_SELECTION' && (
+          {questionType === 'MULTIPLE_SELECTION' && !editable && (
             <Box className={classes.actions}>
-              <IconButton>
+              <IconButton
+                onClick={() => {
+                  if (onDelete) {
+                    onDelete()
+                  }
+                }}
+              >
                 <DeleteIcon />
               </IconButton>
             </Box>
@@ -67,6 +96,8 @@ const QuestionOption = ({ questionType, question, selected, disabled }) => {
   )
 }
 
-QuestionOption.propTypes = {}
+QuestionOption.defaultProps = {
+  editable: true
+}
 
 export default QuestionOption

@@ -56,7 +56,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const QuestionCard = ({ question, index, editable }) => {
+const QuestionCard = ({
+  question,
+  index,
+  editable,
+  answer,
+  onAnswer,
+  textResponse,
+  simpleResponse,
+  selectedOptions
+}) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { poll } = useSelector((state) => state.poll)
@@ -94,7 +103,12 @@ const QuestionCard = ({ question, index, editable }) => {
   return (
     <Box className={classes.root}>
       <Box p={1}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          marginBottom="15px"
+        >
           <Box className={classes.centerVertical}>
             <Box className={classes.order}>{index}</Box>
             <Typography className={classes.question}>
@@ -112,30 +126,56 @@ const QuestionCard = ({ question, index, editable }) => {
             </Box>
           )}
         </Box>
-        <Box className={classes.questionType}>
-          Tipo de respuesta <Chip color="primary" label={question.type_name} />
-        </Box>
+        {!answer && (
+          <Box className={classes.questionType}>
+            Tipo de respuesta{' '}
+            <Chip color="primary" label={question.type_name} />
+          </Box>
+        )}
         <Box>
           {question.type === 'SIMPLE_SELECTION' && (
             <>
-              <QuestionOption question="Si" disabled />
-              <QuestionOption question="No" disabled />
+              <QuestionOption
+                selected={simpleResponse === 'Si'}
+                value="Si"
+                disabled={!answer}
+                onAnswer={(e) => {
+                  onAnswer(e, question)
+                }}
+              />
+              <QuestionOption
+                selected={simpleResponse === 'No'}
+                value="No"
+                disabled={!answer}
+                onAnswer={(e) => {
+                  onAnswer(e, question)
+                }}
+              />
             </>
           )}
           {question.type === 'MULTIPLE_SELECTION' && (
             <>
               {question.options.map((item) => (
                 <QuestionOption
-                  question={item.option_name}
-                  disabled
+                  value={item.option_name}
+                  disabled={!answer}
                   questionType={'MULTIPLE_SELECTION'}
+                  editable={answer}
+                  selected={selectedOptions.includes(item.id)}
+                  onAnswer={(e) => {
+                    onAnswer(e, question, item)
+                  }}
                 />
               ))}
             </>
           )}
           {question.type === 'TEXT' && (
             <>
-              <TextArea disabled />
+              <TextArea
+                value={textResponse}
+                disabled={!answer}
+                onChange={(e) => onAnswer(e, question)}
+              />
             </>
           )}
         </Box>
@@ -174,7 +214,8 @@ QuestionCard.defaultProps = {
   question: {
     type: 'MULTIPLE_SELECTION'
   },
-  editable: true
+  editable: true,
+  answer: false
 }
 
 QuestionCard.propTypes = {

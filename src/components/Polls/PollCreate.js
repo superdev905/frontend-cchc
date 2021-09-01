@@ -51,7 +51,7 @@ const PollCreate = ({
             onClose()
             resetForm()
             if (successFunction) {
-              successFunction(result)
+              successFunction(result.id)
             }
           })
         })

@@ -120,13 +120,13 @@ const AnswerRow = ({ answer, loader }) => {
                     {answer.userFullName}
                   </Typography>
                   <Typography className={classes.timeStamp}>
-                    {answer.createdStamp}
+                    {answer.created_timestamp}
                   </Typography>
                 </Box>
               </Box>
             </Grid>
             <Grid item xs={12} md={3} className={classes.infoWrapper}>
-              <Typography>{answer.charge} </Typography>
+              <Typography>{answer.user_charge} </Typography>
             </Grid>
             <Grid item xs={12} md={3} className={classes.infoWrapper}>
               {formatDate(answer.date)}

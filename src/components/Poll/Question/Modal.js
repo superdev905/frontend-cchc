@@ -10,6 +10,18 @@ import { useSuccess } from '../../../hooks'
 import pollActions from '../../../state/actions/poll'
 import QuestionOption from './QuestionOption'
 
+const multipleQuestion = Yup.object().shape({
+  options: Yup.array()
+    .of(
+      Yup.object({
+        index: Yup.number(),
+        value: Yup.string().required('Una opción no puede ser vacía')
+      })
+    )
+    .min(3, 'Selecciona al menos tres opciones')
+    .required('Agregue opciones')
+})
+
 const validationSchema = Yup.object().shape({
   question: Yup.string().required('Ingrese pregunta'),
   question_type_id: Yup.string().required('Selecciona tipo de pregunta')
@@ -17,25 +29,26 @@ const validationSchema = Yup.object().shape({
 
 const SimpleSelection = () => (
   <Box>
-    <QuestionOption questionType="SIMPLE_SELECTION" question="Si" disabled />
-    <QuestionOption
-      questionType="SIMPLE_SELECTION"
-      question="No"
-      disabled
-      value={false}
-    />
+    <QuestionOption questionType="SIMPLE_SELECTION" value="Si" disabled />
+    <QuestionOption questionType="SIMPLE_SELECTION" value="No" disabled />
   </Box>
 )
 
-const MultipleSelection = () => (
+const MultipleSelection = ({ options, onChange, onAdd, onDelete }) => (
   <Box>
-    <QuestionOption questionType="MULTIPLE_SELECTION" question="Si" disabled />
-    <QuestionOption
-      questionType="MULTIPLE_SELECTION"
-      question="No"
-      disabled
-      value={false}
-    />
+    {options.map((item) => (
+      <QuestionOption
+        questionType="MULTIPLE_SELECTION"
+        value={item.value}
+        disabled
+        editable={false}
+        onChange={(e) => onChange(e.target.value, item)}
+        onDelete={() => onDelete(item)}
+      />
+    ))}
+    <Box marginTop="10px" display="flex" justifyContent="flex-end">
+      <Button onClick={onAdd}>Agregar opción</Button>
+    </Box>
   </Box>
 )
 
@@ -58,18 +71,31 @@ const QuestionModal = ({
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const [currentType, setCurrentType] = useState(null)
+  const [enableOptions, setEnableOptions] = useState(false)
   const { isMobile } = useSelector((state) => state.ui)
   const { questionTypesList } = useSelector((state) => state.poll)
 
   const formik = useFormik({
     validateOnMount: true,
-    validationSchema,
+    validationSchema: enableOptions
+      ? validationSchema.concat(multipleQuestion)
+      : validationSchema,
     initialValues: {
       question: type === 'UPDATE' ? data.question : '',
-      question_type_id: type === 'UPDATE' ? data.question_type_id : ''
+      question_type_id: type === 'UPDATE' ? data.question_type.id : '',
+      options:
+        type === 'UPDATE'
+          ? data.options.map((item, i) => ({
+              index: i + 1,
+              value: item.option_name
+            }))
+          : [{ index: 1, value: 'Opción 1' }]
     },
     onSubmit: (values, { resetForm }) => {
-      submitFunction(values)
+      submitFunction({
+        ...values,
+        options: values.options.map((item) => item.value)
+      })
         .then((result) => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, {
@@ -93,13 +119,12 @@ const QuestionModal = ({
   })
 
   useEffect(() => {
-    console.log(formik.values.question_type_id)
     if (formik.values.question_type_id) {
-      setCurrentType(
-        questionTypesList.find(
-          (item) => item.id === parseInt(formik.values.question_type_id, 10)
-        )
+      const questionType = questionTypesList.find(
+        (item) => item.id === parseInt(formik.values.question_type_id, 10)
       )
+      setCurrentType(questionType)
+      setEnableOptions(questionType.key === 'MULTIPLE_SELECTION')
     } else {
       setCurrentType(null)
     }
@@ -166,7 +191,34 @@ const QuestionModal = ({
                     <SimpleSelection />
                   )}
                   {currentType.key === 'MULTIPLE_SELECTION' && (
-                    <MultipleSelection />
+                    <MultipleSelection
+                      options={formik.values.options}
+                      onAdd={() => {
+                        const temp = [...formik.values.options]
+                        temp.push({
+                          index: temp.length + 1,
+                          value: 'Nueva opción'
+                        })
+                        console.log(temp)
+                        formik.setFieldValue('options', temp)
+                      }}
+                      onChange={(value, option) => {
+                        let temp = [...formik.values.options]
+                        temp = temp.map((item) =>
+                          item.index === option.index
+                            ? { ...item, value }
+                            : item
+                        )
+                        formik.setFieldValue('options', temp)
+                      }}
+                      onDelete={(option) => {
+                        let temp = [...formik.values.options]
+                        temp = temp
+                          .filter((item) => item.index !== option.index)
+                          .map((item, i) => ({ ...item, index: i + 1 }))
+                        formik.setFieldValue('options', temp)
+                      }}
+                    />
                   )}
                   {currentType.key === 'TEXT' && <AnswerText />}
                 </Box>

@@ -147,7 +147,11 @@ const PollCard = ({ loader, poll, onClick, showAnswers }) => {
                   <Box display="flex" justifyContent="flex-end">
                     <Box>
                       <Typography className={classes.answers} align="center">
-                        <CountUp duration={0.5} start={0} end={10}></CountUp>
+                        <CountUp
+                          duration={0.5}
+                          start={0}
+                          end={poll.responses.length}
+                        ></CountUp>
                       </Typography>
                       <Typography className={classes.answersTag} align="center">
                         Respuestas
