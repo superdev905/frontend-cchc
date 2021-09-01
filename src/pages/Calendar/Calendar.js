@@ -48,7 +48,7 @@ const EventsCalendar = () => {
   const [calendarDate, setCalendarDate] = useState(currentDate)
   const [loading, setLoading] = useState(false)
   const [rescheduleStatus, setRescheduleStatus] = useState(false)
-  const [calendarView, setCalendarView] = useState('work_week')
+  const [calendarView, setCalendarView] = useState('week')
   const [filters, setFilters] = useState({
     start_date: startOfWeek(currentDate),
     end_date: endOfWeek(currentDate)
@@ -211,7 +211,7 @@ const EventsCalendar = () => {
         end_date: endOfMonth(calendarDate)
       })
     }
-    if (calendarView === 'work_week' || calendarView === 'day') {
+    if (calendarView === 'week' || calendarView === 'day') {
       setFilters({
         ...filters,
         start_date: startOfWeek(calendarDate),
@@ -232,11 +232,11 @@ const EventsCalendar = () => {
             date={calendarDate}
             selectable
             view={calendarView}
-            defaultView="work_week"
+            defaultView="week"
             culture="es"
             localizer={localizer}
             events={events}
-            views={['month', 'work_week', 'day']}
+            views={['month', 'week', 'day']}
             startAccessor="start"
             endAccessor="end"
             onView={(newView) => {

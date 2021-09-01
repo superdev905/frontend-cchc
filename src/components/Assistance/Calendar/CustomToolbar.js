@@ -39,11 +39,9 @@ export default class CalendarToolbar extends Toolbar {
             Día
           </Button>
           <Button
-            variant={`${
-              this.props.view === 'work_week' ? 'contained' : 'outlined'
-            }`}
-            onClick={this.view.bind(null, 'work_week')}
-            color={`${this.props.view === 'work_week' ? 'primary' : ''}`}
+            variant={`${this.props.view === 'week' ? 'contained' : 'outlined'}`}
+            onClick={this.view.bind(null, 'week')}
+            color={`${this.props.view === 'week' ? 'primary' : ''}`}
           >
             Semana
           </Button>

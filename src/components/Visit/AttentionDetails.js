@@ -61,10 +61,6 @@ const AttentionDetails = () => {
                 selector: (row) => row.stringDate
               },
               {
-                name: 'Nombre de empresa',
-                selector: (row) => row.business_name
-              },
-              {
                 name: 'Nombre de Obra',
                 selector: (row) => row.construction_name
               },
@@ -87,9 +83,6 @@ const AttentionDetails = () => {
                 right: true,
                 cell: (row) => (
                   <ActionsTable
-                    onView={() => {}}
-                    onDelete={() => {}}
-                    onEdit={() => {}}
                     moreOptions={[
                       {
                         icon: <AttachFileIcon />,

@@ -14,8 +14,11 @@ import {
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
 import CloseIcon from '@material-ui/icons/Close'
 import ZoomOutIcon from '@material-ui/icons/ZoomOut'
+import Lightbox from 'react-awesome-lightbox'
+import 'react-awesome-lightbox/build/style.css'
 import PropTypes from 'prop-types'
 import fileActions from '../../state/actions/files'
+import validURL from '../../validations/url'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
 
@@ -136,11 +139,22 @@ const FileVisor = ({ open, onClose, fileName }) => {
     </Dialog>
   )
 }
-
 FileVisor.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   fileName: PropTypes.string
 }
 
-export default FileVisor
+const VisorWrapper = ({ open, onClose, fileName }) => (
+  <>
+    {validURL(fileName) ? (
+      <>
+        <Lightbox onClose={onClose} image={fileName} title={fileName} />
+      </>
+    ) : (
+      <FileVisor open={open} onClose={onClose} fileName={fileName} />
+    )}
+  </>
+)
+
+export default VisorWrapper
