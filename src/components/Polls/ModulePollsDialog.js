@@ -199,7 +199,10 @@ const AnswerPoll = ({ poll, onBack, onNext }) => {
         <Button onClick={onBack} variant="outlined">
           Cancelar
         </Button>
-        <Button onClick={() => handleSubmitPoll(questions)}>
+        <Button
+          disabled={poll.questions.length === 0}
+          onClick={() => handleSubmitPoll(questions)}
+        >
           Enviar respuestas
         </Button>
       </Box>
