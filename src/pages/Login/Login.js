@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().required('Ingrese correo'),
+  email: Yup.string().trim().required('Ingrese correo'),
   password: Yup.string().required('Ingrese contraseña')
 })
 
@@ -89,6 +89,16 @@ const Login = () => {
     if (key === 'Enter' && formik.isValid) {
       formik.submitForm()
     }
+  }
+
+  if (formik.values.email.indexOf(' ') === -1) {
+    console.log(`${formik.values.email} valido`)
+  } else {
+    enqueueSnackbar('El email no debe contener espacios', {
+      variant: 'info',
+      autoHideDuration: 2000,
+      preventDuplicate: true
+    })
   }
 
   return isAuthenticated ? (
