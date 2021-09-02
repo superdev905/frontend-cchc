@@ -15,6 +15,8 @@ const validationSchema = Yup.object({
   quantity: Yup.number('Ingrese número')
     .min(1, 'La cantidad deber ser mayor a 1')
     .required('Ingrese cantidad')
+    .positive()
+    .integer()
 })
 
 const AssistanceType = ({
@@ -68,6 +70,7 @@ const AssistanceType = ({
     if (num === '') return 0
     if (Number.isNaN(num)) return 0
     if (num * 1 < 0) return 0
+
     return parseInt(num, 10)
   }
 
@@ -141,6 +144,7 @@ const AssistanceType = ({
               label="Cantidad de personas"
               name="quantity"
               required
+              type="number"
               value={formik.values.quantity}
               onChange={(e) => {
                 formik.setFieldValue('quantity', validNumber(e.target.value))

@@ -37,7 +37,7 @@ const validationSchema = Yup.object().shape({
   status: Yup.string().required('Seleccione estado'),
   company_report: Yup.string().required('Seleccione opcion'),
   is_social_case: Yup.string().required('Seleccione caso social'),
-  case_id: Yup.number('Seleccione caso'),
+  case_id: Yup.number().required('Seleccione caso'),
   task_id: Yup.number('Seleccione plan de intervención '),
   assigned_id: Yup.string('Ingrese profesional'),
   observation: Yup.string('Ingrese observaciones'),
@@ -181,7 +181,7 @@ const WorkerInterventionRecord = ({
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
       <Box>
         <Typography variant="h6" align="center">
-          {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Assistencia`}
+          {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Asistencia`}
         </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
@@ -422,6 +422,7 @@ const WorkerInterventionRecord = ({
                 <Select
                   label="Caso"
                   name="case_id"
+                  required
                   value={formik.values.case_id}
                   onChange={formik.handleChange}
                   error={
@@ -441,6 +442,7 @@ const WorkerInterventionRecord = ({
                 <Select
                   label="Plan de Intervención"
                   name="task_id"
+                  required
                   value={formik.values.task_id}
                   onChange={formik.handleChange}
                   error={
