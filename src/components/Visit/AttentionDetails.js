@@ -73,7 +73,6 @@ const AttentionDetails = () => {
                 name: 'Lugar de atención',
                 selector: (row) => row.attention_place
               },
-
               {
                 name: 'Método de contacto',
                 selector: (row) => row.contact_method
