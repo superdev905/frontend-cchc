@@ -120,6 +120,7 @@ const PollCreate = ({
                   formik.setFieldValue('start_date', date)
                   formik.setFieldTouched('start_date')
                 }}
+                disabledPast={true}
                 error={
                   formik.touched.start_date && Boolean(formik.errors.start_date)
                 }

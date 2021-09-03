@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom'
 import { Box, Chip, Grid, makeStyles, Typography } from '@material-ui/core'
 import CalendarIcon from '@material-ui/icons/CalendarToday'
 import { Skeleton } from '@material-ui/lab'
+import { useSnackbar } from 'notistack'
 import { formatDate, formatText } from '../../formatters'
 import { StatusChip } from '../UI'
 
@@ -57,10 +58,17 @@ const useStyles = makeStyles((theme) => ({
 const PollCard = ({ loader, poll, onClick, showAnswers }) => {
   const classes = useStyles()
   const history = useHistory()
+  const { enqueueSnackbar } = useSnackbar()
 
   const handleOnClick = () => {
     if (onClick) {
       onClick(poll)
+      if (poll.questions.length === 0) {
+        enqueueSnackbar('Esta encuesta aún no tiene preguntas', {
+          variant: 'info'
+        })
+        // history.goBack()
+      }
     } else {
       history.push(`/polls/${poll.id}`)
     }
