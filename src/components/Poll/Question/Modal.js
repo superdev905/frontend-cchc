@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
@@ -22,9 +22,9 @@ const multipleQuestion = Yup.object().shape({
     .required('Agregue opciones')
 })
 
-const validationSchema = Yup.object().shape({
+const simpleSchema = Yup.object().shape({
   question: Yup.string().required('Ingrese pregunta'),
-  question_type_id: Yup.string().required('Selecciona tipo de pregunta')
+  question_type_id: Yup.number().required('Selecciona tipo de pregunta')
 })
 
 const SimpleSelection = () => (
@@ -87,7 +87,7 @@ const QuestionModal = ({
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
-  const [currentType, setCurrentType] = useState(null)
+  const [currentType, setCurrentType] = useState('')
   const [enableOptions, setEnableOptions] = useState(false)
   const { isMobile } = useSelector((state) => state.ui)
   const { questionTypesList } = useSelector((state) => state.poll)
@@ -95,8 +95,8 @@ const QuestionModal = ({
   const formik = useFormik({
     validateOnMount: true,
     validationSchema: enableOptions
-      ? validationSchema.concat(multipleQuestion)
-      : validationSchema,
+      ? simpleSchema.concat(multipleQuestion)
+      : simpleSchema,
     initialValues: {
       question: type === 'UPDATE' ? data.question : '',
       question_type_id: type === 'UPDATE' ? data.question_type.id : '',
@@ -134,24 +134,16 @@ const QuestionModal = ({
         })
     }
   })
-  console.log(formik.errors, enableOptions)
-  useEffect(() => {
-    if (formik.values.question_type_id) {
-      const questionType = questionTypesList.find(
-        (item) => item.id === parseInt(formik.values.question_type_id, 10)
-      )
 
-      if (questionType.key !== 'MULTIPLE_SELECTION') {
-        formik.setFieldValue('options', [{ index: 1, value: 'Opción 1' }])
-      }
-      console.log(questionType)
-      setEnableOptions(questionType.key === 'MULTIPLE_SELECTION')
-      setCurrentType(questionType)
+  console.log(formik.errors, enableOptions)
+
+  useEffect(() => {
+    if (currentType === 'MULTIPLE_SELECTION') {
+      setEnableOptions(true)
     } else {
-      setCurrentType(null)
       setEnableOptions(false)
     }
-  }, [formik.values.question_type_id])
+  }, [currentType, enableOptions])
 
   useEffect(() => {
     dispatch(pollActions.getQuestionTypes())
@@ -191,7 +183,14 @@ const QuestionModal = ({
                 label="Tipo de Pregunta"
                 name="question_type_id"
                 required
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const { value } = e.target
+                  const questionType = questionTypesList.find(
+                    (item) => item.id === parseInt(value, 10)
+                  )
+                  setCurrentType(questionType.key)
+                  formik.setFieldValue('question_type_id', value)
+                }}
                 value={formik.values.question_type_id}
                 error={
                   formik.touched.question_type_id &&
@@ -204,10 +203,7 @@ const QuestionModal = ({
               >
                 <option value="">Seleccione una opción</option>
                 {questionTypesList.map((item, index) => (
-                  <option
-                    key={`question_type_id--${index}`}
-                    value={`${item.id}`}
-                  >
+                  <option key={`question_type_id--${index}`} value={item.id}>
                     {item.display_name}
                   </option>
                 ))}
@@ -217,10 +213,8 @@ const QuestionModal = ({
               {currentType && (
                 <Box>
                   <Typography>Respuestas</Typography>
-                  {currentType.key === 'SIMPLE_SELECTION' && (
-                    <SimpleSelection />
-                  )}
-                  {currentType.key === 'MULTIPLE_SELECTION' && (
+                  {currentType === 'SIMPLE_SELECTION' && <SimpleSelection />}
+                  {currentType === 'MULTIPLE_SELECTION' && (
                     <MultipleSelection
                       options={formik.values.options}
                       onAdd={() => {
@@ -250,7 +244,7 @@ const QuestionModal = ({
                       error={formik.errors.options}
                     />
                   )}
-                  {currentType.key === 'TEXT' && <AnswerText />}
+                  {currentType === 'TEXT' && <AnswerText />}
                 </Box>
               )}
             </Grid>
@@ -278,4 +272,4 @@ QuestionModal.defaultProps = {
   type: 'CREATE'
 }
 
-export default QuestionModal
+export default memo(QuestionModal)

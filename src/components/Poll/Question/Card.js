@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
 import {
   Box,
   Chip,
@@ -70,6 +71,7 @@ const QuestionCard = ({
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const { idPoll } = useParams()
   const { user } = useSelector((state) => state.auth)
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
@@ -94,7 +96,7 @@ const QuestionCard = ({
         })
       })
       .catch((err) => {
-        console.log(err)
+        enqueueSnackbar(err, { variant: 'error' })
       })
   }
 
@@ -197,7 +199,7 @@ const QuestionCard = ({
             message={
               <span>
                 ¿Estás seguro de eliminar esta pregunta:{' '}
-                <strong>{question.question}</strong>{' '}
+                <strong>{question.question}</strong>?{' '}
               </span>
             }
             onConfirm={() => onDelete(question.id)}

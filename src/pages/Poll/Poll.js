@@ -137,7 +137,7 @@ const Poll = () => {
           message={
             <span>
               ¿Estás seguro de eliminar esta encuesta:{' '}
-              <strong>{poll.title}</strong>{' '}
+              <strong>{poll.title}</strong>?
             </span>
           }
           onConfirm={() => onDelete(poll.id)}
