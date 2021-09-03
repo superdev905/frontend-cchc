@@ -134,16 +134,22 @@ const QuestionModal = ({
         })
     }
   })
-
+  console.log(formik.errors, enableOptions)
   useEffect(() => {
     if (formik.values.question_type_id) {
       const questionType = questionTypesList.find(
         (item) => item.id === parseInt(formik.values.question_type_id, 10)
       )
-      setCurrentType(questionType)
+
+      if (questionType.key !== 'MULTIPLE_SELECTION') {
+        formik.setFieldValue('options', [{ index: 1, value: 'Opción 1' }])
+      }
+      console.log(questionType)
       setEnableOptions(questionType.key === 'MULTIPLE_SELECTION')
+      setCurrentType(questionType)
     } else {
       setCurrentType(null)
+      setEnableOptions(false)
     }
   }, [formik.values.question_type_id])
 

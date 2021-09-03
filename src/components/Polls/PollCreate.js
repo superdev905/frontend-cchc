@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import { DatePicker, Dialog } from '../Shared'
-import { Button, Select, SubmitButton, TextField } from '../UI'
+import { Button, Select, SubmitButton, TextArea, TextField } from '../UI'
 import { useSuccess } from '../../hooks'
 import { moduleConfig, statusList } from '../../config'
 
@@ -72,23 +72,21 @@ const PollCreate = ({
   useEffect(() => {
     if (formik.values.start_date) {
       formik.setFieldTouched('start_date')
+      formik.setFieldValue('end_date', '')
     }
+  }, [formik.values.start_date])
+
+  useEffect(() => {
     if (formik.values.end_date) {
       formik.setFieldTouched('end_date')
     }
-  }, [formik.values.start_date, formik.values.end_date])
-  if (formik.values.start_date > formik.values.end_date) {
-    enqueueSnackbar(
-      'La fecha de termino debe ser despues de la fecha de inicio',
-      {
-        variant: 'info',
-        autoHideDuration: 3000,
-        preventDuplicate: true
-      }
-    )
-  } else {
-    console.log('start date es mayor')
-  }
+  }, [formik.values.end_date])
+
+  useEffect(() => {
+    if (open) {
+      formik.resetForm()
+    }
+  }, [open])
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
@@ -99,7 +97,8 @@ const PollCreate = ({
         <Box p={2}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={12}>
-              <TextField
+              <TextArea
+                rowsMin={1}
                 label="Título de encuesta"
                 name="title"
                 required
@@ -108,11 +107,12 @@ const PollCreate = ({
                 error={formik.touched.title && Boolean(formik.errors.title)}
                 helperText={formik.touched.title && formik.errors.title}
                 maxLength={400}
-              ></TextField>
+              ></TextArea>
             </Grid>
             <Grid item xs={12} md={6}>
               <DatePicker
                 label="Fecha de Inicio"
+                disabledPast
                 disabledFuture={false}
                 value={formik.values.start_date}
                 required
@@ -131,8 +131,10 @@ const PollCreate = ({
             <Grid item xs={12} md={6}>
               <DatePicker
                 label="Fecha de Fin"
+                disabledPast
                 disabledFuture={false}
                 value={formik.values.end_date}
+                minDate={formik.values.start_date}
                 required
                 onChange={(date) => {
                   formik.setFieldValue('end_date', date)

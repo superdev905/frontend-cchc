@@ -46,7 +46,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email().trim().required('Ingrese correo'),
+  email: Yup.string()
+    .email('Ingrese un correo válido')
+    .trim()
+    .required('Ingrese correo'),
   password: Yup.string().required('Ingrese contraseña')
 })
 

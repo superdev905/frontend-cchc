@@ -1,14 +1,11 @@
 import { memo, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
-import format from 'date-fns/format'
-import parse from 'date-fns/parse'
-import startOfWeek from 'date-fns/startOfWeek'
-import { endOfMonth, endOfWeek, startOfMonth } from 'date-fns'
-import getDay from 'date-fns/getDay'
-import es from 'date-fns/locale/es'
+import moment from 'moment'
+import 'moment/locale/es'
+import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from 'date-fns'
 import { Box } from '@material-ui/core'
-import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
+import { Calendar, momentLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import assistanceActions from '../../state/actions/assistance'
 import { Wrapper } from '../../components/UI'
@@ -20,16 +17,7 @@ import {
 } from '../../components/Assistance/Calendar'
 import { ConfirmDelete } from '../../components/Shared'
 
-const locales = {
-  es
-}
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales
-})
+const localizer = momentLocalizer(moment)
 
 const getBgColor = (event) => {
   if (event.status === 'PROGRAMADA' || event.status === 'REPROGRAMADA')

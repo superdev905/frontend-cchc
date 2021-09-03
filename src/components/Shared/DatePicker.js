@@ -110,16 +110,17 @@ const CustomDatePicker = ({
   disabled,
   disabledFuture,
   disabledPast,
+  minDate,
   ...props
 }) => {
   const classes = useStyles({ disabled })
   const [today] = useState(new Date())
-  const [maxDate] = useState({
+  const [currentMaxDate] = useState({
     year: today.getFullYear(),
     month: today.getMonth() + 1,
     day: today.getDate()
   })
-  const [minDate] = useState({
+  const [currentMinDate, setCurrentMinDate] = useState({
     year: today.getFullYear(),
     month: today.getMonth() + 1,
     day: today.getDate()
@@ -147,6 +148,16 @@ const CustomDatePicker = ({
       setSelectedDate(null)
     }
   }, [value])
+
+  useEffect(() => {
+    if (minDate) {
+      setCurrentMinDate({
+        year: new Date(minDate).getFullYear(),
+        month: new Date(minDate).getMonth() + 1,
+        day: new Date(minDate).getDate() + 1
+      })
+    }
+  }, [minDate])
 
   useEffect(() => {
     if (selectedDate) {
@@ -180,8 +191,8 @@ const CustomDatePicker = ({
           onChange={handleSelected}
           shouldHighlightWeekends
           locale={ESLocale}
-          maximumDate={disabledFuture ? maxDate : null}
-          minimumDate={disabledPast ? minDate : null}
+          maximumDate={disabledFuture ? currentMaxDate : null}
+          minimumDate={disabledPast ? currentMinDate : null}
         />
       </Menu>
     </Box>
