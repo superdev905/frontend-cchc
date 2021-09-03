@@ -10,21 +10,15 @@ import { useSuccess } from '../../../hooks'
 import pollActions from '../../../state/actions/poll'
 import QuestionOption from './QuestionOption'
 
-const multipleQuestion = Yup.object().shape({
-  options: Yup.array()
-    .of(
-      Yup.object({
-        index: Yup.number(),
-        value: Yup.string().required('Una opción no puede ser vacía')
-      })
-    )
-    .min(3, 'Selecciona al menos tres opciones')
-    .required('Agregue opciones')
-})
-
-const simpleSchema = Yup.object().shape({
+const validationSchema = Yup.object().shape({
   question: Yup.string().required('Ingrese pregunta'),
-  question_type_id: Yup.number().required('Selecciona tipo de pregunta')
+  question_type_id: Yup.number().required('Selecciona tipo de pregunta'),
+  options: Yup.array().of(
+    Yup.object({
+      index: Yup.number(),
+      value: Yup.string().required('Una opción no puede ser vacía')
+    })
+  )
 })
 
 const SimpleSelection = () => (
@@ -44,8 +38,9 @@ const MultipleSelection = ({ options, onChange, onAdd, onDelete, error }) => {
 
   return (
     <Box>
-      {options.map((item) => (
+      {options.map((item, i) => (
         <QuestionOption
+          key={`options--${i}`}
           questionType="MULTIPLE_SELECTION"
           value={item.value}
           disabled
@@ -88,15 +83,13 @@ const QuestionModal = ({
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const [currentType, setCurrentType] = useState('')
-  const [enableOptions, setEnableOptions] = useState(false)
+
   const { isMobile } = useSelector((state) => state.ui)
   const { questionTypesList } = useSelector((state) => state.poll)
 
   const formik = useFormik({
     validateOnMount: true,
-    validationSchema: enableOptions
-      ? simpleSchema.concat(multipleQuestion)
-      : simpleSchema,
+    validationSchema,
     initialValues: {
       question: type === 'UPDATE' ? data.question : '',
       question_type_id: type === 'UPDATE' ? data.question_type.id : '',
@@ -135,19 +128,41 @@ const QuestionModal = ({
     }
   })
 
-  console.log(formik.errors, enableOptions)
-
-  useEffect(() => {
+  const getOptionsValid = () => {
     if (currentType === 'MULTIPLE_SELECTION') {
-      setEnableOptions(true)
-    } else {
-      setEnableOptions(false)
+      const { options } = formik.values
+      if (options.length < 3) return true
+      if (options.filter((item) => item.value === '').length > 0) return true
     }
-  }, [currentType, enableOptions])
+
+    return formik.values.question_type_id === ''
+  }
+
+  const handleTypeChange = (e) => {
+    const { value } = e.target
+    const questionType = questionTypesList.find(
+      (item) => item.id === parseInt(value, 10)
+    )
+
+    formik.setFieldValue(
+      'options',
+      questionType?.key === 'MULTIPLE_SELECTION'
+        ? [{ index: 1, value: 'Opción 1' }]
+        : []
+    )
+    setCurrentType(questionType?.key)
+    formik.setFieldValue(e.target.name, value)
+  }
 
   useEffect(() => {
-    dispatch(pollActions.getQuestionTypes())
-  }, [])
+    if (open) {
+      if (type === 'CREATE') {
+        setCurrentType('')
+        formik.resetForm()
+      }
+      dispatch(pollActions.getQuestionTypes())
+    }
+  }, [open])
 
   return (
     <Dialog
@@ -183,14 +198,7 @@ const QuestionModal = ({
                 label="Tipo de Pregunta"
                 name="question_type_id"
                 required
-                onChange={(e) => {
-                  const { value } = e.target
-                  const questionType = questionTypesList.find(
-                    (item) => item.id === parseInt(value, 10)
-                  )
-                  setCurrentType(questionType.key)
-                  formik.setFieldValue('question_type_id', value)
-                }}
+                onChange={handleTypeChange}
                 value={formik.values.question_type_id}
                 error={
                   formik.touched.question_type_id &&
@@ -210,7 +218,7 @@ const QuestionModal = ({
               </Select>
             </Grid>
             <Grid item xs={12}>
-              {currentType && (
+              {
                 <Box>
                   <Typography>Respuestas</Typography>
                   {currentType === 'SIMPLE_SELECTION' && <SimpleSelection />}
@@ -246,7 +254,7 @@ const QuestionModal = ({
                   )}
                   {currentType === 'TEXT' && <AnswerText />}
                 </Box>
-              )}
+              }
             </Grid>
           </Grid>
         </Box>
@@ -256,7 +264,9 @@ const QuestionModal = ({
           </Button>
           <SubmitButton
             onClick={formik.handleSubmit}
-            disabled={!formik.isValid || formik.isSubmitting}
+            disabled={
+              !formik.isValid || formik.isSubmitting || getOptionsValid()
+            }
             loading={formik.isSubmitting}
             success={success}
           >
