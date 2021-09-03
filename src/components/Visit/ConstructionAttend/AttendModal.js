@@ -12,11 +12,10 @@ import commonActions from '../../../state/actions/common'
 const validationSchema = Yup.object({
   type_id: Yup.number().required(''),
   type_name: Yup.string().required('Seleccione tipo de Atención'),
-  quantity: Yup.number('Ingrese número')
+  quantity: Yup.number('Ingrese número válido')
     .min(1, 'La cantidad deber ser mayor a 1')
     .required('Ingrese cantidad')
-    .positive()
-    .integer()
+    .integer('Ingrese numero valido')
 })
 
 const AssistanceType = ({
@@ -67,10 +66,10 @@ const AssistanceType = ({
     return 'Crear atención en obra'
   }
   const validNumber = (num) => {
-    if (num === '') return 0
-    if (Number.isNaN(num)) return 0
-    if (num * 1 < 0) return 0
-
+    if (num === '') return ''
+    if (Number.isNaN(num)) return ''
+    if (num * 1 < 0) return ''
+    if (num === '0') return ''
     return parseInt(num, 10)
   }
 
@@ -147,8 +146,8 @@ const AssistanceType = ({
               type="number"
               value={formik.values.quantity}
               onChange={(e) => {
-                formik.setFieldValue('quantity', validNumber(e.target.value))
                 formik.setFieldTouched('quantity')
+                formik.setFieldValue('quantity', validNumber(e.target.value))
               }}
               onBlur={formik.handleBlur}
               error={formik.touched.quantity && Boolean(formik.errors.quantity)}

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 8,
     cursor: 'pointer',
     [theme.breakpoints.up('md')]: {
-      maxHeight: 170
+      minHeight: 170
     }
   },
   title: {
@@ -79,7 +79,7 @@ const PollCard = ({ loader, poll, onClick, showAnswers }) => {
         {loader ? (
           <>
             <Grid container>
-              <Grid item xs={12} md={7}>
+              <Grid item xs={12} md={10}>
                 <Box p={2}>
                   <Box display="flex" marginBottom="10px">
                     {[...Array(3).keys()].map((__, index) => (
@@ -106,7 +106,7 @@ const PollCard = ({ loader, poll, onClick, showAnswers }) => {
                   </Box>
                 </Box>
               </Grid>
-              <Grid item xs={12} md={5} className={classes.answersWrapper}>
+              <Grid item xs={12} md={2} className={classes.answersWrapper}>
                 <Skeleton
                   className={classes.tagLoader}
                   width="20%"
@@ -118,7 +118,7 @@ const PollCard = ({ loader, poll, onClick, showAnswers }) => {
         ) : (
           <Box p={2} display="flex" alignItems="center">
             <Grid container>
-              <Grid item xs={12} md={7}>
+              <Grid item xs={12} md={10}>
                 <Box marginBottom="10px">
                   {poll.modules.map((item, index) => (
                     <Chip
@@ -150,7 +150,7 @@ const PollCard = ({ loader, poll, onClick, showAnswers }) => {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} md={5} className={classes.answersWrapper}>
+              <Grid item xs={12} md={2} className={classes.answersWrapper}>
                 {showAnswers && (
                   <Box display="flex" justifyContent="flex-end">
                     <Box>

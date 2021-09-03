@@ -5,7 +5,7 @@ import { PageHeading } from '../../components/UI'
 const Employees = () => (
   <div>
     <PageHeading>
-      Trabajadores <PollsDot module="EMPRESAS" />
+      Trabajadores <PollsDot module="TRABAJADORES" />
     </PageHeading>
     <ListEmployees />
   </div>
