@@ -38,7 +38,7 @@ const validationSchema = Yup.object().shape({
   company_report: Yup.string().required('Seleccione opcion'),
   is_social_case: Yup.string().required('Seleccione caso social'),
   case_id: Yup.number().required('Seleccione caso'),
-  task_id: Yup.number('Seleccione plan de intervención '),
+  task_id: Yup.number().required('Seleccione plan de intervención'),
   assigned_id: Yup.string('Ingrese profesional'),
   observation: Yup.string('Ingrese observaciones'),
   attached_url: Yup.mixed()
@@ -229,6 +229,7 @@ const WorkerInterventionRecord = ({
                 required
                 value={formik.values.attention_place}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={
                   formik.touched.attention_place &&
                   Boolean(formik.errors.attention_place)
@@ -253,6 +254,7 @@ const WorkerInterventionRecord = ({
                 required
                 value={formik.values.contact_method}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={
                   formik.touched.contact_method &&
                   Boolean(formik.errors.contact_method)
@@ -281,6 +283,7 @@ const WorkerInterventionRecord = ({
                 required
                 value={formik.values.area_id}
                 onChange={handleSelectChange}
+                onBlur={formik.handleBlur}
                 error={formik.touched.area_id && Boolean(formik.errors.area_id)}
                 helperText={formik.touched.area_id && formik.errors.area_id}
               >
@@ -299,7 +302,7 @@ const WorkerInterventionRecord = ({
                 required
                 value={formik.values.topic_id}
                 onChange={handleSelectChange}
-                // onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={
                   formik.touched.topic_id && Boolean(formik.errors.topic_id)
                 }
@@ -320,6 +323,7 @@ const WorkerInterventionRecord = ({
                 required
                 value={formik.values.management_id}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={
                   formik.touched.management_id &&
                   Boolean(formik.errors.management_id)
@@ -343,6 +347,7 @@ const WorkerInterventionRecord = ({
                 required
                 value={formik.values.status}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={formik.touched.status && Boolean(formik.errors.status)}
                 helperText={formik.touched.status && formik.errors.status}
               >
@@ -425,14 +430,15 @@ const WorkerInterventionRecord = ({
                   required
                   value={formik.values.case_id}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   error={
                     formik.touched.case_id && Boolean(formik.errors.case_id)
                   }
                   helperText={formik.touched.case_id && formik.errors.case_id}
                 >
                   <option value="">Seleccione caso</option>
-                  {[1, 2, 3].map((item, i) => (
-                    <option key={`case_id-${i}-${item}`} value={item}>
+                  {['CASO 1', 'CASO 2'].map((item, i) => (
+                    <option key={`case_id-${i}-${item}`} value={i + 1}>
                       {item}
                     </option>
                   ))}
@@ -445,17 +451,20 @@ const WorkerInterventionRecord = ({
                   required
                   value={formik.values.task_id}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   error={
                     formik.touched.task_id && Boolean(formik.errors.task_id)
                   }
                   helperText={formik.touched.task_id && formik.errors.task_id}
                 >
                   <option value="">Seleccione plan de intervención</option>
-                  {[1, 2, 3].map((item, i) => (
-                    <option key={`plan-${i}-${item}`} value={item}>
-                      {item}
-                    </option>
-                  ))}
+                  {['Plan de Intervención 1', 'Plan de Intervención 2'].map(
+                    (item, i) => (
+                      <option key={`plan-${i}-${item}`} value={i + 1}>
+                        {item}
+                      </option>
+                    )
+                  )}
                 </Select>
               </Grid>
             </Grid>
@@ -467,6 +476,7 @@ const WorkerInterventionRecord = ({
                 name="observation"
                 value={formik.values.observation}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={
                   formik.touched.observation &&
                   Boolean(formik.errors.observation)
