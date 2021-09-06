@@ -437,9 +437,12 @@ const WorkerInterventionRecord = ({
                   helperText={formik.touched.case_id && formik.errors.case_id}
                 >
                   <option value="">Seleccione caso</option>
-                  {['CASO 1', 'CASO 2'].map((item, i) => (
-                    <option key={`case_id-${i}-${item}`} value={i + 1}>
-                      {item}
+                  {[
+                    { index: 1, name: 'CASO 1' },
+                    { index: 2, name: 'CASO 2' }
+                  ].map((item, i) => (
+                    <option key={`case_id-${i}-${item}`} value={item.index}>
+                      {item.name}
                     </option>
                   ))}
                 </Select>
@@ -458,13 +461,14 @@ const WorkerInterventionRecord = ({
                   helperText={formik.touched.task_id && formik.errors.task_id}
                 >
                   <option value="">Seleccione plan de intervención</option>
-                  {['Plan de Intervención 1', 'Plan de Intervención 2'].map(
-                    (item, i) => (
-                      <option key={`plan-${i}-${item}`} value={i + 1}>
-                        {item}
-                      </option>
-                    )
-                  )}
+                  {[
+                    { index: 1, name: 'Plan de Intervención 1' },
+                    { index: 2, name: 'Plan de Intervención 2' }
+                  ].map((item, i) => (
+                    <option key={`plan-${i}-${item}`} value={item.index}>
+                      {item.name}
+                    </option>
+                  ))}
                 </Select>
               </Grid>
             </Grid>
