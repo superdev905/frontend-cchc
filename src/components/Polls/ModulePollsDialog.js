@@ -236,12 +236,17 @@ const ModulePollsDialog = ({ open, onClose, module }) => {
     >
       <Box p={2}>
         {step === 0 && (
-          <PollList
-            onSelectPoll={(currentPoll) => {
-              setSelectedPoll(currentPoll)
-              setStep(1)
-            }}
-          />
+          <Box>
+            <PollList
+              onSelectPoll={(currentPoll) => {
+                setSelectedPoll(currentPoll)
+                setStep(1)
+              }}
+            />
+            <Box textAlign="center">
+              <Button textAlign="center">Ver todas</Button>
+            </Box>
+          </Box>
         )}
         {step === 1 && (
           <AnswerPoll

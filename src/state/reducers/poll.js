@@ -9,7 +9,8 @@ const initialState = {
   totalQuestions: 0,
   question: null,
   modulePollList: [],
-  pollAnswers: []
+  pollAnswers: [],
+  showModal: false
 }
 
 const pollReducer = (state = initialState, { type, payload }) => {
@@ -30,6 +31,8 @@ const pollReducer = (state = initialState, { type, payload }) => {
       return { ...state, modulePollList: payload }
     case pollTypes.GET_POLL_ANSWERS:
       return { ...state, pollAnswers: payload }
+    case pollTypes.POLL_AVAILABLE_TOGGLE:
+      return { ...state, showModal: payload }
     default:
       return state
   }

@@ -220,6 +220,9 @@ const exportData = (value) => () =>
       })
   })
 
+const toggleModal = (value) => (dispatch) =>
+  dispatch({ type: pollTypes.POLL_AVAILABLE_TOGGLE, payload: !value })
+
 export default {
   getPolls,
   createPoll,
@@ -235,5 +238,6 @@ export default {
   getModulePolls,
   answerPoll,
   getPollAnswers,
-  exportData
+  exportData,
+  toggleModal
 }
