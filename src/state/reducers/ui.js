@@ -4,7 +4,7 @@ const initialState = {
   isLoading: false,
   isMobile: false,
   isOnline: navigator.onLine,
-  changeModule: ''
+  module: ''
 }
 
 const authReducer = (state = initialState, { type, payload }) => {
@@ -16,7 +16,7 @@ const authReducer = (state = initialState, { type, payload }) => {
     case uiTypes.SET_NETWORK_STATUS:
       return { ...state, isOnline: payload }
     case uiTypes.USER_MODULE:
-      return { ...state, changeModule: payload }
+      return { ...state, module: payload }
     default:
       return state
   }

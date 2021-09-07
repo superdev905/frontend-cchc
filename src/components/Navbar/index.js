@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -18,15 +18,12 @@ import {
 } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import ReportOutlinedIcon from '@material-ui/icons/ReportOutlined'
 import { useTheme } from '@material-ui/core/styles'
 import authActions from '../../state/actions/auth'
 import useStyles from './styles'
 import useMenu from '../../hooks/useMenu'
 import LeftDrawer from './LeftDrawer'
 import pollActions from '../../state/actions/poll'
-// import uiActions from '../../state/actions/ui'
-import ModulePollsDialog from '../Polls/ModulePollsDialog'
 import ModuleDot from '../Polls/PollsDot'
 
 const ResponsiveDrawer = ({ ...props }) => {
@@ -38,7 +35,6 @@ const ResponsiveDrawer = ({ ...props }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { user } = useSelector((state) => state.auth)
   const { open, anchorEl, handleClose, handleOpen } = useMenu()
-  const { showModal } = useSelector((state) => state.poll)
   const { module } = useSelector((state) => state.ui)
 
   const handleDrawerToggle = () => {
@@ -59,9 +55,14 @@ const ResponsiveDrawer = ({ ...props }) => {
   const container =
     window !== undefined ? () => window().document.body : undefined
 
+  /*
   const toggleModal = () => {
     dispatch(pollActions.toggleModal(showModal))
   }
+  */
+  useEffect(() => {
+    dispatch(pollActions.getModulePolls({ module }))
+  }, [module])
 
   return (
     <div className={classes.root}>
@@ -88,9 +89,6 @@ const ResponsiveDrawer = ({ ...props }) => {
             width="100%"
             alignItems="center"
           >
-            <IconButton onClick={toggleModal}>
-              <ReportOutlinedIcon />
-            </IconButton>
             <IconButton>
               <ModuleDot module={module} />
             </IconButton>
@@ -159,12 +157,6 @@ const ResponsiveDrawer = ({ ...props }) => {
           </Drawer>
         </Hidden>
       </nav>
-
-      <ModulePollsDialog
-        open={showModal}
-        onClose={toggleModal}
-        module={module}
-      />
     </div>
   )
 }
