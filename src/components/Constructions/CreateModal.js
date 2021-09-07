@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import commonActions from '../../state/actions/common'
-import constructionsActions from '../../state/actions/constructions'
 import companiesActions from '../../state/actions/companies'
 import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
 import { DatePicker, Map, AddressAutoComplete, Dialog } from '../Shared'
@@ -55,8 +54,11 @@ const ConstructionModal = ({
   const { success, changeSuccess } = useSuccess()
   const { open: openFact, toggleOpen: toggleOpenFact } = useToggle()
   const { isMobile } = useSelector((state) => state.ui)
-  const { regions } = useSelector((state) => state.common)
-  const { typologies, sectors } = useSelector((state) => state.constructions)
+  const {
+    regions,
+    constructionTypologies: typologies,
+    economicSectors: sectors
+  } = useSelector((state) => state.common)
 
   const formik = useFormik({
     validateOnMount: true,
@@ -189,8 +191,8 @@ const ConstructionModal = ({
     if (open) {
       setCompanyBill(null)
       dispatch(commonActions.getRegions())
-      dispatch(constructionsActions.getTypologies())
-      dispatch(constructionsActions.getSectors())
+      dispatch(commonActions.getTypologies())
+      dispatch(commonActions.getEconomicSectors())
 
       dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
         (list) => {
@@ -227,7 +229,7 @@ const ConstructionModal = ({
                 <Autocomplete
                   options={companies}
                   value={selectedCompany || ''}
-                  getOptionLabel={(option) => option.business_name}
+                  getOptionLabel={(option) => option.business_name || ''}
                   onChange={onCompanySelect}
                   renderOption={(option) => (
                     <Box>

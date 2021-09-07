@@ -1,5 +1,6 @@
 import Axios from '../../Axios'
 import commonTypes from '../types/common'
+import config from '../../config'
 
 const employeeEndpoint = `${
   process.env.REACT_APP_NODE_ENV === 'production'
@@ -15,7 +16,7 @@ const parametersEndpoint = `${
 
 const getRegions = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`/regions`)
+    Axios.get(`${config.services.parameters}/regions`)
       .then((response) => {
         const { data } = response
         dispatch({
@@ -32,7 +33,7 @@ const getRegions = () => (dispatch) =>
 
 const getCharges = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`/contact_charges`)
+    Axios.get(`${config.services.parameters}/contact_charges`)
       .then((response) => {
         const { data } = response
         dispatch({
@@ -47,17 +48,38 @@ const getCharges = () => (dispatch) =>
       })
   })
 
-const getTypologies = () => () =>
+const getTypologies = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`/construction_typology`)
+    Axios.get(`${config.services.parameters}/construction-typologies`)
       .then((response) => {
         const { data } = response
+        dispatch({
+          type: commonTypes.GET_CONSTRUCTION_TYPOLOGIES,
+          payload: data
+        })
         resolve(data)
       })
       .catch((err) => {
         reject(err)
       })
   })
+
+const getEconomicSectors = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.parameters}/economic-sectors`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: commonTypes.GET_ECONOMIC_SECTORS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 const getMaritalStatuses = () => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${employeeEndpoint}/marital-status`)
@@ -346,6 +368,7 @@ export default {
   getRegions,
   getCharges,
   getTypologies,
+  getEconomicSectors,
   getMaritalStatuses,
   getScholarship,
   getNationalities,
