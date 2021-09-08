@@ -202,6 +202,7 @@ const Form = ({
                 error={
                   formik.touched.charge_id && Boolean(formik.errors.charge_id)
                 }
+                inputProps={{ readOnly }}
               >
                 <option value="">Seleccione cargo</option>
                 {charges.map((item) => (
