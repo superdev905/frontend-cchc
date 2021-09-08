@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
@@ -12,9 +13,10 @@ import {
   Typography
 } from '@material-ui/core'
 import { Dialog } from '../Shared'
-import { SubmitButton, Button, TextField } from '../UI'
+import { SubmitButton, Button, TextField, Select } from '../UI'
 import { useSuccess } from '../../hooks'
 import generatePassword from '../../utils/generatePassword'
+import commonActions from '../../state/actions/common'
 
 const useStyles = makeStyles((theme) => ({
   label: {
@@ -38,6 +40,7 @@ const validationSchema = Yup.object().shape({
   maternal_surname: Yup.string().required('Ingrese materno'),
   paternal_surname: Yup.string().required('Ingrese paterno'),
   email: Yup.string().email('Ingrese correo válido').required('Ingrese email'),
+  charge_id: Yup.string().required('Seleccione cargo'),
   is_administrator: Yup.bool()
 })
 
@@ -51,10 +54,12 @@ const Form = ({
   successMessage
 }) => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const [readOnly] = useState(type === 'VIEW')
   const [randomPassword] = useState(generatePassword())
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
+  const { charges } = useSelector((state) => state.common)
 
   const getTitle = (actionType) => {
     if (actionType === 'VIEW') return 'Ver usuario'
@@ -70,6 +75,7 @@ const Form = ({
       maternal_surname: type !== 'ADD' ? data.maternal_surname : '',
       paternal_surname: type !== 'ADD' ? data.paternal_surname : '',
       email: type !== 'ADD' ? data.email : '',
+      charge_id: type !== 'ADD' ? data.charge_id : '',
       password: randomPassword,
       is_administrator: type !== 'ADD' ? data.is_administrator : false
     },
@@ -91,6 +97,12 @@ const Form = ({
         })
     }
   })
+
+  useEffect(() => {
+    if (open) {
+      dispatch(commonActions.getCharges())
+    }
+  }, [open])
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth={true}>
       <Box>
@@ -178,6 +190,26 @@ const Form = ({
                 />
               </Grid>
             )}
+
+            <Grid item xs={12} md={6}>
+              <Select
+                label="Cargo"
+                name="charge_id"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.charge_id}
+                helperText={formik.touched.charge_id && formik.errors.charge_id}
+                error={
+                  formik.touched.charge_id && Boolean(formik.errors.charge_id)
+                }
+              >
+                <option value="">Seleccione cargo</option>
+                {charges.map((item) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
+              </Select>
+            </Grid>
+
             <Grid item xs={12} md={6}>
               <InputLabel className={classes.label}>
                 Usuario administrador
