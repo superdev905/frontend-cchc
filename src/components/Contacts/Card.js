@@ -11,6 +11,7 @@ import {
   MoreHoriz as MoreIcon,
   CalendarToday as CalendarIcon
 } from '@material-ui/icons'
+import { capitalize } from 'lodash'
 import { useMenu } from '../../hooks'
 import { OptionsMenu } from '../Shared'
 
@@ -59,7 +60,9 @@ const ContactCard = ({ contact, onEdit, onDelete }) => {
             </Typography>
             <Box marginTop="10px">
               <Typography>Correo: {contact.email}</Typography>
-              <Typography>Cargo: {contact?.charge || ''}</Typography>
+              <Typography>
+                Cargo: {capitalize(contact?.charge_name) || ''}
+              </Typography>
               <Typography>Télefono: {contact.cell_phone}</Typography>
               <Typography>Télefono Oficina: {contact.office_phone}</Typography>
               <Typography>Otro Télefono: {contact.other_phone}</Typography>

@@ -73,22 +73,20 @@ const ContactList = ({ ...props }) => {
         <EmptyState message="Esta obra no tiene contactos" />
       ) : (
         <ContactCard.Container>
-          {contacts
-            .map((item) => ({ ...item, charge: item.charge.name }))
-            .map((item) => (
-              <ContactCard
-                key={`contact-i-${item.id}`}
-                contact={item}
-                onDelete={() => {
-                  toggleOpenDelete()
-                  setCurrentContact(item)
-                }}
-                onEdit={() => {
-                  toggleOpenUpdate()
-                  setCurrentContact(item)
-                }}
-              />
-            ))}
+          {contacts.map((item) => (
+            <ContactCard
+              key={`contact-i-${item.id}`}
+              contact={item}
+              onDelete={() => {
+                toggleOpenDelete()
+                setCurrentContact(item)
+              }}
+              onEdit={() => {
+                toggleOpenUpdate()
+                setCurrentContact(item)
+              }}
+            />
+          ))}
         </ContactCard.Container>
       )}
 
