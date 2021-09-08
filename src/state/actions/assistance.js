@@ -1,19 +1,14 @@
 import queryString from 'query-string'
 import Axios from '../../Axios'
 import assistanceTypes from '../types/assistance'
-
-const serviceEndpoint = `${
-  process.env.REACT_APP_NODE_ENV === 'production'
-    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5101'
-    : 'http://localhost:5100'
-}/api/v1`
+import config from '../../config'
 
 const toggleModal = (value) => (dispatch) =>
   dispatch({ type: assistanceTypes.ASSISTANCE_TYPE_TOGGLE, payload: !value })
 
 const createEvent = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${serviceEndpoint}/visits`, values)
+    Axios.post(`${config.services.assistance}/visits`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -28,7 +23,9 @@ const getCalendarEvents =
   (dispatch) =>
     new Promise((resolve, reject) => {
       Axios.get(
-        `${serviceEndpoint}/visits/calendar?${queryString.stringify(query)}`
+        `${config.services.assistance}/visits/calendar?${queryString.stringify(
+          query
+        )}`
       )
         .then((response) => {
           const { data } = response
@@ -44,7 +41,9 @@ const getEvents =
   (query = {}) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
-      Axios.get(`${serviceEndpoint}/visits?${queryString.stringify(query)}`)
+      Axios.get(
+        `${config.services.assistance}/visits?${queryString.stringify(query)}`
+      )
         .then((response) => {
           const { data } = response
           dispatch({
@@ -64,7 +63,7 @@ const getEvents =
 
 const getEventDetails = (idEvent) => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${serviceEndpoint}/visits/${idEvent}`)
+    Axios.get(`${config.services.assistance}/visits/${idEvent}`)
       .then((response) => {
         const { data } = response
         dispatch({ type: assistanceTypes.GET_VISIT_DETAILS, payload: data })
@@ -77,7 +76,7 @@ const getEventDetails = (idEvent) => (dispatch) =>
 
 const getVisitStatistics = (idVisit) => () =>
   new Promise((resolve, reject) => {
-    Axios.get(`${serviceEndpoint}/visits/${idVisit}/statistics`)
+    Axios.get(`${config.services.assistance}/visits/${idVisit}/statistics`)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -89,7 +88,7 @@ const getVisitStatistics = (idVisit) => () =>
 
 const createVisitReport = (idVisit, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${serviceEndpoint}/visits/${idVisit}/report`, values)
+    Axios.post(`${config.services.assistance}/visits/${idVisit}/report`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -101,7 +100,7 @@ const createVisitReport = (idVisit, values) => () =>
 
 const updateEvent = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${serviceEndpoint}/visits/${id}`, values)
+    Axios.put(`${config.services.assistance}/visits/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -113,7 +112,7 @@ const updateEvent = (id, values) => () =>
 
 const patchEvent = (idEvent, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.patch(`${serviceEndpoint}/visits/${idEvent}`, values)
+    Axios.patch(`${config.services.assistance}/visits/${idEvent}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -125,7 +124,7 @@ const patchEvent = (idEvent, values) => () =>
 
 const deleteEvent = (idEvent) => () =>
   new Promise((resolve, reject) => {
-    Axios.delete(`${serviceEndpoint}/visits/${idEvent}`)
+    Axios.delete(`${config.services.assistance}/visits/${idEvent}`)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -137,7 +136,7 @@ const deleteEvent = (idEvent) => () =>
 
 const createConstructionAttention = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${serviceEndpoint}/assistance-construction`, values)
+    Axios.post(`${config.services.assistance}/assistance-construction`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -152,9 +151,9 @@ const getConstructionAttention =
   (dispatch) =>
     new Promise((resolve, reject) => {
       Axios.get(
-        `${serviceEndpoint}/assistance-construction?${queryString.stringify(
-          query
-        )}`
+        `${
+          config.services.assistance
+        }/assistance-construction?${queryString.stringify(query)}`
       )
         .then((response) => {
           const { data } = response
@@ -171,7 +170,10 @@ const getConstructionAttention =
 
 const updateConstructionAttention = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${serviceEndpoint}/assistance-construction/${id}`, values)
+    Axios.put(
+      `${config.services.assistance}/assistance-construction/${id}`,
+      values
+    )
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -183,7 +185,7 @@ const updateConstructionAttention = (id, values) => () =>
 
 const deleteConstructionAttention = (id) => () =>
   new Promise((resolve, reject) => {
-    Axios.delete(`${serviceEndpoint}/assistance-construction/${id}`)
+    Axios.delete(`${config.services.assistance}/assistance-construction/${id}`)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -195,7 +197,7 @@ const deleteConstructionAttention = (id) => () =>
 
 const createAssistance = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${serviceEndpoint}/assistance`, values)
+    Axios.post(`${config.services.assistance}/assistance`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -209,7 +211,11 @@ const getAssistanceList =
   (query = {}) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
-      Axios.get(`${serviceEndpoint}/assistance?${queryString.stringify(query)}`)
+      Axios.get(
+        `${config.services.assistance}/assistance?${queryString.stringify(
+          query
+        )}`
+      )
         .then((response) => {
           const { data } = response
           dispatch({
@@ -228,7 +234,9 @@ const searchEmployee =
   () =>
     new Promise((resolve, reject) => {
       Axios.get(
-        `${serviceEndpoint}/assistance/search?${queryString.stringify(query)}`
+        `${
+          config.services.assistance
+        }/assistance/search?${queryString.stringify(query)}`
       )
         .then((response) => {
           const { data } = response
@@ -241,7 +249,7 @@ const searchEmployee =
 
 const getPersonalInterventionDetails = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${serviceEndpoint}/assistance/${id}`)
+    Axios.get(`${config.services.assistance}/assistance/${id}`)
       .then((response) => {
         const { data } = response
         dispatch({
@@ -260,7 +268,9 @@ const getAttention =
   () =>
     new Promise((resolve, reject) => {
       Axios.get(
-        `${serviceEndpoint}/assistance/attended?${queryString.stringify(query)}`
+        `${
+          config.services.assistance
+        }/assistance/attended?${queryString.stringify(query)}`
       )
         .then((response) => {
           const { data } = response
