@@ -1,18 +1,15 @@
 import queryString from 'query-string'
 import Axios from '../../Axios'
 import employeesTypes from '../types/employees'
-
-export const employeeEndpoint = `${
-  process.env.REACT_APP_NODE_ENV === 'production'
-    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5104'
-    : 'http://localhost:8000'
-}/api/v1`
+import config from '../../config'
 
 const getEmployees =
   (query = {}, handleDispatch = true) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
-      Axios.get(`${employeeEndpoint}/employees?${queryString.stringify(query)}`)
+      Axios.get(
+        `${config.services.employee}/employees?${queryString.stringify(query)}`
+      )
         .then((response) => {
           const { data } = response
           if (handleDispatch) {
@@ -31,7 +28,7 @@ const getEmployees =
 
 const getEmployeeDetails = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${employeeEndpoint}/employees/${id}`)
+    Axios.get(`${config.services.employee}/employees/${id}`)
       .then((response) => {
         const { data } = response
         dispatch({ type: employeesTypes.GET_EMPLOYEE_DETAILS, payload: data })
@@ -44,7 +41,7 @@ const getEmployeeDetails = (id) => (dispatch) =>
 
 const createEmployee = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${employeeEndpoint}/employees`, values)
+    Axios.post(`${config.services.employee}/employees`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -56,7 +53,7 @@ const createEmployee = (values) => () =>
 
 const updateEmployee = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${employeeEndpoint}/employees/${id}`, values)
+    Axios.put(`${config.services.employee}/employees/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -68,7 +65,7 @@ const updateEmployee = (id, values) => () =>
 
 const patchEmployee = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.patch(`${employeeEndpoint}/employees/${id}`, values)
+    Axios.patch(`${config.services.employee}/employees/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -80,7 +77,7 @@ const patchEmployee = (id, values) => () =>
 
 const createRelative = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${employeeEndpoint}/employee-relatives`, values)
+    Axios.post(`${config.services.employee}/employee-relatives`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -92,7 +89,7 @@ const createRelative = (values) => () =>
 
 const updateRelative = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${employeeEndpoint}/employee-relatives/${id}`, values)
+    Axios.put(`${config.services.employee}/employee-relatives/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -104,7 +101,7 @@ const updateRelative = (id, values) => () =>
 
 const blockRelative = (id) => () =>
   new Promise((resolve, reject) => {
-    Axios.patch(`${employeeEndpoint}/employee-relatives/${id}/block`)
+    Axios.patch(`${config.services.employee}/employee-relatives/${id}/block`)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -117,7 +114,7 @@ const blockRelative = (id) => () =>
 const getEmployeeRelatives = (employeeRun) => () =>
   new Promise((resolve, reject) => {
     Axios.get(
-      `${employeeEndpoint}/employee-relatives?employee_run=${employeeRun}`
+      `${config.services.employee}/employee-relatives?employee_run=${employeeRun}`
     )
       .then((response) => {
         const { data } = response
@@ -130,7 +127,7 @@ const getEmployeeRelatives = (employeeRun) => () =>
 
 const createEmployeeContact = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${employeeEndpoint}/employee-contacts`, values)
+    Axios.post(`${config.services.employee}/employee-contacts`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -143,7 +140,9 @@ const createEmployeeContact = (values) => () =>
 const getEmployeeContact = (query) => () =>
   new Promise((resolve, reject) => {
     Axios.get(
-      `${employeeEndpoint}/employee-contacts?${queryString.stringify(query)}`
+      `${config.services.employee}/employee-contacts?${queryString.stringify(
+        query
+      )}`
     )
       .then((response) => {
         const { data } = response
@@ -156,7 +155,7 @@ const getEmployeeContact = (query) => () =>
 
 const updateEmployeeContact = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${employeeEndpoint}/employee-contacts/${id}`, values)
+    Axios.put(`${config.services.employee}/employee-contacts/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -168,7 +167,7 @@ const updateEmployeeContact = (id, values) => () =>
 
 const patchEmployeeContact = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.patch(`${employeeEndpoint}/employee-contacts/${id}`, values)
+    Axios.patch(`${config.services.employee}/employee-contacts/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -181,7 +180,9 @@ const patchEmployeeContact = (id, values) => () =>
 const getPensionSituation = (query) => () =>
   new Promise((resolve, reject) => {
     Axios.get(
-      `${employeeEndpoint}/pension-situations?${queryString.stringify(query)}`
+      `${config.services.employee}/pension-situations?${queryString.stringify(
+        query
+      )}`
     )
       .then((response) => {
         const { data } = response
@@ -194,7 +195,7 @@ const getPensionSituation = (query) => () =>
 
 const createPensionSituation = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${employeeEndpoint}/pension-situations`, values)
+    Axios.post(`${config.services.employee}/pension-situations`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -206,7 +207,7 @@ const createPensionSituation = (values) => () =>
 
 const updatePensionSituation = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${employeeEndpoint}/pension-situations/${id}`, values)
+    Axios.put(`${config.services.employee}/pension-situations/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -218,7 +219,7 @@ const updatePensionSituation = (id, values) => () =>
 
 const patchPensionSituation = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.patch(`${employeeEndpoint}/pension-situations/${id}`, values)
+    Axios.patch(`${config.services.employee}/pension-situations/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -230,7 +231,7 @@ const patchPensionSituation = (id, values) => () =>
 
 const createHousingSituation = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${employeeEndpoint}/housing-situation`, values)
+    Axios.post(`${config.services.employee}/housing-situation`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -243,7 +244,9 @@ const createHousingSituation = (values) => () =>
 const getHousingSituation = (query) => () =>
   new Promise((resolve, reject) => {
     Axios.get(
-      `${employeeEndpoint}/housing-situation?${queryString.stringify(query)}`
+      `${config.services.employee}/housing-situation?${queryString.stringify(
+        query
+      )}`
     )
       .then((response) => {
         const { data } = response
@@ -256,7 +259,7 @@ const getHousingSituation = (query) => () =>
 
 const updateHousingSituation = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${employeeEndpoint}/housing-situation/${id}`, values)
+    Axios.put(`${config.services.employee}/housing-situation/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -268,7 +271,7 @@ const updateHousingSituation = (id, values) => () =>
 
 const patchHousingSituation = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.patch(`${employeeEndpoint}/housing-situation/${id}`, values)
+    Axios.patch(`${config.services.employee}/housing-situation/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -281,7 +284,9 @@ const patchHousingSituation = (id, values) => () =>
 const getSpecializationHistory = (query) => () =>
   new Promise((resolve, reject) => {
     Axios.get(
-      `${employeeEndpoint}/specialization?${queryString.stringify(query)}`
+      `${config.services.employee}/specialization?${queryString.stringify(
+        query
+      )}`
     )
       .then((response) => {
         const { data } = response
@@ -294,7 +299,7 @@ const getSpecializationHistory = (query) => () =>
 
 const createSpecialization = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${employeeEndpoint}/specialization`, values)
+    Axios.post(`${config.services.employee}/specialization`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -306,7 +311,7 @@ const createSpecialization = (values) => () =>
 
 const updateSpecialization = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${employeeEndpoint}/specialization/${id}`, values)
+    Axios.put(`${config.services.employee}/specialization/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -318,7 +323,7 @@ const updateSpecialization = (id, values) => () =>
 
 const patchSpecialization = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.patch(`${employeeEndpoint}/specialization/${id}`, values)
+    Axios.patch(`${config.services.employee}/specialization/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -331,7 +336,9 @@ const patchSpecialization = (id, values) => () =>
 const getEmployeeJobs = (query) => () =>
   new Promise((resolve, reject) => {
     Axios.get(
-      `${employeeEndpoint}/employee-jobs?${queryString.stringify(query)}`
+      `${config.services.employee}/employee-jobs?${queryString.stringify(
+        query
+      )}`
     )
       .then((response) => {
         const { data } = response
@@ -344,7 +351,7 @@ const getEmployeeJobs = (query) => () =>
 
 const createEmployeeJob = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${employeeEndpoint}/employee-jobs`, values)
+    Axios.post(`${config.services.employee}/employee-jobs`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -356,7 +363,7 @@ const createEmployeeJob = (values) => () =>
 
 const updateEmployeeJob = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${employeeEndpoint}/employee-jobs/${id}`, values)
+    Axios.put(`${config.services.employee}/employee-jobs/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -368,7 +375,7 @@ const updateEmployeeJob = (id, values) => () =>
 
 const patchEmployeeJob = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.patch(`${employeeEndpoint}/employee-jobs/${id}`, values)
+    Axios.patch(`${config.services.employee}/employee-jobs/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)

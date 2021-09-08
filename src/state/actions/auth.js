@@ -1,15 +1,10 @@
 import Axios from '../../Axios'
 import authTypes from '../types/auth'
-
-const autEndpoint = `${
-  process.env.REACT_APP_NODE_ENV === 'production'
-    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5102'
-    : 'http://localhost:5500'
-}/api/v1`
+import config from '../../config'
 
 const loginUser = (credentials) => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.post(`${autEndpoint}/auth/login`, credentials)
+    Axios.post(`${config.services.auth}/auth/login`, credentials)
       .then((response) => {
         const { data } = response
         //  dispatch({ type: authTypes.SET_CURRENT_USER, payload: data.user })
@@ -39,7 +34,7 @@ const refreshToken = () =>
 
 const getLoggedUser = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${autEndpoint}/auth/me`)
+    Axios.get(`${config.services.auth}/auth/me`)
       .then((response) => {
         dispatch({
           type: authTypes.GET_AUTHENTICATED,

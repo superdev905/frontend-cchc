@@ -6,7 +6,7 @@ import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
 import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 import Axios from '../../Axios'
-import { employeeEndpoint } from '../../state/actions/employees'
+import config from '../../config'
 
 registerPlugin(
   FilePondPluginImagePreview,
@@ -31,7 +31,7 @@ const FileUploader = ({ onSuccess, onStart }) => {
           formData.append('file', file, file.name)
           Axios({
             method: 'post',
-            url: `${employeeEndpoint}/file`,
+            url: `${config.services.employee}/file`,
             data: formData,
             onUploadProgress: (e) => {
               progress(e.lengthComputable, e.loaded, e.total)
