@@ -1,18 +1,13 @@
 import queryString from 'query-string'
 import Axios from '../../Axios'
 import usersTypes from '../types/users'
-
-const usersEndpoint = `${
-  process.env.REACT_APP_NODE_ENV === 'production'
-    ? 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5102'
-    : 'http://localhost:5500'
-}/api/v1`
+import config from '../../config'
 
 const getUsers =
   (query = {}) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
-      Axios.get(`${usersEndpoint}/users?${queryString.stringify(query)}`)
+      Axios.get(`${config.services.auth}/users?${queryString.stringify(query)}`)
         .then((response) => {
           const { data } = response
           dispatch({ type: usersTypes.GET_USERS, payload: data })
@@ -25,7 +20,7 @@ const getUsers =
 
 const getUserDetails = (id) => () =>
   new Promise((resolve, reject) => {
-    Axios.get(`${usersEndpoint}/users/${id}`)
+    Axios.get(`${config.services.auth}/users/${id}`)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -37,7 +32,7 @@ const getUserDetails = (id) => () =>
 
 const createUser = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${usersEndpoint}/users`, values)
+    Axios.post(`${config.services.auth}/users`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -49,7 +44,7 @@ const createUser = (values) => () =>
 
 const updateUser = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`${usersEndpoint}/users/${id}`, values)
+    Axios.put(`${config.services.auth}/users/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -61,7 +56,7 @@ const updateUser = (id, values) => () =>
 
 const patchUser = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.patch(`${usersEndpoint}/users/${id}`, values)
+    Axios.patch(`${config.services.auth}/users/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)

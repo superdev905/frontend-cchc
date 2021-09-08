@@ -1,15 +1,7 @@
 import axios from 'axios'
 import config from './config'
 
-const getBaseUrl = () => {
-  if (process.env.REACT_APP_NODE_ENV === 'test') {
-    return config.test.API_BASE
-  }
-  if (process.env.REACT_APP_NODE_ENV === 'production') {
-    return config.prod.API_BASE
-  }
-  return config.dev.API_BASE
-}
+const getBaseUrl = () => config.services.business
 
 const Axios = axios.create({
   baseURL: getBaseUrl(),

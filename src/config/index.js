@@ -1,31 +1,52 @@
 const env = process.env.REACT_APP_NODE_ENV
 
 const BASEURL = {
-  prod: 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com',
-  dev: 'http://localhost'
+  production: 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com',
+  testing: 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com',
+  development: 'http://localhost'
+}
+
+const services = {
+  business: {
+    development: `${BASEURL[env]}/api/v1`,
+    testing: `${BASEURL[env]}:5193/api/v1`,
+    production: `${BASEURL[env]}:5103/api/v1`
+  },
+  assistance: {
+    development: `${BASEURL[env]}:5100/api/v1`,
+    testing: `${BASEURL[env]}:5191/api/v1`,
+    production: `${BASEURL[env]}:5101/api/v1`
+  },
+  parameters: {
+    development: `${BASEURL[env]}:5200/api/v1`,
+    testing: `${BASEURL[env]}:5195/api/v1`,
+    production: `${BASEURL[env]}:5105/api/v1`
+  },
+  poll: {
+    development: `${BASEURL[env]}:5190/api/v1`,
+    testing: `${BASEURL[env]}:5197/api/v1`,
+    production: `${BASEURL[env]}:5107/api/v1`
+  },
+  auth: {
+    development: `${BASEURL[env]}:5500/api/v1`,
+    testing: `${BASEURL[env]}:5192/api/v1`,
+    production: `${BASEURL[env]}:5102/api/v1`
+  },
+  employee: {
+    development: `${BASEURL[env]}:8000/api/v1`,
+    testing: `${BASEURL[env]}:5194/api/v1`,
+    production: `${BASEURL[env]}:5104/api/v1`
+  }
 }
 
 const config = {
-  prod: {
-    API_BASE:
-      'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5103/api/v1'
-  },
-  test: {
-    API_BASE: 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com:5000'
-  },
-  dev: {
-    API_BASE: 'http://localhost/api/v1'
-  },
   services: {
-    assistanceEndpoint: `${
-      env === 'production' ? `${BASEURL.prod}:5101` : `${BASEURL.dev}:5100`
-    }/api/v1`,
-    parameters: `${
-      env === 'production' ? `${BASEURL.prod}:5105` : `${BASEURL.dev}:5200`
-    }/api/v1`,
-    poll: `${
-      env === 'production' ? `${BASEURL.prod}:5107` : `${BASEURL.dev}:5190`
-    }/api/v1`
+    business: services.assistance[env],
+    assistance: services.assistance[env],
+    parameters: services.parameters[env],
+    poll: services.poll[env],
+    auth: services.auth[env],
+    employee: services.employee[env]
   }
 }
 
