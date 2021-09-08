@@ -41,7 +41,7 @@ const services = {
 
 const config = {
   services: {
-    business: services.assistance[env],
+    business: services.business[env],
     assistance: services.assistance[env],
     parameters: services.parameters[env],
     poll: services.poll[env],
