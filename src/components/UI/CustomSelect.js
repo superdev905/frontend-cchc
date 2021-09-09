@@ -7,7 +7,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '14px',
     color: theme.palette.common.black,
     opacity: 0.7
-  }
+  },
+  input: ({ readOnly }) => ({
+    '&.Mui-disabled': {
+      color: readOnly ? 'black' : 'inherit'
+    }
+  })
 }))
 
 const CustomSelect = ({
@@ -18,15 +23,18 @@ const CustomSelect = ({
   error,
   helperText,
   native,
+  disabled,
+  readOnly,
   ...props
 }) => {
-  const classes = useStyles()
+  const classes = useStyles({ readOnly })
   return (
     <Box>
       <InputLabel required={required} className={classes.label}>
         {label}
       </InputLabel>
       <TextField
+        className={classes.input}
         variant="outlined"
         fullWidth
         margin="dense"
@@ -38,6 +46,7 @@ const CustomSelect = ({
         InputLabelProps={{
           shrink: false
         }}
+        disabled={disabled || readOnly}
         {...props}
       >
         {children}
@@ -48,7 +57,9 @@ const CustomSelect = ({
 
 CustomSelect.defaultProps = {
   required: false,
-  native: true
+  native: true,
+  disabled: false,
+  readOnly: false
 }
 
 CustomSelect.propTypes = {

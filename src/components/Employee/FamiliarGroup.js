@@ -15,9 +15,11 @@ const FamiliarGroup = () => {
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const { employee } = useSelector((state) => state.employees)
+  const { user } = useSelector((state) => state.auth)
 
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { open: openView, toggleOpen: toggleOpenView } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const { success, changeSuccess } = useSuccess()
 
@@ -31,9 +33,7 @@ const FamiliarGroup = () => {
             ...item,
             surnames: `${item.paternal_surname} ${item.maternal_surname}`,
             born_date_string: formatDate(item.born_date),
-            run_string: item.run || 'Sin RUN',
-            country: item.nationality.description,
-            marital_status: item.marital_status.description
+            run_string: item.run || 'Sin RUN'
           }))
         )
       })
@@ -46,7 +46,8 @@ const FamiliarGroup = () => {
       employeesActions.createRelative({
         ...values,
         employee_run: employee.run,
-        rsh_percentage_id: values.rsh_percentage_id || null
+        rsh_percentage_id: values.rsh_percentage_id || null,
+        created_by: user.id
       })
     )
 
@@ -57,7 +58,8 @@ const FamiliarGroup = () => {
         rsh_percentage_id: values.rsh_percentage_id || null,
         is_main: currentRelative.is_main,
         state: currentRelative.state,
-        employee_run: employee.run
+        employee_run: employee.run,
+        created_by: currentRelative.created_by
       })
     )
 
@@ -131,16 +133,6 @@ const FamiliarGroup = () => {
                 hide: 'md'
               },
               {
-                name: 'Nacionalidad',
-                selector: (row) => row.country,
-                hide: 'md'
-              },
-              {
-                name: 'Estado civil',
-                selector: (row) => row.marital_status,
-                hide: 'md'
-              },
-              {
                 name: '',
                 right: true,
                 cell: (row) => (
@@ -149,6 +141,10 @@ const FamiliarGroup = () => {
                     onEdit={() => {
                       setCurrentRelative(row)
                       toggleOpenEdit()
+                    }}
+                    onView={() => {
+                      setCurrentRelative(row)
+                      toggleOpenView()
                     }}
                     onDelete={() => {
                       setCurrentRelative(row)
@@ -179,6 +175,14 @@ const FamiliarGroup = () => {
             onClose={toggleOpenEdit}
             submitFunction={editRelative}
             successFunction={fetchRelatives}
+          />
+        )}
+        {currentRelative && openView && (
+          <RelativeForm
+            type="VIEW"
+            data={currentRelative}
+            open={openView}
+            onClose={toggleOpenView}
           />
         )}
 

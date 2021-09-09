@@ -22,7 +22,15 @@ const useStyles = makeStyles((theme) => ({
 
 mapboxgl.workerClass = MapboxWorker
 
-const Map = ({ height, zoom, longitude, latitude, markers, showMarkers }) => {
+const Map = ({
+  height,
+  width,
+  zoom,
+  longitude,
+  latitude,
+  markers,
+  showMarkers
+}) => {
   const classes = useStyles()
   const [viewport, setViewport] = useState({
     width: '100%',
@@ -61,7 +69,7 @@ const Map = ({ height, zoom, longitude, latitude, markers, showMarkers }) => {
   }, [longitude, latitude])
 
   return (
-    <Box height={height} className={classes.mapContainer}>
+    <Box height={height} width={width} className={classes.mapContainer}>
       <ReactMapGL
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_API}
         {...viewport}

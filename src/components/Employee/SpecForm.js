@@ -77,12 +77,13 @@ const HousingForm = ({
       if (uploadFile) {
         const formData = new FormData()
         formData.append('file', uploadFile, uploadFile.name)
-        resultUpload = await dispatch(filesAction.uploadFile(formData))
+        resultUpload = await dispatch(filesAction.uploadFileToStorage(formData))
       }
 
       submitFunction({
         ...values,
-        certification_url: resultUpload ? resultUpload.filename : '',
+        certification_url: resultUpload ? resultUpload.file_url : '',
+        file_key: resultUpload ? resultUpload.file_key : '',
         certifying_entity_id: values.certifying_entity_id || null
       })
         .then(() => {

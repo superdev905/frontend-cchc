@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { Box, Typography } from '@material-ui/core'
@@ -17,6 +17,7 @@ const HistoryJobs = ({ employeeId }) => {
   const [list, setList] = useState([])
   const [currentEmployeeId] = useState(idEmployee || employeeId)
   const [current, setCurrent] = useState(null)
+  const { user } = useSelector((state) => state.auth)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
@@ -40,7 +41,8 @@ const HistoryJobs = ({ employeeId }) => {
     dispatch(
       employeesActions.createEmployeeJob({
         ...values,
-        employee_id: parseInt(currentEmployeeId, 10)
+        employee_id: parseInt(currentEmployeeId, 10),
+        created_by: user.id
       })
     )
 
@@ -55,7 +57,8 @@ const HistoryJobs = ({ employeeId }) => {
       employeesActions.updateEmployeeJob(current.id, {
         ...values,
         state: current.state,
-        employee_id: parseInt(currentEmployeeId, 10)
+        employee_id: parseInt(currentEmployeeId, 10),
+        created_by: current.created_by
       })
     )
   }

@@ -21,6 +21,7 @@ const ListEmployees = () => {
     state: ''
   })
   const { open, toggleOpen } = useToggle()
+  const { user } = useSelector((state) => state.auth)
   const { list: listEmployees, totalDocs } = useSelector(
     (state) => state.employees
   )
@@ -61,7 +62,9 @@ const ListEmployees = () => {
     history.push(`/employee/${createData.id}/info`)
   }
   const createEmployee = (values) =>
-    dispatch(employeesActions.createEmployee(values))
+    dispatch(
+      employeesActions.createEmployee({ ...values, created_by: user.id })
+    )
 
   useEffect(() => {
     setTableData(
