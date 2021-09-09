@@ -18,14 +18,15 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center'
   },
-  paper: {
+  paper: ({ completed }) => ({
     border: `1px solid ${theme.palette.gray.gray400}`,
     borderRadius: 8,
-    cursor: 'pointer',
+    backgroundColor: completed ? '#def3de' : `transparent`,
+    cursor: completed ? 'inherit' : 'pointer',
     [theme.breakpoints.up('md')]: {
       minHeight: 170
     }
-  },
+  }),
   title: {
     fontSize: 20,
     fontWeight: 'bold'
@@ -56,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const PollCard = ({ loader, poll, onClick, showAnswers }) => {
-  const classes = useStyles()
+  const classes = useStyles({ completed: poll?.is_answered })
   const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
 
@@ -67,7 +68,6 @@ const PollCard = ({ loader, poll, onClick, showAnswers }) => {
         enqueueSnackbar('Esta encuesta aún no tiene preguntas', {
           variant: 'info'
         })
-        // history.goBack()
       }
     } else {
       history.push(`/polls/${poll.id}`)

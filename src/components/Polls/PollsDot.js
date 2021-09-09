@@ -1,6 +1,5 @@
 import { useDispatch } from 'react-redux'
 import { Box, makeStyles } from '@material-ui/core'
-import ReportOutlinedIcon from '@material-ui/icons/ReportOutlined'
 import { useEffect } from 'react'
 import { useToggle } from '../../hooks'
 import ModulePollsDialog from './ModulePollsDialog'
@@ -35,10 +34,7 @@ const ModuleDot = ({ module }) => {
   return (
     <Box display="inline">
       <Box className={classes.root} onClick={toggleOpen}>
-        <Box color="red">
-          {' '}
-          <ReportOutlinedIcon />{' '}
-        </Box>
+        <Box className={classes.dot}></Box>
       </Box>
       <ModulePollsDialog open={open} onClose={toggleOpen} module={module} />
     </Box>

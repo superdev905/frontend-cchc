@@ -71,8 +71,8 @@ const ConstructionModal = ({
       business_selected_id: '',
       name: type === 'UPDATE' ? construction.name : '',
       address: type === 'UPDATE' ? construction.address : '',
-      commune_id: type === 'UPDATE' ? construction.commune.id : '',
-      region_id: type === 'UPDATE' ? construction.region.id : '',
+      commune_id: type === 'UPDATE' ? construction.commune_id : '',
+      region_id: type === 'UPDATE' ? construction.region_id : '',
       status: type === 'UPDATE' ? construction.status : 'VIGENTE',
       typology_id: type === 'UPDATE' ? construction.typology_id : '',
       economic_sector_id:
@@ -206,7 +206,7 @@ const ConstructionModal = ({
   useEffect(() => {
     if (regions.length > 0 && type === 'UPDATE') {
       setCommunes(
-        regions.find((item) => item.id === construction.region.id).communes
+        regions.find((item) => item.id === construction.region_id).communes
       )
     }
   }, [regions])

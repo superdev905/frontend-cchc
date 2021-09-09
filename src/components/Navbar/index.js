@@ -13,10 +13,10 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Toolbar,
-  Typography
+  Toolbar
 } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
+import AlertIcon from '@material-ui/icons/Announcement'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { useTheme } from '@material-ui/core/styles'
 import authActions from '../../state/actions/auth'
@@ -24,7 +24,7 @@ import useStyles from './styles'
 import useMenu from '../../hooks/useMenu'
 import LeftDrawer from './LeftDrawer'
 import pollActions from '../../state/actions/poll'
-import ModuleDot from '../Polls/PollsDot'
+import Announcements from '../Widgets/Announcements'
 
 const ResponsiveDrawer = ({ ...props }) => {
   const { window } = props
@@ -35,6 +35,12 @@ const ResponsiveDrawer = ({ ...props }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { user } = useSelector((state) => state.auth)
   const { open, anchorEl, handleClose, handleOpen } = useMenu()
+  const {
+    open: openAlert,
+    anchorEl: anchorElAlert,
+    handleClose: handleCloseAlert,
+    handleOpen: handleOpenAlert
+  } = useMenu()
   const { module } = useSelector((state) => state.ui)
 
   const handleDrawerToggle = () => {
@@ -89,12 +95,9 @@ const ResponsiveDrawer = ({ ...props }) => {
             width="100%"
             alignItems="center"
           >
-            <IconButton>
-              <ModuleDot module={module} />
+            <IconButton onClick={handleOpenAlert}>
+              <AlertIcon color="primary" />
             </IconButton>
-            <Typography noWrap style={{ marginRight: '15px' }}>
-              {user && `${user.names} ${user.paternal_surname}`}
-            </Typography>
             {user &&
               (user.profilePicture !== '' ? (
                 <Avatar src={user.profilePicture}></Avatar>
@@ -109,14 +112,15 @@ const ResponsiveDrawer = ({ ...props }) => {
             id="menu-profile"
             open={open}
             anchorEl={anchorEl}
+            getContentAnchorEl={null}
             onClose={handleClose}
             anchorOrigin={{
               vertical: 'bottom',
               horizontal: 'center'
             }}
             transformOrigin={{
-              vertical: 'bottom',
-              horizontal: 'bottom'
+              vertical: 'top',
+              horizontal: 'center'
             }}
           >
             <MenuItem onClick={onCalendarClick}>Mi Calendario</MenuItem>
@@ -124,6 +128,11 @@ const ResponsiveDrawer = ({ ...props }) => {
             <Divider />
             <MenuItem onClick={logoutUser}>Cerrar sesión</MenuItem>
           </Menu>
+          <Announcements
+            open={openAlert}
+            anchorEl={anchorElAlert}
+            handleClose={handleCloseAlert}
+          />
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="options">
