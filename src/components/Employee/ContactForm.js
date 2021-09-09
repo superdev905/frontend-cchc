@@ -171,7 +171,7 @@ const EmployeeModal = ({
         </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
-            <Grid item xs={8}>
+            <Grid item xs={12} lg={8}>
               <Grid container spacing={1}>
                 <Grid item xs={12} md={12}>
                   <AddressAutocomplete
@@ -396,10 +396,10 @@ const EmployeeModal = ({
                 </Grid>
               </Grid>
             </Grid>
-
-            <Grid item xs={4}>
+            <Grid item xs={12} lg={4}>
               <Map
                 height="100%"
+                width="100%"
                 zoom={16}
                 latitude={
                   formik.values.latitude || SantiagoDefaultLocation.latitude

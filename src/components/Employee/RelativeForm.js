@@ -9,7 +9,6 @@ import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
 import { rutValidation } from '../../validations'
 import commonActions from '../../state/actions/common'
 import { decisionList, genderList } from '../../config'
-import SelectableCard from '../UI/SelectableCard/SelectableCard'
 import { useSuccess } from '../../hooks'
 
 const validationSchema = Yup.object().shape({
@@ -57,20 +56,20 @@ const EmployeeModal = ({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      run: type === 'UPDATE' ? data.run : '',
-      names: type === 'UPDATE' ? data.names : '',
-      paternal_surname: type === 'UPDATE' ? data.paternal_surname : '',
-      maternal_surname: type === 'UPDATE' ? data.maternal_surname : '',
-      gender: type === 'UPDATE' ? data.gender : '',
-      born_date: type === 'UPDATE' ? data.born_date : null,
-      scholarship_id: type === 'UPDATE' ? data.scholarship_id : '',
-      nationality_id: type === 'UPDATE' ? data.nationality_id : '',
-      marital_status_id: type === 'UPDATE' ? data.marital_status_id : '',
-      relationship_id: type === 'UPDATE' ? data.relationship_id : '',
-      job_id: type === 'UPDATE' ? data.job_id : '',
-      rsh: type === 'UPDATE' ? data.rsh : '',
-      rsh_percentage_id: type === 'UPDATE' ? data.rsh_percentage_id : '',
-      legal_charge: type === 'UPDATE' ? data.legal_charge : ''
+      run: type !== 'CREATE' ? data.run : '',
+      names: type !== 'CREATE' ? data.names : '',
+      paternal_surname: type !== 'CREATE' ? data.paternal_surname : '',
+      maternal_surname: type !== 'CREATE' ? data.maternal_surname : '',
+      gender: type !== 'CREATE' ? data.gender : '',
+      born_date: type !== 'CREATE' ? data.born_date : null,
+      scholarship_id: type !== 'CREATE' ? data.scholarship_id : '',
+      nationality_id: type !== 'CREATE' ? data.nationality_id : '',
+      marital_status_id: type !== 'CREATE' ? data.marital_status_id : '',
+      relationship_id: type !== 'CREATE' ? data.relationship_id : '',
+      job_id: type !== 'CREATE' ? data.job_id : '',
+      rsh: type !== 'CREATE' ? data.rsh : '',
+      rsh_percentage_id: type !== 'CREATE' ? data.rsh_percentage_id : '',
+      legal_charge: type !== 'CREATE' ? data.legal_charge : ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction(values)
@@ -93,6 +92,12 @@ const EmployeeModal = ({
     }
   })
 
+  const renderTitle = (actionType) => {
+    if (actionType === 'VIEW') return 'Ver'
+    if (actionType === 'UPDATE') return 'Actualizar'
+    return 'Crear'
+  }
+
   useEffect(() => {
     if (formik.values.rsh === 'NO') {
       formik.setFieldValue('rsh_percentage_id', '')
@@ -114,7 +119,7 @@ const EmployeeModal = ({
     <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullScreen={isMobile}>
       <Box>
         <Typography variant="h6" align="center">
-          {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} pariente`}
+          {`${renderTitle(type)} pariente`}
         </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
@@ -127,6 +132,7 @@ const EmployeeModal = ({
                 onBlur={formik.handleBlur}
                 error={formik.touched.run && Boolean(formik.errors.run)}
                 helperText={formik.touched.run && formik.errors.run}
+                inputProps={{ readOnly: type === 'VIEW' }}
               />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
@@ -139,6 +145,7 @@ const EmployeeModal = ({
                 onBlur={formik.handleBlur}
                 error={formik.touched.names && Boolean(formik.errors.names)}
                 helperText={formik.touched.names && formik.errors.names}
+                inputProps={{ readOnly: type === 'VIEW' }}
               />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
@@ -157,6 +164,7 @@ const EmployeeModal = ({
                   formik.touched.paternal_surname &&
                   formik.errors.paternal_surname
                 }
+                inputProps={{ readOnly: type === 'VIEW' }}
               />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
@@ -175,12 +183,14 @@ const EmployeeModal = ({
                   formik.touched.maternal_surname &&
                   formik.errors.maternal_surname
                 }
+                inputProps={{ readOnly: type === 'VIEW' }}
               />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <DatePicker
                 label="Fecha de nacimiento"
                 value={formik.values.born_date}
+                disabled={{ readOnly: type === 'VIEW' }}
                 required
                 onChange={(date) => {
                   formik.setFieldValue('born_date', date)
@@ -191,21 +201,24 @@ const EmployeeModal = ({
                 helperText={formik.touched.born_date && formik.errors.born_date}
               />
             </Grid>
-            <Grid item xs={12}>
-              <SelectableCard.Container label="Seleccione sexo" required>
+            <Grid item xs={12} md={6} lg={4}>
+              <Select
+                label="Sexo"
+                name="gender"
+                required
+                value={formik.values.gender}
+                onChange={formik.handleChange}
+                error={formik.touched.gender && Boolean(formik.errors.gender)}
+                helperText={formik.touched.gender && formik.errors.gender}
+                readOnly={type === 'VIEW'}
+              >
+                <option value="">Seleccione estado civil</option>
                 {genderList.map((item, i) => (
-                  <SelectableCard
-                    key={`gender-card-${item.key}-${i}`}
-                    selected={item.key === formik.values.gender}
-                    onClick={() => {
-                      formik.setFieldTouched('gender')
-                      formik.setFieldValue('gender', item.key)
-                    }}
-                  >
+                  <option key={`gender-${i}-${item.key}`} value={item.key}>
                     {item.name}
-                  </SelectableCard>
+                  </option>
                 ))}
-              </SelectableCard.Container>
+              </Select>
             </Grid>
 
             <Grid item xs={12} md={6} lg={4}>
@@ -223,6 +236,7 @@ const EmployeeModal = ({
                   formik.touched.marital_status_id &&
                   formik.errors.marital_status_id
                 }
+                disabled={type === 'VIEW'}
               >
                 <option value="">Seleccione estado civil</option>
                 {maritalStatus.map((item, i) => (
@@ -249,6 +263,7 @@ const EmployeeModal = ({
                 helperText={
                   formik.touched.scholarship_id && formik.errors.scholarship_id
                 }
+                disabled={type === 'VIEW'}
               >
                 <option value="">Seleccione escolaridad</option>
                 {scholarshipList.map((item, i) => (
@@ -272,6 +287,7 @@ const EmployeeModal = ({
                 helperText={
                   formik.touched.nationality_id && formik.errors.nationality_id
                 }
+                disabled={type === 'VIEW'}
               >
                 <option value="">Seleccione nacionalidad</option>
                 {nationalities.map((item, i) => (
@@ -296,6 +312,7 @@ const EmployeeModal = ({
                   formik.touched.relationship_id &&
                   formik.errors.relationship_id
                 }
+                disabled={type === 'VIEW'}
               >
                 <option value="">Seleccione parentesco</option>
                 {relationshipList.map((item, i) => (
@@ -314,6 +331,7 @@ const EmployeeModal = ({
                 onChange={formik.handleChange}
                 error={formik.touched.job_id && Boolean(formik.errors.job_id)}
                 helperText={formik.touched.job_id && formik.errors.job_id}
+                disabled={type === 'VIEW'}
               >
                 <option value="">Seleccione opción</option>
                 {activities.map((item, i) => (
@@ -337,6 +355,7 @@ const EmployeeModal = ({
                 helperText={
                   formik.touched.legal_charge && formik.errors.legal_charge
                 }
+                disabled={type === 'VIEW'}
               >
                 <option value="">Seleccione opción</option>
                 {decisionList.map((item, i) => (
@@ -354,6 +373,7 @@ const EmployeeModal = ({
                 onChange={formik.handleChange}
                 error={formik.touched.rsh && Boolean(formik.errors.rsh)}
                 helperText={formik.touched.rsh && formik.errors.rsh}
+                disabled={type === 'VIEW'}
               >
                 <option value="">Seleccione rsh</option>
                 {decisionList.map((item, i) => (
@@ -369,7 +389,7 @@ const EmployeeModal = ({
                 name="rsh_percentage_id"
                 value={formik.values.rsh_percentage_id}
                 onChange={formik.handleChange}
-                disabled={formik.values.rsh === 'NO'}
+                disabled={formik.values.rsh === 'NO' || type === 'VIEW'}
                 error={
                   formik.touched.rsh_percentage_id &&
                   Boolean(formik.errors.rsh_percentage_id)
@@ -392,17 +412,23 @@ const EmployeeModal = ({
             </Grid>
           </Grid>
           <Box textAlign="center" marginTop="10px">
-            <Button onClick={onClose} variant="outlined">
-              Cancelar
-            </Button>
-            <SubmitButton
-              onClick={formik.handleSubmit}
-              disabled={!formik.isValid}
-              success={success}
-              loading={formik.isSubmitting}
-            >
-              {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} datos`}
-            </SubmitButton>
+            {type === 'VIEW' ? (
+              <Button onClick={onClose}>Aceptar</Button>
+            ) : (
+              <>
+                <Button onClick={onClose} variant="outlined">
+                  Cancelar
+                </Button>
+                <SubmitButton
+                  onClick={formik.handleSubmit}
+                  disabled={!formik.isValid}
+                  success={success}
+                  loading={formik.isSubmitting}
+                >
+                  {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} datos`}
+                </SubmitButton>
+              </>
+            )}
           </Box>
         </Box>
       </Box>

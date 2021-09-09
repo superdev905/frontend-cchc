@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  frontend:
+  frontend-test:
     restart: unless-stopped
     build:
       context: .
@@ -9,7 +9,7 @@ services:
       - '5190:80'
     env_file:
       - .env
-    container_name: cchc-frontend
+    container_name: fcchc-frontend-test
     stdin_open: true
     volumes:
       - .:/app

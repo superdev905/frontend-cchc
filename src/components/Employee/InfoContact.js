@@ -18,6 +18,7 @@ const InfoContact = () => {
   const { success, changeSuccess } = useSuccess()
   const [currentContact, setCurrentContact] = useState(null)
   const { employee } = useSelector((state) => state.employees)
+  const { user } = useSelector((state) => state.auth)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
@@ -27,7 +28,8 @@ const InfoContact = () => {
       employeesActions.createEmployeeContact({
         ...values,
         employee_run: employee.run,
-        is_main: true
+        is_main: true,
+        created_by: user.id
       })
     )
   const updateContact = (values) =>
@@ -36,7 +38,8 @@ const InfoContact = () => {
         ...currentContact,
         ...values,
         employee_run: employee.run,
-        is_main: true
+        is_main: true,
+        created_by: currentContact.created_by
       })
     )
 

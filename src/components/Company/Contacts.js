@@ -88,7 +88,7 @@ const Contacts = ({ ...props }) => {
               {contacts.map((item) => (
                 <ContactCard
                   key={`contact-card-${item.id}`}
-                  contact={{ ...item, charge: item.charge.name }}
+                  contact={item}
                   onEdit={() => {
                     toggleOpenUpdate()
                     setCurrentContact(item)

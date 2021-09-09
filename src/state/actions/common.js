@@ -4,7 +4,7 @@ import config from '../../config'
 
 const getRegions = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`/regions`)
+    Axios.get(`${config.services.parameters}/regions`)
       .then((response) => {
         const { data } = response
         dispatch({
@@ -21,7 +21,7 @@ const getRegions = () => (dispatch) =>
 
 const getCharges = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`/contact_charges`)
+    Axios.get(`${config.services.parameters}/contact_charges`)
       .then((response) => {
         const { data } = response
         dispatch({
@@ -36,20 +36,41 @@ const getCharges = () => (dispatch) =>
       })
   })
 
-const getTypologies = () => () =>
+const getTypologies = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`/construction_typology`)
+    Axios.get(`${config.services.parameters}/construction-typologies`)
       .then((response) => {
         const { data } = response
+        dispatch({
+          type: commonTypes.GET_CONSTRUCTION_TYPOLOGIES,
+          payload: data
+        })
         resolve(data)
       })
       .catch((err) => {
         reject(err)
       })
   })
+
+const getEconomicSectors = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.parameters}/economic-sectors`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: commonTypes.GET_ECONOMIC_SECTORS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 const getMaritalStatuses = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/marital-status`)
+    Axios.get(`${config.services.parameters}/marital-status`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_MARITAL_STATUS, payload: data })
@@ -62,7 +83,7 @@ const getMaritalStatuses = () => (dispatch) =>
 
 const getScholarship = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/scholarship`)
+    Axios.get(`${config.services.parameters}/scholarship`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_SCHOLARSHIP, payload: data })
@@ -75,7 +96,7 @@ const getScholarship = () => (dispatch) =>
 
 const getNationalities = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/nationalities`)
+    Axios.get(`${config.services.parameters}/nationalities`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_NATIONALITIES, payload: data })
@@ -88,7 +109,7 @@ const getNationalities = () => (dispatch) =>
 
 const getBanks = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/banks`)
+    Axios.get(`${config.services.parameters}/banks`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_BANKS, payload: data })
@@ -101,7 +122,7 @@ const getBanks = () => (dispatch) =>
 
 const getRSH = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/rsh`)
+    Axios.get(`${config.services.parameters}/rsh`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_RSH, payload: data })
@@ -114,7 +135,7 @@ const getRSH = () => (dispatch) =>
 
 const getActivities = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/activities`)
+    Axios.get(`${config.services.parameters}/activities`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_ACTIVITIES, payload: data })
@@ -126,7 +147,7 @@ const getActivities = () => (dispatch) =>
   })
 const getRelationships = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/relationships`)
+    Axios.get(`${config.services.parameters}/relationships`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_RELATIONSHIPS, payload: data })
@@ -139,7 +160,7 @@ const getRelationships = () => (dispatch) =>
 
 const getIsapreFonasa = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/isapre-fonasa`)
+    Axios.get(`${config.services.parameters}/isapre-fonasa`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_ISAPRE_FONASA, payload: data })
@@ -152,7 +173,7 @@ const getIsapreFonasa = () => (dispatch) =>
 
 const getAfpIsp = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/afp-isp`)
+    Axios.get(`${config.services.parameters}/afp-isp`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_AFP_ISP, payload: data })
@@ -165,7 +186,7 @@ const getAfpIsp = () => (dispatch) =>
 
 const getTypesHome = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/types-home`)
+    Axios.get(`${config.services.parameters}/types-home`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_TYPES_HOME, payload: data })
@@ -178,7 +199,7 @@ const getTypesHome = () => (dispatch) =>
 
 const getPropertyHome = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/property-home`)
+    Axios.get(`${config.services.parameters}/property-home`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_PROPERTY_HOME, payload: data })
@@ -191,7 +212,7 @@ const getPropertyHome = () => (dispatch) =>
 
 const getTypesSubsidy = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/types-subsidy`)
+    Axios.get(`${config.services.parameters}/types-subsidy`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_TYPES_SUBSIDY, payload: data })
@@ -204,7 +225,7 @@ const getTypesSubsidy = () => (dispatch) =>
 
 const getSpecList = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/specialties`)
+    Axios.get(`${config.services.parameters}/specialties`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_SPEC_LIST, payload: data })
@@ -217,7 +238,7 @@ const getSpecList = () => (dispatch) =>
 
 const getEntities = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/entities`)
+    Axios.get(`${config.services.parameters}/entities`)
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_ENTITIES, payload: data })
@@ -335,6 +356,7 @@ export default {
   getRegions,
   getCharges,
   getTypologies,
+  getEconomicSectors,
   getMaritalStatuses,
   getScholarship,
   getNationalities,

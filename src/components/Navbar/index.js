@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -13,16 +13,18 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Toolbar,
-  Typography
+  Toolbar
 } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
+import AlertIcon from '@material-ui/icons/Announcement'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { useTheme } from '@material-ui/core/styles'
 import authActions from '../../state/actions/auth'
 import useStyles from './styles'
 import useMenu from '../../hooks/useMenu'
 import LeftDrawer from './LeftDrawer'
+import pollActions from '../../state/actions/poll'
+import Announcements from '../Widgets/Announcements'
 
 const ResponsiveDrawer = ({ ...props }) => {
   const { window } = props
@@ -33,6 +35,13 @@ const ResponsiveDrawer = ({ ...props }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { user } = useSelector((state) => state.auth)
   const { open, anchorEl, handleClose, handleOpen } = useMenu()
+  const {
+    open: openAlert,
+    anchorEl: anchorElAlert,
+    handleClose: handleCloseAlert,
+    handleOpen: handleOpenAlert
+  } = useMenu()
+  const { module } = useSelector((state) => state.ui)
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -51,6 +60,15 @@ const ResponsiveDrawer = ({ ...props }) => {
 
   const container =
     window !== undefined ? () => window().document.body : undefined
+
+  /*
+  const toggleModal = () => {
+    dispatch(pollActions.toggleModal(showModal))
+  }
+  */
+  useEffect(() => {
+    dispatch(pollActions.getModulePolls({ module }))
+  }, [module])
 
   return (
     <div className={classes.root}>
@@ -77,9 +95,9 @@ const ResponsiveDrawer = ({ ...props }) => {
             width="100%"
             alignItems="center"
           >
-            <Typography noWrap style={{ marginRight: '15px' }}>
-              {user && `${user.names} ${user.paternal_surname}`}
-            </Typography>
+            <IconButton onClick={handleOpenAlert}>
+              <AlertIcon color="primary" />
+            </IconButton>
             {user &&
               (user.profilePicture !== '' ? (
                 <Avatar src={user.profilePicture}></Avatar>
@@ -94,14 +112,15 @@ const ResponsiveDrawer = ({ ...props }) => {
             id="menu-profile"
             open={open}
             anchorEl={anchorEl}
+            getContentAnchorEl={null}
             onClose={handleClose}
             anchorOrigin={{
               vertical: 'bottom',
               horizontal: 'center'
             }}
             transformOrigin={{
-              vertical: 'bottom',
-              horizontal: 'bottom'
+              vertical: 'top',
+              horizontal: 'center'
             }}
           >
             <MenuItem onClick={onCalendarClick}>Mi Calendario</MenuItem>
@@ -109,6 +128,11 @@ const ResponsiveDrawer = ({ ...props }) => {
             <Divider />
             <MenuItem onClick={logoutUser}>Cerrar sesión</MenuItem>
           </Menu>
+          <Announcements
+            open={openAlert}
+            anchorEl={anchorElAlert}
+            handleClose={handleCloseAlert}
+          />
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="options">

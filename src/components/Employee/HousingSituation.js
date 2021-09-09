@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { Box, Typography } from '@material-ui/core'
@@ -17,6 +17,7 @@ const PensionSituation = () => {
   const { success, changeSuccess } = useSuccess()
   const [list, setList] = useState([])
   const [current, setCurrent] = useState(null)
+  const { user } = useSelector((state) => state.auth)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
@@ -32,7 +33,8 @@ const PensionSituation = () => {
     dispatch(
       employeesActions.createHousingSituation({
         ...values,
-        employee_id: parseInt(idEmployee, 10)
+        employee_id: parseInt(idEmployee, 10),
+        created_by: user.id
       })
     )
 
@@ -41,7 +43,8 @@ const PensionSituation = () => {
       employeesActions.updateHousingSituation(current.id, {
         ...current,
         ...values,
-        employee_id: parseInt(idEmployee, 10)
+        employee_id: parseInt(idEmployee, 10),
+        created_by: current.created_by
       })
     )
   const patchSituation = (id) =>

@@ -13,6 +13,7 @@ import { phoneValidator } from '../../validations'
 const validationSchema = Yup.object({
   full_name: Yup.string().required('Ingrese nombre'),
   charge_id: Yup.string().required('Seleccione cargo'),
+  charge_name: Yup.string().required('Seleccione cargo'),
   email: Yup.string().email('Ingrese correo válido').required('Ingrese correo'),
   cell_phone: Yup.string('Ingrese teléfono').test(
     'Check phone',
@@ -83,6 +84,7 @@ const ContactModal = ({
       full_name: type === 'UPDATE' ? data.full_name : '',
       email: type === 'UPDATE' ? data.email : '',
       charge_id: type === 'UPDATE' ? data.charge_id : '',
+      charge_name: type === 'UPDATE' ? data.charge_name : '',
       cell_phone: type === 'UPDATE' ? data.cell_phone : '',
       office_phone: type === 'UPDATE' ? data.office_phone : '',
       other_phone: type === 'UPDATE' ? data.other_phone : ''
@@ -112,6 +114,18 @@ const ContactModal = ({
         })
     }
   })
+
+  useEffect(() => {
+    const { charge_id } = formik.values
+    if (charge_id && charges.length > 0) {
+      const currentCharge = charges.find(
+        (item) => item.id === parseInt(charge_id, 10)
+      )
+      formik.setFieldValue('charge_name', currentCharge.name)
+    } else {
+      formik.setFieldValue('charge_name', '')
+    }
+  }, [formik.values.charge_id, charges])
 
   useEffect(() => {
     if (open) {

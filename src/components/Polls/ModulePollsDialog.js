@@ -8,7 +8,7 @@ import { Dialog } from '../Shared'
 import PollCard from './Card'
 import { formatDate } from '../../formatters'
 import { QuestionCard } from '../Poll/Question'
-import { Button } from '../UI'
+import { Button, EmptyState } from '../UI'
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -17,7 +17,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const PollList = ({ onSelectPoll }) => {
+const PollList = ({ loading, onSelectPoll }) => {
   const [response, setResponse] = useState([])
 
   const { modulePollList } = useSelector((state) => state.poll)
@@ -39,16 +39,30 @@ const PollList = ({ onSelectPoll }) => {
         Encuestas disponibles
       </Typography>
       <Box>
-        {response.map((item) => (
-          <PollCard
-            poll={item}
-            showAnswers={false}
-            onClick={(currentPoll) => {
-              console.log(currentPoll)
-              onSelectPoll(currentPoll)
-            }}
-          />
-        ))}
+        {loading ? (
+          <>
+            <PollCard loader />
+            <PollCard loader />
+          </>
+        ) : (
+          <>
+            {response.length === 0 ? (
+              <EmptyState message="No hay encuestas para este módulo" />
+            ) : (
+              response.map((item) => (
+                <PollCard
+                  poll={item}
+                  showAnswers={false}
+                  onClick={(currentPoll) => {
+                    if (!item.is_answered) {
+                      onSelectPoll(currentPoll)
+                    }
+                  }}
+                />
+              ))
+            )}
+          </>
+        )}
       </Box>
     </Box>
   )
@@ -213,11 +227,18 @@ const AnswerPoll = ({ poll, onBack, onNext }) => {
 const ModulePollsDialog = ({ open, onClose, module }) => {
   const dispatch = useDispatch()
   const [step, setStep] = useState(0)
+  const [loading, setLoading] = useState(false)
   const [selectedPoll, setSelectedPoll] = useState(null)
   const { isMobile } = useSelector((state) => state.ui)
+  const { user } = useSelector((state) => state.auth)
 
   const fetchModulePolls = () => {
-    dispatch(pollActions.getModulePolls({ module }))
+    setLoading(true)
+    dispatch(pollActions.getModulePolls({ module, user_id: user.id })).then(
+      () => {
+        setLoading(false)
+      }
+    )
   }
 
   useEffect(() => {
@@ -236,12 +257,18 @@ const ModulePollsDialog = ({ open, onClose, module }) => {
     >
       <Box p={2}>
         {step === 0 && (
-          <PollList
-            onSelectPoll={(currentPoll) => {
-              setSelectedPoll(currentPoll)
-              setStep(1)
-            }}
-          />
+          <Box>
+            <PollList
+              loading={loading}
+              onSelectPoll={(currentPoll) => {
+                setSelectedPoll(currentPoll)
+                setStep(1)
+              }}
+            />
+            <Box textAlign="center">
+              <Button textAlign="center">Ver todas</Button>
+            </Box>
+          </Box>
         )}
         {step === 1 && (
           <AnswerPoll

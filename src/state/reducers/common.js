@@ -3,6 +3,8 @@ import commonTypes from '../types/common'
 const initialState = {
   regions: [],
   charges: [],
+  constructionTypologies: [],
+  economicSectors: [],
   maritalStatus: [],
   nationalities: [],
   scholarshipList: [],
@@ -31,6 +33,10 @@ const commonReducer = (state = initialState, { type, payload }) => {
       return { ...state, regions: payload }
     case commonTypes.GET_CHARGES:
       return { ...state, charges: payload }
+    case commonTypes.GET_CONSTRUCTION_TYPOLOGIES:
+      return { ...state, constructionTypologies: payload }
+    case commonTypes.GET_ECONOMIC_SECTORS:
+      return { ...state, economicSectors: payload }
     case commonTypes.GET_MARITAL_STATUS:
       return { ...state, maritalStatus: payload }
     case commonTypes.GET_SCHOLARSHIP:

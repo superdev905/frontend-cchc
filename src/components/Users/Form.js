@@ -35,12 +35,19 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+const createValidation = Yup.object().shape({
+  password: Yup.string()
+    .min(8, 'La contraseña debe tener 8 caracteres como mínimo')
+    .required('Ingrese contraseña')
+})
+
 const validationSchema = Yup.object().shape({
   names: Yup.string().required('Ingrese nombre del usuario'),
   maternal_surname: Yup.string().required('Ingrese materno'),
   paternal_surname: Yup.string().required('Ingrese paterno'),
   email: Yup.string().email('Ingrese correo válido').required('Ingrese email'),
-  charge_id: Yup.string().required('Seleccione cargo'),
+  charge_id: Yup.string('Seleccione cargo').nullable(),
+  charge_name: Yup.string(),
   is_administrator: Yup.bool()
 })
 
@@ -69,7 +76,10 @@ const Form = ({
 
   const formik = useFormik({
     validateOnMount: true,
-    validationSchema,
+    validationSchema:
+      type === 'ADD'
+        ? validationSchema.concat(createValidation)
+        : validationSchema,
     initialValues: {
       names: type !== 'ADD' ? data.names : '',
       maternal_surname: type !== 'ADD' ? data.maternal_surname : '',
@@ -97,6 +107,17 @@ const Form = ({
         })
     }
   })
+
+  useEffect(() => {
+    if (formik.values.charge_id && charges.length > 0) {
+      const currentCharge = charges.find(
+        (item) => item.id === parseInt(formik.values.charge_id, 10)
+      )
+      formik.setFieldValue('charge_name', currentCharge.name)
+    } else {
+      formik.setFieldValue('charge_name', '')
+    }
+  }, [formik.values.charge_id, charges])
 
   useEffect(() => {
     if (open) {
@@ -186,7 +207,12 @@ const Form = ({
                   label="Contraseña"
                   required
                   value={formik.values.password}
-                  inputProps={{ readOnly: true }}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={
+                    formik.touched.password && Boolean(formik.errors.password)
+                  }
+                  helperText={formik.touched.password && formik.errors.password}
                 />
               </Grid>
             )}
@@ -205,7 +231,7 @@ const Form = ({
                 }
                 inputProps={{ readOnly }}
               >
-                <option value="">Seleccione cargo</option>
+                <option value="">Sin cargo</option>
                 {charges.map((item) => (
                   <option value={item.id}>{item.name}</option>
                 ))}

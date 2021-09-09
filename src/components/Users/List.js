@@ -38,6 +38,7 @@ const List = () => {
   })
   const [current, setCurrent] = useState(null)
   const { usersList } = useSelector((state) => state.users)
+  const { user } = useSelector((state) => state.auth)
   const { open: openView, toggleOpen: toggleOpenView } = useToggle()
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
@@ -56,12 +57,26 @@ const List = () => {
       })
   }
 
-  const onCreateUser = (values) => dispatch(usersActions.createUser(values))
+  const onCreateUser = (values) => {
+    if (!values.charge_id) {
+      delete values.charge_id
+      delete values.charge_name
+    }
+    return dispatch(usersActions.createUser({ ...values, created_by: user.id }))
+  }
 
   const onUpdateUser = (values) => {
+    if (!values.charge_id) {
+      delete values.charge_id
+      delete values.charge_name
+    }
     delete values.password
     return dispatch(
-      usersActions.updateUser(current.id, { ...values, state: current.state })
+      usersActions.updateUser(current.id, {
+        ...values,
+        state: current.state,
+        created_by: current.id
+      })
     )
   }
 
