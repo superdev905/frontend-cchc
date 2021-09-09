@@ -1,11 +1,10 @@
 import { memo, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
-import moment from 'moment'
-import 'moment/locale/es-us'
+import globalize from 'globalize'
 import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from 'date-fns'
 import { Box } from '@material-ui/core'
-import { Calendar, momentLocalizer } from 'react-big-calendar'
+import { Calendar, globalizeLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import assistanceActions from '../../state/actions/assistance'
 import { Wrapper } from '../../components/UI'
@@ -17,7 +16,9 @@ import {
 } from '../../components/Assistance/Calendar'
 import { ConfirmDelete } from '../../components/Shared'
 
-const localizer = momentLocalizer(moment)
+require('globalize/lib/cultures/globalize.culture.es-CL')
+
+const localizer = globalizeLocalizer(globalize)
 
 const getBgColor = (event) => {
   if (event.status === 'PROGRAMADA' || event.status === 'REPROGRAMADA')
