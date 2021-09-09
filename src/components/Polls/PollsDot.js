@@ -40,5 +40,4 @@ const ModuleDot = ({ module }) => {
     </Box>
   )
 }
-
 export default ModuleDot

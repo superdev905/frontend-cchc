@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
 
 const validationSchema = Yup.object().shape({
   old_password: Yup.string().required(),
-  new_password: Yup.string().required()
+  new_password: Yup.string().required(),
+  confirm_password: Yup.string().required()
 })
 
 const PasswordModal = ({
@@ -47,7 +48,8 @@ const PasswordModal = ({
     validationSchema,
     initialValues: {
       old_password: type !== 'UPDATE' ? data.old_password : '',
-      new_password: type !== 'UPDATE' ? data.new_password : ''
+      new_password: type !== 'UPDATE' ? data.new_password : '',
+      confirm_password: type !== 'UPDATE' ? data.confirm_password : ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction(values)

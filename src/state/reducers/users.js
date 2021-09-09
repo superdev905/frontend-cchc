@@ -1,13 +1,16 @@
 import usersTypes from '../types/users'
 
 const initialState = {
-  usersList: []
+  usersList: [],
+  user: null
 }
 
 const usersReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case usersTypes.GET_USERS:
       return { ...state, usersList: payload }
+    case usersTypes.GET_USER:
+      return { ...state, user: payload }
     default:
       return state
   }

@@ -18,11 +18,13 @@ const getUsers =
         })
     })
 
-const getUserDetails = (id) => () =>
+const getUserDetails = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.auth}/users/${id}`)
       .then((response) => {
         const { data } = response
+        dispatch({ type: usersTypes.GET_USER, payload: data })
+
         resolve(data)
       })
       .catch((err) => {
@@ -66,4 +68,23 @@ const patchUser = (id, values) => () =>
       })
   })
 
-export default { getUsers, createUser, updateUser, patchUser, getUserDetails }
+const updatePassword = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.auth}/users/${id}/change-password`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+export default {
+  getUsers,
+  createUser,
+  updateUser,
+  patchUser,
+  getUserDetails,
+  updatePassword
+}
