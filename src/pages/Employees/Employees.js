@@ -1,13 +1,15 @@
 import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { ListEmployees } from '../../components/Employees'
 import { PollsDot } from '../../components/Polls'
 import { PageHeading } from '../../components/UI'
 import uiActions from '../../state/actions/ui'
 
 const Employees = () => {
+  const dispatch = useDispatch()
+
   useEffect(() => {
-    uiActions.setCurrentModule('TRABAJADORES')
-    console.log('CAMBIO DE MODULO: TRAB')
+    dispatch(uiActions.setCurrentModule('TRABAJADORES'))
   }, [])
 
   return (

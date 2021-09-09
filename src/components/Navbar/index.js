@@ -61,11 +61,6 @@ const ResponsiveDrawer = ({ ...props }) => {
   const container =
     window !== undefined ? () => window().document.body : undefined
 
-  /*
-  const toggleModal = () => {
-    dispatch(pollActions.toggleModal(showModal))
-  }
-  */
   useEffect(() => {
     dispatch(pollActions.getModulePolls({ module }))
   }, [module])

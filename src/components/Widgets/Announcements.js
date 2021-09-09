@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import poll from '../../state/actions/poll'
 import PollCard from '../Polls/Card'
 import { Button } from '../UI'
+import { useToggle } from '../../hooks'
+import ModulePollsDialog from '../Polls/ModulePollsDialog'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -26,6 +28,7 @@ const Announcements = ({ open, anchorEl, handleClose }) => {
   const { module } = useSelector((state) => state.ui)
   const { user } = useSelector((state) => state.auth)
   const { modulePollList: polls } = useSelector((state) => state.poll)
+  const { open: openDetail, toggleOpen: toggleOpenDetail } = useToggle()
 
   const getPolls = () => {
     setLoading(true)
@@ -43,43 +46,52 @@ const Announcements = ({ open, anchorEl, handleClose }) => {
       getPolls()
     }
   }, [module, open, user])
+
   return (
-    <Menu
-      open={open}
-      anchorEl={anchorEl}
-      getContentAnchorEl={null}
-      onClose={handleClose}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center'
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'center'
-      }}
-    >
-      <Box p={2} className={classes.paper}>
-        <Typography className={classes.title}>Encuestas</Typography>
-        <Box>
-          {loading ? (
-            <PollCard loader />
-          ) : (
-            <>
-              {polls.map((item) => (
-                <PollCard
-                  key={`item-${item.id}`}
-                  showAnswers={false}
-                  poll={item}
-                />
-              ))}
-            </>
-          )}
+    <div>
+      <Menu
+        open={open}
+        anchorEl={anchorEl}
+        getContentAnchorEl={null}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center'
+        }}
+      >
+        <Box p={2} className={classes.paper}>
+          <Typography className={classes.title}>Encuestas</Typography>
+          <Box>
+            {loading ? (
+              <PollCard loader />
+            ) : (
+              <>
+                {polls.map((item) => (
+                  <PollCard
+                    key={`item-${item.id}`}
+                    showAnswers={false}
+                    poll={item}
+                    onClick={toggleOpenDetail}
+                  />
+                ))}
+              </>
+            )}
+          </Box>
+          <Box marginTop="15px" textAlign="center">
+            <Button> Ver todos</Button>
+          </Box>
         </Box>
-        <Box marginTop="15px" textAlign="center">
-          <Button> Ver todos</Button>
-        </Box>
-      </Box>
-    </Menu>
+      </Menu>
+      <ModulePollsDialog
+        open={openDetail}
+        onClose={toggleOpenDetail}
+        module={module}
+      />
+    </div>
   )
 }
 export default Announcements
