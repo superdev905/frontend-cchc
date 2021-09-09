@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -23,6 +23,8 @@ import authActions from '../../state/actions/auth'
 import useStyles from './styles'
 import useMenu from '../../hooks/useMenu'
 import LeftDrawer from './LeftDrawer'
+import pollActions from '../../state/actions/poll'
+import ModuleDot from '../Polls/PollsDot'
 
 const ResponsiveDrawer = ({ ...props }) => {
   const { window } = props
@@ -33,6 +35,7 @@ const ResponsiveDrawer = ({ ...props }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { user } = useSelector((state) => state.auth)
   const { open, anchorEl, handleClose, handleOpen } = useMenu()
+  const { module } = useSelector((state) => state.ui)
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -51,6 +54,15 @@ const ResponsiveDrawer = ({ ...props }) => {
 
   const container =
     window !== undefined ? () => window().document.body : undefined
+
+  /*
+  const toggleModal = () => {
+    dispatch(pollActions.toggleModal(showModal))
+  }
+  */
+  useEffect(() => {
+    dispatch(pollActions.getModulePolls({ module }))
+  }, [module])
 
   return (
     <div className={classes.root}>
@@ -77,6 +89,9 @@ const ResponsiveDrawer = ({ ...props }) => {
             width="100%"
             alignItems="center"
           >
+            <IconButton>
+              <ModuleDot module={module} />
+            </IconButton>
             <Typography noWrap style={{ marginRight: '15px' }}>
               {user && `${user.names} ${user.paternal_surname}`}
             </Typography>
