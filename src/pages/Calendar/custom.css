@@ -1,0 +1,11 @@
+.fc-timegrid-slot {
+  height: 5px;
+}
+.fc-timegrid-now-indicator-line {
+  border-width: 3px 0 0 !important;
+  position: relative;
+}
+
+.fc-timegrid-now-indicator-line > div.fc-timegrid-now-indicator-container {
+  background-color: #eaf6ff !important;
+}

@@ -1,25 +1,23 @@
-import { memo, useEffect, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
-import globalize from 'globalize'
-import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from 'date-fns'
-import { Box } from '@material-ui/core'
-import { Calendar, globalizeLocalizer } from 'react-big-calendar'
+import { endOfWeek, startOfWeek } from 'date-fns'
+import { Box, Typography } from '@material-ui/core'
+
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import timeGridPlugin from '@fullcalendar/timegrid'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import assistanceActions from '../../state/actions/assistance'
 import { Wrapper } from '../../components/UI'
 import { useMenu, useSuccess, useToggle } from '../../hooks'
 import { EventForm, EventPreview } from '../../components/Assistance'
-import {
-  CalendarToolbar,
-  EventCard
-} from '../../components/Assistance/Calendar'
 import { ConfirmDelete } from '../../components/Shared'
+import useStyles from './styles'
+import './custom.css'
 
-require('globalize/lib/cultures/globalize.culture.es-CL')
-
-const localizer = globalizeLocalizer(globalize)
-
+/*
 const getBgColor = (event) => {
   if (event.status === 'PROGRAMADA' || event.status === 'REPROGRAMADA')
     return { backgroundColor: '#aed5ff', border: `3px solid #076af9` }
@@ -29,15 +27,18 @@ const getBgColor = (event) => {
     return { backgroundColor: '#f6e68f', border: `3px solid #F2DB5C` }
   return { backgroundColor: '#FFEBF6', border: `3px solid #ED61B0` }
 }
+*/
 
 const EventsCalendar = () => {
   const dispatch = useDispatch()
+  const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
+  const calendarApi = useRef()
   const [currentDate] = useState(new Date())
   const [calendarDate, setCalendarDate] = useState(currentDate)
   const [loading, setLoading] = useState(false)
   const [rescheduleStatus, setRescheduleStatus] = useState(false)
-  const [calendarView, setCalendarView] = useState('week')
+  const [rangeDate, setRangeDate] = useState({ start: null, end: null })
   const [filters, setFilters] = useState({
     start_date: startOfWeek(currentDate),
     end_date: endOfWeek(currentDate)
@@ -186,6 +187,7 @@ const EventsCalendar = () => {
     setEvents(
       calendarEvents.map((item) => ({
         ...item,
+        date: new Date(item.date),
         start: new Date(item.start_date),
         end: new Date(item.end_date)
       }))
@@ -193,21 +195,14 @@ const EventsCalendar = () => {
   }, [calendarEvents])
 
   useEffect(() => {
-    if (calendarView === 'month') {
-      setFilters({
-        ...filters,
-        start_date: startOfMonth(calendarDate),
-        end_date: endOfMonth(calendarDate)
-      })
+    if (calendarApi.current) {
+      console.log(calendarApi.current)
     }
-    if (calendarView === 'week' || calendarView === 'day') {
-      setFilters({
-        ...filters,
-        start_date: startOfWeek(calendarDate),
-        end_date: endOfWeek(calendarDate)
-      })
+    if (rangeDate.start && rangeDate.end) {
+      console.log(rangeDate)
+      setFilters({ start_date: rangeDate.start, end_date: rangeDate.end })
     }
-  }, [calendarView, calendarDate])
+  }, [calendarApi, rangeDate])
 
   useEffect(() => {
     fetchEvents(filters)
@@ -216,39 +211,50 @@ const EventsCalendar = () => {
   return (
     <div>
       <Wrapper>
-        <Box height="600px">
-          <Calendar
-            date={calendarDate}
-            selectable
-            view={calendarView}
-            defaultView="week"
-            culture="es"
-            localizer={localizer}
+        <Box miHeight="600px">
+          <FullCalendar
+            ref={calendarApi}
+            height="700px"
+            now={calendarDate}
+            plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+            headerToolbar={{
+              left: 'prev,today,next',
+              center: 'title',
+              right: 'timeGridDay,timeGridWeek,dayGridMonth'
+            }}
+            buttonText={{
+              today: 'HOY',
+              month: 'MES',
+              week: 'SEMANA',
+              day: 'DIA'
+            }}
+            locale="es"
+            initialView="timeGridWeek"
+            nowIndicator={true}
             events={events}
-            views={['month', 'week', 'day']}
-            startAccessor="start"
-            endAccessor="end"
-            onView={(newView) => {
-              setCalendarView(newView)
+            select={handleSelectSlot}
+            datesSet={({ start, end }) => {
+              setRangeDate({ start, end })
             }}
-            onNavigate={onNavigate}
-            onDoubleClickEvent={(e) => {
-              setCurrentEvent(e)
-              toggleOpenEdit()
-            }}
-            onSelectEvent={(event, e) => {
-              setCurrentEvent(event)
-              handleOpen(e)
-            }}
-            components={{
-              event: EventCard,
-              toolbar: CalendarToolbar
-            }}
-            onSelectSlot={handleSelectSlot}
-            eventPropGetter={(event) => {
-              const { backgroundColor, border } = getBgColor(event)
-
-              return { style: { backgroundColor, color: '#000000', border } }
+            allDayContent={false}
+            allDaySlot={false}
+            editable={true}
+            selectable={true}
+            eventContent={({ event }) => (
+              <Box className={classes.root}>
+                <Typography className={classes.title}>{event.title}</Typography>
+                <Typography className={classes.status}>
+                  {event.extendedProps.status}
+                </Typography>
+              </Box>
+            )}
+            eventClick={(event) => {
+              setCurrentEvent({
+                ...event.event.extendedProps,
+                date: event.event.extendedProps.start_date,
+                title: event.event.title
+              })
+              handleOpen({ currentTarget: event.el })
             }}
           />
         </Box>
