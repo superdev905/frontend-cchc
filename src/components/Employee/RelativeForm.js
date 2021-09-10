@@ -3,13 +3,20 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
 import { DatePicker, Dialog } from '../Shared'
 import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
 import { rutValidation } from '../../validations'
 import commonActions from '../../state/actions/common'
 import { decisionList, genderList } from '../../config'
 import { useSuccess } from '../../hooks'
+
+const useStyles = makeStyles(() => ({
+  disabled: {
+    backgroundColor: 'white',
+    color: 'black'
+  }
+}))
 
 const validationSchema = Yup.object().shape({
   run: Yup.string().test('validRUN', 'Ingrese run válido', (v) => {
@@ -40,6 +47,7 @@ const EmployeeModal = ({
   successMessage,
   successFunction
 }) => {
+  const classes = useStyles()
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
@@ -190,7 +198,6 @@ const EmployeeModal = ({
               <DatePicker
                 label="Fecha de nacimiento"
                 value={formik.values.born_date}
-                //  disabled={{ readOnly: type === 'VIEW' }}
                 inputProps={{ readOnly: type === 'VIEW' }}
                 required
                 onChange={(date) => {
@@ -202,6 +209,7 @@ const EmployeeModal = ({
                 helperText={formik.touched.born_date && formik.errors.born_date}
               />
             </Grid>
+
             <Grid item xs={12} md={6} lg={4}>
               <Select
                 label="Sexo"
@@ -211,8 +219,12 @@ const EmployeeModal = ({
                 onChange={formik.handleChange}
                 error={formik.touched.gender && Boolean(formik.errors.gender)}
                 helperText={formik.touched.gender && formik.errors.gender}
-                inputProps={{ readOnly: type === 'VIEW' }}
-                // readOnly={type === 'VIEW'}
+                readOnly={type === 'VIEW'}
+                InputProps={{
+                  classes: {
+                    disabled: classes.disabled
+                  }
+                }}
               >
                 <option value="">Seleccione estado civil</option>
                 {genderList.map((item, i) => (
@@ -222,7 +234,6 @@ const EmployeeModal = ({
                 ))}
               </Select>
             </Grid>
-
             <Grid item xs={12} md={6} lg={4}>
               <Select
                 label="Estado civil"
@@ -238,7 +249,12 @@ const EmployeeModal = ({
                   formik.touched.marital_status_id &&
                   formik.errors.marital_status_id
                 }
-                inputProps={{ readOnly: type === 'VIEW' }}
+                readOnly={type === 'VIEW'}
+                InputProps={{
+                  classes: {
+                    disabled: classes.disabled
+                  }
+                }}
               >
                 <option value="">Seleccione estado civil</option>
                 {maritalStatus.map((item, i) => (
@@ -265,8 +281,12 @@ const EmployeeModal = ({
                 helperText={
                   formik.touched.scholarship_id && formik.errors.scholarship_id
                 }
-                inputProps={{ readOnly: type === 'VIEW' }}
-                // disabled={type === 'VIEW'}
+                readOnly={type === 'VIEW'}
+                InputProps={{
+                  classes: {
+                    disabled: classes.disabled
+                  }
+                }}
               >
                 <option value="">Seleccione escolaridad</option>
                 {scholarshipList.map((item, i) => (
@@ -290,7 +310,12 @@ const EmployeeModal = ({
                 helperText={
                   formik.touched.nationality_id && formik.errors.nationality_id
                 }
-                inputProps={{ readOnly: type === 'VIEW' }}
+                readOnly={type === 'VIEW'}
+                InputProps={{
+                  classes: {
+                    disabled: classes.disabled
+                  }
+                }}
               >
                 <option value="">Seleccione nacionalidad</option>
                 {nationalities.map((item, i) => (
@@ -315,7 +340,12 @@ const EmployeeModal = ({
                   formik.touched.relationship_id &&
                   formik.errors.relationship_id
                 }
-                inputProps={{ readOnly: type === 'VIEW' }}
+                readOnly={type === 'VIEW'}
+                InputProps={{
+                  classes: {
+                    disabled: classes.disabled
+                  }
+                }}
               >
                 <option value="">Seleccione parentesco</option>
                 {relationshipList.map((item, i) => (
@@ -334,7 +364,12 @@ const EmployeeModal = ({
                 onChange={formik.handleChange}
                 error={formik.touched.job_id && Boolean(formik.errors.job_id)}
                 helperText={formik.touched.job_id && formik.errors.job_id}
-                inputProps={{ readOnly: type === 'VIEW' }}
+                readOnly={type === 'VIEW'}
+                InputProps={{
+                  classes: {
+                    disabled: classes.disabled
+                  }
+                }}
               >
                 <option value="">Seleccione opción</option>
                 {activities.map((item, i) => (
@@ -358,7 +393,12 @@ const EmployeeModal = ({
                 helperText={
                   formik.touched.legal_charge && formik.errors.legal_charge
                 }
-                inputProps={{ readOnly: type === 'VIEW' }}
+                readOnly={type === 'VIEW'}
+                InputProps={{
+                  classes: {
+                    disabled: classes.disabled
+                  }
+                }}
               >
                 <option value="">Seleccione opción</option>
                 {decisionList.map((item, i) => (
@@ -376,7 +416,12 @@ const EmployeeModal = ({
                 onChange={formik.handleChange}
                 error={formik.touched.rsh && Boolean(formik.errors.rsh)}
                 helperText={formik.touched.rsh && formik.errors.rsh}
-                inputProps={{ readOnly: type === 'VIEW' }}
+                readOnly={type === 'VIEW'}
+                InputProps={{
+                  classes: {
+                    disabled: classes.disabled
+                  }
+                }}
               >
                 <option value="">Seleccione rsh</option>
                 {decisionList.map((item, i) => (
@@ -392,7 +437,7 @@ const EmployeeModal = ({
                 name="rsh_percentage_id"
                 value={formik.values.rsh_percentage_id}
                 onChange={formik.handleChange}
-                disabled={formik.values.rsh === 'NO' || type === 'VIEW'}
+                disabled={formik.values.rsh === 'NO' && type === 'VIEW'}
                 error={
                   formik.touched.rsh_percentage_id &&
                   Boolean(formik.errors.rsh_percentage_id)
@@ -401,6 +446,12 @@ const EmployeeModal = ({
                   formik.touched.rsh_percentage_id &&
                   formik.errors.rsh_percentage_id
                 }
+                readOnly={type === 'VIEW'}
+                InputProps={{
+                  classes: {
+                    disabled: classes.disabled
+                  }
+                }}
               >
                 <option value="">Sin RSH %</option>
                 {rshList.map((item, i) => (
