@@ -345,7 +345,6 @@ const getInterventionDetails = (id) => () =>
       .then((response) => {
         const { data } = response
         resolve(data)
-        console.log(data)
       })
       .catch((err) => {
         reject(err)

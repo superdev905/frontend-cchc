@@ -25,7 +25,6 @@ const AttentionDetails = () => {
         id_employee: idEmployee
       })
     ).then((data) => {
-      console.log(data)
       setLoading(false)
       setList(
         data.map((item) => ({ ...item, stringDate: formatDate(item.date, {}) }))

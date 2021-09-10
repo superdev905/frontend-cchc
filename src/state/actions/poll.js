@@ -47,7 +47,6 @@ const createPoll = (values) => () =>
       })
       .catch((err) => {
         reject(err.response.data.detail)
-        console.log('error')
       })
   })
 
@@ -73,7 +72,6 @@ const getPollDetails = (id) => (dispatch) =>
       })
       .catch((err) => {
         reject(err.response.data.detail)
-        console.log(err)
       })
   })
 
@@ -99,7 +97,6 @@ const createQuestions = (values) => () =>
       })
       .catch((err) => {
         reject(err.response.data.detail)
-        console.log('error')
       })
   })
 
@@ -118,7 +115,6 @@ const getQuestions =
           resolve(data)
         })
         .catch((err) => {
-          console.log(err)
           reject(err.response.data.detail)
         })
     })
@@ -145,7 +141,6 @@ const getQuestionDetails = (questionId) => (dispatch) =>
       })
       .catch((err) => {
         reject(err.response.data.detail)
-        console.log(err)
       })
   })
 
