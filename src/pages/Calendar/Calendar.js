@@ -357,7 +357,7 @@ const EventsCalendar = () => {
           onClose={toggleOpenConfirmDelete}
           loading={loading}
           success={success}
-          onConfirm={() => onDeleteEvent(currentEvent.id)}
+          onConfirm={() => onDeleteEvent(currentEvent.visitId)}
           message={
             <span>
               ¿Estás seguro de eliminar este evento:
