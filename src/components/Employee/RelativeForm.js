@@ -190,7 +190,8 @@ const EmployeeModal = ({
               <DatePicker
                 label="Fecha de nacimiento"
                 value={formik.values.born_date}
-                disabled={{ readOnly: type === 'VIEW' }}
+                //  disabled={{ readOnly: type === 'VIEW' }}
+                inputProps={{ readOnly: type === 'VIEW' }}
                 required
                 onChange={(date) => {
                   formik.setFieldValue('born_date', date)
@@ -210,7 +211,8 @@ const EmployeeModal = ({
                 onChange={formik.handleChange}
                 error={formik.touched.gender && Boolean(formik.errors.gender)}
                 helperText={formik.touched.gender && formik.errors.gender}
-                readOnly={type === 'VIEW'}
+                inputProps={{ readOnly: type === 'VIEW' }}
+                // readOnly={type === 'VIEW'}
               >
                 <option value="">Seleccione estado civil</option>
                 {genderList.map((item, i) => (
@@ -236,7 +238,7 @@ const EmployeeModal = ({
                   formik.touched.marital_status_id &&
                   formik.errors.marital_status_id
                 }
-                disabled={type === 'VIEW'}
+                inputProps={{ readOnly: type === 'VIEW' }}
               >
                 <option value="">Seleccione estado civil</option>
                 {maritalStatus.map((item, i) => (
@@ -263,7 +265,8 @@ const EmployeeModal = ({
                 helperText={
                   formik.touched.scholarship_id && formik.errors.scholarship_id
                 }
-                disabled={type === 'VIEW'}
+                inputProps={{ readOnly: type === 'VIEW' }}
+                // disabled={type === 'VIEW'}
               >
                 <option value="">Seleccione escolaridad</option>
                 {scholarshipList.map((item, i) => (
@@ -287,7 +290,7 @@ const EmployeeModal = ({
                 helperText={
                   formik.touched.nationality_id && formik.errors.nationality_id
                 }
-                disabled={type === 'VIEW'}
+                inputProps={{ readOnly: type === 'VIEW' }}
               >
                 <option value="">Seleccione nacionalidad</option>
                 {nationalities.map((item, i) => (
@@ -312,7 +315,7 @@ const EmployeeModal = ({
                   formik.touched.relationship_id &&
                   formik.errors.relationship_id
                 }
-                disabled={type === 'VIEW'}
+                inputProps={{ readOnly: type === 'VIEW' }}
               >
                 <option value="">Seleccione parentesco</option>
                 {relationshipList.map((item, i) => (
@@ -331,7 +334,7 @@ const EmployeeModal = ({
                 onChange={formik.handleChange}
                 error={formik.touched.job_id && Boolean(formik.errors.job_id)}
                 helperText={formik.touched.job_id && formik.errors.job_id}
-                disabled={type === 'VIEW'}
+                inputProps={{ readOnly: type === 'VIEW' }}
               >
                 <option value="">Seleccione opción</option>
                 {activities.map((item, i) => (
@@ -355,7 +358,7 @@ const EmployeeModal = ({
                 helperText={
                   formik.touched.legal_charge && formik.errors.legal_charge
                 }
-                disabled={type === 'VIEW'}
+                inputProps={{ readOnly: type === 'VIEW' }}
               >
                 <option value="">Seleccione opción</option>
                 {decisionList.map((item, i) => (
@@ -373,7 +376,7 @@ const EmployeeModal = ({
                 onChange={formik.handleChange}
                 error={formik.touched.rsh && Boolean(formik.errors.rsh)}
                 helperText={formik.touched.rsh && formik.errors.rsh}
-                disabled={type === 'VIEW'}
+                inputProps={{ readOnly: type === 'VIEW' }}
               >
                 <option value="">Seleccione rsh</option>
                 {decisionList.map((item, i) => (

@@ -155,7 +155,7 @@ const Form = ({
             <Grid item xs={12} md={6}>
               <TextField
                 name="paternal_surname"
-                label="Apellidos paternos"
+                label="Apellidos paterno"
                 required
                 value={formik.values.paternal_surname}
                 onChange={formik.handleChange}
@@ -221,6 +221,7 @@ const Form = ({
               <Select
                 label="Cargo"
                 name="charge_id"
+                required
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.charge_id}
@@ -228,6 +229,7 @@ const Form = ({
                 error={
                   formik.touched.charge_id && Boolean(formik.errors.charge_id)
                 }
+                inputProps={{ readOnly }}
               >
                 <option value="">Sin cargo</option>
                 {charges.map((item) => (
