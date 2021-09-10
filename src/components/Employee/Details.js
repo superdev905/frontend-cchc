@@ -12,7 +12,12 @@ const Details = ({ loading }) => {
   const { employee } = useSelector((state) => state.employees)
 
   const updateEmployeeInfo = (values) =>
-    dispatch(employeesActions.updateEmployee(employee.id, values))
+    dispatch(
+      employeesActions.updateEmployee(employee.id, {
+        ...values,
+        created_by: employee.created_by
+      })
+    )
   const getEmployeeDetails = () => {
     dispatch(employeesActions.getEmployeeDetails(employee.id))
   }
