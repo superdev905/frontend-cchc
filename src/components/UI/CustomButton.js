@@ -6,6 +6,7 @@ const useStyles = makeStyles((theme) => ({
   button: ({ color, size, variant }) => ({
     textTransform: 'inherit',
     margin: theme.spacing(1),
+    borderRadius: theme.spacing(1),
     padding: size === 'small' ? '7px 10px' : '10px 14px',
     color:
       color === 'primary' && variant === 'contained'

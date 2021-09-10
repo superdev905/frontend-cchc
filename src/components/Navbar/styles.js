@@ -40,5 +40,12 @@ export default makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3)
+  },
+  menuOptionRoot: {
+    paddingTop: theme.spacing(1)
+  },
+  menuItem: {
+    padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
+    fontSize: 15
   }
 }))

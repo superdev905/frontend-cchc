@@ -1,9 +1,9 @@
 import { memo, useEffect, useRef, useState } from 'react'
+import clsx from 'clsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { endOfWeek, startOfWeek } from 'date-fns'
 import { Box, Typography } from '@material-ui/core'
-
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
@@ -16,18 +16,7 @@ import { EventForm, EventPreview } from '../../components/Assistance'
 import { ConfirmDelete } from '../../components/Shared'
 import useStyles from './styles'
 import './custom.css'
-
-/*
-const getBgColor = (event) => {
-  if (event.status === 'PROGRAMADA' || event.status === 'REPROGRAMADA')
-    return { backgroundColor: '#aed5ff', border: `3px solid #076af9` }
-  if (event.status === 'TERMINADA')
-    return { backgroundColor: '#81d88d', border: `3px solid #48C659` }
-  if (event.status === 'INICIADA' || event.status === 'PAUSA')
-    return { backgroundColor: '#f6e68f', border: `3px solid #F2DB5C` }
-  return { backgroundColor: '#FFEBF6', border: `3px solid #ED61B0` }
-}
-*/
+import { formatHours } from '../../formatters'
 
 const EventsCalendar = () => {
   const dispatch = useDispatch()
@@ -39,6 +28,7 @@ const EventsCalendar = () => {
   const [loading, setLoading] = useState(false)
   const [rescheduleStatus, setRescheduleStatus] = useState(false)
   const [rangeDate, setRangeDate] = useState({ start: null, end: null })
+  const [currentView, setCurrentView] = useState('timeGridWeek')
   const [filters, setFilters] = useState({
     start_date: startOfWeek(currentDate),
     end_date: endOfWeek(currentDate)
@@ -76,7 +66,9 @@ const EventsCalendar = () => {
   const onCancelEvent = () => {
     setLoading(true)
     dispatch(
-      assistanceActions.patchEvent(currentEvent.id, { status: 'CANCELADA' })
+      assistanceActions.patchEvent(currentEvent.visitId, {
+        status: 'CANCELADA'
+      })
     )
       .then(() => {
         setLoading(false)
@@ -96,7 +88,9 @@ const EventsCalendar = () => {
   const onFinishedEvent = () => {
     setLoading(true)
     dispatch(
-      assistanceActions.patchEvent(currentEvent.id, { status: 'TERMINADA' })
+      assistanceActions.patchEvent(currentEvent.visitId, {
+        status: 'TERMINADA'
+      })
     )
       .then(() => {
         setLoading(false)
@@ -116,7 +110,7 @@ const EventsCalendar = () => {
   const onStartEvent = () => {
     setLoading(true)
     dispatch(
-      assistanceActions.patchEvent(currentEvent.id, { status: 'INICIADA' })
+      assistanceActions.patchEvent(currentEvent.visitId, { status: 'INICIADA' })
     )
       .then(() => {
         setLoading(false)
@@ -157,7 +151,7 @@ const EventsCalendar = () => {
 
   const onUpdateEvent = (values) =>
     dispatch(
-      assistanceActions.updateEvent(currentEvent.id, {
+      assistanceActions.updateEvent(currentEvent.visitId, {
         ...values,
         created_by: currentEvent.created_by
       })
@@ -165,6 +159,35 @@ const EventsCalendar = () => {
 
   const onNavigate = (targetDate) => {
     setCalendarDate(targetDate)
+  }
+
+  const getBgColor = (eventStatus) => {
+    if (eventStatus === 'PROGRAMADA' || eventStatus === 'REPROGRAMADA')
+      return '#aed5ff'
+    if (eventStatus === 'TERMINADA') return '#81d88d'
+    if (eventStatus === 'INICIADA' || eventStatus === 'PAUSA') return '#f6e68f'
+    return '#FFEBF6'
+  }
+  const getCardClass = (eventStatus) => {
+    if (eventStatus === 'PROGRAMADA' || eventStatus === 'REPROGRAMADA')
+      return classes.blue
+    if (eventStatus === 'TERMINADA') return classes.green
+    if (eventStatus === 'INICIADA' || eventStatus === 'PAUSA')
+      return classes.yellow
+    return classes.red
+  }
+
+  const renderCard = ({ event }) => {
+    const { status, start_date, end_date } = event.extendedProps
+    return (
+      <Box className={clsx(classes.eventCard, getCardClass(status))}>
+        <Typography className={classes.hours}>
+          {`${formatHours(start_date)}-${formatHours(end_date)}`}
+        </Typography>
+        <Typography className={classes.title}>{event.title}</Typography>
+        <Typography className={classes.status}>{status}</Typography>
+      </Box>
+    )
   }
 
   const handleSelectSlot = (e) => {
@@ -187,9 +210,11 @@ const EventsCalendar = () => {
     setEvents(
       calendarEvents.map((item) => ({
         ...item,
+        visitId: item.id,
         date: new Date(item.date),
         start: new Date(item.start_date),
-        end: new Date(item.end_date)
+        end: new Date(item.end_date),
+        backgroundColor: getBgColor(item.status)
       }))
     )
   }, [calendarEvents])
@@ -229,25 +254,23 @@ const EventsCalendar = () => {
               day: 'DIA'
             }}
             locale="es"
-            initialView="timeGridWeek"
+            displayEventTime={true}
+            initialView={currentView}
             nowIndicator={true}
             events={events}
             select={handleSelectSlot}
-            datesSet={({ start, end }) => {
-              setRangeDate({ start, end })
+            datesSet={(e) => {
+              console.log(e)
+              setCurrentView(e.view.type)
+              setRangeDate({ start: e.start, end: e.end })
             }}
             allDayContent={false}
             allDaySlot={false}
             editable={true}
             selectable={true}
-            eventContent={({ event }) => (
-              <Box className={classes.root}>
-                <Typography className={classes.title}>{event.title}</Typography>
-                <Typography className={classes.status}>
-                  {event.extendedProps.status}
-                </Typography>
-              </Box>
-            )}
+            eventContent={
+              currentView !== 'dayGridMonth' ? renderCard : () => {}
+            }
             eventClick={(event) => {
               setCurrentEvent({
                 ...event.event.extendedProps,

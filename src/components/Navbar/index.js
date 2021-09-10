@@ -108,6 +108,7 @@ const ResponsiveDrawer = ({ ...props }) => {
             open={open}
             anchorEl={anchorEl}
             getContentAnchorEl={null}
+            classes={{ paper: classes.menuOptionRoot }}
             onClose={handleClose}
             anchorOrigin={{
               vertical: 'bottom',
@@ -118,10 +119,16 @@ const ResponsiveDrawer = ({ ...props }) => {
               horizontal: 'center'
             }}
           >
-            <MenuItem onClick={onCalendarClick}>Mi Calendario</MenuItem>
-            <MenuItem onClick={onProfileClick}>Ver perfil</MenuItem>
+            <MenuItem className={classes.menuItem} onClick={onCalendarClick}>
+              Mi Calendario
+            </MenuItem>
+            <MenuItem className={classes.menuItem} onClick={onProfileClick}>
+              Perfil
+            </MenuItem>
             <Divider />
-            <MenuItem onClick={logoutUser}>Cerrar sesión</MenuItem>
+            <MenuItem className={classes.menuItem} onClick={logoutUser}>
+              Cerrar sesión
+            </MenuItem>
           </Menu>
           <Announcements
             open={openAlert}

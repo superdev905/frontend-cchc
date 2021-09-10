@@ -9,3 +9,22 @@
 .fc-timegrid-now-indicator-line > div.fc-timegrid-now-indicator-container {
   background-color: #eaf6ff !important;
 }
+
+.fc-button-group button {
+  background-color: transparent !important;
+  color: #000 !important;
+  outline: none !important;
+  border: 1px solid #718096 !important;
+  box-shadow: none !important;
+  padding: 8px 15px !important;
+}
+
+.fc-button-group .fc-button-active {
+  background-color: #3b84ff !important;
+  color: #ffffff !important;
+}
+
+.fc-v-event {
+  box-shadow: none !important;
+  background-color: transparent !important;
+}

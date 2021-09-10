@@ -55,13 +55,7 @@ const commonRoutes = [
     title: 'Visitas',
     path: '/visits',
     icon: <AssistanceIcon />
-  },
-  {
-    title: 'Configuración',
-    path: '/settings',
-    icon: <SettingsIcon />
-  },
-  { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> }
+  }
 ]
 
 const LeftDrawer = ({ ...props }) => {
@@ -77,15 +71,25 @@ const LeftDrawer = ({ ...props }) => {
   useEffect(() => {
     if (user) {
       if (user.is_administrator) {
-        const adminRoutes = userRoutes.concat([
-          {
-            index: 5,
-            title: 'Usuarios',
-            path: '/users',
-            icon: <UserIcon />
-          }
-        ])
-        setUserRoutes(adminRoutes)
+        const temp = [...userRoutes]
+        const isIncluded = Boolean(temp.find((item) => item.path === '/users'))
+        if (!isIncluded) {
+          const adminRoutes = userRoutes.concat([
+            { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
+            {
+              index: 5,
+              title: 'Usuarios',
+              path: '/users',
+              icon: <UserIcon />
+            },
+            {
+              title: 'Configuración',
+              path: '/settings',
+              icon: <SettingsIcon />
+            }
+          ])
+          setUserRoutes(adminRoutes)
+        }
       }
     }
   }, [user])
