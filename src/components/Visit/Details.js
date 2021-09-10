@@ -51,7 +51,6 @@ const Details = ({ fetching, fetchDetails }) => {
   const { open: openCancel, toggleOpen: toggleOpenCancel } = useToggle()
   const { open: openFinish, toggleOpen: toggleOpenFinish } = useToggle()
   const { open: openStart, toggleOpen: toggleOpenStart } = useToggle()
-  //  const { open: openPause, toggleOpen: toggleOpenPause } = useToggle()
 
   const { success, changeSuccess } = useSuccess()
   const [filters] = useState({
@@ -84,7 +83,6 @@ const Details = ({ fetching, fetchDetails }) => {
           enqueueSnackbar('Evento cancelado', { variant: 'success' })
           handleClose()
           toggleOpenCancel()
-          console.log('cancelado')
           fetchDetails()
         })
       })
@@ -105,7 +103,6 @@ const Details = ({ fetching, fetchDetails }) => {
           handleClose()
           toggleOpenFinish()
           fetchDetails()
-          console.log('finalizado')
         })
       })
       .catch((err) => {
@@ -127,7 +124,6 @@ const Details = ({ fetching, fetchDetails }) => {
           handleClose()
           toggleOpenStart()
           fetchDetails()
-          console.log('iniciado')
         })
       })
       .catch((err) => {
@@ -135,27 +131,6 @@ const Details = ({ fetching, fetchDetails }) => {
         enqueueSnackbar(err, { variant: 'error' })
       })
   }
-  /*  
-  const onPauseEvent = () => {
-    setLoading(true)
-    dispatch(assistanceActions.patchEvent(visit.id, { status: 'PAUSA' }))
-      .then(() => {
-        setLoading(false)
-        fetchEvents(filters)
-        changeSuccess(true, () => {
-          enqueueSnackbar('Evento pausado', {
-            variant: 'success'
-          })
-          handleClose()
-          toggleOpenStart()
-          console.log('pausado')
-        })
-      })
-      .catch((err) => {
-        setLoading(false)
-        enqueueSnackbar(err, { variant: 'error' })
-      })
-  } */
 
   useEffect(() => {
     if (visit) {
@@ -337,25 +312,6 @@ const Details = ({ fetching, fetchDetails }) => {
           }
         />
       )}
-      {/* 
-      {visit && openPause && (
-        <ConfirmDelete
-          event="PAUSE"
-          confirmText="Aceptar"
-          open={openPause}
-          success={success}
-          onClose={toggleOpenPause}
-          loading={loading}
-          onConfirm={() => onPauseEvent()}
-          message={
-            <span>
-              ¿Estás seguro de pausar este evento:
-              <strong>{` ${visit.title}`}</strong>?
-            </span>
-          }
-        />
-      )}
-      */}
     </Wrapper>
   )
 }

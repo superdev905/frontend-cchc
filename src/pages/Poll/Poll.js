@@ -84,7 +84,7 @@ const Poll = () => {
         })
       })
       .catch((err) => {
-        console.log(err)
+        enqueueSnackbar(err, { variant: 'error' })
       })
   }
 

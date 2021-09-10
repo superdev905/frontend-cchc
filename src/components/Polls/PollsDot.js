@@ -1,9 +1,6 @@
-import { useDispatch } from 'react-redux'
 import { Box, makeStyles } from '@material-ui/core'
-import { useEffect } from 'react'
 import { useToggle } from '../../hooks'
 import ModulePollsDialog from './ModulePollsDialog'
-import pollActions from '../../state/actions/poll'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,12 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ModuleDot = ({ module }) => {
   const classes = useStyles()
-  const dispatch = useDispatch()
   const { open, toggleOpen } = useToggle()
-
-  useEffect(() => {
-    dispatch(pollActions.getModulePolls({ module }))
-  }, [module])
 
   return (
     <Box display="inline">

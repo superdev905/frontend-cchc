@@ -495,7 +495,6 @@ const WorkerInterventionRecord = ({
 
               <FilePicker
                 onChangeImage={(e) => {
-                  console.log(e)
                   setAttachedFile(e)
                 }}
               />

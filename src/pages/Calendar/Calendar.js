@@ -220,11 +220,7 @@ const EventsCalendar = () => {
   }, [calendarEvents])
 
   useEffect(() => {
-    if (calendarApi.current) {
-      console.log(calendarApi.current)
-    }
     if (rangeDate.start && rangeDate.end) {
-      console.log(rangeDate)
       setFilters({ start_date: rangeDate.start, end_date: rangeDate.end })
     }
   }, [calendarApi, rangeDate])
@@ -260,7 +256,6 @@ const EventsCalendar = () => {
             events={events}
             select={handleSelectSlot}
             datesSet={(e) => {
-              console.log(e)
               setCurrentView(e.view.type)
               setRangeDate({ start: e.start, end: e.end })
             }}

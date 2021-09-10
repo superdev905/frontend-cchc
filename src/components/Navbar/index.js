@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -23,7 +23,6 @@ import authActions from '../../state/actions/auth'
 import useStyles from './styles'
 import useMenu from '../../hooks/useMenu'
 import LeftDrawer from './LeftDrawer'
-import pollActions from '../../state/actions/poll'
 import Announcements from '../Widgets/Announcements'
 
 const ResponsiveDrawer = ({ ...props }) => {
@@ -41,7 +40,6 @@ const ResponsiveDrawer = ({ ...props }) => {
     handleClose: handleCloseAlert,
     handleOpen: handleOpenAlert
   } = useMenu()
-  const { module } = useSelector((state) => state.ui)
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -60,10 +58,6 @@ const ResponsiveDrawer = ({ ...props }) => {
 
   const container =
     window !== undefined ? () => window().document.body : undefined
-
-  useEffect(() => {
-    dispatch(pollActions.getModulePolls({ module }))
-  }, [module])
 
   return (
     <div className={classes.root}>
