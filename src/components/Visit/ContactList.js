@@ -17,7 +17,7 @@ const ContactList = () => {
         constructionsActions.getContacts(visit.construction_id, false)
       ).then((list) => {
         setContactList(
-          list.map((item) => ({ ...item, charge: item.charge.name }))
+          list.map((item) => ({ ...item, charge: item.charge_name }))
         )
       })
   }, [visit])
