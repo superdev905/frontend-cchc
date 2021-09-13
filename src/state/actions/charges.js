@@ -1,9 +1,10 @@
 import Axios from '../../Axios'
 import chargesTypes from '../types/charges'
+import config from '../../config'
 
 const getCharges = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`/contact_charges`)
+    Axios.get(`${config.services.parameters}/contact-charges`)
       .then((response) => {
         const { data } = response
         dispatch({
