@@ -321,7 +321,7 @@ const EventForm = ({
               getOptionLabel={(option) => option.business_name || ''}
               onChange={onCompanySelect}
               disabled={formik.values.type_id === '2'}
-              required={formik.values.type_id === '1'}
+              required={isVisit}
               renderOption={(option) => (
                 <Box>
                   <Typography>
@@ -354,7 +354,7 @@ const EventForm = ({
               getOptionLabel={(option) => option.name || ''}
               onChange={onConstructionChange}
               disabled={formik.values.type_id === '2'}
-              required={formik.values.type_id === '1'}
+              required={isVisit}
               renderOption={(option) => (
                 <Box>
                   <Typography>
