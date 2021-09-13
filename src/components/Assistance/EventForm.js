@@ -17,6 +17,13 @@ import {
   InputLabel
 } from '../UI'
 
+const visitSchema = Yup.object().shape({
+  business_id: Yup.number().required('Seleccione empresa'),
+  construction_id: Yup.number().required('Seleccione obra'),
+  business_name: Yup.string().required('Seleccione nombre de empresa'),
+  construction_name: Yup.string().required('Seleccione nombre de obra')
+})
+
 const validationSchema = Yup.object().shape({
   type_id: Yup.number().required('Seleccione tipo de evento'),
   title: Yup.string().required('Ingrese título'),
@@ -27,10 +34,6 @@ const validationSchema = Yup.object().shape({
   shift_name: Yup.string(),
   status: Yup.string().required('Estado de evento'),
   assigned_id: Yup.number().required('Seleccione profesional'),
-  business_id: Yup.number().required('Seleccione empresa'),
-  construction_id: Yup.number().required('Seleccione obra'),
-  business_name: Yup.string().required('Seleccione nombre de empresa'),
-  construction_name: Yup.string().required('Seleccione nombre de obra'),
   observation: Yup.string().required('Ingrese observación de evento')
 })
 
@@ -51,10 +54,15 @@ const EventForm = ({
   const { user } = useSelector((state) => state.auth)
   const { eventTypes, shiftList } = useSelector((state) => state.common)
   const [companies, setCompanies] = useState([])
+  const [isVisit, setIsVisit] = useState(
+    type === 'CREATE' ? event?.type_id === '1' : false
+  )
 
   const formik = useFormik({
     validateOnMount: true,
-    validationSchema,
+    validationSchema: isVisit
+      ? validationSchema.concat(visitSchema)
+      : validationSchema,
     initialValues: {
       title: type === 'CREATE' ? '' : event.title,
       type_id: type === 'CREATE' ? '' : event.type_id,
@@ -176,6 +184,20 @@ const EventForm = ({
     }
   }, [open])
 
+  useEffect(() => {
+    if (formik.values.type_id === '2') {
+      formik.setFieldValue('business_id', null)
+      formik.setFieldValue('business_name', null)
+
+      formik.setFieldValue('construction_id', null)
+      formik.setFieldValue('construction_name', null)
+
+      setIsVisit(false)
+    } else {
+      setIsVisit(true)
+    }
+  }, [formik.values.type_id, isVisit])
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <Box>
@@ -294,10 +316,12 @@ const EventForm = ({
           <Grid item xs={12} md={6}>
             <Autocomplete
               options={companies}
+              name="business"
               value={selectedCompany || ''}
               getOptionSelected={(option, value) => option.id === value.id}
               getOptionLabel={(option) => option.business_name || ''}
               onChange={onCompanySelect}
+              disabled={formik.values.type_id === '2'}
               renderOption={(option) => (
                 <Box>
                   <Typography>
@@ -317,6 +341,7 @@ const EventForm = ({
           </Grid>
           <Grid item xs={12} md={6}>
             <Autocomplete
+              name="construction"
               options={
                 selectedCompany
                   ? selectedCompany.constructions.filter(
@@ -329,6 +354,7 @@ const EventForm = ({
               getOptionSelected={(option, value) => option.id === value.id}
               getOptionLabel={(option) => option.name || ''}
               onChange={onConstructionChange}
+              disabled={formik.values.type_id === '2'}
               renderOption={(option) => (
                 <Box>
                   <Typography>
