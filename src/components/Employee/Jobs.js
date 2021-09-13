@@ -95,7 +95,7 @@ const HistoryJobs = ({ employeeId }) => {
         </Box>
         <Box>
           <DataTable
-            emptyMessage="Este trabajador no tiene trabajos en su historial "
+            emptyMessage="Este trabajador no tiene trabajos en su historial"
             columns={[
               {
                 name: 'Nombre de empresa',

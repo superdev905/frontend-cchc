@@ -43,7 +43,7 @@ const EmployeeTabs = ({ children }) => {
             'Datos personales',
             'Contacto',
             'Grupo Familiar',
-            'Situación provisional y habitacional',
+            'Situación previsional y habitacional',
             'Especialidades',
             'Trabajos'
           ]}

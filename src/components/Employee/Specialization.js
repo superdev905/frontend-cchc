@@ -105,7 +105,7 @@ const PensionSituation = () => {
         <Box>
           <Box>
             <DataTable
-              emptyMessage="Este trabajador no tiene espacialiadades en su historial "
+              emptyMessage="Este trabajador no tiene especialidades en su historial "
               columns={[
                 {
                   name: 'Nombre de especialidad',
@@ -172,7 +172,7 @@ const PensionSituation = () => {
           </Box>
         </Box>
         <SpecForm
-          successMessage="Especialización creado"
+          successMessage="Especialización creada"
           open={openAdd}
           onClose={toggleOpenAdd}
           submitFunction={createEvent}
@@ -181,7 +181,7 @@ const PensionSituation = () => {
         {current && openEdit && (
           <SpecForm
             type="UPDATE"
-            successMessage="Especialización actualizado"
+            successMessage="Especialización actualizada"
             open={openEdit}
             onClose={toggleOpenEdit}
             submitFunction={updateEvent}

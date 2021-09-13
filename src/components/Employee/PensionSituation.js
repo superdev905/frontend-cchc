@@ -65,7 +65,7 @@ const PensionSituation = () => {
       .then(() => {
         changeSuccess(true, () => {
           toggleOpenDelete()
-          enqueueSnackbar('Situación provisional elimado exitosamente', {
+          enqueueSnackbar('Situación previsional elimado exitosamente', {
             variant: 'success'
           })
           fetchData()
@@ -85,7 +85,7 @@ const PensionSituation = () => {
     <Wrapper>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
-          Situación provisional
+          Situación previsional
         </Typography>
         <Button disabled={list.length > 0} onClick={toggleOpenAdd}>
           Registrar{' '}
@@ -136,7 +136,7 @@ const PensionSituation = () => {
           onConfirm={() => patchSituation(current.id)}
           message={
             <Typography variant="h6">
-              ¿Estás seguro de eliminar la situación provisional?
+              ¿Estás seguro de eliminar la situación previsional?
             </Typography>
           }
         />
