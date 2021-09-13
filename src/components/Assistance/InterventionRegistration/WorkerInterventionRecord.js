@@ -266,7 +266,7 @@ const WorkerInterventionRecord = ({
                 <option value="">Seleccione opción</option>
                 {[
                   'PRESENCIAL',
-                  'TELEFÓINICO',
+                  'TELEFÓNICO',
                   'RED SOCIAL',
                   'VIDEO CONFERENCIA'
                 ].map((item, i) => (

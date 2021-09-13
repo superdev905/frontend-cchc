@@ -316,12 +316,12 @@ const EventForm = ({
           <Grid item xs={12} md={6}>
             <Autocomplete
               options={companies}
-              name="business"
               value={selectedCompany || ''}
               getOptionSelected={(option, value) => option.id === value.id}
               getOptionLabel={(option) => option.business_name || ''}
               onChange={onCompanySelect}
               disabled={formik.values.type_id === '2'}
+              required={formik.values.type_id === '1'}
               renderOption={(option) => (
                 <Box>
                   <Typography>
@@ -341,7 +341,6 @@ const EventForm = ({
           </Grid>
           <Grid item xs={12} md={6}>
             <Autocomplete
-              name="construction"
               options={
                 selectedCompany
                   ? selectedCompany.constructions.filter(
@@ -355,6 +354,7 @@ const EventForm = ({
               getOptionLabel={(option) => option.name || ''}
               onChange={onConstructionChange}
               disabled={formik.values.type_id === '2'}
+              required={formik.values.type_id === '1'}
               renderOption={(option) => (
                 <Box>
                   <Typography>
