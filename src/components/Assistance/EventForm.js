@@ -3,6 +3,7 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { differenceInHours } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux'
+import { useSnackbar } from 'notistack'
 import { Avatar, Box, Grid, Typography } from '@material-ui/core'
 import { Alert, Autocomplete } from '@material-ui/lab'
 import companiesActions from '../../state/actions/companies'
@@ -50,6 +51,7 @@ const EventForm = ({
   reschedule
 }) => {
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [selectedCons, setSelectedCons] = useState(null)
   const { user } = useSelector((state) => state.auth)
@@ -196,8 +198,23 @@ const EventForm = ({
       formik.setFieldValue('type_description', currentType.description)
     } else {
       formik.setFieldValue('type_description', '')
+      enqueueSnackbar('Selecciona una empresa', {
+        autoHideDuration: 1500,
+        variant: 'info'
+      })
     }
   }, [formik.values.type_id, eventTypes])
+
+  const getIsVisit = (form) => {
+    if (form.type_description === 'TAREA') return true
+
+    if (form.business_id) return true
+    if (form.business_name) return true
+    if (form.construction_id) return true
+    if (form.construction_name) return true
+
+    return false
+  }
 
   useEffect(() => {
     if (formik.values.type_description === 'TAREA') {
@@ -417,7 +434,11 @@ const EventForm = ({
           <SubmitButton
             loading={formik.isSubmitting}
             onClick={formik.handleSubmit}
-            disabled={!formik.isValid || formik.isSubmitting}
+            disabled={
+              !formik.isValid ||
+              formik.isSubmitting ||
+              !getIsVisit(formik.values)
+            }
             success={success}
           >
             {`${type === 'CREATE' ? 'Crear' : 'Actualizar'} evento`}
