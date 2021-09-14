@@ -165,9 +165,9 @@ const EventForm = ({
         (item) => item.id === formik.values.business_id
       )
       setSelectedCompany(targetCompany)
-      const listCons = targetCompany.constructions
+      const listCons = targetCompany?.constructions
       setSelectedCons(
-        listCons.find((item) => item.id === formik.values.construction_id)
+        listCons?.find((item) => item.id === formik.values.construction_id)
       )
     }
   }, [type, user, companies])
@@ -185,18 +185,32 @@ const EventForm = ({
   }, [open])
 
   useEffect(() => {
-    if (formik.values.type_id === '2') {
+    const { type_id } = formik.values
+    if (type_id && eventTypes.length > 0) {
+      const currentType = eventTypes.find(
+        (item) => item.id === parseInt(type_id, 10)
+      )
+      formik.setFieldValue('type_description', currentType.description)
+    } else {
+      formik.setFieldValue('type_description', '')
+    }
+  }, [formik.values.type_id, eventTypes])
+
+  useEffect(() => {
+    if (formik.values.type_description === 'TAREA') {
       formik.setFieldValue('business_id', null)
       formik.setFieldValue('business_name', null)
+      setSelectedCompany(null)
 
       formik.setFieldValue('construction_id', null)
       formik.setFieldValue('construction_name', null)
+      setSelectedCons(null)
 
       setIsVisit(false)
     } else {
       setIsVisit(true)
     }
-  }, [formik.values.type_id, isVisit])
+  }, [formik.values.type_description, isVisit])
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
