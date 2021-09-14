@@ -2,7 +2,6 @@ import { memo, useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { differenceInHours } from 'date-fns'
-import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
 import { Avatar, Box, Grid, Typography } from '@material-ui/core'
 import { Alert, Autocomplete } from '@material-ui/lab'
@@ -51,7 +50,6 @@ const EventForm = ({
   reschedule
 }) => {
   const dispatch = useDispatch()
-  const { enqueueSnackbar } = useSnackbar()
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [selectedCons, setSelectedCons] = useState(null)
   const { user } = useSelector((state) => state.auth)
@@ -212,15 +210,15 @@ const EventForm = ({
       setSelectedCons(null)
 
       setIsVisit(false)
+    } else {
+      formik.setFieldValue('business_id', '')
+      formik.setFieldValue('business_name', '')
+
+      formik.setFieldValue('construction_id', '')
+      formik.setFieldValue('construction_name', '')
     }
   }, [formik.values.type_description, isVisit])
 
-  if (formik.values.type_description === 'VISITA') {
-    enqueueSnackbar('El evento ha cambiado a visita', {
-      variant: 'info',
-      preventDuplicate: true
-    })
-  }
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <Box>
@@ -343,7 +341,7 @@ const EventForm = ({
               getOptionSelected={(option, value) => option.id === value.id}
               getOptionLabel={(option) => option.business_name || ''}
               onChange={onCompanySelect}
-              disabled={formik.values.type_id === '2'}
+              disabled={formik.values.type_description === 'TAREA'}
               required={isVisit}
               renderOption={(option) => (
                 <Box>
@@ -376,7 +374,7 @@ const EventForm = ({
               getOptionSelected={(option, value) => option.id === value.id}
               getOptionLabel={(option) => option.name || ''}
               onChange={onConstructionChange}
-              disabled={formik.values.type_id === '2'}
+              disabled={formik.values.type_description === 'TAREA'}
               required={isVisit}
               renderOption={(option) => (
                 <Box>

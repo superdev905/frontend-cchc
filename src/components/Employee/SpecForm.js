@@ -296,7 +296,7 @@ const HousingForm = ({
                 Certificado
               </InputLabel>
               {formik.values.certification_url && type === 'UPDATE' ? (
-                <Box p={2}>
+                <Box>
                   <FileThumbnail
                     fileName={formik.values.certification_url}
                     onView={() => {
@@ -341,10 +341,9 @@ const HousingForm = ({
         </Box>
         {type === 'UPDATE' && formik.values.certification_url && openVisor && (
           <FileVisor
-            fileName
             open={openVisor}
             onClose={toggleOpenVisor}
-            fileName={formik.values.certification_url}
+            src={formik.values.certification_url}
           />
         )}
       </Box>

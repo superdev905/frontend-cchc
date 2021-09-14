@@ -11,7 +11,7 @@ import { LabeledRow, StatusChip, Text, Wrapper, Button } from '../UI'
 import { formatDate, formatHours } from '../../formatters'
 import { useMenu, useSuccess, useToggle } from '../../hooks'
 import ReportModal from './Report/ReportModal'
-import { ConfirmDelete } from '../Shared'
+import { ConfirmDelete, FileVisor } from '../Shared'
 
 const useStyles = makeStyles(() => ({
   Cancel: {
@@ -36,6 +36,7 @@ const Details = ({ fetching, fetchDetails }) => {
   const [shiftDetails, setShiftDetails] = useState(null)
   const [userDetails, setUserDetails] = useState(null)
   const { open: openReport, toggleOpen: toggleOpenReport } = useToggle()
+  const { open: openViewReport, toggleOpen: toggleOpenViewReport } = useToggle()
 
   const createReport = (values) => {
     const data = {
@@ -176,12 +177,24 @@ const Details = ({ fetching, fetchDetails }) => {
         >
           Completar visita
         </Button>
-        <Button
-          disabled={Boolean(visit?.report_key)}
-          onClick={toggleOpenReport}
-        >
-          Informar
-        </Button>
+        {visit && visit.report_key ? (
+          <Button onClick={toggleOpenViewReport}>Ver reporte</Button>
+        ) : (
+          <Button
+            disabled={Boolean(visit?.report_key)}
+            onClick={toggleOpenReport}
+          >
+            Informar
+          </Button>
+        )}
+        {visit && openViewReport && (
+          <FileVisor
+            open={openViewReport}
+            onClose={toggleOpenViewReport}
+            src={visit.report_url}
+            filename={visit.report_key}
+          />
+        )}
       </Box>
       <Box p={1}>
         <Typography
@@ -244,6 +257,7 @@ const Details = ({ fetching, fetchDetails }) => {
           open={openReport}
           onClose={toggleOpenReport}
           submitFunction={createReport}
+          successFunction={fetchDetails}
         />
       )}
 

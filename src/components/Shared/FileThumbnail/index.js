@@ -1,10 +1,4 @@
-import {
-  Box,
-  Grid,
-  IconButton,
-  makeStyles,
-  Typography
-} from '@material-ui/core'
+import { Box, IconButton, makeStyles, Typography } from '@material-ui/core'
 import {
   GetAppOutlined as DownloadIcon,
   Delete as DeleteIcon,
@@ -20,10 +14,23 @@ const useStyles = makeStyles(() => ({
   },
   fileName: {
     fontSize: 15
+  },
+  icon: {
+    width: 45
+  },
+  root: {
+    backgroundColor: '#f5f6f8'
+  },
+  paper: {
+    backgroundColor: '#f5f6f8',
+    display: 'flex',
+    justifyContent: 'space-between'
   }
 }))
 const PDFCard = ({ fileName, onDelete, onView, onDownload }) => {
   const classes = useStyles()
+
+  const getFileName = (url) => url.split('/').pop()
 
   const getIcon = (filename) => {
     const ext = filename.split('.').pop()
@@ -32,21 +39,19 @@ const PDFCard = ({ fileName, onDelete, onView, onDownload }) => {
   }
 
   return (
-    <Box p={2} style={{ backgroundColor: '#f5f6f8' }}>
-      <Grid container>
-        <Grid item xs={2}>
+    <Box className={classes.root}>
+      <Box p={2} className={classes.paper}>
+        <Box className={classes.center}>
           <img
             alt="pdf-icon"
             src={getIcon(fileName)}
-            style={{ width: '50px' }}
+            className={classes.icon}
           />
-        </Grid>
-        <Grid item xs={8} className={classes.center}>
-          <Box p={2} className={classes.center}>
-            <Typography className={classes.fileName}>{fileName}</Typography>
-          </Box>
-        </Grid>
-        <Grid item xs={2} className={classes.center}>
+          <Typography className={classes.fileName}>
+            {getFileName(fileName)}
+          </Typography>
+        </Box>
+        <Box display="flex" alignItems="center">
           {onView && (
             <IconButton onClick={onView}>
               <ViewIcon />
@@ -62,12 +67,10 @@ const PDFCard = ({ fileName, onDelete, onView, onDownload }) => {
               <DownloadIcon />
             </IconButton>
           )}
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </Box>
   )
 }
-
-PDFCard.propTypes = {}
 
 export default PDFCard

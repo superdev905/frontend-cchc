@@ -205,7 +205,8 @@ const PensionSituation = () => {
           <FileVisor
             open={openVisor}
             onClose={toggleOpenVisor}
-            fileName={current.certification_url}
+            src={current.certification_url}
+            key={current.file_key}
           />
         )}
       </Wrapper>
