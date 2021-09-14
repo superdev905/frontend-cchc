@@ -97,16 +97,14 @@ const EventPreview = ({
                 event.start_date
               )} - ${formatHours(event.end_date)}`}
             </Typography>
-            {event?.type_id === '2' && (
-              <LabeledRow label="Empresa:" width={80}>
-                {event.business_name}
-              </LabeledRow>
-            )}
-            {event?.type_id === '2' && (
-              <LabeledRow label="Obra:" width={80}>
-                {event.construction_name}
-              </LabeledRow>
-            )}
+            <LabeledRow label="Empresa:" width={80}>
+              {event.business_name}
+            </LabeledRow>
+
+            <LabeledRow label="Obra:" width={80}>
+              {event.construction_name}
+            </LabeledRow>
+
             <LabeledRow label="Estado:" width={80}>
               <StatusChip
                 label={`${event.status.charAt(0).toUpperCase()}${event.status

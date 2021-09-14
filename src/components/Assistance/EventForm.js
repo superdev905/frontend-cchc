@@ -2,12 +2,14 @@ import { memo, useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { differenceInHours } from 'date-fns'
+import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
 import { Avatar, Box, Grid, Typography } from '@material-ui/core'
 import { Alert, Autocomplete } from '@material-ui/lab'
 import companiesActions from '../../state/actions/companies'
 import commonActions from '../../state/actions/common'
 import { DatePicker, Dialog, TimePicker } from '../Shared'
+import { useSuccess } from '../../hooks'
 import {
   Button,
   Select,
@@ -49,6 +51,7 @@ const EventForm = ({
   reschedule
 }) => {
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [selectedCons, setSelectedCons] = useState(null)
   const { user } = useSelector((state) => state.auth)
@@ -57,6 +60,7 @@ const EventForm = ({
   const [isVisit, setIsVisit] = useState(
     type === 'CREATE' ? event?.type_id === '1' : false
   )
+  const { success, changeSuccess } = useSuccess()
 
   const formik = useFormik({
     validateOnMount: true,
@@ -87,6 +91,7 @@ const EventForm = ({
         end_date: new Date(values.end_date).toISOString()
       }).then(() => {
         formik.setSubmitting(false)
+        changeSuccess(false)
 
         if (successFunction) {
           successFunction()
@@ -207,11 +212,15 @@ const EventForm = ({
       setSelectedCons(null)
 
       setIsVisit(false)
-    } else {
-      setIsVisit(true)
     }
   }, [formik.values.type_description, isVisit])
 
+  if (formik.values.type_description === 'VISITA') {
+    enqueueSnackbar('El evento ha cambiado a visita', {
+      variant: 'info',
+      preventDuplicate: true
+    })
+  }
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <Box>
@@ -411,6 +420,7 @@ const EventForm = ({
             loading={formik.isSubmitting}
             onClick={formik.handleSubmit}
             disabled={!formik.isValid || formik.isSubmitting}
+            success={success}
           >
             {`${type === 'CREATE' ? 'Crear' : 'Actualizar'} evento`}
           </SubmitButton>
