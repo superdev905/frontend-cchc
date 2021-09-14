@@ -4,6 +4,8 @@ import { Box, CircularProgress, IconButton } from '@material-ui/core'
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
 import ZoomOutIcon from '@material-ui/icons/ZoomOut'
 import ResetIcon from '@material-ui/icons/ZoomOutMap'
+import PreviousIcon from '@material-ui/icons/ChevronLeft'
+import NextIcon from '@material-ui/icons/ChevronRight'
 import { usePdf } from '@mikecousins/react-pdf'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
 import ViewerDialog from './Dialog'
@@ -13,8 +15,8 @@ import useStyles from './styles'
 const PDFViewer = ({ url, filename, open, onClose }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-
-  const [page] = useState(1)
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
   const [scale, setScale] = useState(1)
   const canvasRef = useRef(null)
 
@@ -23,7 +25,10 @@ const PDFViewer = ({ url, filename, open, onClose }) => {
     page,
     canvasRef,
     withCredentials: false,
-    scale: 1.5
+    scale: 1.5,
+    onDocumentLoadSuccess: (e) => {
+      setTotalPages(e.numPages)
+    }
   })
 
   const downloadFile = () => {
@@ -62,34 +67,61 @@ const PDFViewer = ({ url, filename, open, onClose }) => {
               </TransformComponent>
 
               {Boolean(pdfDocument && pdfDocument.numPages) && (
-                <Box className={classes.controls}>
-                  <Box>
-                    <IconButton
-                      onClick={() => {
-                        setScale(1.05)
-                        zoomIn()
-                      }}
-                      className={classes.controlIcon}
-                    >
-                      <ZoomInIcon className={classes.icon} />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => zoomOut()}
-                      className={classes.controlIcon}
-                    >
-                      <ZoomOutIcon className={classes.icon} />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => {
-                        resetTransform()
-                        setScale(1)
-                      }}
-                      className={classes.controlIcon}
-                    >
-                      <ResetIcon className={classes.icon} />
-                    </IconButton>
+                <>
+                  <Box
+                    className={classes.pageCount}
+                  >{`${page}/${totalPages}`}</Box>
+                  <Box className={classes.controls}>
+                    <Box>
+                      {totalPages > 1 && (
+                        <>
+                          <IconButton
+                            disabled={page === 1}
+                            onClick={() => {
+                              setPage(page - 1)
+                            }}
+                            className={classes.controlIcon}
+                          >
+                            <PreviousIcon className={classes.icon} />
+                          </IconButton>
+                          <IconButton
+                            disabled={page === totalPages}
+                            onClick={() => {
+                              setPage(page + 1)
+                            }}
+                            className={classes.controlIcon}
+                          >
+                            <NextIcon className={classes.icon} />
+                          </IconButton>
+                        </>
+                      )}
+                      <IconButton
+                        onClick={() => {
+                          setScale(1.05)
+                          zoomIn()
+                        }}
+                        className={classes.controlIcon}
+                      >
+                        <ZoomInIcon className={classes.icon} />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => zoomOut()}
+                        className={classes.controlIcon}
+                      >
+                        <ZoomOutIcon className={classes.icon} />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => {
+                          resetTransform()
+                          setScale(1)
+                        }}
+                        className={classes.controlIcon}
+                      >
+                        <ResetIcon className={classes.icon} />
+                      </IconButton>
+                    </Box>
                   </Box>
-                </Box>
+                </>
               )}
             </>
           )}

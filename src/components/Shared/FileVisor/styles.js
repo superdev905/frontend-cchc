@@ -60,10 +60,21 @@ const useStyles = makeStyles((theme) => ({
     margin: 4,
     '&:hover': {
       backgroundColor: theme.palette.common.black
+    },
+    '&.Mui-disabled': {
+      backgroundColor: theme.palette.gray.gray500
     }
   },
   icon: {
     fill: theme.palette.common.white
+  },
+  pageCount: {
+    position: 'absolute',
+    bottom: 15,
+    left: 10,
+    color: theme.palette.common.white,
+    fontSize: 17,
+    fontWeight: 'bold'
   }
 }))
 
