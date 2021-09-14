@@ -182,9 +182,6 @@ const Details = ({ fetching, fetchDetails }) => {
         >
           Informar
         </Button>
-        {/* 
-          <Button onClick={toggleOpenPause}>Pausar visita</Button>
-        */}
       </Box>
       <Box p={1}>
         <Typography
