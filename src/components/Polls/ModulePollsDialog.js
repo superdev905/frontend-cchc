@@ -4,11 +4,12 @@ import { useSnackbar } from 'notistack'
 import { Box, IconButton, makeStyles, Typography } from '@material-ui/core'
 import BackIcon from '@material-ui/icons/ArrowBack'
 import pollActions from '../../state/actions/poll'
-import { Dialog } from '../Shared'
+import { ConfirmDelete, Dialog } from '../Shared'
 import PollCard from './Card'
 import { formatDate } from '../../formatters'
 import { QuestionCard } from '../Poll/Question'
 import { Button, EmptyState } from '../UI'
+import { useToggle } from '../../hooks'
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -78,6 +79,7 @@ const SuccessMessage = () => (
 
 const AnswerPoll = ({ poll, onBack, onNext }) => {
   const classes = useStyles()
+  const { open, toggleOpen } = useToggle()
   const { enqueueSnackbar } = useSnackbar()
   const dispatch = useDispatch()
   const [questions, setQuestions] = useState([])
@@ -213,13 +215,22 @@ const AnswerPoll = ({ poll, onBack, onNext }) => {
         <Button onClick={onBack} variant="outlined">
           Cancelar
         </Button>
-        <Button
-          disabled={poll.questions.length === 0}
-          onClick={() => handleSubmitPoll(questions)}
-        >
+        <Button disabled={poll.questions.length === 0} onClick={toggleOpen}>
           Enviar respuestas
         </Button>
       </Box>
+      <ConfirmDelete
+        event="CONFIRM"
+        confirmText="Enviar"
+        message={
+          <Typography variant="h6">
+            ¿Estás seguro de enviar las respuestas?
+          </Typography>
+        }
+        open={open}
+        onClose={toggleOpen}
+        onConfirm={() => handleSubmitPoll(questions)}
+      />
     </Box>
   )
 }
