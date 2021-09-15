@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Box, makeStyles, Menu, Typography } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
+import { useSnackbar } from 'notistack'
 import poll from '../../state/actions/poll'
 import PollCard from '../Polls/Card'
 import { Button } from '../UI'
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 const Announcements = ({ open, anchorEl, handleClose }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(false)
   const { module } = useSelector((state) => state.ui)
   const { user } = useSelector((state) => state.auth)
@@ -46,6 +48,14 @@ const Announcements = ({ open, anchorEl, handleClose }) => {
       getPolls()
     }
   }, [module, open, user])
+
+  useEffect(() => {
+    if (open && polls.length === 0) {
+      enqueueSnackbar('No hay encuestas por responder', {
+        variant: 'info'
+      })
+    }
+  }, [open, polls.length])
 
   return (
     <div>

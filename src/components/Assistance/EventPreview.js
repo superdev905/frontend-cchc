@@ -7,8 +7,6 @@ import {
   Typography
 } from '@material-ui/core'
 import {
-  Delete as DeleteIcon,
-  Edit as EditIcon,
   MoreHoriz as MoreIcon,
   Close as CloseIcon,
   Fullscreen as FullscreenIcon
@@ -71,17 +69,6 @@ const EventPreview = ({
     >
       <Box p={1}>
         <Box display="flex" justifyContent="flex-end">
-          <IconButton onClick={onEdit}>
-            <EditIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            onClick={() => {
-              onDelete(event.id)
-              onClose()
-            }}
-          >
-            <DeleteIcon fontSize="small" />
-          </IconButton>
           <IconButton onClick={handleOpen}>
             <MoreIcon fontSize="small" />
           </IconButton>
@@ -100,9 +87,11 @@ const EventPreview = ({
             <LabeledRow label="Empresa:" width={80}>
               {event.business_name}
             </LabeledRow>
+
             <LabeledRow label="Obra:" width={80}>
               {event.construction_name}
             </LabeledRow>
+
             <LabeledRow label="Estado:" width={80}>
               <StatusChip
                 label={`${event.status.charAt(0).toUpperCase()}${event.status
@@ -154,6 +143,8 @@ const EventPreview = ({
         open={openOptions}
         onClose={handleClose}
         anchorEl={anchorElOptions}
+        onEdit={onEdit}
+        onDelete={onDelete}
         customOptions={[
           {
             label: 'Ver página completa',
