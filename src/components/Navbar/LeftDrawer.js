@@ -20,6 +20,7 @@ import {
   AssignmentInd as EmployeeIcon,
   Assignment as AssistanceIcon
 } from '@material-ui/icons'
+import SchoolIcon from '@material-ui/icons/School'
 import BorderColorIcon from '@material-ui/icons/BorderColor'
 import clsx from 'clsx'
 
@@ -55,6 +56,11 @@ const commonRoutes = [
     title: 'Visitas',
     path: '/visits',
     icon: <AssistanceIcon />
+  },
+  {
+    title: 'Becas',
+    path: '/scholarships',
+    icon: <SchoolIcon />
   }
 ]
 

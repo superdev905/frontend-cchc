@@ -21,6 +21,7 @@ const AttendedEmployee = lazy(() => import('../pages/AttendedEmployee'))
 const Polls = lazy(() => import('../pages/Polls/Polls'))
 const Poll = lazy(() => import('../pages/Poll/Poll'))
 const Profile = lazy(() => import('../pages/Profile/Profile'))
+const Scholarships = lazy(() => import('../pages/Scholarships/Scholarships'))
 
 const routes = [
   {
@@ -256,6 +257,22 @@ const routes = [
         yes={() => (
           <Layout>
             <Profile />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/scholarships',
+    key: 'SCHOLARSHIP',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SIMPLE_USER']}
+        yes={() => (
+          <Layout>
+            <Scholarships />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}
