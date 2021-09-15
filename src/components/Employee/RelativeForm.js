@@ -437,7 +437,6 @@ const EmployeeModal = ({
                 name="rsh_percentage_id"
                 value={formik.values.rsh_percentage_id}
                 onChange={formik.handleChange}
-                disabled={formik.values.rsh === 'NO' && type === 'VIEW'}
                 error={
                   formik.touched.rsh_percentage_id &&
                   Boolean(formik.errors.rsh_percentage_id)
@@ -446,10 +445,11 @@ const EmployeeModal = ({
                   formik.touched.rsh_percentage_id &&
                   formik.errors.rsh_percentage_id
                 }
-                readOnly={type === 'VIEW'}
+                readOnly={type === 'VIEW' || formik.values.rsh === 'NO'}
+                disabled={formik.values.rsh === 'NO' && type === 'VIEW'}
                 InputProps={{
                   classes: {
-                    disabled: classes.disabled
+                    disabled: type === 'VIEW' ? classes.disabled : ''
                   }
                 }}
               >
