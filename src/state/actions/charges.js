@@ -4,7 +4,7 @@ import config from '../../config'
 
 const getCharges = () => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.parameters}/contact-charges`)
+    Axios.get(`${config.services.parameters}/contact_charges`)
       .then((response) => {
         const { data } = response
         dispatch({
