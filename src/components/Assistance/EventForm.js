@@ -227,12 +227,6 @@ const EventForm = ({
       setSelectedCons(null)
 
       setIsVisit(false)
-    } else {
-      formik.setFieldValue('business_id', '')
-      formik.setFieldValue('business_name', '')
-
-      formik.setFieldValue('construction_id', '')
-      formik.setFieldValue('construction_name', '')
     }
   }, [formik.values.type_description, isVisit])
 
