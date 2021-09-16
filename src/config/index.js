@@ -36,6 +36,11 @@ const services = {
     development: `${BASEURL[env]}:8000/api/v1`,
     testing: `${BASEURL[env]}:5194/api/v1`,
     production: `${BASEURL[env]}:5104/api/v1`
+  },
+  scholarship: {
+    development: `${BASEURL[env]}:8000/api/v1`,
+    //  testing: `${BASEURL[env]}:5194/api/v1`,
+    production: `${BASEURL[env]}:5108/api/v1`
   }
 }
 
@@ -46,7 +51,8 @@ const config = {
     parameters: services.parameters[env],
     poll: services.poll[env],
     auth: services.auth[env],
-    employee: services.employee[env]
+    employee: services.employee[env],
+    scholarship: services.scholarship[env]
   }
 }
 

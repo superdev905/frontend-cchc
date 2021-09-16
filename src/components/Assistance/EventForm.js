@@ -182,6 +182,7 @@ const EventForm = ({
       dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
         (list) => {
           setCompanies(list)
+          console.log(list)
         }
       )
       dispatch(commonActions.getEventTypes())

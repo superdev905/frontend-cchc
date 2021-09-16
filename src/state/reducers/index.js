@@ -11,6 +11,7 @@ import employees from './employees'
 import users from './users'
 import assistance from './assistance'
 import poll from './poll'
+import scholarships from './scholarships'
 
 const reducers = (history) =>
   combineReducers({
@@ -25,6 +26,7 @@ const reducers = (history) =>
     users,
     assistance,
     poll,
+    scholarships,
     router: connectRouter(history)
   })
 
