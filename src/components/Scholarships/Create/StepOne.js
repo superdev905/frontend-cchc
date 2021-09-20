@@ -11,6 +11,7 @@ import { RutTextField, Select, TextField } from '../../UI'
 import useStyles from './styles'
 import { rutValidation } from '../../../validations'
 import Actions from '../../Companies/Create/Actions'
+import scholarshipsActions from '../../../state/actions/scholarships'
 
 const validationSchema = Yup.object({
   scholarship: Yup.string().required('Seleccione beca'),
@@ -22,29 +23,35 @@ const validationSchema = Yup.object({
     .required('Ingrese rut empresa')
     .test('Check Rut', 'Ingrese Rut válido', (v) => rutValidation(v)),
   businessName: Yup.string().required('Ingrese nombre empresa'),
-  businessRelatedRut: Yup.string()
-    .required('Ingrese rut empresa relacionada')
-    .test('Check Rut', 'Ingrese Rut válido', (v) => rutValidation(v)),
-  businessRelatedName: Yup.string().required(
-    'Ingrese nombre empresa relacionada'
+  businessRelatedRut: Yup.string().test(
+    'Check Rut',
+    'Ingrese Rut válido',
+    (v) => rutValidation(v)
   ),
+  businessRelatedName: Yup.string(),
   beneficiaryRut: Yup.string()
     .required('Ingrese rut beneficiario')
     .test('Check Rut', 'Ingrese Rut válido', (v) => rutValidation(v)),
   beneficiaryNames: Yup.string().required('Ingrese nombre beneficiario'),
   careerId: Yup.string().required('Ingrese nombre carrera'),
   schoolName: Yup.string().required('Ingrese nombre de institución o colegio'),
-  schoolRegion: Yup.string().required(
+  schoolRegion: Yup.number().required(
     'Seleccione región de institución o colegio'
   ),
-  psuScore: Yup.string().required('Ingrese puntaje psuScore o simil')
+  schoolCommune: Yup.number().required(
+    'Seleccione comuna de institución o colegio'
+  ),
+  psuScore: Yup.number('Puntaje valido').required('Ingrese puntaje ptu o simil')
 })
 
-const StepOne = ({ open, onClose }) => {
+const StepOne = ({ onClose }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { regions } = useSelector((state) => state.common)
   const { create } = useSelector((state) => state.companies)
+  const { scholarshipType } = useSelector((state) => state.scholarships)
+  const { showCreateModal } = useSelector((state) => state.scholarships)
+  const [communes, setCommunes] = useState([])
   const [companies, setCompanies] = useState([])
   const [employees, setEmployees] = useState([])
   const [selectedCompany, setSelectedCompany] = useState(null)
@@ -67,12 +74,13 @@ const StepOne = ({ open, onClose }) => {
       careerId: create?.application?.careerId || '',
       schoolName: create?.application?.schoolName || '',
       schoolRegion: create?.application?.schoolRegion || '',
+      schoolCommune: create?.application?.schoolCommune || '',
       psuScore: create?.application?.psuScore || ''
     },
 
     onSubmit: (values) => {
       dispatch(
-        companiesActions.updateCreate({
+        scholarshipsActions.updateCreate({
           ...create,
           application: { ...create.application, ...values },
           step: create.step + 1
@@ -81,13 +89,6 @@ const StepOne = ({ open, onClose }) => {
     }
   })
 
-  const scholarshipsTypes = [
-    'BECA DE EXCELENCIA ACADÉMICA',
-    'BECA DE PREMIO MEJORES ALUMNOS (PMA)',
-    'BECA EDUCACIÓN SUPERIOR HIJO (BESH)',
-    'BECA EDUCACIÓN SUPERIOR TRABAJADOR (BEST)'
-  ]
-
   const handleSelectChange = (e) => {
     const { name, value } = e.target
     switch (name) {
@@ -95,13 +96,29 @@ const StepOne = ({ open, onClose }) => {
         const schoolRegion = regions.find(
           (item) => item.id === parseInt(value, 10)
         )
+        setCommunes(schoolRegion.communes)
         formik.setFieldValue('schoolRegion', schoolRegion.id)
+        break
+      }
+      case 'schoolCommune': {
+        const schoolCommune = communes.find(
+          (item) => item.id === parseInt(value, 10)
+        )
+        formik.setFieldValue('schoolCommune', schoolCommune.id)
         break
       }
       default:
         throw new Error('Error')
     }
   }
+
+  useEffect(() => {
+    if (formik.values.schoolRegion && regions.length > 0) {
+      handleSelectChange({
+        target: { name: 'schoolRegion', value: formik.values.schoolRegion }
+      })
+    }
+  }, [formik.values.schoolRegion, regions])
 
   const onEmployeeSelect = (__, values) => {
     setSelectedEmployee(values)
@@ -121,46 +138,24 @@ const StepOne = ({ open, onClose }) => {
     formik.setFieldValue('businessName', nameCompany)
   }
 
-  /*
   useEffect(() => {
-    dispatch(companiesActions.getCompanies()).then((list) => {
-      setCompanies(list)
-      console.log(list)
-    })
-  })
-*/
-
-  useEffect(() => {
-    if (open) {
+    if (showCreateModal) {
       dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
         (list) => {
           setCompanies(list)
-          console.log(list)
         }
       )
-    }
-  }, [open])
-
-  useEffect(() => {
-    if (open) {
       dispatch(employeeActions.getEmployees({ state: 'CREATED' }, false)).then(
         (list) => {
           setEmployees(list)
         }
       )
     }
-  }, [open])
-
-  useEffect(() => {
-    if (formik.values.schoolRegion && regions.length > 0) {
-      handleSelectChange({
-        target: { name: 'schoolRegion', value: formik.values.schoolRegion }
-      })
-    }
-  }, [formik.values.schoolRegion, regions])
+  }, [showCreateModal])
 
   useEffect(() => {
     dispatch(commonActions.getRegions())
+    dispatch(scholarshipsActions.getScholarshipTypes())
   }, [])
 
   return (
@@ -178,30 +173,11 @@ const StepOne = ({ open, onClose }) => {
               required
               onChange={formik.handleChange}
             >
-              <option value="">Seleccione Lugar</option>
-              {scholarshipsTypes.map((item, i) => (
-                <option key={`plce-${i}-${item}`} value={item}>
-                  {item}
-                </option>
+              <option value="">Seleccione cargo</option>
+              {scholarshipType.map((item) => (
+                <option value={item.id}>{item.name}</option>
               ))}
             </Select>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <RutTextField
-              label="Rut trabajador"
-              name="employeeRut"
-              required
-              error={true}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.employeeRut}
-              helperText={
-                formik.touched.employeeRut && formik.errors.employeeRut
-              }
-              error={
-                formik.touched.employeeRut && Boolean(formik.errors.employeeRut)
-              }
-            />
           </Grid>
 
           <Grid item xs={12} md={6}>
@@ -209,42 +185,38 @@ const StepOne = ({ open, onClose }) => {
               options={employees}
               value={selectedEmployee || ''}
               getOptionSelected={(option, value) => option.id === value.id}
-              getOptionLabel={(option) => option.employeeName || ''}
+              getOptionLabel={(option) => option.run || ''}
+              onChange={onEmployeeSelect}
+              required
+              renderOption={(option) => (
+                <Box>
+                  <Typography>{`Rut: ${option.run}`}</Typography>
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField {...params} label="Rut trabajador" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Autocomplete
+              options={employees}
+              value={selectedEmployee || ''}
+              getOptionSelected={(option, value) => option.id === value.id}
+              getOptionLabel={(option) => option.names || ''}
               onChange={onEmployeeSelect}
               required
               renderOption={(option) => (
                 <Box>
                   <Typography>
-                    <strong>{option.employeeName}</strong>
+                    <strong>{option.names}</strong>
                   </Typography>
-                  <Typography>{`Rut: ${option.rut}`}</Typography>
+                  <Typography>{`Rut: ${option.run}`}</Typography>
                 </Box>
               )}
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Nombre trabajador"
-                  //  placeholder="Nombre de trabajador"
-                />
+                <TextField {...params} label="Nombre trabajador" />
               )}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <RutTextField
-              label="Rut empresa"
-              name="businessRut"
-              required
-              error={true}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.businessRut}
-              helperText={
-                formik.touched.businessRut && formik.errors.businessRut
-              }
-              error={
-                formik.touched.businessRut && Boolean(formik.errors.businessRut)
-              }
             />
           </Grid>
 
@@ -252,13 +224,31 @@ const StepOne = ({ open, onClose }) => {
             <Autocomplete
               options={companies}
               value={selectedCompany || ''}
-              getOptionLabel={(option) => option.businessName || ''}
+              getOptionLabel={(option) => option.rut || ''}
               onChange={onCompanySelect}
               renderOption={(option) => (
                 <Box>
                   <Typography>
-                    {`Razón social: `}
-                    <strong>{option.businessName}</strong>
+                    <strong>{option.rut}</strong>
+                  </Typography>
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField {...params} label="Rut empresa" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Autocomplete
+              options={companies}
+              value={selectedCompany || ''}
+              getOptionLabel={(option) => option.business_name || ''}
+              onChange={onCompanySelect}
+              renderOption={(option) => (
+                <Box>
+                  <Typography>
+                    {`Empresa: `}
+                    <strong>{option.business_name}</strong>
                   </Typography>
                   <Typography>{`Rut: ${option.rut}`}</Typography>
                 </Box>
@@ -341,6 +331,7 @@ const StepOne = ({ open, onClose }) => {
               }
             />
           </Grid>
+
           <Grid item xs={12} md={6}>
             <TextField
               label="Nombre carrera"
@@ -366,18 +357,35 @@ const StepOne = ({ open, onClose }) => {
               }
             />
           </Grid>
+
           <Grid item xs={12} md={6}>
             <Select
               label="Región"
               name="schoolRegion"
               value={formik.values.schoolRegion}
               required
-              onChange={formik.handleChange}
+              onChange={handleSelectChange}
             >
               <option value={`INVALID`}>
                 Seleccione región de institución
               </option>
               {regions.map((item, index) => (
+                <option key={`schoolRegion--${index}`} value={`${item.id}`}>
+                  {item.name}
+                </option>
+              ))}
+            </Select>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Select
+              label="Comuna"
+              name="schoolCommune"
+              value={formik.values.schoolCommune}
+              required
+              onChange={handleSelectChange}
+            >
+              <option value={`INVALID`}>Seleccione una comuna</option>
+              {communes?.map((item, index) => (
                 <option key={`schoolRegion--${index}`} value={`${item.id}`}>
                   {item.name}
                 </option>

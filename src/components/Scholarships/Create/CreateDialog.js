@@ -4,8 +4,8 @@ import { Box, Stepper, Step, StepLabel, Typography } from '@material-ui/core'
 import { Button } from '../../UI'
 import StepTwo from './StepTwo'
 import StepOne from './StepOne'
-import companiesActions from '../../../state/actions/companies'
 import { Dialog } from '../../Shared'
+import scholarshipsActions from '../../../state/actions/scholarships'
 
 function getSteps() {
   return ['Información de postulación', 'Adjuntar archivos']
@@ -33,7 +33,7 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
       onClose()
     } else {
       dispatch(
-        companiesActions.updateCreate({ ...create, step: create.step - 1 })
+        scholarshipsActions.updateCreate({ ...create, step: create.step - 1 })
       )
     }
   }
@@ -43,7 +43,7 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
       successFunction()
     }
     dispatch(
-      companiesActions.updateCreate({
+      scholarshipsActions.updateCreate({
         step: 0,
         type,
         company: null
@@ -54,7 +54,7 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
 
   useEffect(() => {
     dispatch(
-      companiesActions.updateCreate({
+      scholarshipsActions.updateCreate({
         ...create,
         type,
         step: open ? 0 : create.step,

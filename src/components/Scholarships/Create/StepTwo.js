@@ -6,18 +6,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, InputLabel, Typography } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { useToggle, useSuccess } from '../../../hooks'
-import companiesActions from '../../../state/actions/companies'
 import { Button, SubmitButton } from '../../UI'
+import scholarshipsActions from '../../../state/actions/scholarships'
 import useStyles from './styles'
 
 import { FilePicker, FileThumbnail } from '../../Shared'
 
 const validationSchema = Yup.object({
-  type: Yup.string().required('Seleccione tipo'),
-  is_partner: Yup.string().required('Seleccione empresa socia'),
-  social_service: Yup.string().required('Seleccione opción'),
-  benefit_pyme: Yup.string(),
-  parent_business_id: Yup.number().nullable()
+  attachments: Yup.string().required('Seleccione archivo')
 })
 
 const StepTwo = ({ type }) => {
@@ -34,12 +30,7 @@ const StepTwo = ({ type }) => {
     validationSchema,
     validateOnMount: true,
     initialValues: {
-      type: create?.company?.type || '',
-      is_partner: create?.company?.is_partner || '',
-      benefit_pyme: create?.company?.benefit_pyme || '',
-      social_service: create?.company?.social_service || '',
-      social: '',
-      parent_business_id: create?.company?.parent_business_id || null
+      attachments: create?.application?.attachments || ''
     },
     onSubmit: (values) => {
       const {
@@ -56,7 +47,7 @@ const StepTwo = ({ type }) => {
         institution,
         region,
         ptu
-      } = create.company
+      } = create.application
       const data = {
         scholarship,
         employeeName,
@@ -76,17 +67,17 @@ const StepTwo = ({ type }) => {
       }
 
       if (create.type === 'CREATE') {
-        dispatch(companiesActions.createCompany(data))
+        dispatch(scholarshipsActions.createApplications(data))
           .then(() => {
             formik.setSubmitting(false)
             changeSuccess(true)
             dispatch(
-              companiesActions.updateCreate({
+              scholarshipsActions.updateCreate({
                 ...create,
                 step: create.step + 1
               })
             )
-            enqueueSnackbar('Cliente fue creado exitosamente', {
+            enqueueSnackbar('Postulación fue creada exitosamente', {
               autoHideDuration: 1500,
               variant: 'success'
             })
@@ -99,16 +90,18 @@ const StepTwo = ({ type }) => {
             formik.setSubmitting(false)
           })
       } else {
-        dispatch(companiesActions.updateCompany(create.company.id, data))
+        dispatch(
+          scholarshipsActions.updateApplications(create.application.id, data)
+        )
           .then(() => {
             formik.setSubmitting(false)
             changeSuccess(true)
-            enqueueSnackbar('Cliente fue actualizado exitosamente', {
+            enqueueSnackbar('Postulación fue actualizada exitosamente', {
               autoHideDuration: 1500,
               variant: 'success'
             })
             dispatch(
-              companiesActions.updateCreate({
+              scholarshipsActions.updateCreate({
                 ...create,
                 step: create.step + 1
               })
@@ -128,7 +121,7 @@ const StepTwo = ({ type }) => {
 
   const goBack = () => {
     dispatch(
-      companiesActions.updateCreate({ ...create, step: create.step - 1 })
+      scholarshipsActions.updateCreate({ ...create, step: create.step - 1 })
     )
   }
   return (

@@ -5,7 +5,10 @@ const initialState = {
   application: null,
   applicationsList: [],
   scholarshipType: [],
-  total: 0
+  total: 0,
+  create: {
+    step: 0
+  }
 }
 
 const scholarshipsReducers = (state = initialState, { type, payload }) => {
@@ -20,6 +23,8 @@ const scholarshipsReducers = (state = initialState, { type, payload }) => {
       return { ...state, application: payload }
     case scholarshipTypes.GET_SCHOLARSHIPS_TYPES:
       return { ...state, scholarshipType: payload }
+    case scholarshipTypes.POSTULATION_UPDATE_CREATE:
+      return { ...state, create: payload }
     default:
       return state
   }

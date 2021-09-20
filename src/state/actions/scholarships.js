@@ -3,6 +3,9 @@ import Axios from '../../Axios'
 import scholarshipTypes from '../types/scholarships'
 import config from '../../config'
 
+const updateCreate = (form) => (dispatch) =>
+  dispatch({ type: scholarshipTypes.POSTULATION_UPDATE_CREATE, payload: form })
+
 const toggleCreateModal = (value) => (dispatch) =>
   dispatch({
     type: scholarshipTypes.APPLICATION_TOGGLE_CREATE,
@@ -14,7 +17,7 @@ const getApplications =
   (dispatch) =>
     new Promise((resolve, reject) => {
       Axios.get(
-        `${config.services.scholarship}/applications?${queryString.stringify(
+        `${config.services.scholarship}/postulations?${queryString.stringify(
           query
         )}`
       )
@@ -78,7 +81,9 @@ const getScholarshipTypes = () => (dispatch) =>
         reject(err)
       })
   })
+
 const scholarshipsActions = {
+  updateCreate,
   toggleCreateModal,
   getApplications,
   getApplicationDetails,
