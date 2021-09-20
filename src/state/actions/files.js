@@ -42,7 +42,7 @@ const getFile = (fileKey) => () =>
 
 const uploadFile = (formData) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${config.services.employee}/file/`, formData)
+    Axios.post(`${config.services.parameters}/file/upload`, formData)
       .then((response) => {
         const { data } = response
 

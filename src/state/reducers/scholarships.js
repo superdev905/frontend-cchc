@@ -5,6 +5,7 @@ const initialState = {
   application: null,
   applicationsList: [],
   scholarshipType: [],
+  careers: [],
   total: 0,
   create: {
     step: 0
@@ -25,6 +26,8 @@ const scholarshipsReducers = (state = initialState, { type, payload }) => {
       return { ...state, scholarshipType: payload }
     case scholarshipTypes.POSTULATION_UPDATE_CREATE:
       return { ...state, create: payload }
+    case scholarshipTypes.GET_CAREERS:
+      return { ...state, careers: payload }
     default:
       return state
   }

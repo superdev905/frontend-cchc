@@ -82,13 +82,43 @@ const getScholarshipTypes = () => (dispatch) =>
       })
   })
 
+const updateApplications = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`/postulations/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const getCareers = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.parameters}/careers`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scholarshipTypes.GET_CAREERS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 const scholarshipsActions = {
   updateCreate,
   toggleCreateModal,
   getApplications,
   getApplicationDetails,
   createApplications,
-  getScholarshipTypes
+  getScholarshipTypes,
+  updateApplications,
+  getCareers
 }
 
 export default scholarshipsActions

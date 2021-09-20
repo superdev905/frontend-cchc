@@ -25,7 +25,7 @@ const PDFViewer = ({ url, filename, open, onClose }) => {
     page,
     canvasRef,
     withCredentials: false,
-    scale: 1.5,
+    scale: 1.2,
     onDocumentLoadSuccess: (e) => {
       setTotalPages(e.numPages)
     }

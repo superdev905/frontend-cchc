@@ -25,7 +25,7 @@ function getStepContent(stepIndex, { onClose }) {
 const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
   const steps = getSteps()
   const dispatch = useDispatch()
-  const { create } = useSelector((state) => state.companies)
+  const { create } = useSelector((state) => state.scholarships)
   const { isMobile } = useSelector((state) => state.ui)
 
   const handleBack = () => {

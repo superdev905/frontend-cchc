@@ -14,20 +14,16 @@ import Actions from '../../Companies/Create/Actions'
 import scholarshipsActions from '../../../state/actions/scholarships'
 
 const validationSchema = Yup.object({
-  scholarship: Yup.string().required('Seleccione beca'),
+  scholarshipId: Yup.string().required('Seleccione beca'),
   employeeRut: Yup.string()
     .required('Ingrese rut trabajador')
     .test('Check Rut', 'Ingrese Rut válido', (v) => rutValidation(v)),
-  employeeName: Yup.string().required('Ingrese nombre trabajador'),
+  employeeNames: Yup.string().required('Ingrese nombre trabajador'),
   businessRut: Yup.string()
     .required('Ingrese rut empresa')
     .test('Check Rut', 'Ingrese Rut válido', (v) => rutValidation(v)),
   businessName: Yup.string().required('Ingrese nombre empresa'),
-  businessRelatedRut: Yup.string().test(
-    'Check Rut',
-    'Ingrese Rut válido',
-    (v) => rutValidation(v)
-  ),
+  businessRelatedRut: Yup.string(),
   businessRelatedName: Yup.string(),
   beneficiaryRut: Yup.string()
     .required('Ingrese rut beneficiario')
@@ -48,8 +44,10 @@ const StepOne = ({ onClose }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { regions } = useSelector((state) => state.common)
-  const { create } = useSelector((state) => state.companies)
-  const { scholarshipType } = useSelector((state) => state.scholarships)
+  const { create } = useSelector((state) => state.scholarships)
+  const { scholarshipType, careers } = useSelector(
+    (state) => state.scholarships
+  )
   const { showCreateModal } = useSelector((state) => state.scholarships)
   const [communes, setCommunes] = useState([])
   const [companies, setCompanies] = useState([])
@@ -63,7 +61,7 @@ const StepOne = ({ onClose }) => {
     initialValues: {
       scholarshipId: create?.application?.scholarshipId || '',
       date: create?.application?.date || '',
-      employeeName: create?.application?.employeeName || '',
+      employeeNames: create?.application?.employeeNames || '',
       employeeRut: create?.application?.employeeRut || '',
       businessName: create?.application?.businessName || '',
       businessRut: create?.application?.businessRut || '',
@@ -79,6 +77,7 @@ const StepOne = ({ onClose }) => {
     },
 
     onSubmit: (values) => {
+      console.log(create)
       dispatch(
         scholarshipsActions.updateCreate({
           ...create,
@@ -88,6 +87,8 @@ const StepOne = ({ onClose }) => {
       )
     }
   })
+
+  console.log(formik.errors)
 
   const handleSelectChange = (e) => {
     const { name, value } = e.target
@@ -123,19 +124,25 @@ const StepOne = ({ onClose }) => {
   const onEmployeeSelect = (__, values) => {
     setSelectedEmployee(values)
     const idEmployee = values ? values.id : ''
-    const nameEmployee = values ? values.employeeName : ''
+    const nameEmployee = values
+      ? `${values.names} ${values.paternal_surname} ${values.maternal_surname}`
+      : ''
+    const runEmployee = values ? values.run : ''
 
     formik.setFieldValue('employee_id', idEmployee)
-    formik.setFieldValue('employeeName', nameEmployee)
+    formik.setFieldValue('employeeNames', nameEmployee)
+    formik.setFieldValue('employeeRut', runEmployee)
   }
 
   const onCompanySelect = (__, values) => {
     setSelectedCompany(values)
     const idCompany = values ? values.id : ''
-    const nameCompany = values ? values.businessName : ''
+    const nameCompany = values ? values.business_name : ''
+    const rutCompany = values ? values.rut : ''
 
     formik.setFieldValue('business_id', idCompany)
     formik.setFieldValue('businessName', nameCompany)
+    formik.setFieldValue('businessRut', rutCompany)
   }
 
   useEffect(() => {
@@ -156,6 +163,7 @@ const StepOne = ({ onClose }) => {
   useEffect(() => {
     dispatch(commonActions.getRegions())
     dispatch(scholarshipsActions.getScholarshipTypes())
+    dispatch(scholarshipsActions.getCareers())
   }, [])
 
   return (
@@ -173,7 +181,7 @@ const StepOne = ({ onClose }) => {
               required
               onChange={formik.handleChange}
             >
-              <option value="">Seleccione cargo</option>
+              <option value="">Seleccione beca</option>
               {scholarshipType.map((item) => (
                 <option value={item.id}>{item.name}</option>
               ))}
@@ -333,15 +341,18 @@ const StepOne = ({ onClose }) => {
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <TextField
-              label="Nombre carrera"
+            <Select
+              label="Carrera"
               name="careerId"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
               value={formik.values.careerId}
-              helperText={formik.touched.careerId && formik.errors.careerId}
-              error={formik.touched.careerId && Boolean(formik.errors.careerId)}
-            />
+              required
+              onChange={formik.handleChange}
+            >
+              <option value="">Seleccione carrera</option>
+              {careers.map((item) => (
+                <option value={item.id}>{item.name}</option>
+              ))}
+            </Select>
           </Grid>
 
           <Grid item xs={12} md={6}>
