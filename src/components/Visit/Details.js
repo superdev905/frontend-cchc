@@ -43,6 +43,9 @@ const Details = ({ fetching, fetchDetails }) => {
       user: `${user.names} ${user.paternal_surname} ${user.maternal_surname}`,
       user_email: user.email,
       user_phone: '---',
+      date: `${formatDate(new Date(), { weekday: 'long' })} ${formatDate(
+        new Date()
+      )} a las ${formatHours(new Date())}`,
       ...values
     }
     return dispatch(assistanceActions.createVisitReport(visit.id, data))
