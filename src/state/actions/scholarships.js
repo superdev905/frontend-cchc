@@ -110,6 +110,49 @@ const getCareers = () => (dispatch) =>
       })
   })
 
+const getApprovedScholarships =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.scholarship
+        }/approved-scholarships?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: scholarshipTypes.GET_APPROVED_SCHOLARSHIPS,
+            payload: data.items
+          })
+          dispatch({
+            type: scholarshipTypes.SET_APPROVED_SCHOLARSHIPS_TOTAL,
+            payload: data.total
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const getApprovedScholarship = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.scholarship}/approved-scholarships/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scholarshipTypes.GET_APPROVED_SCHOLARSHIP,
+          payload: data
+        })
+
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const scholarshipsActions = {
   updateCreate,
   toggleCreateModal,
@@ -118,7 +161,9 @@ const scholarshipsActions = {
   createApplications,
   getScholarshipTypes,
   updateApplications,
-  getCareers
+  getCareers,
+  getApprovedScholarships,
+  getApprovedScholarship
 }
 
 export default scholarshipsActions

@@ -22,6 +22,7 @@ const Polls = lazy(() => import('../pages/Polls/Polls'))
 const Poll = lazy(() => import('../pages/Poll/Poll'))
 const Profile = lazy(() => import('../pages/Profile/Profile'))
 const Scholarships = lazy(() => import('../pages/Scholarships/Scholarships'))
+const ApprovedScholarship = lazy(() => import('../pages/ApprovedScholarship'))
 
 const routes = [
   {
@@ -273,6 +274,22 @@ const routes = [
         yes={() => (
           <Layout>
             <Scholarships />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/scholarship/approved/:idApproved',
+    key: 'APPROVED-SCHOLARSHIP',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SIMPLE_USER']}
+        yes={() => (
+          <Layout>
+            <ApprovedScholarship />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}

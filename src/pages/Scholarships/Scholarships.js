@@ -4,7 +4,7 @@ import { Box } from '@material-ui/core'
 import { PollsDot } from '../../components/Polls'
 import { PageHeading } from '../../components/UI'
 import uiActions from '../../state/actions/ui'
-import ApplicationList from '../../components/Scholarships/ApplicationList'
+import { ApprovedList, ApplicationList } from '../../components/Scholarships'
 
 const Scholarships = () => {
   const dispatch = useDispatch()
@@ -20,6 +20,7 @@ const Scholarships = () => {
         <PollsDot module="BECAS" />
       </PageHeading>
       <ApplicationList />
+      <ApprovedList />
     </Box>
   )
 }

@@ -38,8 +38,8 @@ const services = {
     production: `${BASEURL[env]}:5104/api/v1`
   },
   scholarship: {
-    development: `${BASEURL[env]}:8000/api/v1`,
-    //  testing: `${BASEURL[env]}:5194/api/v1`,
+    development: `${BASEURL[env]}:5191/api/v1`,
+    testing: `${BASEURL[env]}:5199/api/v1`,
     production: `${BASEURL[env]}:5108/api/v1`
   }
 }

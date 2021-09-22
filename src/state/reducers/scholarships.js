@@ -9,7 +9,10 @@ const initialState = {
   total: 0,
   create: {
     step: 0
-  }
+  },
+  approvedScholarships: [],
+  approvedScholarship: null,
+  totalApproved: 0
 }
 
 const scholarshipsReducers = (state = initialState, { type, payload }) => {
@@ -28,6 +31,12 @@ const scholarshipsReducers = (state = initialState, { type, payload }) => {
       return { ...state, create: payload }
     case scholarshipTypes.GET_CAREERS:
       return { ...state, careers: payload }
+    case scholarshipTypes.GET_APPROVED_SCHOLARSHIPS:
+      return { ...state, approvedScholarships: payload }
+    case scholarshipTypes.SET_APPROVED_SCHOLARSHIPS_TOTAL:
+      return { ...state, totalApproved: payload }
+    case scholarshipTypes.GET_APPROVED_SCHOLARSHIP:
+      return { ...state, approvedScholarship: payload }
     default:
       return state
   }
