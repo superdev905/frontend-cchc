@@ -99,10 +99,11 @@ const AttentionDetails = () => {
             pagination
           />
         </Box>
+
         {currentData && showVisor && (
           <FileVisor
             open={showVisor}
-            fileName={currentData.attached_url}
+            src={currentData.attached_url}
             onClose={toggleShowVisor}
           />
         )}
