@@ -7,7 +7,8 @@ import scholarshipsActions from '../../state/actions/scholarships'
 import { Button, PageHeading, TimeStamp, Wrapper } from '../../components/UI'
 import {
   ApprovedStatistics,
-  ApprovedTrackingList
+  ApprovedTrackingList,
+  BenefitsList
 } from '../../components/ApprovedScholarship'
 
 const ApprovedScholarship = () => {
@@ -45,6 +46,7 @@ const ApprovedScholarship = () => {
       </Box>
       <ApprovedStatistics />
       <ApprovedTrackingList />
+      <BenefitsList />
     </Wrapper>
   )
 }
