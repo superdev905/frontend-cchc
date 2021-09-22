@@ -12,7 +12,7 @@ const toggleCreateModal = (value) => (dispatch) =>
     payload: !value
   })
 
-const getApplications =
+const getPostulations =
   (query = {}) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
@@ -38,7 +38,7 @@ const getApplications =
         })
     })
 
-const getApplicationDetails = (id) => (dispatch) =>
+const getPostulationDetails = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.scholarship}/postulations/${id}`)
       .then((response) => {
@@ -60,6 +60,7 @@ const createApplications = (values) => () =>
       .then((response) => {
         const { data } = response
         resolve(data)
+        console.log(data)
       })
       .catch((err) => {
         reject(err.response.data.detail)
@@ -113,8 +114,8 @@ const getCareers = () => (dispatch) =>
 const scholarshipsActions = {
   updateCreate,
   toggleCreateModal,
-  getApplications,
-  getApplicationDetails,
+  getPostulations,
+  getPostulationDetails,
   createApplications,
   getScholarshipTypes,
   updateApplications,

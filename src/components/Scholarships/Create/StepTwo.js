@@ -8,7 +8,7 @@ import scholarshipsActions from '../../../state/actions/scholarships'
 import useStyles from './styles'
 import filesActions from '../../../state/actions/files'
 
-import { FilePicker } from '../../Shared'
+import { FilePostulation } from '../../Shared'
 
 const StepTwo = ({ type }) => {
   const classes = useStyles()
@@ -27,6 +27,7 @@ const StepTwo = ({ type }) => {
     },
     {
       name: 'LIQUIDACIÓN SUELDO',
+      fileName: '',
       isRequired: true,
       key: 'LIQUIDACION_SUELDO',
       url: '',
@@ -114,48 +115,73 @@ const StepTwo = ({ type }) => {
   }
 
   const handleUploadFile = async (file, key) => {
-    console.log(file)
     const formData = new FormData()
     formData.append('file', file)
     const response = await dispatch(filesActions.uploadFile(formData))
-    console.log(response, key)
-    const temp = [...attachments]
-    const newAttachment = temp.map((item) => {
-      if (item.key === key) {
-        return {
-          ...item,
-          fileName: response.file_name,
-          fileKey: response.file_key,
-          fileUrl: response.file_url,
-          fileSize: response.file_size,
-          uploadDate: response.upload_date
-        }
-      }
-      return item
-    })
+    const newAttachment = attachments.map((item) =>
+      item.key === key
+        ? {
+            ...item,
+            fileName: response.file_name,
+            fileKey: response.file_key,
+            fileUrl: response.file_url,
+            fileSize: response.file_size,
+            uploadDate: response.upload_date
+          }
+        : item
+    )
+
     setAttachments(newAttachment)
   }
+
+  const handleDeleteFile = async (key) => {
+    await dispatch(filesActions.deleteFile(key))
+    const newAttachment = attachments.map((item) =>
+      item.key === key
+        ? {
+            ...item,
+            fileName: '',
+            fileKey: '',
+            fileUrl: '',
+            fileSize: '',
+            uploadDate: ''
+          }
+        : item
+    )
+    setAttachments(newAttachment)
+  }
+  /*
+  const getIsRequired = async () => {
+    const newFilter = attachments.filter((item) => item.isRequired === true)
+    console.log(newFilter)
+  }
+  */
 
   return (
     <Box className={classes.form}>
       <Typography className={classes.subtitle} align="center">
-        Subir Archivos
+        Adjuntar Archivos
       </Typography>
       <Box>
         <Grid container spacing={2}>
           {' '}
-          {attachments.map((item) => (
-            <Grid item xs={12} md={6}>
-              <InputLabel style={{ fontSize: '15px', marginBottom: '12px' }}>
+          {attachments.map((item, index) => (
+            <Grid item xs={12} md={6} key={index}>
+              <InputLabel
+                required={item.isRequired}
+                style={{ fontSize: '15px', marginBottom: '12px' }}
+              >
                 {item.name}
               </InputLabel>
-              <>
-                <FilePicker
-                  onChangeImage={(e) => {
-                    handleUploadFile(e, item.key)
-                  }}
-                />
-              </>
+
+              <FilePostulation
+                onDelete={handleDeleteFile}
+                fileKey={item.fileKey}
+                id={`${item.key}-${index}`}
+                onChangeImage={(e) => {
+                  handleUploadFile(e, item.key)
+                }}
+              />
             </Grid>
           ))}
         </Grid>
