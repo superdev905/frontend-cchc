@@ -60,7 +60,6 @@ const createApplications = (values) => () =>
       .then((response) => {
         const { data } = response
         resolve(data)
-        console.log(data)
       })
       .catch((err) => {
         reject(err.response.data.detail)
@@ -83,9 +82,9 @@ const getScholarshipTypes = () => (dispatch) =>
       })
   })
 
-const updateApplications = (id, values) => () =>
+const updatePostulation = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`/postulations/${id}`, values)
+    Axios.put(`${config.services.scholarship}/postulations/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data.data)
@@ -111,6 +110,63 @@ const getCareers = () => (dispatch) =>
       })
   })
 
+const deletePostulation = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`${config.services.scholarship}/postulations/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const postulationApprove = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.scholarship}/postulations/${id}/approve`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const postulationReject = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.scholarship}/postulations/${id}/reject`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const postulationRevision = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.scholarship}/postulations/${id}/request-revision`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const scholarshipsActions = {
   updateCreate,
   toggleCreateModal,
@@ -118,8 +174,12 @@ const scholarshipsActions = {
   getPostulationDetails,
   createApplications,
   getScholarshipTypes,
-  updateApplications,
-  getCareers
+  updatePostulation,
+  getCareers,
+  deletePostulation,
+  postulationApprove,
+  postulationReject,
+  postulationRevision
 }
 
 export default scholarshipsActions

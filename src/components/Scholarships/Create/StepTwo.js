@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useSnackbar } from 'notistack'
 import { Box, Grid, InputLabel, Typography } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { useToggle } from '../../../hooks'
@@ -13,7 +14,7 @@ import { FilePostulation } from '../../Shared'
 const StepTwo = ({ type }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  //  const { enqueueSnackbar } = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
   const { create } = useSelector((state) => state.scholarships)
   const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
   const [attachments, setAttachments] = useState([
@@ -98,14 +99,35 @@ const StepTwo = ({ type }) => {
       attachments,
       date: new Date()
     }
-    dispatch(scholarshipsActions.createApplications(data)).then(() => {
+    if (create.type === 'CREATE') {
+      dispatch(scholarshipsActions.createApplications(data)).then(() => {
+        dispatch(
+          scholarshipsActions.updateCreate({
+            ...create,
+            step: create.step + 1
+          })
+        )
+      })
+      enqueueSnackbar('Postulación creada exitosamente', {
+        autoHideDuration: 1500,
+        variant: 'success'
+      })
+    } else {
       dispatch(
-        scholarshipsActions.updateCreate({
-          ...create,
-          step: create.step + 1
+        scholarshipsActions.updatePostulation(create.application.id, data)
+      ).then(() => {
+        enqueueSnackbar('Postulación actualizada exitosamente', {
+          autoHideDuration: 1500,
+          variant: 'success'
         })
-      )
-    })
+        dispatch(
+          scholarshipsActions.updateCreate({
+            ...create,
+            step: create.step + 1
+          })
+        )
+      })
+    }
   }
 
   const goBack = () => {
@@ -150,12 +172,19 @@ const StepTwo = ({ type }) => {
     )
     setAttachments(newAttachment)
   }
-  /*
-  const getIsRequired = async () => {
-    const newFilter = attachments.filter((item) => item.isRequired === true)
+
+  const getIsRequired = () => {
+    const newFilter = attachments.filter((item) => item.isRequired === false)
+
+    if (attachments.key === 'CERTIFICADO_EGRESO_ENSEÑANZA_MEDIA') return true
+    if (attachments.key === 'CERTIFICADO_DE_COTIZACIONES_HISTORICA_TRABAJADOR')
+      return true
+    if (attachments.key === 'COTIZACIÓN_DE_LA_CARRERA') return true
+    if (attachments.key === 'CERTIFICADO_DE_AFILIACION_AFP') return true
+
     console.log(newFilter)
+    return false
   }
-  */
 
   return (
     <Box className={classes.form}>
@@ -193,7 +222,7 @@ const StepTwo = ({ type }) => {
         {type === 'UPDATE' && openVisor && (
           <FileVisor open={openVisor} onClose={toggleOpenVisor} />
         )}
-        <SubmitButton onClick={onCreate}>
+        <SubmitButton disabled={getIsRequired()} onClick={onCreate}>
           {create.type === 'UPDATE' ? 'Actualizar' : 'Crear'} Postulación
         </SubmitButton>
       </Box>

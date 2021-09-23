@@ -7,9 +7,14 @@ import {
   ArrowBack as BackIcon
 } from '@material-ui/icons'
 import { Skeleton } from '@material-ui/lab'
+import { useSnackbar } from 'notistack'
 import { PageHeading, Button, Wrapper } from '../../components/UI'
+import { useToggle, useSuccess } from '../../hooks'
 import scholarshipsActions from '../../state/actions/scholarships'
 import PostulationDetails from '../../components/Scholarships/PostulationDetails'
+import CreateDialog from '../../components/Scholarships/Create/CreateDialog'
+import { ConfirmDelete } from '../../components/Shared'
+import ApproveDialog from '../../components/Scholarships/Approve/ApproveDialog'
 
 const useStyles = makeStyles((theme) => ({
   head: {
@@ -36,15 +41,22 @@ const ScholarshipDetails = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const classes = useStyles()
-  const { idPostulation } = useParams()
-  const { application } = useSelector((state) => state.scholarships)
   const [loading, setLoading] = useState(false)
+  const { enqueueSnackbar } = useSnackbar()
+  const { idPostulation } = useParams()
+  const { application, showCreateModal } = useSelector(
+    (state) => state.scholarships
+  )
+
+  const { success, changeSuccess } = useSuccess()
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
 
   const goBack = () => {
     history.goBack()
   }
 
-  const fetchData = () => {
+  const fetchPostulationDetails = () => {
     setLoading(true)
     dispatch(scholarshipsActions.getPostulationDetails(idPostulation)).then(
       () => {
@@ -53,8 +65,39 @@ const ScholarshipDetails = () => {
     )
   }
 
+  const updatePostulation = (values) =>
+    dispatch(
+      scholarshipsActions.updatePostulation(idPostulation, {
+        state: application.state,
+        created_by: application.createdBy,
+        ...values
+      })
+    )
+
+  const onDelete = (id) => {
+    dispatch(scholarshipsActions.deletePostulation(id))
+      .then(() => {
+        changeSuccess(true, () => {
+          toggleOpenDelete()
+          enqueueSnackbar('Postulación eliminada', { variant: 'success' })
+          history.push('/postulations')
+        })
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, { variant: 'error' })
+      })
+  }
+
+  const approveDialog = () => {
+    dispatch(scholarshipsActions.toggleCreateModal(showCreateModal))
+  }
+
+  const toggleCreateModal = () => {
+    dispatch(scholarshipsActions.toggleCreateModal(showCreateModal))
+  }
+
   useEffect(() => {
-    fetchData()
+    fetchPostulationDetails()
   }, [])
 
   return (
@@ -77,11 +120,37 @@ const ScholarshipDetails = () => {
           </Box>
         </Box>
         <Box>
-          <Button>Editar</Button>
-          <Button>Aprobar</Button>
+          <Button danger onClick={toggleOpenDelete}>
+            Eliminar
+          </Button>
+          <Button onClick={toggleOpenEdit}>Editar</Button>
+          <Button onClick={approveDialog}>Aprobar</Button>
         </Box>
       </Box>
       <PostulationDetails fetching={loading} />
+
+      {application && openEdit && (
+        <CreateDialog
+          type="UPDATE"
+          open={openEdit}
+          onClose={toggleOpenEdit}
+          data={application}
+          submitFunction={updatePostulation}
+          successFunction={fetchPostulationDetails}
+        />
+      )}
+
+      {application && openDelete && (
+        <ConfirmDelete
+          open={openDelete}
+          onClose={toggleOpenDelete}
+          success={success}
+          message={<span>¿Estás seguro de eliminar esta postulación: </span>}
+          onConfirm={() => onDelete(application.id)}
+        />
+      )}
+
+      <ApproveDialog open={showCreateModal} onClose={toggleCreateModal} />
     </Wrapper>
   )
 }

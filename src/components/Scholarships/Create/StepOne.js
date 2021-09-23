@@ -40,12 +40,11 @@ const validationSchema = Yup.object({
   psuScore: Yup.number('Puntaje valido').required('Ingrese puntaje ptu o simil')
 })
 
-const StepOne = ({ onClose }) => {
+const StepOne = ({ type, onClose }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { regions } = useSelector((state) => state.common)
-  const { create } = useSelector((state) => state.scholarships)
-  const { scholarshipType, careers } = useSelector(
+  const { create, scholarshipType, careers } = useSelector(
     (state) => state.scholarships
   )
   const { showCreateModal } = useSelector((state) => state.scholarships)
@@ -65,8 +64,8 @@ const StepOne = ({ onClose }) => {
       employeeRut: create?.application?.employeeRut || '',
       businessName: create?.application?.businessName || '',
       businessRut: create?.application?.businessRut || '',
-      businessRelatedName: create?.application?.businessName || '',
-      businessRelatedRut: create?.application?.businessRut || '',
+      businessRelatedName: create?.application?.businessRelatedName || '',
+      businessRelatedRut: create?.application?.businessRelatedRut || '',
       beneficiaryNames: create?.application?.beneficiaryNames || '',
       beneficiaryRut: create?.application?.beneficiaryRut || '',
       careerId: create?.application?.careerId || '',
@@ -77,7 +76,6 @@ const StepOne = ({ onClose }) => {
     },
 
     onSubmit: (values) => {
-      console.log(create)
       dispatch(
         scholarshipsActions.updateCreate({
           ...create,
@@ -87,8 +85,6 @@ const StepOne = ({ onClose }) => {
       )
     }
   })
-
-  console.log(formik.errors)
 
   const handleSelectChange = (e) => {
     const { name, value } = e.target
@@ -120,6 +116,15 @@ const StepOne = ({ onClose }) => {
       })
     }
   }, [formik.values.schoolRegion, regions])
+
+  useEffect(() => {
+    if (type === 'UPDATE' && companies.length > 0) {
+      const targetCompany = companies.find(
+        (item) => item.id === formik.values.businessName
+      )
+      setSelectedCompany(targetCompany)
+    }
+  }, [type, companies])
 
   const onEmployeeSelect = (__, values) => {
     setSelectedEmployee(values)

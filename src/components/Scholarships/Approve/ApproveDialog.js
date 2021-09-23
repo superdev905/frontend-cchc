@@ -8,7 +8,7 @@ import { Dialog } from '../../Shared'
 import scholarshipsActions from '../../../state/actions/scholarships'
 
 function getSteps() {
-  return ['Información de postulación', 'Adjuntar archivos']
+  return ['Revisar datos', 'Aprobar']
 }
 
 function getStepContent(stepIndex, { onClose }) {
@@ -22,7 +22,7 @@ function getStepContent(stepIndex, { onClose }) {
   }
 }
 
-const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
+const ApproveDialog = ({ open, onClose, type, data, successFunction }) => {
   const steps = getSteps()
   const dispatch = useDispatch()
   const { create } = useSelector((state) => state.scholarships)
@@ -99,8 +99,8 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
   )
 }
 
-CreateDialog.defaultProps = {
+ApproveDialog.defaultProps = {
   type: 'CREATE'
 }
 
-export default CreateDialog
+export default ApproveDialog

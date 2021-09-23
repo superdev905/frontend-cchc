@@ -72,14 +72,6 @@ const FilePostulation = ({ onChangeImage, onView, id, onDelete, fileKey }) => {
         type: currentFile.type
       })
     }
-    if (currentFile.type.includes('image/')) {
-      const fileReader = new window.FileReader()
-
-      fileReader.readAsDataURL(currentFile)
-      fileReader.onload = () => {
-        setPreview({ file: fileReader.result, type: currentFile.type })
-      }
-    }
     return null
   }
 
@@ -111,7 +103,7 @@ const FilePostulation = ({ onChangeImage, onView, id, onDelete, fileKey }) => {
             className={classes.input}
             type="file"
             id={id}
-            accept={['image/*', '.pdf']}
+            accept={['.pdf']}
             onChange={onChange}
           ></input>
           <label className={classes.label} htmlFor={id}>

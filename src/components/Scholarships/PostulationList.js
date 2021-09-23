@@ -111,7 +111,7 @@ const PostulationList = () => {
           columns={[
             {
               name: 'Beca',
-              selector: (row) => row.scholarshipId,
+              selector: (row) => row.scholarshipType?.name,
               sortable: true
             },
             {
