@@ -112,7 +112,7 @@ const getCareers = () => (dispatch) =>
 
 const deletePostulation = (id) => () =>
   new Promise((resolve, reject) => {
-    Axios.delete(`${config.services.scholarship}/postulations/${id}`)
+    Axios.patch(`${config.services.scholarship}/postulations/${id}`)
       .then((response) => {
         const { data } = response
         resolve(data)

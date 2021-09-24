@@ -1,16 +1,14 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { LabeledRow, SubmitButton, Text } from '../../UI'
+import { LabeledRow, Text } from '../../UI'
 import useStyles from './styles'
 import Actions from '../../Companies/Create/Actions'
 import scholarshipsActions from '../../../state/actions/scholarships'
 
-const StepOne = ({ onClose }) => {
+const StepOne = ({ onClose, onNext }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const { enqueueSnackbar } = useSnackbar()
   const { application } = useSelector((state) => state.scholarships)
 
   const getPostulationDetails = (id) => {
@@ -20,42 +18,6 @@ const StepOne = ({ onClose }) => {
   useEffect(() => {
     getPostulationDetails()
   }, [])
-
-  const onApprove = (id) => {
-    dispatch(scholarshipsActions.postulationApprove(id))
-      .then(() => {
-        enqueueSnackbar('Postulación aprobada exitosamente', {
-          variant: 'success'
-        })
-      })
-      .catch((err) => {
-        enqueueSnackbar(err, { variant: 'error' })
-      })
-  }
-
-  const onReject = (id) => {
-    dispatch(scholarshipsActions.postulationReject(id))
-      .then(() => {
-        enqueueSnackbar('Postulación rechazada exitosamente', {
-          variant: 'success'
-        })
-      })
-      .catch((err) => {
-        enqueueSnackbar(err, { variant: 'error' })
-      })
-  }
-
-  const onRevision = (id) => {
-    dispatch(scholarshipsActions.postulationRevision(id))
-      .then(() => {
-        enqueueSnackbar('Solicitud de revisión creada', {
-          variant: 'success'
-        })
-      })
-      .catch((err) => {
-        enqueueSnackbar(err, { variant: 'error' })
-      })
-  }
 
   return (
     <Box className={classes.form}>
@@ -109,15 +71,12 @@ const StepOne = ({ onClose }) => {
           </LabeledRow>
         </Grid>
       </Box>
-
-      <Box textAlign="center">
-        <SubmitButton onClick={onRevision}>Solicitar Revisión</SubmitButton>
-        <SubmitButton danger onClick={onReject}>
-          Rechazar
-        </SubmitButton>
-        <SubmitButton onClick={onApprove}>Aprobar</SubmitButton>
-      </Box>
-      <Actions showBackIcon={false} handleBack={onClose} backText="Cancelar" />
+      <Actions
+        showBackIcon={false}
+        handleBack={onClose}
+        backText="Cancelar"
+        handleNext={onNext}
+      />{' '}
     </Box>
   )
 }

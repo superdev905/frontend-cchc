@@ -56,6 +56,7 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
     dispatch(
       scholarshipsActions.updateCreate({
         ...create,
+        open,
         type,
         step: open ? 0 : create.step,
         application: type === 'UPDATE' ? data : null

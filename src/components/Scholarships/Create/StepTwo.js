@@ -22,7 +22,7 @@ const StepTwo = ({ type }) => {
       name: 'CERTIFICADO EGRESO ENSEÑANZA MEDIA',
       isRequired: false,
       key: 'CERTIFICADO_EGRESO_ENSEÑANZA_MEDIA',
-      url: '',
+      fileUrl: '',
       size: '',
       date: ''
     },
@@ -31,7 +31,7 @@ const StepTwo = ({ type }) => {
       fileName: '',
       isRequired: true,
       key: 'LIQUIDACION_SUELDO',
-      url: '',
+      fileUrl: '',
       size: '',
       date: ''
     },
@@ -39,7 +39,7 @@ const StepTwo = ({ type }) => {
       name: 'CERTIFICADO DE NOTAS O NEM',
       isRequired: true,
       key: 'CERTIFICADO_DE_NOTAS_O_NEM',
-      url: '',
+      fileUrl: '',
       size: '',
       date: ''
     },
@@ -47,7 +47,7 @@ const StepTwo = ({ type }) => {
       name: 'CERTIFICADO ALUMNO REGULAR',
       isRequired: true,
       key: 'CERTIFICADO_ALUMNO_REGULAR',
-      url: '',
+      fileUrl: '',
       size: '',
       date: ''
     },
@@ -55,7 +55,7 @@ const StepTwo = ({ type }) => {
       name: 'CERTIFICADO DE NACIMIENTO PARA ASIGNACION FAMILIAR',
       isRequired: true,
       key: 'CERTIFICADO_DE_NACIMIENTO_PARA _ASIGNACION_FAMILIAR',
-      url: '',
+      fileUrl: '',
       size: '',
       date: ''
     },
@@ -63,7 +63,7 @@ const StepTwo = ({ type }) => {
       name: 'CERTIFICADO DE COTIZACIONES HISTORICA TRABAJADOR',
       isRequired: false,
       key: 'CERTIFICADO_DE_COTIZACIONES_HISTORICA_TRABAJADOR',
-      url: '',
+      fileUrl: '',
       size: '',
       date: ''
     },
@@ -71,7 +71,7 @@ const StepTwo = ({ type }) => {
       name: 'FICHA DE POSTULACIÓN CON FIRMA Y TIMBRE DE LA EMPRESA',
       isRequired: true,
       key: 'FICHA_DE_POSTULACIÓN_CON_FIRMA_Y_TIMBRE DE_LA_EMPRESA',
-      url: '',
+      fileUrl: '',
       size: '',
       date: ''
     },
@@ -79,7 +79,7 @@ const StepTwo = ({ type }) => {
       name: 'COTIZACIÓN DE LA CARRERA',
       isRequired: false,
       key: 'COTIZACIÓN_DE_LA_CARRERA',
-      url: '',
+      fileUrl: '',
       size: '',
       date: ''
     },
@@ -87,7 +87,7 @@ const StepTwo = ({ type }) => {
       name: 'CERTIFICADO DE AFILIACION AFP',
       isRequired: false,
       key: 'CERTIFICADO_DE_AFILIACION_AFP',
-      url: '',
+      fileUrl: '',
       size: '',
       date: ''
     }
@@ -174,16 +174,11 @@ const StepTwo = ({ type }) => {
   }
 
   const getIsRequired = () => {
-    const newFilter = attachments.filter((item) => item.isRequired === false)
+    const newFilter = attachments
+      .filter((item) => item.isRequired === true)
+      .filter((item) => item.fileUrl === '')
 
-    if (attachments.key === 'CERTIFICADO_EGRESO_ENSEÑANZA_MEDIA') return true
-    if (attachments.key === 'CERTIFICADO_DE_COTIZACIONES_HISTORICA_TRABAJADOR')
-      return true
-    if (attachments.key === 'COTIZACIÓN_DE_LA_CARRERA') return true
-    if (attachments.key === 'CERTIFICADO_DE_AFILIACION_AFP') return true
-
-    console.log(newFilter)
-    return false
+    return newFilter.length > 0
   }
 
   return (
@@ -204,7 +199,7 @@ const StepTwo = ({ type }) => {
               </InputLabel>
 
               <FilePostulation
-                onDelete={handleDeleteFile}
+                onDelete={() => handleDeleteFile(item.key)}
                 fileKey={item.fileKey}
                 id={`${item.key}-${index}`}
                 onChangeImage={(e) => {

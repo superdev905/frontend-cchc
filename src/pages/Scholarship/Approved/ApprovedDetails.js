@@ -8,6 +8,8 @@ import {
 } from '@material-ui/icons'
 import { Skeleton } from '@material-ui/lab'
 import { PageHeading, Button, Wrapper } from '../../../components/UI'
+import ApprovedCard from '../../../components/Scholarships/ApprovedCard'
+import ApprovedList from '../../../components/Scholarships/ApprovedList'
 
 const useStyles = makeStyles((theme) => ({
   head: {
@@ -34,7 +36,6 @@ const ApprovedDetails = () => {
   const history = useHistory()
   const classes = useStyles()
   const [loading] = useState(false)
-
   const { application } = useSelector((state) => state.scholarships)
 
   const goBack = () => {
@@ -65,6 +66,8 @@ const ApprovedDetails = () => {
           <Button>Editar</Button>
         </Box>
       </Box>
+      <ApprovedList />
+      <ApprovedCard />
     </Wrapper>
   )
 }

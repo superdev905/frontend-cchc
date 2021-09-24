@@ -11,10 +11,10 @@ function getSteps() {
   return ['Revisar datos', 'Aprobar']
 }
 
-function getStepContent(stepIndex, { onClose }) {
+function getStepContent(stepIndex, { onClose, onNext }) {
   switch (stepIndex) {
     case 0:
-      return <StepOne onClose={onClose} />
+      return <StepOne onClose={onClose} onNext={onNext} />
     case 1:
       return <StepTwo />
     default:
@@ -22,7 +22,14 @@ function getStepContent(stepIndex, { onClose }) {
   }
 }
 
-const ApproveDialog = ({ open, onClose, type, data, successFunction }) => {
+const ApproveDialog = ({
+  open,
+  onClose,
+  type,
+  data,
+  successFunction,
+  onNext
+}) => {
   const steps = getSteps()
   const dispatch = useDispatch()
   const { create } = useSelector((state) => state.scholarships)
@@ -34,6 +41,16 @@ const ApproveDialog = ({ open, onClose, type, data, successFunction }) => {
     } else {
       dispatch(
         scholarshipsActions.updateCreate({ ...create, step: create.step - 1 })
+      )
+    }
+  }
+
+  const handleNext = () => {
+    if (create.step === 0) {
+      onNext()
+    } else {
+      dispatch(
+        scholarshipsActions.updateCreate({ ...create, step: create.step + 1 })
       )
     }
   }
@@ -70,6 +87,7 @@ const ApproveDialog = ({ open, onClose, type, data, successFunction }) => {
       maxWidth={'lg'}
       fullWidth
       onBack={handleBack}
+      onNext={handleNext}
       fullScreen={isMobile}
     >
       <Box>

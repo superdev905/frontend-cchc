@@ -75,7 +75,7 @@ const ScholarshipDetails = () => {
     )
 
   const onDelete = (id) => {
-    dispatch(scholarshipsActions.deletePostulation(id))
+    dispatch(scholarshipsActions.deletePostulation(id, { state: 'DELETED' }))
       .then(() => {
         changeSuccess(true, () => {
           toggleOpenDelete()
@@ -111,7 +111,11 @@ const ScholarshipDetails = () => {
           </Box>
           <Box>
             <PageHeading className={classes.title}>
-              {loading ? <Skeleton width="80%" /> : 'Postulacion'}{' '}
+              {loading ? (
+                <Skeleton width="80%" />
+              ) : (
+                `Postulacion ${application?.scholarshipType.name}`
+              )}{' '}
             </PageHeading>
             <Typography className={classes.createdTime}>
               <CalendarIcon className={classes.icon} />
@@ -120,14 +124,11 @@ const ScholarshipDetails = () => {
           </Box>
         </Box>
         <Box>
-          <Button danger onClick={toggleOpenDelete}>
-            Eliminar
-          </Button>
           <Button onClick={toggleOpenEdit}>Editar</Button>
           <Button onClick={approveDialog}>Aprobar</Button>
         </Box>
       </Box>
-      <PostulationDetails fetching={loading} />
+      <PostulationDetails loading={loading} />
 
       {application && openEdit && (
         <CreateDialog
