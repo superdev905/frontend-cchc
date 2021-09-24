@@ -18,11 +18,11 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 16,
     margin: '10px 0px 0px 0px',
     border: `1px solid ${
-      error ? theme.palette.error.main : theme.palette.primary.main
+      error ? theme.palette.error.main : theme.palette.gray.gray400
     }`,
     '&&:focus': {
       border: `1px solid ${
-        error ? theme.palette.error.main : theme.palette.primary.main
+        error ? theme.palette.error.main : theme.palette.gray.gray400
       }`,
       outline: 'none'
     }

@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import CountUp from 'react-countup'
 import {
   Box,
@@ -12,7 +13,7 @@ import {
   EditOutlined as EditIcon,
   DeleteOutlineOutlined as DeleteIcon
 } from '@material-ui/icons'
-import { formatCurrency, formatDate } from '../../../formatters'
+import { formatCurrency, formatDate, formatHours } from '../../../formatters'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,19 +21,6 @@ const useStyles = makeStyles((theme) => ({
   },
   flex: {
     display: 'flex'
-  },
-  order: {
-    width: 30,
-    height: 30,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: 18,
-    fontWeight: 'bold',
-    backgroundColor: theme.palette.primary.main,
-    borderRadius: 5,
-    color: theme.palette.common.white,
-    marginRight: 10
   },
   center: {
     display: 'flex',
@@ -50,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold'
   },
   answers: {
-    fontSize: 38,
+    fontSize: 26,
     fontWeight: 'bold'
   },
   answersTag: {
@@ -119,10 +107,9 @@ const BenefitCard = ({ loader, benefit }) => {
           <Box p={2}>
             <Box display="flex" justifyContent="space-between">
               <Box display="flex" alignItems="center">
-                <Box className={classes.order}>1</Box>
                 <Typography className={classes.center}>
                   <CalendarIcon className={classes.calendarIcon} />
-                  {formatDate(benefit.date)}
+                  {`${formatDate(benefit.date)}, ${formatHours(benefit.date)}`}
                 </Typography>
               </Box>
               <Box
@@ -169,4 +156,4 @@ const BenefitCard = ({ loader, benefit }) => {
   )
 }
 
-export default BenefitCard
+export default memo(BenefitCard)
