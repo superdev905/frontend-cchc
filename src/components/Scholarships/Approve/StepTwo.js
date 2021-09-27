@@ -2,11 +2,14 @@ import * as Yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
+import { useHistory } from 'react-router-dom'
 import { Box, Typography } from '@material-ui/core'
-import { SubmitButton, TextArea } from '../../UI'
+import { ArrowBack as BackIcon } from '@material-ui/icons'
+import { SubmitButton, TextArea, Button } from '../../UI'
 import scholarshipsActions from '../../../state/actions/scholarships'
 import useStyles from './styles'
-// import filesActions from '../../../state/actions/files'
+import { useToggle, useSuccess } from '../../../hooks'
+import { ConfirmDelete } from '../../Shared'
 
 const validationSchema = Yup.object({
   comments: Yup.string()
@@ -22,8 +25,13 @@ const StepTwo = ({
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
-  const { application } = useSelector((state) => state.scholarships)
+  const { success, changeSuccess } = useSuccess()
+  const { application, create } = useSelector((state) => state.scholarships)
+  const { open: openApprove, toggleOpen: toggleOpenApprove } = useToggle()
+  const { open: openReject, toggleOpen: toggleOpenReject } = useToggle()
+  const { open: openReview, toggleOpen: toggleOpenReview } = useToggle()
 
   const formik = useFormik({
     validateOnMount: true,
@@ -59,6 +67,17 @@ const StepTwo = ({
     }
   })
 
+  const goBack = () => {
+    dispatch(
+      scholarshipsActions.updateCreate({ ...create, step: create.step - 1 })
+    )
+  }
+  const goNext = () => {
+    dispatch(
+      scholarshipsActions.updateCreate({ ...create, step: create.step + 1 })
+    )
+  }
+
   const appId = application.id
 
   const onApprove = () => {
@@ -69,10 +88,18 @@ const StepTwo = ({
         comments: formik.values.comments
       })
     )
-    enqueueSnackbar('Postulación aprobada exitosamente', {
-      autoHideDuration: 1500,
-      variant: 'success'
-    })
+      .then(() => {
+        changeSuccess(true, () => {
+          toggleOpenApprove()
+          enqueueSnackbar('Postulación aprobada exitosamente', {
+            variant: 'success'
+          })
+        })
+        goNext()
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, { variant: 'error' })
+      })
   }
 
   const onReject = () => {
@@ -83,10 +110,18 @@ const StepTwo = ({
         comments: formik.values.comments
       })
     )
-    enqueueSnackbar('Postulación rechazada exitosamente', {
-      autoHideDuration: 1500,
-      variant: 'success'
-    })
+      .then(() => {
+        changeSuccess(true, () => {
+          toggleOpenReject()
+          enqueueSnackbar('Postulación rechazada exitosamente', {
+            variant: 'success'
+          })
+        })
+        goNext()
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, { variant: 'error' })
+      })
   }
 
   const onReview = () => {
@@ -97,13 +132,19 @@ const StepTwo = ({
         comments: formik.values.comments
       })
     )
-    enqueueSnackbar(
-      'Solicitud de revisión de postulación agregada exitosamente',
-      {
-        autoHideDuration: 1500,
-        variant: 'success'
-      }
-    )
+      .then(() => {
+        changeSuccess(true, () => {
+          toggleOpenReview()
+          history.push(`/postulations/${appId}`)
+          enqueueSnackbar('Solicitud de revisión creada exitosamente', {
+            variant: 'success'
+          })
+        })
+        goNext()
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, { variant: 'error' })
+      })
   }
 
   const getIsRequired = (form) => {
@@ -128,29 +169,69 @@ const StepTwo = ({
         />
       </Box>
       <Box className={classes.actions}>
+        <Button startIcon={<BackIcon />} variant="outlined" onClick={goBack}>
+          Anterior
+        </Button>
         <SubmitButton
           disabled={
             !formik.isValid ||
             formik.isSubmitting ||
             !getIsRequired(formik.values)
           }
-          onClick={onReview}
+          onClick={toggleOpenReview}
         >
           Solicitar Revisión
         </SubmitButton>
         <SubmitButton
           disabled={!formik.isValid || formik.isSubmitting}
-          onClick={onReject}
+          onClick={toggleOpenReject}
         >
           Rechazar
         </SubmitButton>
         <SubmitButton
           disabled={!formik.isValid || formik.isSubmitting}
-          onClick={onApprove}
+          onClick={toggleOpenApprove}
         >
           Aprobar
         </SubmitButton>
       </Box>
+
+      {openApprove && (
+        <ConfirmDelete
+          open={openApprove}
+          success={success}
+          confirmText="Aprobar"
+          onClose={toggleOpenApprove}
+          message={<span>¿Estás seguro de aprobar esta postulación? </span>}
+          onConfirm={() => onApprove(appId)}
+        />
+      )}
+
+      {openReject && (
+        <ConfirmDelete
+          open={openReject}
+          success={success}
+          confirmText="Rechazar"
+          onClose={toggleOpenReject}
+          message={<span>¿Estás seguro de rechazar esta postulación? </span>}
+          onConfirm={() => onReject(appId)}
+        />
+      )}
+
+      {openReview && (
+        <ConfirmDelete
+          open={openReview}
+          success={success}
+          confirmText="Solicitar revisión"
+          onClose={toggleOpenReview}
+          message={
+            <span>
+              ¿Estás seguro de solicitar revisión de esta postulación?{' '}
+            </span>
+          }
+          onConfirm={() => onReview(appId)}
+        />
+      )}
     </Box>
   )
 }
