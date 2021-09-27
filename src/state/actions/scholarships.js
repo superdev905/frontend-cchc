@@ -145,6 +145,12 @@ const getApprovedScholarship = (id) => (dispatch) =>
           type: scholarshipTypes.GET_APPROVED_SCHOLARSHIP,
           payload: data
         })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 const deletePostulation = (id) => () =>
   new Promise((resolve, reject) => {
@@ -194,7 +200,16 @@ const getBenefits =
 
 const createBenefit = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${config.services.scholarship}/benefits/`, values)
+    Axios.post(`${config.services.scholarship}/benefits`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const postulationReject = (id, values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(
@@ -238,7 +253,6 @@ const scholarshipsActions = {
   getBenefits,
   createBenefit,
   updatePostulation,
-  getCareers,
   deletePostulation,
   postulationApprove,
   postulationReject,

@@ -7,16 +7,13 @@ import {
   Visibility as ViewIcon
 } from '@material-ui/icons'
 import { FiUpload } from 'react-icons/fi'
-import { useToggle } from '../../../hooks'
 import useStyles from './styles'
 import pdfIcon from '../FileThumbnail/pdf.png'
-import { FileVisor } from '..'
 
-const FilePostulation = ({ onChangeImage, onView, id, onDelete, fileKey }) => {
+const FilePostulation = ({ onChangeImage, id, onDelete, fileKey }) => {
   const classes = useStyles()
   const [uploadImg, setUploadImg] = useState(null)
   const [preview, setPreview] = useState(null)
-  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
 
   const getPreview = (currentFile) => {
     if (!currentFile) return <></>
@@ -87,7 +84,7 @@ const FilePostulation = ({ onChangeImage, onView, id, onDelete, fileKey }) => {
           display="flex"
           className={classes.previewWrapper}
         >
-          <IconButton className={classes.viewImgIcon} onClick={onView}>
+          <IconButton className={classes.viewImgIcon}>
             <ViewIcon />
           </IconButton>
 
@@ -116,7 +113,6 @@ const FilePostulation = ({ onChangeImage, onView, id, onDelete, fileKey }) => {
           </label>
         </Box>
       )}
-      {openVisor && <FileVisor open={openVisor} onClose={toggleOpenVisor} />}
     </Box>
   )
 }

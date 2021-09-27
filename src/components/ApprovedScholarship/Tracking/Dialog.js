@@ -20,6 +20,21 @@ import CommonTracking from './CommonTracking'
     approved_scholarship_id: int = Field(alias="approvedScholarshipId")
  */
 
+const BeaTrackingSchema = Yup.object().shape({
+  yearInProgress: Yup.number('Ingrese año válido').required(
+    'Ingrese año en curso'
+  ),
+  levelInProgress: Yup.string().required('Ingrese nivel en curso'),
+  totalCourses: Yup.number('Ingrese número válido').required(
+    'Ingrese ramos totales'
+  ),
+  failedCourses: Yup.number('Ingrese número válido').required(
+    'Ingrese ramos reprobados'
+  ),
+  businessName: Yup.string().required('Ingrese nombre de empresa actual'),
+  benefitId: Yup.number().required('Selecciona beneficio'),
+  scholarshipStatus: Yup.number().required('Seleccione estado de beca')
+})
 const PmaTrackingSchema = Yup.object().shape({
   benefitId: Yup.number().required('Seleccione beneficio'),
   scholarshipStatus: Yup.string().required('Seleccione estado de beca')
@@ -41,16 +56,18 @@ const BenefitDialog = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
+  const { benefitsList } = useSelector((state) => state.scholarships)
   const { success, changeSuccess } = useSuccess()
 
   const getValidationSchema = (typeName) => {
     if (typeName === 'PMA') return PmaTrackingSchema
+    if (typeName === 'BEA') return BeaTrackingSchema
     return BeshBestTrackingSchema
   }
 
   const renderForm = (typeName, form) => {
     if (typeName === 'PMA') return <PmaTracking form={form} />
-    return <CommonTracking form={form} />
+    return <CommonTracking form={form} benefits={benefitsList} />
   }
 
   const formik = useFormik({

@@ -289,6 +289,20 @@ const routes = [
   {
     path: '/scholarship/approved/:idApproved',
     key: 'APPROVED-SCHOLARSHIP',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SIMPLE_USER']}
+        yes={() => (
+          <Layout>
+            <ApprovedScholarship />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
     path: `/postulations/:idPostulation`,
     key: 'POSTULATION-PAGE',
     exact: true,
@@ -297,7 +311,6 @@ const routes = [
         availableTo={['ADMIN', 'SIMPLE_USER']}
         yes={() => (
           <Layout>
-            <ApprovedScholarship />
             <Scholarship />
           </Layout>
         )}
