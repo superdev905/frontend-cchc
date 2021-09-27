@@ -32,8 +32,24 @@ const getTrackingList = (query) => () =>
         reject(err.response.data.detail)
       })
   })
+const getBEATrackingList = (query) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${
+        config.services.scholarship
+      }/tracking/scholarship-bea?${queryString.stringify(query)}`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 export default {
   createBEATracking,
-  getTrackingList
+  getTrackingList,
+  getBEATrackingList
 }

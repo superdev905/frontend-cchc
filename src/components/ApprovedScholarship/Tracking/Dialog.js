@@ -52,9 +52,9 @@ const BenefitDialog = ({
     onSubmit: (values) => {
       submitFunction({ ...values, date: new Date() })
         .then(() => {
+          formik.setSubmitting(false)
           enqueueSnackbar(successMessage, { variant: 'success' })
           changeSuccess(true, () => {
-            formik.setSubmitting(false)
             if (successFunction) {
               successFunction()
             }
