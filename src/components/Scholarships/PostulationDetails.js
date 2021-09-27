@@ -18,11 +18,13 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     color: theme.palette.common.black,
-    marginBottom: '15px',
-    marginTop: '5px'
+    marginBottom: '8px'
   },
   files: {
     backgroundColor: theme.palette.gray.gray100
+  },
+  box: {
+    marginTop: '35px'
   }
 }))
 
@@ -56,7 +58,7 @@ const PostulationDetails = ({ loading }) => {
                 Estado de postulación: {application?.revisionStatus.status}{' '}
               </Alert>
             </Box>
-            <Box>
+            <Box className={classes.box}>
               <Typography variant="h6" className={classes.title}>
                 Trabajador
               </Typography>
@@ -67,7 +69,7 @@ const PostulationDetails = ({ loading }) => {
                 <Text loading={loading}> {application?.employeeNames}</Text>
               </LabeledRow>
             </Box>
-            <Box>
+            <Box className={classes.box}>
               <Typography variant="h6" className={classes.title}>
                 Empresa
               </Typography>
@@ -78,7 +80,7 @@ const PostulationDetails = ({ loading }) => {
                 <Text loading={loading}> {application?.businessName}</Text>
               </LabeledRow>
             </Box>
-            <Box>
+            <Box className={classes.box}>
               <Typography variant="h6" className={classes.title}>
                 Beneficiario
               </Typography>
@@ -92,11 +94,46 @@ const PostulationDetails = ({ loading }) => {
                 </Text>
               </LabeledRow>
             </Box>
-            <Box>
+
+            <Box className={classes.box}>
               <Typography variant="h6" className={classes.title}>
-                Comentarios
+                Universidad o Instituto
               </Typography>
-              <Text loading={loading}> </Text>
+              <LabeledRow label="Nombre:">
+                <Text s loading={loading}>
+                  {' '}
+                  {application?.schoolName}
+                </Text>
+              </LabeledRow>
+              <LabeledRow label="Region:">
+                <Text s loading={loading}>
+                  {' '}
+                  {application?.schoolRegionDetails.name}
+                </Text>
+              </LabeledRow>
+              <LabeledRow label="Comuna:">
+                <Text s loading={loading}>
+                  {' '}
+                  {application?.schoolCommuneDetails.name}
+                </Text>
+              </LabeledRow>
+            </Box>
+            <Box className={classes.box}>
+              <Typography variant="h6" className={classes.title}>
+                Carrera
+              </Typography>
+              <LabeledRow label="Nombre:">
+                <Text loading={loading}> {application?.career.name}</Text>
+              </LabeledRow>
+              <LabeledRow label="Tipo:">
+                <Text s loading={loading}>
+                  {' '}
+                  {application?.career.type}
+                </Text>
+              </LabeledRow>
+              <LabeledRow label="Puntaje PTU:">
+                <Text loading={loading}> {application?.psuScore}</Text>
+              </LabeledRow>
             </Box>
           </Box>
         </Grid>
