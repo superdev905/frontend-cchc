@@ -80,7 +80,7 @@ const ScholarshipDetails = () => {
         changeSuccess(true, () => {
           toggleOpenDelete()
           enqueueSnackbar('Postulación eliminada', { variant: 'success' })
-          history.push('/postulations')
+          history.push('/scholarships')
         })
       })
       .catch((err) => {
@@ -88,8 +88,8 @@ const ScholarshipDetails = () => {
       })
   }
 
-  const approveDialog = () => {
-    dispatch(scholarshipsActions.toggleCreateModal(showCreateModal))
+  const approveDialog = (id) => {
+    dispatch(scholarshipsActions.toggleCreateModal(showCreateModal, id))
   }
 
   const toggleCreateModal = () => {
@@ -124,6 +124,10 @@ const ScholarshipDetails = () => {
           </Box>
         </Box>
         <Box>
+          <Button danger onClick={toggleOpenDelete}>
+            Eliminar
+          </Button>
+
           <Button onClick={toggleOpenEdit}>Editar</Button>
           <Button onClick={approveDialog}>Aprobar</Button>
         </Box>

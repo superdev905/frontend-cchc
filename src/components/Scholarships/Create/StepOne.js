@@ -130,7 +130,7 @@ const StepOne = ({ onClose, data }) => {
       const targetEmployee = employees.find(
         (item) => item.run === formik.values.employeeRut
       )
-      setSelectedCompany(targetEmployee)
+      setSelectedEmployee(targetEmployee)
     }
   }, [create.type, formik.values.employeeRut, employees])
 
@@ -212,7 +212,7 @@ const StepOne = ({ onClose, data }) => {
               required
               options={employees}
               value={selectedEmployee || ''}
-              getOptionSelected={(option, value) => option.id === value.id}
+              //  getOptionSelected={(option, value) => option.id === value.id}
               getOptionLabel={(option) => option.run || ''}
               onChange={onEmployeeSelect}
               required
@@ -231,7 +231,7 @@ const StepOne = ({ onClose, data }) => {
               required
               options={employees}
               value={selectedEmployee || ''}
-              getOptionSelected={(option, value) => option.id === value.id}
+              //  getOptionSelected={(option, value) => option.id === value.id}
               getOptionLabel={(option) => option.names || ''}
               onChange={onEmployeeSelect}
               required
@@ -278,7 +278,6 @@ const StepOne = ({ onClose, data }) => {
               renderOption={(option) => (
                 <Box>
                   <Typography>
-                    {`Empresa: `}
                     <strong>{option.business_name}</strong>
                   </Typography>
                   <Typography>{`Rut: ${option.rut}`}</Typography>

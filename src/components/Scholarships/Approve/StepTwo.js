@@ -1,13 +1,11 @@
 import * as Yup from 'yup'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { Box, Typography } from '@material-ui/core'
-import { ArrowBack as BackIcon } from '@material-ui/icons'
-import { Button, SubmitButton, TextArea } from '../../UI'
+import { SubmitButton, TextArea } from '../../UI'
 import scholarshipsActions from '../../../state/actions/scholarships'
 import useStyles from './styles'
-import useSuccess from '../../../hooks/useSuccess'
 // import filesActions from '../../../state/actions/files'
 
 const validationSchema = Yup.object({
@@ -24,9 +22,8 @@ const StepTwo = ({
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const { success, changeSuccess } = useSuccess()
   const { enqueueSnackbar } = useSnackbar()
-  const { create } = useSelector((state) => state.scholarships)
+  const { application } = useSelector((state) => state.scholarships)
 
   const formik = useFormik({
     validateOnMount: true,
@@ -36,10 +33,12 @@ const StepTwo = ({
       comments: type === 'UPDATE' ? data.comments : ''
     },
     onSubmit: (values, { resetForm }) => {
-      submitFunction(values)
+      submitFunction({
+        ...values,
+        date: new Date(values.date).toISOString()
+      })
         .then(() => {
           formik.setSubmitting(false)
-          changeSuccess(false)
           enqueueSnackbar(successMessage, {
             variant: 'success'
           })
@@ -56,15 +55,60 @@ const StepTwo = ({
           enqueueSnackbar(err, {
             variant: 'error'
           })
-          changeSuccess(false)
         })
     }
   })
 
-  const goBack = () => {
+  const appId = application.id
+
+  const onApprove = () => {
     dispatch(
-      scholarshipsActions.updateCreate({ ...create, step: create.step - 1 })
+      scholarshipsActions.postulationApprove(appId, {
+        state: 'APROBADA',
+        date: new Date(),
+        comments: formik.values.comments
+      })
     )
+    enqueueSnackbar('Postulación aprobada exitosamente', {
+      autoHideDuration: 1500,
+      variant: 'success'
+    })
+  }
+
+  const onReject = () => {
+    dispatch(
+      scholarshipsActions.postulationReject(appId, {
+        state: 'RECHAZADA',
+        date: new Date(),
+        comments: formik.values.comments
+      })
+    )
+    enqueueSnackbar('Postulación rechazada exitosamente', {
+      autoHideDuration: 1500,
+      variant: 'success'
+    })
+  }
+
+  const onReview = () => {
+    dispatch(
+      scholarshipsActions.postulationRevision(appId, {
+        state: 'POR_REVISAR',
+        date: new Date(),
+        comments: formik.values.comments
+      })
+    )
+    enqueueSnackbar(
+      'Solicitud de revisión de postulación agregada exitosamente',
+      {
+        autoHideDuration: 1500,
+        variant: 'success'
+      }
+    )
+  }
+
+  const getIsRequired = (form) => {
+    if (form.comments) return true
+    return false
   }
 
   return (
@@ -75,6 +119,7 @@ const StepTwo = ({
       <Box>
         <TextArea
           name="comments"
+          required
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.comments}
@@ -83,16 +128,27 @@ const StepTwo = ({
         />
       </Box>
       <Box className={classes.actions}>
-        <Button startIcon={<BackIcon />} variant="outlined" onClick={goBack}>
-          Anterior
-        </Button>
-
         <SubmitButton
-          onClick={formik.handleSubmit}
-          loading={formik.isSubmitting}
-          success={success}
+          disabled={
+            !formik.isValid ||
+            formik.isSubmitting ||
+            !getIsRequired(formik.values)
+          }
+          onClick={onReview}
         >
-          Enviar
+          Solicitar Revisión
+        </SubmitButton>
+        <SubmitButton
+          disabled={!formik.isValid || formik.isSubmitting}
+          onClick={onReject}
+        >
+          Rechazar
+        </SubmitButton>
+        <SubmitButton
+          disabled={!formik.isValid || formik.isSubmitting}
+          onClick={onApprove}
+        >
+          Aprobar
         </SubmitButton>
       </Box>
     </Box>

@@ -6,10 +6,10 @@ import useStyles from './styles'
 import Actions from '../../Companies/Create/Actions'
 import scholarshipsActions from '../../../state/actions/scholarships'
 
-const StepOne = ({ onClose, onNext }) => {
+const StepOne = ({ onClose }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const { application } = useSelector((state) => state.scholarships)
+  const { application, create } = useSelector((state) => state.scholarships)
 
   const getPostulationDetails = (id) => {
     dispatch(scholarshipsActions.getPostulationDetails(id))
@@ -18,6 +18,12 @@ const StepOne = ({ onClose, onNext }) => {
   useEffect(() => {
     getPostulationDetails()
   }, [])
+
+  const handleNext = () => {
+    dispatch(
+      scholarshipsActions.updateCreate({ ...create, step: create.step + 1 })
+    )
+  }
 
   return (
     <Box className={classes.form}>
@@ -75,8 +81,8 @@ const StepOne = ({ onClose, onNext }) => {
         showBackIcon={false}
         handleBack={onClose}
         backText="Cancelar"
-        handleNext={onNext}
-      />{' '}
+        handleNext={handleNext}
+      />
     </Box>
   )
 }
