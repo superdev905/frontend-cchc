@@ -12,7 +12,7 @@ const toggleCreateModal = (value) => (dispatch) =>
     payload: !value
   })
 
-const getApplications =
+const getPostulations =
   (query = {}) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
@@ -38,7 +38,7 @@ const getApplications =
         })
     })
 
-const getApplicationDetails = (id) => (dispatch) =>
+const getPostulationDetails = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.scholarship}/postulations/${id}`)
       .then((response) => {
@@ -82,9 +82,9 @@ const getScholarshipTypes = () => (dispatch) =>
       })
   })
 
-const updateApplications = (id, values) => () =>
+const updatePostulation = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.put(`/postulations/${id}`, values)
+    Axios.put(`${config.services.scholarship}/postulations/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data.data)
@@ -146,6 +146,26 @@ const getApprovedScholarship = (id) => (dispatch) =>
           payload: data
         })
 
+const deletePostulation = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${config.services.scholarship}/postulations/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const postulationApprove = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.scholarship}/postulations/${id}/approve`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
         resolve(data)
       })
       .catch((err) => {
@@ -175,6 +195,27 @@ const getBenefits =
 const createBenefit = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.scholarship}/benefits/`, values)
+const postulationReject = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.scholarship}/postulations/${id}/reject`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const postulationRevision = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.scholarship}/postulations/${id}/request-revision`,
+      values
+    )
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -187,16 +228,21 @@ const createBenefit = (values) => () =>
 const scholarshipsActions = {
   updateCreate,
   toggleCreateModal,
-  getApplications,
-  getApplicationDetails,
+  getPostulations,
+  getPostulationDetails,
   createApplications,
   getScholarshipTypes,
-  updateApplications,
   getCareers,
   getApprovedScholarships,
   getApprovedScholarship,
   getBenefits,
-  createBenefit
+  createBenefit,
+  updatePostulation,
+  getCareers,
+  deletePostulation,
+  postulationApprove,
+  postulationReject,
+  postulationRevision
 }
 
 export default scholarshipsActions

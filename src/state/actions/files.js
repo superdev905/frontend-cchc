@@ -65,9 +65,22 @@ const uploadFileToStorage = (formData) => () =>
       })
   })
 
+const deleteFile = (key) => () =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`${config.services.parameters}/file/delete/${key}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   uploadFile,
   getFile,
   uploadFileToStorage,
-  downloadFile
+  downloadFile,
+  deleteFile
 }

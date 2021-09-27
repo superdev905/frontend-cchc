@@ -40,15 +40,13 @@ const validationSchema = Yup.object({
   psuScore: Yup.number('Puntaje valido').required('Ingrese puntaje ptu o simil')
 })
 
-const StepOne = ({ onClose }) => {
+const StepOne = ({ onClose, data }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { regions } = useSelector((state) => state.common)
-  const { create } = useSelector((state) => state.scholarships)
-  const { scholarshipType, careers } = useSelector(
+  const { create, scholarshipType, careers } = useSelector(
     (state) => state.scholarships
   )
-  const { showCreateModal } = useSelector((state) => state.scholarships)
   const [communes, setCommunes] = useState([])
   const [companies, setCompanies] = useState([])
   const [employees, setEmployees] = useState([])
@@ -65,8 +63,8 @@ const StepOne = ({ onClose }) => {
       employeeRut: create?.application?.employeeRut || '',
       businessName: create?.application?.businessName || '',
       businessRut: create?.application?.businessRut || '',
-      businessRelatedName: create?.application?.businessName || '',
-      businessRelatedRut: create?.application?.businessRut || '',
+      businessRelatedName: create?.application?.businessRelatedName || '',
+      businessRelatedRut: create?.application?.businessRelatedRut || '',
       beneficiaryNames: create?.application?.beneficiaryNames || '',
       beneficiaryRut: create?.application?.beneficiaryRut || '',
       careerId: create?.application?.careerId || '',
@@ -77,7 +75,6 @@ const StepOne = ({ onClose }) => {
     },
 
     onSubmit: (values) => {
-      console.log(create)
       dispatch(
         scholarshipsActions.updateCreate({
           ...create,
@@ -87,8 +84,6 @@ const StepOne = ({ onClose }) => {
       )
     }
   })
-
-  console.log(formik.errors)
 
   const handleSelectChange = (e) => {
     const { name, value } = e.target
@@ -121,6 +116,35 @@ const StepOne = ({ onClose }) => {
     }
   }, [formik.values.schoolRegion, regions])
 
+  useEffect(() => {
+    if (create.type !== 'CREATE' && companies.length > 0) {
+      const targetCompany = companies.find(
+        (item) => item.rut === formik.values.businessRut
+      )
+      setSelectedCompany(targetCompany)
+    }
+  }, [create.type, formik.values.businessRut, companies])
+
+  useEffect(() => {
+    if (create.type === 'UPDATE' && employees.length > 0) {
+      const targetEmployee = employees.find(
+        (item) => item.run === formik.values.employeeRut
+      )
+      setSelectedCompany(targetEmployee)
+    }
+  }, [create.type, formik.values.employeeRut, employees])
+
+  useEffect(() => {
+    if (data) {
+      dispatch(
+        scholarshipsActions.updateCreate({
+          ...create,
+          ...data
+        })
+      )
+    }
+  }, [data])
+
   const onEmployeeSelect = (__, values) => {
     setSelectedEmployee(values)
     const idEmployee = values ? values.id : ''
@@ -146,24 +170,19 @@ const StepOne = ({ onClose }) => {
   }
 
   useEffect(() => {
-    if (showCreateModal) {
-      dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
-        (list) => {
-          setCompanies(list)
-        }
-      )
-      dispatch(employeeActions.getEmployees({ state: 'CREATED' }, false)).then(
-        (list) => {
-          setEmployees(list)
-        }
-      )
-    }
-  }, [showCreateModal])
-
-  useEffect(() => {
     dispatch(commonActions.getRegions())
     dispatch(scholarshipsActions.getScholarshipTypes())
     dispatch(scholarshipsActions.getCareers())
+    dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
+      (list) => {
+        setCompanies(list)
+      }
+    )
+    dispatch(employeeActions.getEmployees({ state: 'CREATED' }, false)).then(
+      (list) => {
+        setEmployees(list)
+      }
+    )
   }, [])
 
   return (
@@ -190,6 +209,7 @@ const StepOne = ({ onClose }) => {
 
           <Grid item xs={12} md={6}>
             <Autocomplete
+              required
               options={employees}
               value={selectedEmployee || ''}
               getOptionSelected={(option, value) => option.id === value.id}
@@ -208,6 +228,7 @@ const StepOne = ({ onClose }) => {
           </Grid>
           <Grid item xs={12} md={6}>
             <Autocomplete
+              required
               options={employees}
               value={selectedEmployee || ''}
               getOptionSelected={(option, value) => option.id === value.id}
@@ -230,6 +251,7 @@ const StepOne = ({ onClose }) => {
 
           <Grid item xs={12} md={6}>
             <Autocomplete
+              required
               options={companies}
               value={selectedCompany || ''}
               getOptionLabel={(option) => option.rut || ''}
@@ -248,6 +270,7 @@ const StepOne = ({ onClose }) => {
           </Grid>
           <Grid item xs={12} md={6}>
             <Autocomplete
+              required
               options={companies}
               value={selectedCompany || ''}
               getOptionLabel={(option) => option.business_name || ''}
@@ -357,6 +380,7 @@ const StepOne = ({ onClose }) => {
 
           <Grid item xs={12} md={6}>
             <TextField
+              required
               label="Nombre de institución o colegio"
               name="schoolName"
               onChange={formik.handleChange}
@@ -406,6 +430,7 @@ const StepOne = ({ onClose }) => {
 
           <Grid item xs={12} md={6}>
             <TextField
+              required
               label="Puntaje PTU"
               name="psuScore"
               onChange={formik.handleChange}
@@ -421,7 +446,7 @@ const StepOne = ({ onClose }) => {
         showBackIcon={false}
         handleBack={onClose}
         backText="Cancelar"
-        disableNext={!formik.isValid}
+        disabledNext={!formik.isValid}
         handleNext={formik.handleSubmit}
       />
     </Box>
