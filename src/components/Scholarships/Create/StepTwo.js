@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
+import { useHistory } from 'react-router-dom'
 import { Box, Grid, InputLabel, Typography } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { useToggle } from '../../../hooks'
@@ -14,6 +15,7 @@ import { FilePostulation } from '../../Shared'
 const StepTwo = ({ type }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
   const { create } = useSelector((state) => state.scholarships)
   const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
@@ -108,6 +110,7 @@ const StepTwo = ({ type }) => {
           })
         )
       })
+      history.push('/scholarships')
       enqueueSnackbar('Postulación creada exitosamente', {
         autoHideDuration: 1500,
         variant: 'success'

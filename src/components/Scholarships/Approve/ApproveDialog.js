@@ -11,10 +11,10 @@ function getSteps() {
   return ['Revisar datos', 'Aprobar']
 }
 
-function getStepContent(stepIndex, { onClose, onNext }) {
+function getStepContent(stepIndex, { onClose }) {
   switch (stepIndex) {
     case 0:
-      return <StepOne onClose={onClose} onNext={onNext} />
+      return <StepOne onClose={onClose} />
     case 1:
       return <StepTwo />
     default:
@@ -101,9 +101,9 @@ const ApproveDialog = ({
         <div>
           {create.step === steps.length ? (
             <Box>
-              <Typography align="center">{`Postulación ${
-                type === 'UPDATE' ? 'actualizada' : 'creada'
-              }  con éxito`}</Typography>
+              <Typography align="center">
+                Postulación revisada con exito
+              </Typography>
               <Box display="flex" justifyContent="center">
                 <Button onClick={handleEnd}>Cerrar</Button>
               </Box>
