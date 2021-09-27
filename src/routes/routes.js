@@ -26,9 +26,6 @@ const ApprovedScholarship = lazy(() => import('../pages/ApprovedScholarship'))
 const Scholarship = lazy(() =>
   import('../pages/Scholarship/ScholarshipDetails')
 )
-const ApprovedDetails = lazy(() =>
-  import('../pages/Scholarship/Approved/ApprovedDetails')
-)
 
 const routes = [
   {
@@ -312,22 +309,6 @@ const routes = [
         yes={() => (
           <Layout>
             <Scholarship />
-          </Layout>
-        )}
-        no={() => (authenticated ? <Forbidden /> : <Login />)}
-      />
-    )
-  },
-  {
-    path: `/approved-scholarships/:idPostulation`,
-    key: 'APPROVED-PAGE',
-    exact: true,
-    component: ({ authenticated }) => (
-      <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
-        yes={() => (
-          <Layout>
-            <ApprovedDetails />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}

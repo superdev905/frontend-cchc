@@ -110,51 +110,9 @@ const getCareers = () => (dispatch) =>
       })
   })
 
-const getApprovedScholarships =
-  (query = {}) =>
-  (dispatch) =>
-    new Promise((resolve, reject) => {
-      Axios.get(
-        `${
-          config.services.scholarship
-        }/approved-scholarships?${queryString.stringify(query)}`
-      )
-        .then((response) => {
-          const { data } = response
-          dispatch({
-            type: scholarshipTypes.GET_APPROVED_SCHOLARSHIPS,
-            payload: data.items
-          })
-          dispatch({
-            type: scholarshipTypes.SET_APPROVED_SCHOLARSHIPS_TOTAL,
-            payload: data.total
-          })
-          resolve(data)
-        })
-        .catch((err) => {
-          reject(err.response.data.detail)
-        })
-    })
-
-const getApprovedScholarship = (id) => (dispatch) =>
+const deletePostulation = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.scholarship}/approved-scholarships/${id}`)
-      .then((response) => {
-        const { data } = response
-        dispatch({
-          type: scholarshipTypes.GET_APPROVED_SCHOLARSHIP,
-          payload: data
-        })
-        resolve()
-      })
-      .catch((err) => {
-        reject(err.response.data.detail)
-      })
-  })
-
-const deletePostulation = (id) => () =>
-  new Promise((resolve, reject) => {
-    Axios.patch(`${config.services.scholarship}/postulations/${id}`)
+    Axios.patch(`${config.services.scholarship}/postulations/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -234,6 +192,48 @@ const postulationRevision = (id, values) => () =>
       .then((response) => {
         const { data } = response
         resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getApprovedScholarships =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.scholarship
+        }/approved-scholarships?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: scholarshipTypes.GET_APPROVED_SCHOLARSHIPS,
+            payload: data.items
+          })
+          dispatch({
+            type: scholarshipTypes.SET_APPROVED_SCHOLARSHIPS_TOTAL,
+            payload: data.total
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const getApprovedScholarship = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.scholarship}/approved-scholarships/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scholarshipTypes.GET_APPROVED_SCHOLARSHIP,
+          payload: data
+        })
+        resolve()
       })
       .catch((err) => {
         reject(err.response.data.detail)

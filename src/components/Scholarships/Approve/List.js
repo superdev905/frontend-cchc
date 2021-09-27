@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { formatDate } from '../../formatters'
-import scholarshipsActions from '../../state/actions/scholarships'
-import { DataTable } from '../Shared'
-import { PageHeading, Wrapper } from '../UI'
+import { formatDate } from '../../../formatters'
+import scholarshipsActions from '../../../state/actions/scholarships'
+import { DataTable } from '../../Shared'
+import { PageHeading, Wrapper } from '../../UI'
 
 const ApprovedList = () => {
   const dispatch = useDispatch()
