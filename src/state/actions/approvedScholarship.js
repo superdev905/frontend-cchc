@@ -1,4 +1,4 @@
-//  import queryString from 'query-string'
+import queryString from 'query-string'
 import Axios from '../../Axios'
 //  import scholarshipTypes from '../types/scholarships'
 import config from '../../config'
@@ -19,6 +19,21 @@ const createBEATracking = (values) => () =>
       })
   })
 
+const getTrackingList = (query) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.scholarship}/tracking?${queryString.stringify(query)}`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
-  createBEATracking
+  createBEATracking,
+  getTrackingList
 }

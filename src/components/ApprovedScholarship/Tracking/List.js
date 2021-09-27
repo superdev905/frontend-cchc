@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Typography } from '@material-ui/core'
 import approvedActions from '../../../state/actions/approvedScholarship'
@@ -21,6 +22,21 @@ const TrackingList = () => {
       return dispatch(approvedActions.createBEATracking(data))
     return null
   }
+
+  const fetchTrackingList = () => {
+    dispatch(
+      approvedActions.getTrackingList({
+        approvedId: approvedScholarship.id,
+        scholarshipType: approvedScholarship.postulation.scholarshipType.key
+      })
+    )
+  }
+
+  useEffect(() => {
+    if (approvedScholarship) {
+      fetchTrackingList()
+    }
+  }, [approvedScholarship])
 
   return (
     <Box p={1}>

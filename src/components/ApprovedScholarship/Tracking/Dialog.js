@@ -1,4 +1,3 @@
-import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { Box, Typography } from '@material-ui/core'
@@ -6,43 +5,14 @@ import { useSelector } from 'react-redux'
 import { Dialog } from '../../Shared'
 import { Button, SubmitButton } from '../../UI'
 import { useSuccess } from '../../../hooks'
+import {
+  BeaTrackingSchema,
+  CommonTrackingSchema,
+  PmaTrackingSchema
+} from './schemas'
 import PmaTracking from './PmaTracking'
 import CommonTracking from './CommonTracking'
-
-/**
- * year_in_progress: int = Field(alias="yearInProgress")
-    level_in_progress: str = Field(alias="levelInProgress")
-    total_courses: int = Field(alias="totalCourses")
-    failed_courses: int = Field(alias="failedCourses")
-    business_name: str = Field(alias="businessName")
-    benefit_id: int = Field(alias="benefitId")
-    scholarship_status: str = Field(alias="scholarshipStatus")
-    approved_scholarship_id: int = Field(alias="approvedScholarshipId")
- */
-
-const BeaTrackingSchema = Yup.object().shape({
-  yearInProgress: Yup.number('Ingrese año válido').required(
-    'Ingrese año en curso'
-  ),
-  levelInProgress: Yup.string().required('Ingrese nivel en curso'),
-  totalCourses: Yup.number('Ingrese número válido').required(
-    'Ingrese ramos totales'
-  ),
-  failedCourses: Yup.number('Ingrese número válido').required(
-    'Ingrese ramos reprobados'
-  ),
-  businessName: Yup.string().required('Ingrese nombre de empresa actual'),
-  benefitId: Yup.number().required('Selecciona beneficio'),
-  scholarshipStatus: Yup.number().required('Seleccione estado de beca')
-})
-const PmaTrackingSchema = Yup.object().shape({
-  benefitId: Yup.number().required('Seleccione beneficio'),
-  scholarshipStatus: Yup.string().required('Seleccione estado de beca')
-})
-const BeshBestTrackingSchema = Yup.object().shape({
-  benefitId: Yup.number().required('Seleccione beneficio'),
-  scholarshipStatus: Yup.string().required('Seleccione estado de beca')
-})
+import BEATracking from './BEATracking'
 
 const BenefitDialog = ({
   open,
@@ -61,12 +31,14 @@ const BenefitDialog = ({
 
   const getValidationSchema = (typeName) => {
     if (typeName === 'PMA') return PmaTrackingSchema
-    if (typeName === 'BEA') return BeaTrackingSchema
-    return BeshBestTrackingSchema
+    if (typeName === 'ACADEMIC_EXCELLENCE_SCHOLARSHIP') return BeaTrackingSchema
+    return CommonTrackingSchema
   }
 
   const renderForm = (typeName, form) => {
     if (typeName === 'PMA') return <PmaTracking form={form} />
+    if (typeName === 'ACADEMIC_EXCELLENCE_SCHOLARSHIP')
+      return <BEATracking form={form} benefits={benefitsList} />
     return <CommonTracking form={form} benefits={benefitsList} />
   }
 
@@ -100,6 +72,8 @@ const BenefitDialog = ({
     formik.resetForm()
     onClose()
   }
+
+  console.log(formik.errors)
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
