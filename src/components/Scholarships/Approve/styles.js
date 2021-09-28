@@ -24,6 +24,15 @@ const useStyles = makeStyles((theme) => ({
     '& .mapboxgl-ctrl-bottom-right': {
       display: 'none'
     }
+  },
+  box: {
+    [theme.breakpoints.up('md')]: {
+      display: 'flex',
+      justifyContent: 'space-between'
+    }
+  },
+  info: {
+    marginTop: '30px'
   }
 }))
 
