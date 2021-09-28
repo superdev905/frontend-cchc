@@ -4,11 +4,12 @@ import { Box, Stepper, Step, StepLabel, Typography } from '@material-ui/core'
 import { Button } from '../../UI'
 import StepTwo from './StepTwo'
 import StepOne from './StepOne'
+import StepOneFiles from './StepOneFiles'
 import { Dialog } from '../../Shared'
 import scholarshipsActions from '../../../state/actions/scholarships'
 
 function getSteps() {
-  return ['Revisar datos', 'Aprobar']
+  return ['Revisar datos', 'Revisar archivos', 'Aprobar']
 }
 
 function getStepContent(stepIndex, { onClose }) {
@@ -16,6 +17,8 @@ function getStepContent(stepIndex, { onClose }) {
     case 0:
       return <StepOne onClose={onClose} />
     case 1:
+      return <StepOneFiles />
+    case 2:
       return <StepTwo />
     default:
       return <span>Paso no encontrado</span>

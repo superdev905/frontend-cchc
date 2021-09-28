@@ -75,17 +75,25 @@ const ScholarshipDetails = () => {
     )
 
   const onDelete = (id) => {
-    dispatch(scholarshipsActions.deletePostulation(id, { state: 'DELETED' }))
-      .then(() => {
-        changeSuccess(true, () => {
-          toggleOpenDelete()
-          enqueueSnackbar('Postulación eliminada', { variant: 'success' })
-          history.push('/scholarships')
+    if (application.state === 'DELETED') {
+      toggleOpenDelete()
+      enqueueSnackbar('Esta postulación ya fue eliminada', {
+        variant: 'success',
+        autoHideDuration: 1500
+      })
+    } else {
+      dispatch(scholarshipsActions.deletePostulation(id, { state: 'DELETED' }))
+        .then(() => {
+          changeSuccess(true, () => {
+            toggleOpenDelete()
+            enqueueSnackbar('Postulación eliminada', { variant: 'success' })
+            history.push('/scholarships')
+          })
         })
-      })
-      .catch((err) => {
-        enqueueSnackbar(err, { variant: 'error' })
-      })
+        .catch((err) => {
+          enqueueSnackbar(err, { variant: 'error' })
+        })
+    }
   }
 
   const approveDialog = (id) => {
