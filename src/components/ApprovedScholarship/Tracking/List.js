@@ -23,8 +23,7 @@ const BEAList = ({ list, loading }) => (
       {
         name: 'Promedios',
         selector: (row) =>
-          `${row.avgScoreFirstSemester} - ${row.avgScoreSecondSemester}`,
-        sortable: true
+          `${row.avgScoreFirstSemester} - ${row.avgScoreSecondSemester}`
       },
       {
         name: 'Nombre de empresa',
@@ -50,32 +49,79 @@ const BEAList = ({ list, loading }) => (
     data={list}
   />
 )
+const BeshBestList = ({ list, loading }) => (
+  <DataTable
+    progressPending={loading}
+    emptyMessage={'Esta beca no tiene seguimientos registrados'}
+    columns={[
+      {
+        name: 'Año en curso',
+        selector: (row) => row.yearInProgress
+      },
+      {
+        name: 'Nivel en curso',
+        selector: (row) => row.levelInProgress
+      },
+      {
+        name: 'Ramos totales',
+        selector: (row) => row.totalCourses
+      },
+      {
+        name: 'Ramos reprobados',
+        selector: (row) => row.failedCourses,
+        hide: 'md'
+      },
+      {
+        name: 'Empresa',
+        selector: (row) => row.businessName,
+        hide: 'md'
+      },
+      {
+        name: 'Estado de beca',
+        selector: (row) => row.scholarshipStatus,
+        hide: 'md'
+      }
+    ]}
+    data={list}
+  />
+)
 
 const TrackingList = () => {
   const dispatch = useDispatch()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(false)
-  const { approvedScholarship } = useSelector((state) => state.scholarships)
+  const { approvedScholarship: details } = useSelector(
+    (state) => state.scholarships
+  )
 
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
 
   const createTracking = (values) => {
-    const { scholarshipType } = approvedScholarship.postulation
-    const data = { ...values, approvedScholarshipId: approvedScholarship.id }
+    const { scholarshipType } = details.postulation
+    const data = { ...values, details: details.id }
 
     if (scholarshipType.key === 'ACADEMIC_EXCELLENCE_SCHOLARSHIP')
       return dispatch(approvedActions.createBEATracking(data))
+    if (scholarshipType.key === 'BEST' || scholarshipType.key === 'BESH')
+      return dispatch(approvedActions.createBeshBestTracking(data))
     return null
   }
 
+  const getAction = (type, query) => {
+    if (type === 'ACADEMIC_EXCELLENCE_SCHOLARSHIP')
+      return dispatch(approvedActions.getBEATrackingList(query))
+
+    return dispatch(approvedActions.getBeshBestrackingList(query))
+  }
+
   const fetchTrackingList = () => {
+    const { scholarshipType } = details.postulation
+    const query = {
+      approvedId: details.id,
+      scholarshipType: details.postulation.scholarshipType.key
+    }
     setLoading(true)
-    dispatch(
-      approvedActions.getBEATrackingList({
-        approvedId: approvedScholarship.id,
-        scholarshipType: approvedScholarship.postulation.scholarshipType.key
-      })
-    )
+    getAction(scholarshipType.key, query)
       .then((res) => {
         setLoading(false)
         setItems(res.items)
@@ -86,26 +132,27 @@ const TrackingList = () => {
   }
 
   useEffect(() => {
-    if (approvedScholarship) {
+    if (details) {
       fetchTrackingList()
     }
-  }, [approvedScholarship])
+  }, [details])
 
   return (
     <Box p={1}>
-      <Box display="flex" justifyContent="space-between">
-        <Typography>Seguimiento</Typography>
+      <Box display="flex" alignItems="center" justifyContent="space-between">
+        <Typography style={{ fontWeight: 'bold', fontSize: '18px' }}>
+          Seguimiento
+        </Typography>
         <Button onClick={toggleOpenAdd}>Registrar</Button>
       </Box>
       <Box>
         <BEAList list={items} loading={loading} />
-        {openAdd && approvedScholarship && (
+        <BeshBestList list={items} loading={loading} />
+        {openAdd && details && (
           <TrackingDialog
             open={openAdd}
             onClose={toggleOpenAdd}
-            scholarshipType={
-              approvedScholarship.postulation.scholarshipType.key
-            }
+            scholarshipType={details.postulation.scholarshipType.key}
             submitFunction={createTracking}
           />
         )}

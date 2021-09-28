@@ -4,7 +4,7 @@ import { Select } from '../../UI'
 
 const statusList = ['APROBADA', 'RECHAZADA', 'EN PROCESO']
 
-const PmaTracking = ({ form }) => (
+const PmaTracking = ({ form, benefits }) => (
   <Grid container spacing={2}>
     <Grid item xs={12}>
       <Select
@@ -15,6 +15,11 @@ const PmaTracking = ({ form }) => (
         onChange={form.handleChange}
       >
         <option value="">Seleccione beneficio</option>
+        {benefits.map((item) => (
+          <option key={`benefit-id-${item.id}`} value={item.id}>
+            {item.name}
+          </option>
+        ))}
       </Select>
     </Grid>
     <Grid item xs={12}>

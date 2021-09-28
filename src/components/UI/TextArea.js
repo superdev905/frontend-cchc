@@ -9,7 +9,8 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   label: {
-    fontSize: 14
+    fontSize: 15,
+    color: theme.palette.gray.gray600
   },
   textarea: ({ fullWidth, error }) => ({
     padding: `10px ${theme.spacing(1) + 4}px`,

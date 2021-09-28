@@ -1,6 +1,5 @@
 import queryString from 'query-string'
 import Axios from '../../Axios'
-//  import scholarshipTypes from '../types/scholarships'
 import config from '../../config'
 
 const createBEATracking = (values) => () =>
@@ -11,7 +10,34 @@ const createBEATracking = (values) => () =>
     )
       .then((response) => {
         const { data } = response
-
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+const createBeshBestTracking = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.scholarship}/tracking/scholarship-besh-best`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+const createPMATracking = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.scholarship}/tracking/scholarship-pma`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
         resolve(data)
       })
       .catch((err) => {
@@ -47,9 +73,68 @@ const getBEATrackingList = (query) => () =>
         reject(err.response.data.detail)
       })
   })
+const getBeshBestrackingList = (query) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${
+        config.services.scholarship
+      }/tracking/scholarship-besh-best?${queryString.stringify(query)}`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateBenefit = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.scholarship}/benefits/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchBenefit = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${config.services.scholarship}/benefits/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getApprovedStats = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.scholarship}/approved-scholarships/${id}/stats`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 export default {
   createBEATracking,
+  createBeshBestTracking,
+  createPMATracking,
   getTrackingList,
-  getBEATrackingList
+  getBEATrackingList,
+  getBeshBestrackingList,
+  updateBenefit,
+  patchBenefit,
+  getApprovedStats
 }

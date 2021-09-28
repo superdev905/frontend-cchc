@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { useSelector } from 'react-redux'
 import { formatDate } from '../../../formatters'
-import { Dialog } from '../../Shared'
+import { CurrencyTextField, Dialog } from '../../Shared'
 import { Button, SubmitButton, TextArea, TextField } from '../../UI'
 import { useSuccess } from '../../../hooks'
 
@@ -39,14 +39,15 @@ const BenefitDialog = ({
       name: type === 'UPDATE' ? data.name : '',
       description: type === 'UPDATE' ? data.description : ''
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       submitFunction({ ...values, date: new Date() })
         .then(() => {
+          formik.setSubmitting(false)
           enqueueSnackbar(successMessage, { variant: 'success' })
           changeSuccess(true, () => {
-            formik.setSubmitting(false)
             if (successFunction) {
               successFunction()
+              resetForm()
             }
             onClose()
           })
@@ -63,10 +64,21 @@ const BenefitDialog = ({
     onClose()
   }
 
+  useEffect(() => {
+    if (open) {
+      formik.resetForm()
+    }
+  }, [open])
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
       <Box p={2}>
-        <Typography>Nuevo beneficio</Typography>
+        <Typography
+          align="center"
+          style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px' }}
+        >
+          {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} beneficio`}
+        </Typography>
 
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
@@ -77,7 +89,7 @@ const BenefitDialog = ({
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
+            <CurrencyTextField
               label="Monto"
               name="amount"
               required

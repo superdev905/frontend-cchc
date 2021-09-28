@@ -1,5 +1,4 @@
 import { memo } from 'react'
-import CountUp from 'react-countup'
 import {
   Box,
   Grid,
@@ -30,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.gray.gray400}`,
     borderRadius: 8,
     [theme.breakpoints.up('md')]: {
-      minHeight: 170
+      minHeight: 150
     }
   },
   title: {
@@ -67,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const BenefitCard = ({ loader, benefit }) => {
+const BenefitCard = ({ loader, benefit, onEdit, onDelete }) => {
   const classes = useStyles()
 
   return (
@@ -117,10 +116,10 @@ const BenefitCard = ({ loader, benefit }) => {
                 justifyContent="flex-end"
                 className={classes.actions}
               >
-                <IconButton>
+                <IconButton onClick={onEdit}>
                   <EditIcon />
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={onDelete}>
                   <DeleteIcon />
                 </IconButton>
               </Box>
@@ -139,12 +138,7 @@ const BenefitCard = ({ loader, benefit }) => {
               <Grid item xs={12} md={2} className={classes.answersWrapper}>
                 <Box display="flex" justifyContent="flex-end">
                   <Typography className={classes.answers} align="center">
-                    <CountUp
-                      duration={0.5}
-                      start={0}
-                      end={benefit.amount}
-                      formattingFn={(n) => formatCurrency(n)}
-                    ></CountUp>
+                    {formatCurrency(benefit.amount)}
                   </Typography>
                 </Box>
               </Grid>

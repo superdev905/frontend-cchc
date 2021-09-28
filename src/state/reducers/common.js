@@ -24,7 +24,8 @@ const initialState = {
   assistanceTypes: [],
   topics: [],
   managementList: [],
-  areas: []
+  areas: [],
+  roles: []
 }
 
 const commonReducer = (state = initialState, { type, payload }) => {
@@ -77,6 +78,8 @@ const commonReducer = (state = initialState, { type, payload }) => {
       return { ...state, managementList: payload }
     case commonTypes.GET_AREAS:
       return { ...state, areas: payload }
+    case commonTypes.GET_ROLES:
+      return { ...state, roles: payload }
     default:
       return state
   }

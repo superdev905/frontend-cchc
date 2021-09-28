@@ -351,6 +351,19 @@ const getInterventionDetails = (id) => () =>
       })
   })
 
+const getRoles = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.auth}/roles`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_ROLES, payload: data })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 export default {
   getRegions,
   getCharges,
@@ -377,5 +390,6 @@ export default {
   getAreas,
   getManagement,
   getTopics,
-  getInterventionDetails
+  getInterventionDetails,
+  getRoles
 }

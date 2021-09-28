@@ -13,7 +13,7 @@ export const CommonTrackingSchema = Yup.object().shape({
   ),
   businessName: Yup.string().required('Ingrese nombre de empresa actual'),
   benefitId: Yup.number().required('Selecciona beneficio'),
-  scholarshipStatus: Yup.number().required('Seleccione estado de beca')
+  scholarshipStatus: Yup.string().required('Seleccione estado de beca')
 })
 
 export const BeaTrackingSchema = Yup.object().shape({

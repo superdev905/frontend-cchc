@@ -36,7 +36,8 @@ const BenefitDialog = ({
   }
 
   const renderForm = (typeName, form) => {
-    if (typeName === 'PMA') return <PmaTracking form={form} />
+    if (typeName === 'PMA')
+      return <PmaTracking form={form} benefits={benefitsList} />
     if (typeName === 'ACADEMIC_EXCELLENCE_SCHOLARSHIP')
       return <BEATracking form={form} benefits={benefitsList} />
     return <CommonTracking form={form} benefits={benefitsList} />

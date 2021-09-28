@@ -66,7 +66,7 @@ const Form = ({
   const [randomPassword] = useState(generatePassword())
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
-  const { charges } = useSelector((state) => state.common)
+  const { charges, roles } = useSelector((state) => state.common)
 
   const getTitle = (actionType) => {
     if (actionType === 'VIEW') return 'Ver usuario'
@@ -121,7 +121,9 @@ const Form = ({
 
   useEffect(() => {
     if (open) {
+      formik.resetForm()
       dispatch(commonActions.getCharges())
+      dispatch(commonActions.getRoles())
     }
   }, [open])
   return (
@@ -233,6 +235,24 @@ const Form = ({
               >
                 <option value="">Sin cargo</option>
                 {charges.map((item) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Select
+                label="Rol"
+                name="role_id"
+                required
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.role_id}
+                helperText={formik.touched.role_id && formik.errors.role_id}
+                error={formik.touched.role_id && Boolean(formik.errors.role_id)}
+                inputProps={{ readOnly }}
+              >
+                <option value="">Sin cargo</option>
+                {roles.map((item) => (
                   <option value={item.id}>{item.name}</option>
                 ))}
               </Select>
