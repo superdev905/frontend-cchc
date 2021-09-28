@@ -102,9 +102,7 @@ const StepTwo = ({ type }) => {
       date: new Date()
     }
     const fileFilter = attachments.filter((item) => item.fileUrl !== '')
-    console.log(fileFilter)
     data.attachments = fileFilter
-    console.log(fileFilter)
 
     if (create.type === 'CREATE') {
       dispatch(scholarshipsActions.createApplications(data)).then(() => {
