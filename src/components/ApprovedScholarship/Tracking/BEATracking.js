@@ -14,6 +14,8 @@ const PmaTracking = ({ form, benefits }) => (
         name="benefitId"
         value={form.values.benefitId}
         onChange={form.handleChange}
+        error={form.touched.benefitId && Boolean(form.errors.benefitId)}
+        helperText={form.touched.benefitId && form.errors.benefitId}
       >
         <option value="">Seleccione beneficio</option>
         {benefits.map((item) => (
@@ -31,6 +33,10 @@ const PmaTracking = ({ form, benefits }) => (
         name="yearInProgress"
         value={form.values.yearInProgress}
         onChange={form.handleChange}
+        error={
+          form.touched.yearInProgress && Boolean(form.errors.yearInProgress)
+        }
+        helperText={form.touched.yearInProgress && form.errors.yearInProgress}
       />
     </Grid>
     <Grid item xs={6}>
@@ -41,6 +47,10 @@ const PmaTracking = ({ form, benefits }) => (
         name="levelInProgress"
         value={form.values.levelInProgress}
         onChange={form.handleChange}
+        error={
+          form.touched.levelInProgress && Boolean(form.errors.levelInProgress)
+        }
+        helperText={form.touched.levelInProgress && form.errors.levelInProgress}
       />
     </Grid>
     <Grid item xs={6}>
@@ -50,6 +60,14 @@ const PmaTracking = ({ form, benefits }) => (
         name="avgScoreFirstSemester"
         value={form.values.avgScoreFirstSemester}
         onChange={form.handleChange}
+        error={
+          form.touched.avgScoreFirstSemester &&
+          Boolean(form.errors.avgScoreFirstSemester)
+        }
+        helperText={
+          form.touched.avgScoreFirstSemester &&
+          form.errors.avgScoreFirstSemester
+        }
       />
     </Grid>
     <Grid item xs={6}>
@@ -59,6 +77,14 @@ const PmaTracking = ({ form, benefits }) => (
         name="avgScoreSecondSemester"
         value={form.values.avgScoreSecondSemester}
         onChange={form.handleChange}
+        error={
+          form.touched.avgScoreSecondSemester &&
+          Boolean(form.errors.avgScoreSecondSemester)
+        }
+        helperText={
+          form.touched.avgScoreFirstSemester &&
+          form.errors.avgScoreSecondSemester
+        }
       />
     </Grid>
     <Grid item xs={6}>
@@ -68,6 +94,13 @@ const PmaTracking = ({ form, benefits }) => (
         name="mandatoryActivity"
         value={form.values.mandatoryActivity}
         onChange={form.handleChange}
+        error={
+          form.touched.mandatoryActivity &&
+          Boolean(form.errors.mandatoryActivity)
+        }
+        helperText={
+          form.touched.mandatoryActivity && form.errors.mandatoryActivity
+        }
       >
         <option value="">Seleccione estado</option>
         {decisionList.map((item) => (
@@ -82,6 +115,14 @@ const PmaTracking = ({ form, benefits }) => (
         name="psychologicalInterview"
         value={form.values.psychologicalInterview}
         onChange={form.handleChange}
+        error={
+          form.touched.psychologicalInterview &&
+          Boolean(form.errors.psychologicalInterview)
+        }
+        helperText={
+          form.touched.psychologicalInterview &&
+          form.errors.psychologicalInterview
+        }
       >
         <option value="">Seleccione estado</option>
         {decisionList.map((item) => (
@@ -96,6 +137,8 @@ const PmaTracking = ({ form, benefits }) => (
         name="businessName"
         value={form.values.businessName}
         onChange={form.handleChange}
+        error={form.touched.businessName && Boolean(form.errors.businessName)}
+        helperText={form.touched.businessName && form.errors.businessName}
       />
     </Grid>
     <Grid item xs={12}>
@@ -105,6 +148,13 @@ const PmaTracking = ({ form, benefits }) => (
         name="scholarshipStatus"
         value={form.values.scholarshipStatus}
         onChange={form.handleChange}
+        error={
+          form.touched.scholarshipStatus &&
+          Boolean(form.errors.scholarshipStatus)
+        }
+        helperText={
+          form.touched.scholarshipStatus && form.errors.scholarshipStatus
+        }
       >
         <option value="">Seleccione estado</option>
         {statusList.map((item) => (

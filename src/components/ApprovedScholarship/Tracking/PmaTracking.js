@@ -13,6 +13,8 @@ const PmaTracking = ({ form, benefits }) => (
         name="benefitId"
         value={form.values.benefitId}
         onChange={form.handleChange}
+        error={form.touched.benefitId && Boolean(form.errors.benefitId)}
+        helperText={form.touched.benefitId && form.errors.benefitId}
       >
         <option value="">Seleccione beneficio</option>
         {benefits.map((item) => (
@@ -29,6 +31,13 @@ const PmaTracking = ({ form, benefits }) => (
         name="scholarshipStatus"
         value={form.values.scholarshipStatus}
         onChange={form.handleChange}
+        error={
+          form.touched.scholarshipStatus &&
+          Boolean(form.errors.scholarshipStatus)
+        }
+        helperText={
+          form.touched.scholarshipStatus && form.errors.scholarshipStatus
+        }
       >
         <option value="">Seleccione estado</option>
         {statusList.map((item) => (

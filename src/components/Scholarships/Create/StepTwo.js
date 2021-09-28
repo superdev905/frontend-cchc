@@ -101,6 +101,8 @@ const StepTwo = ({ type }) => {
       attachments,
       date: new Date()
     }
+
+    data.attachments = data.attachments.filter((item) => item.fileUrl !== '')
     if (create.type === 'CREATE') {
       dispatch(scholarshipsActions.createApplications(data)).then(() => {
         dispatch(

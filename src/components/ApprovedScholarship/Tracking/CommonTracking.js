@@ -13,6 +13,8 @@ const PmaTracking = ({ form, benefits }) => (
         name="benefitId"
         value={form.values.benefitId}
         onChange={form.handleChange}
+        error={form.touched.benefitId && Boolean(form.errors.benefitId)}
+        helperText={form.touched.benefitId && form.errors.benefitId}
       >
         <option value="">Seleccione beneficio</option>
         {benefits.map((item) => (
@@ -30,6 +32,10 @@ const PmaTracking = ({ form, benefits }) => (
         name="yearInProgress"
         value={form.values.yearInProgress}
         onChange={form.handleChange}
+        error={
+          form.touched.yearInProgress && Boolean(form.errors.yearInProgress)
+        }
+        helperText={form.touched.yearInProgress && form.errors.yearInProgress}
       />
     </Grid>
     <Grid item xs={6}>
@@ -40,6 +46,10 @@ const PmaTracking = ({ form, benefits }) => (
         name="levelInProgress"
         value={form.values.levelInProgress}
         onChange={form.handleChange}
+        error={
+          form.touched.levelInProgress && Boolean(form.errors.levelInProgress)
+        }
+        helperText={form.touched.levelInProgress && form.errors.levelInProgress}
       />
     </Grid>
     <Grid item xs={6}>
@@ -49,6 +59,8 @@ const PmaTracking = ({ form, benefits }) => (
         name="totalCourses"
         value={form.values.totalCourses}
         onChange={form.handleChange}
+        error={form.touched.totalCourses && Boolean(form.errors.totalCourses)}
+        helperText={form.touched.totalCourses && form.errors.totalCourses}
       />
     </Grid>
     <Grid item xs={6}>
@@ -58,6 +70,8 @@ const PmaTracking = ({ form, benefits }) => (
         name="failedCourses"
         value={form.values.failedCourses}
         onChange={form.handleChange}
+        error={form.touched.failedCourses && Boolean(form.errors.failedCourses)}
+        helperText={form.touched.failedCourses && form.errors.failedCourses}
       />
     </Grid>
     <Grid item xs={12} md={6}>
@@ -67,6 +81,8 @@ const PmaTracking = ({ form, benefits }) => (
         name="businessName"
         value={form.values.businessName}
         onChange={form.handleChange}
+        error={form.touched.businessName && Boolean(form.errors.businessName)}
+        helperText={form.touched.businessName && form.errors.businessName}
       />
     </Grid>
     <Grid item xs={12}>
@@ -76,6 +92,13 @@ const PmaTracking = ({ form, benefits }) => (
         name="scholarshipStatus"
         value={form.values.scholarshipStatus}
         onChange={form.handleChange}
+        error={
+          form.touched.scholarshipStatus &&
+          Boolean(form.errors.scholarshipStatus)
+        }
+        helperText={
+          form.touched.scholarshipStatus && form.errors.scholarshipStatus
+        }
       >
         <option value="">Seleccione estado</option>
         {statusList.map((item) => (
