@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { Box, IconButton } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import scholarshipsActions from '../../state/actions/scholarships'
@@ -14,10 +14,27 @@ import {
 const ApprovedScholarship = () => {
   const dispatch = useDispatch()
   const { idApproved } = useParams()
+  const history = useHistory()
+  const [loading, setLoading] = useState(false)
   const { approvedScholarship } = useSelector((state) => state.scholarships)
 
+  const redirectToApplication = (idApplication) => {
+    history.push(`/postulations/${idApplication}`)
+  }
+
+  const goBack = () => {
+    history.goBack()
+  }
+
   const fetchData = () => {
+    setLoading(true)
     dispatch(scholarshipsActions.getApprovedScholarship(idApproved))
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }
 
   useEffect(() => {
@@ -29,7 +46,7 @@ const ApprovedScholarship = () => {
       <Box display="flex" justifyContent="space-between">
         <Box display="flex">
           <Box>
-            <IconButton>
+            <IconButton onClick={goBack}>
               <BackIcon />
             </IconButton>
           </Box>
@@ -37,11 +54,23 @@ const ApprovedScholarship = () => {
             <PageHeading>
               Beca aprobada {approvedScholarship && approvedScholarship.id}
             </PageHeading>
-            <TimeStamp loading={false} text={'Hace 3 días'} />
+            <TimeStamp
+              loading={loading}
+              text={
+                approvedScholarship &&
+                approvedScholarship.createdTimeStamp.toLowerCase()
+              }
+            />
           </Box>
         </Box>
         <Box>
-          <Button>Ver detalles</Button>
+          <Button
+            onClick={() =>
+              redirectToApplication(approvedScholarship.postulation.id)
+            }
+          >
+            Ver postulación
+          </Button>
         </Box>
       </Box>
       <ApprovedStatistics />

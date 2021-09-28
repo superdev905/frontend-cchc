@@ -69,6 +69,11 @@ const ApprovedList = () => {
             name: 'Empresa',
             selector: (row) => row.postulation.businessName,
             hide: 'md'
+          },
+          {
+            name: 'Tipo de beca',
+            selector: (row) => row.postulation.scholarshipType.name,
+            hide: 'md'
           }
         ]}
         data={list}

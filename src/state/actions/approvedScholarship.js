@@ -89,6 +89,22 @@ const getBeshBestrackingList = (query) => () =>
       })
   })
 
+const getPMATrackingList = (query) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${
+        config.services.scholarship
+      }/tracking/scholarship-pma?${queryString.stringify(query)}`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const updateBenefit = (id, values) => () =>
   new Promise((resolve, reject) => {
     Axios.put(`${config.services.scholarship}/benefits/${id}`, values)
@@ -134,6 +150,7 @@ export default {
   getTrackingList,
   getBEATrackingList,
   getBeshBestrackingList,
+  getPMATrackingList,
   updateBenefit,
   patchBenefit,
   getApprovedStats

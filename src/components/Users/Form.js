@@ -47,6 +47,7 @@ const validationSchema = Yup.object().shape({
   paternal_surname: Yup.string().required('Ingrese paterno'),
   email: Yup.string().email('Ingrese correo válido').required('Ingrese email'),
   charge_id: Yup.string('Seleccione cargo').nullable(),
+  role_id: Yup.number('Seleccione rol'),
   charge_name: Yup.string(),
   is_administrator: Yup.bool()
 })
@@ -86,6 +87,7 @@ const Form = ({
       paternal_surname: type !== 'ADD' ? data.paternal_surname : '',
       email: type !== 'ADD' ? data.email : '',
       charge_id: type !== 'ADD' ? data.charge_id : '',
+      role_id: type !== 'ADD' ? data.role_id : '',
       password: randomPassword,
       is_administrator: type !== 'ADD' ? data.is_administrator : false
     },
@@ -251,7 +253,7 @@ const Form = ({
                 error={formik.touched.role_id && Boolean(formik.errors.role_id)}
                 inputProps={{ readOnly }}
               >
-                <option value="">Sin cargo</option>
+                <option value="">Sin rol</option>
                 {roles.map((item) => (
                   <option value={item.id}>{item.name}</option>
                 ))}

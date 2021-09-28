@@ -4,14 +4,16 @@ import { Box, Typography } from '@material-ui/core'
 import approvedActions from '../../../state/actions/approvedScholarship'
 import { useToggle } from '../../../hooks'
 import { DataTable } from '../../Shared'
-import { Button } from '../../UI'
+import { ActionsTable, Button } from '../../UI'
 import TrackingDialog from './Dialog'
+import { formatDate } from '../../../formatters'
 
 const BEAList = ({ list, loading }) => (
   <DataTable
     progressPending={loading}
     emptyMessage={'Esta beca no tiene seguimientos registrados'}
     columns={[
+      { name: 'Fecha', selector: (row) => formatDate(row.date) },
       {
         name: 'Año en curso',
         selector: (row) => row.levelInProgress
@@ -44,6 +46,14 @@ const BEAList = ({ list, loading }) => (
         name: 'Entrevista psicólogo',
         selector: (row) => row.psychologicalInterview,
         hide: 'md'
+      },
+      {
+        right: true,
+        selector: () => (
+          <>
+            <ActionsTable onDelete={() => {}} onEdit={() => {}} />
+          </>
+        )
       }
     ]}
     data={list}
@@ -54,6 +64,7 @@ const BeshBestList = ({ list, loading }) => (
     progressPending={loading}
     emptyMessage={'Esta beca no tiene seguimientos registrados'}
     columns={[
+      { name: 'Fecha', selector: (row) => formatDate(row.date) },
       {
         name: 'Año en curso',
         selector: (row) => row.yearInProgress
@@ -80,6 +91,41 @@ const BeshBestList = ({ list, loading }) => (
         name: 'Estado de beca',
         selector: (row) => row.scholarshipStatus,
         hide: 'md'
+      },
+      {
+        right: true,
+        selector: () => (
+          <>
+            <ActionsTable onDelete={() => {}} onEdit={() => {}} />
+          </>
+        )
+      }
+    ]}
+    data={list}
+  />
+)
+
+const PMAList = ({ list, loading }) => (
+  <DataTable
+    progressPending={loading}
+    emptyMessage={'Esta beca no tiene seguimientos registrados'}
+    columns={[
+      { name: 'Fecha', selector: (row) => formatDate(row.date) },
+      {
+        name: 'Beneficio',
+        selector: (row) => row.benefit.name
+      },
+      {
+        name: 'Estado de beca',
+        selector: (row) => row.scholarshipStatus
+      },
+      {
+        right: true,
+        selector: () => (
+          <>
+            <ActionsTable onDelete={() => {}} onEdit={() => {}} />
+          </>
+        )
       }
     ]}
     data={list}
@@ -98,20 +144,25 @@ const TrackingList = () => {
 
   const createTracking = (values) => {
     const { scholarshipType } = details.postulation
-    const data = { ...values, details: details.id }
+    const data = {
+      ...values,
+      date: new Date().toISOString(),
+      approvedScholarshipId: details.id
+    }
 
     if (scholarshipType.key === 'ACADEMIC_EXCELLENCE_SCHOLARSHIP')
       return dispatch(approvedActions.createBEATracking(data))
     if (scholarshipType.key === 'BEST' || scholarshipType.key === 'BESH')
       return dispatch(approvedActions.createBeshBestTracking(data))
-    return null
+    return dispatch(approvedActions.createPMATracking(data))
   }
 
   const getAction = (type, query) => {
     if (type === 'ACADEMIC_EXCELLENCE_SCHOLARSHIP')
       return dispatch(approvedActions.getBEATrackingList(query))
-
-    return dispatch(approvedActions.getBeshBestrackingList(query))
+    if (type === 'BEST' || type === 'BESH')
+      return dispatch(approvedActions.getBeshBestrackingList(query))
+    return dispatch(approvedActions.getPMATrackingList(query))
   }
 
   const fetchTrackingList = () => {
@@ -146,8 +197,22 @@ const TrackingList = () => {
         <Button onClick={toggleOpenAdd}>Registrar</Button>
       </Box>
       <Box>
-        <BEAList list={items} loading={loading} />
-        <BeshBestList list={items} loading={loading} />
+        {details && (
+          <>
+            {details.postulation.scholarshipType.key === 'BEST' ||
+              (details.postulation.scholarshipType.key === 'BESH' && (
+                <BeshBestList list={items} loading={loading} />
+              ))}
+            {details.postulation.scholarshipType.key ===
+              'ACADEMIC_EXCELLENCE_SCHOLARSHIP' && (
+              <BEAList list={items} loading={loading} />
+            )}
+            {details.postulation.scholarshipType.key === 'PMA' && (
+              <PMAList list={items} loading={loading} />
+            )}
+          </>
+        )}
+
         {openAdd && details && (
           <TrackingDialog
             open={openAdd}
@@ -160,18 +225,5 @@ const TrackingList = () => {
     </Box>
   )
 }
-
-/**
- * approvedScholarshipId: 5
-avgScoreFirstSemester: 4
-avgScoreSecondSemester: 4
-benefitId: 11
-businessName: "Empres One"
-levelInProgress: "I Semestre"
-mandatoryActivity: "NO"
-psychologicalInterview: "NO"
-scholarshipStatus: "APROBADA"
-yearInProgress: 2021
- */
 
 export default TrackingList
