@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
-import { Box, IconButton } from '@material-ui/core'
+import { Box, IconButton, Typography } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import scholarshipsActions from '../../state/actions/scholarships'
 import { Button, PageHeading, TimeStamp, Wrapper } from '../../components/UI'
@@ -10,6 +10,8 @@ import {
   ApprovedTrackingList,
   BenefitsList
 } from '../../components/ApprovedScholarship'
+import { useToggle } from '../../hooks'
+import SalarySettlement from '../../components/ApprovedScholarship/SalarySettlement'
 
 const ApprovedScholarship = () => {
   const dispatch = useDispatch()
@@ -17,6 +19,7 @@ const ApprovedScholarship = () => {
   const history = useHistory()
   const [loading, setLoading] = useState(false)
   const { approvedScholarship } = useSelector((state) => state.scholarships)
+  const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
 
   const redirectToApplication = (idApplication) => {
     history.push(`/postulations/${idApplication}`)
@@ -35,6 +38,10 @@ const ApprovedScholarship = () => {
       .catch(() => {
         setLoading(false)
       })
+  }
+
+  const onCreateSalary = () => {
+    console.log('gfgfg')
   }
 
   useEffect(() => {
@@ -76,6 +83,22 @@ const ApprovedScholarship = () => {
       <ApprovedStatistics />
       <ApprovedTrackingList />
       <BenefitsList />
+      <Box display="flex" alignItems="center" justifyContent="space-between">
+        <Typography style={{ fontWeight: 'bold', fontSize: '18px' }}>
+          Liquidación de Sueldo
+        </Typography>
+        <Button onClick={toggleOpenAdd}>Nueva Liquidación</Button>
+      </Box>
+
+      {openAdd && (
+        <SalarySettlement
+          open={openAdd}
+          onClose={toggleOpenAdd}
+          submitFunction={onCreateSalary}
+          // successFunction={}
+          successMessage={'Liquidación de sueldo agregada'}
+        />
+      )}
     </Wrapper>
   )
 }

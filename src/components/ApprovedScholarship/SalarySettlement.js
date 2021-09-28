@@ -1,0 +1,168 @@
+import * as Yup from 'yup'
+import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useFormik } from 'formik'
+import { useSnackbar } from 'notistack'
+import { Box, Grid, InputLabel, Typography } from '@material-ui/core'
+import { Dialog, FilePicker, FileThumbnail } from '../Shared'
+import { Button, SubmitButton, TextArea } from '../UI'
+import { useSuccess, useToggle } from '../../hooks'
+import filesActions from '../../state/actions/files'
+
+const validationSchema = Yup.object().shape({
+  comments: Yup.string().required('Ingrese comentarios')
+})
+
+const SalarySettlement = ({
+  open,
+  onClose,
+  data,
+  type,
+  submitFunction,
+  successFunction,
+  successMessage
+}) => {
+  const dispatch = useDispatch()
+  const [currentDate] = useState(new Date())
+  const [uploadFile, setUploadFile] = useState(null)
+  const { enqueueSnackbar } = useSnackbar()
+  const { isMobile } = useSelector((state) => state.ui)
+  const { success, changeSuccess } = useSuccess()
+  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
+
+  const formik = useFormik({
+    validationSchema,
+    validateOnMount: true,
+    initialValues: {
+      date: currentDate,
+      comments: type === 'UPDATE' ? data.comments : ''
+    },
+    onSubmit: async (values, { resetForm }) => {
+      formik.setSubmitting(true)
+      let resultUpload = null
+      if (uploadFile) {
+        const formData = new FormData()
+        formData.append('file', uploadFile, uploadFile.name)
+        resultUpload = await dispatch(
+          filesActions.uploadFileToStorage(formData)
+        )
+      }
+
+      submitFunction({
+        ...values,
+        salaryFile: resultUpload ? resultUpload.file_url : '',
+        file_key: resultUpload ? resultUpload.file_key : '',
+        certifying_entity_id: values.certifying_entity_id || null
+      })
+        .then(() => {
+          formik.setSubmitting(false)
+          enqueueSnackbar(successMessage, {
+            variant: 'success'
+          })
+          if (successFunction) {
+            successFunction()
+          }
+          changeSuccess(true, () => {
+            onClose()
+            resetForm()
+          })
+        })
+        .catch((err) => {
+          formik.setSubmitting(false)
+          enqueueSnackbar(err, {
+            variant: 'error'
+          })
+        })
+    }
+  })
+
+  const handleClose = () => {
+    formik.resetForm()
+    onClose()
+  }
+
+  useEffect(() => {
+    if (open) {
+      formik.resetForm()
+    }
+  }, [open])
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
+      <Box p={2}>
+        <Typography
+          align="center"
+          style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px' }}
+        >
+          {`${
+            type === 'UPDATE' ? 'Actualizar' : 'Crear'
+          } liquidación de sueldo`}
+        </Typography>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={12}>
+            <InputLabel style={{ fontSize: '15px', marginBottom: '10px' }}>
+              Certificado
+            </InputLabel>
+            {formik.values.salaryFile && type === 'UPDATE' ? (
+              <Box>
+                <FileThumbnail
+                  fileName={formik.values.salaryFile}
+                  onView={() => {
+                    toggleOpenVisor()
+                  }}
+                />
+              </Box>
+            ) : (
+              <>
+                <FilePicker
+                  onChangeImage={(e) => {
+                    setUploadFile(e)
+                  }}
+                />
+              </>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <TextArea
+              name="comments"
+              label="Comentarios"
+              required
+              value={formik.values.comments}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.comments && Boolean(formik.errors.comments)}
+              helperText={formik.touched.comments && formik.errors.comments}
+            />
+          </Grid>
+        </Grid>
+        <Box textAlign="center">
+          <Button variant="outlined" onClick={handleClose}>
+            Cancelar
+          </Button>
+          <SubmitButton
+            loading={formik.isSubmitting}
+            onClick={formik.handleSubmit}
+            disabled={!formik.isValid}
+            success={success}
+          >{`${
+            type === 'UPDATE' ? 'Actualizar' : 'Crear'
+          } liquidación de sueldo`}</SubmitButton>
+        </Box>
+        {type === 'UPDATE' && formik.values.salaryFile && openVisor && (
+          <FileVisor
+            open={openVisor}
+            onClose={toggleOpenVisor}
+            src={formik.values.salaryFile}
+          />
+        )}
+      </Box>
+    </Dialog>
+  )
+}
+
+SalarySettlement.defaultProps = {
+  type: 'ADD'
+}
+
+export default SalarySettlement

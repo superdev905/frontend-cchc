@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { LabeledRow, Text } from '../../UI'
 import useStyles from './styles'
+import { formatDate } from '../../../formatters'
 import Actions from '../../Companies/Create/Actions'
 import scholarshipsActions from '../../../state/actions/scholarships'
 
@@ -100,7 +101,7 @@ const StepOne = ({ onClose }) => {
 
           <Box className={classes.info}>
             <LabeledRow label="Fecha:">
-              <Text> {application.revisionStatus.date}</Text>
+              <Text> {formatDate(application.revisionStatus.date)}</Text>
             </LabeledRow>
           </Box>
         </Grid>
