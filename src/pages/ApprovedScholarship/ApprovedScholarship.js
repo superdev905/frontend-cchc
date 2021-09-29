@@ -11,12 +11,12 @@ import {
   BenefitsList
 } from '../../components/ApprovedScholarship'
 import { useToggle } from '../../hooks'
-import SalarySettlement from '../../components/ApprovedScholarship/SalarySettlement'
+import SalaryLiquidation from '../../components/ApprovedScholarship/SalaryLiquidation'
 
 const ApprovedScholarship = () => {
   const dispatch = useDispatch()
-  const { idApproved } = useParams()
   const history = useHistory()
+  const { idApproved } = useParams()
   const [loading, setLoading] = useState(false)
   const { approvedScholarship } = useSelector((state) => state.scholarships)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
@@ -40,8 +40,12 @@ const ApprovedScholarship = () => {
       })
   }
 
-  const onCreateSalary = () => {
-    console.log('gfgfg')
+  const addSalaryLiquidation = (values) => {
+    dispatch(
+      scholarshipsActions.createSalaryLiquidation({
+        ...values
+      })
+    )
   }
 
   useEffect(() => {
@@ -91,10 +95,10 @@ const ApprovedScholarship = () => {
       </Box>
 
       {openAdd && (
-        <SalarySettlement
+        <SalaryLiquidation
           open={openAdd}
           onClose={toggleOpenAdd}
-          submitFunction={onCreateSalary}
+          submitFunction={addSalaryLiquidation}
           // successFunction={}
           successMessage={'Liquidación de sueldo agregada'}
         />

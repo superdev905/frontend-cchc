@@ -240,6 +240,34 @@ const getApprovedScholarship = (id) => (dispatch) =>
       })
   })
 
+const createSalaryLiquidation = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.scholarship}/salary-liquidations`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getSalaryLiquidation = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.scholarship}/salary-liquidations/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scholarshipTypes.GET_SALARY_LIQUIDATION,
+          payload: data
+        })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const scholarshipsActions = {
   updateCreate,
   toggleCreateModal,
@@ -256,7 +284,9 @@ const scholarshipsActions = {
   deletePostulation,
   postulationApprove,
   postulationReject,
-  postulationRevision
+  postulationRevision,
+  createSalaryLiquidation,
+  getSalaryLiquidation
 }
 
 export default scholarshipsActions

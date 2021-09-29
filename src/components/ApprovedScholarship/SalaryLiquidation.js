@@ -1,6 +1,7 @@
 import * as Yup from 'yup'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, InputLabel, Typography } from '@material-ui/core'
@@ -13,7 +14,7 @@ const validationSchema = Yup.object().shape({
   comments: Yup.string().required('Ingrese comentarios')
 })
 
-const SalarySettlement = ({
+const SalaryLiquidation = ({
   open,
   onClose,
   data,
@@ -25,6 +26,7 @@ const SalarySettlement = ({
   const dispatch = useDispatch()
   const [currentDate] = useState(new Date())
   const [uploadFile, setUploadFile] = useState(null)
+  const { idApproved } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
   const { success, changeSuccess } = useSuccess()
@@ -35,6 +37,7 @@ const SalarySettlement = ({
     validateOnMount: true,
     initialValues: {
       date: currentDate,
+      approvedScholarshipId: idApproved,
       comments: type === 'UPDATE' ? data.comments : ''
     },
     onSubmit: async (values, { resetForm }) => {
@@ -42,17 +45,18 @@ const SalarySettlement = ({
       let resultUpload = null
       if (uploadFile) {
         const formData = new FormData()
-        formData.append('file', uploadFile, uploadFile.name)
+        formData.append('file', uploadFile, uploadFile.name, idApproved)
         resultUpload = await dispatch(
-          filesActions.uploadFileToStorage(formData)
+          filesActions.uploadFileToStorage(formData, idApproved)
         )
       }
-
       submitFunction({
         ...values,
-        salaryFile: resultUpload ? resultUpload.file_url : '',
-        file_key: resultUpload ? resultUpload.file_key : '',
-        certifying_entity_id: values.certifying_entity_id || null
+        fileName: resultUpload ? resultUpload.file_name : '',
+        fileKey: resultUpload ? resultUpload.file_key : '',
+        fileSize: resultUpload ? resultUpload.file_size : '',
+        fileUrl: resultUpload ? resultUpload.file_url : '',
+        uploadDate: resultUpload ? resultUpload.upload_date : ''
       })
         .then(() => {
           formik.setSubmitting(false)
@@ -75,7 +79,6 @@ const SalarySettlement = ({
         })
     }
   })
-
   const handleClose = () => {
     formik.resetForm()
     onClose()
@@ -94,20 +97,21 @@ const SalarySettlement = ({
           align="center"
           style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px' }}
         >
-          {`${
-            type === 'UPDATE' ? 'Actualizar' : 'Crear'
-          } liquidación de sueldo`}
+          Liquidación de sueldo
         </Typography>
 
         <Grid container spacing={2}>
           <Grid item xs={12} md={12}>
-            <InputLabel style={{ fontSize: '15px', marginBottom: '10px' }}>
-              Certificado
+            <InputLabel
+              required
+              style={{ fontSize: '15px', marginBottom: '10px' }}
+            >
+              Archivo{' '}
             </InputLabel>
-            {formik.values.salaryFile && type === 'UPDATE' ? (
+            {formik.values.fileUrl && type === 'UPDATE' ? (
               <Box>
                 <FileThumbnail
-                  fileName={formik.values.salaryFile}
+                  fileName={formik.values.fileUrl}
                   onView={() => {
                     toggleOpenVisor()
                   }}
@@ -127,7 +131,6 @@ const SalarySettlement = ({
             <TextArea
               name="comments"
               label="Comentarios"
-              required
               value={formik.values.comments}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -146,14 +149,14 @@ const SalarySettlement = ({
             disabled={!formik.isValid}
             success={success}
           >{`${
-            type === 'UPDATE' ? 'Actualizar' : 'Crear'
+            type === 'UPDATE' ? 'Actualizar' : 'Agregar'
           } liquidación de sueldo`}</SubmitButton>
         </Box>
-        {type === 'UPDATE' && formik.values.salaryFile && openVisor && (
+        {type === 'UPDATE' && formik.values.fileUrl && openVisor && (
           <FileVisor
             open={openVisor}
             onClose={toggleOpenVisor}
-            src={formik.values.salaryFile}
+            src={formik.values.fileUrl}
           />
         )}
       </Box>
@@ -161,8 +164,8 @@ const SalarySettlement = ({
   )
 }
 
-SalarySettlement.defaultProps = {
+SalaryLiquidation.defaultProps = {
   type: 'ADD'
 }
 
-export default SalarySettlement
+export default SalaryLiquidation
