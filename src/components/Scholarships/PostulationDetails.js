@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
-import { LabeledRow, Text, Wrapper } from '../UI'
-import { formatDate } from '../../formatters'
+import { LabeledRow, Text } from '../UI'
+import { formatDate, formatText } from '../../formatters'
 import { useToggle } from '../../hooks'
 import { FileThumbnail, FileVisor } from '../Shared'
 
@@ -38,7 +38,7 @@ const PostulationDetails = ({ loading }) => {
   return (
     <Box p={2} className={classes.head}>
       <Grid spacing={2} container>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} lg={6}>
           <Box>
             <Box p={2}>
               <LabeledRow label="Fecha:">
@@ -138,29 +138,32 @@ const PostulationDetails = ({ loading }) => {
           </Box>
         </Grid>
 
-        <Grid item xs={12} md={6} className={classes.files}>
-          <Box p={3}>
+        <Grid item xs={12} lg={6} className={classes.files}>
+          <Box p={2}>
             <Typography variant="h6" className={classes.title}>
               Archivos
             </Typography>
 
-            <Wrapper>
-              {application?.attachments.map((item, index) => (
-                <Box mb="15px" key={index}>
-                  <Typography> {item.name} </Typography>
-                  <FileThumbnail
-                    fileName={item.fileName}
-                    onView={() => {
-                      toggleOpenVisor()
-                      setCurrentFile(item)
-                    }}
-                    onDownload={() => {
-                      dispatch(files.downloadFile(item.fileUrl))
-                    }}
-                  />
-                </Box>
-              ))}
-            </Wrapper>
+            {application?.attachments.map((item, index) => (
+              <Box mb="20px" key={index}>
+                <Typography style={{ marginBottom: '10px' }}>
+                  {formatText.capitalizeString(item.name)}
+                </Typography>
+                <FileThumbnail
+                  bgWhite
+                  fileSize={item.fileSize}
+                  date={item.uploadDate}
+                  fileName={item.fileName}
+                  onView={() => {
+                    toggleOpenVisor()
+                    setCurrentFile(item)
+                  }}
+                  onDownload={() => {
+                    dispatch(files.downloadFile(item.fileUrl))
+                  }}
+                />
+              </Box>
+            ))}
           </Box>
         </Grid>
         {openVisor && currentFile && (

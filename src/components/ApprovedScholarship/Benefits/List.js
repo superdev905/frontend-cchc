@@ -138,7 +138,7 @@ const List = () => {
           success={success}
           message={
             <Typography variant="h6" align="center">
-              ¿Estas seguro de eliminar este beneficio:{' '}
+              ¿Estás seguro de eliminar este beneficio:{' '}
               <strong>{currentBenefit.name}</strong>?
             </Typography>
           }

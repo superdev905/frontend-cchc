@@ -1,4 +1,4 @@
-import { CalendarToday as CalendarIcon } from '@material-ui/icons'
+import { FiCalendar as CalendarIcon } from 'react-icons/fi'
 import { makeStyles, Typography } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({

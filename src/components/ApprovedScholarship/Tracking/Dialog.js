@@ -34,6 +34,39 @@ const BenefitDialog = ({
     if (typeName === 'ACADEMIC_EXCELLENCE_SCHOLARSHIP') return BeaTrackingSchema
     return CommonTrackingSchema
   }
+  const getInitialValues = (typeName) => {
+    if (typeName === 'BESH' || typeName === 'BEST')
+      return {
+        benefitId: type === 'UPDATE' ? data.benefitId : '',
+        scholarshipStatus: type === 'UPDATE' ? data.scholarshipStatus : '',
+        businessName: type === 'UPDATE' ? data.businessName : '',
+        totalCourses: type === 'UPDATE' ? data.totalCourses : '',
+        failedCourses: type === 'UPDATE' ? data.failedCourses : '',
+        yearInProgress: type === 'UPDATE' ? data.yearInProgress : '',
+        levelInProgress: type === 'UPDATE' ? data.levelInProgress : ''
+      }
+
+    if (typeName === 'ACADEMIC_EXCELLENCE_SCHOLARSHIP')
+      return {
+        benefitId: type === 'UPDATE' ? data.benefitId : '',
+        scholarshipStatus: type === 'UPDATE' ? data.scholarshipStatus : '',
+        yearInProgress: type === 'UPDATE' ? data.yearInProgress : '',
+        levelInProgress: type === 'UPDATE' ? data.levelInProgress : '',
+        avgScoreFirstSemester:
+          type === 'UPDATE' ? data.avgScoreFirstSemester : '',
+        avgScoreSecondSemester:
+          type === 'UPDATE' ? data.avgScoreSecondSemester : '',
+        businessName: type === 'UPDATE' ? data.businessName : '',
+        mandatoryActivity: type === 'UPDATE' ? data.mandatoryActivity : '',
+        psychologicalInterview:
+          type === 'UPDATE' ? data.psychologicalInterview : ''
+      }
+
+    return {
+      benefitId: type === 'UPDATE' ? data.benefitId : '',
+      scholarshipStatus: type === 'UPDATE' ? data.scholarshipStatus : ''
+    }
+  }
 
   const renderForm = (typeName, form) => {
     if (typeName === 'PMA')
@@ -46,10 +79,7 @@ const BenefitDialog = ({
   const formik = useFormik({
     validationSchema: getValidationSchema(scholarshipType),
     validateOnMount: true,
-    initialValues: {
-      benefitId: type === 'UPDATE' ? data.benefitId : '',
-      scholarshipStatus: type === 'UPDATE' ? data.scholarshipStatus : ''
-    },
+    initialValues: getInitialValues(scholarshipType),
     onSubmit: (values) => {
       submitFunction({ ...values, date: new Date() })
         .then(() => {
@@ -74,8 +104,6 @@ const BenefitDialog = ({
     onClose()
   }
 
-  console.log(formik.errors)
-
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
       <Box p={2}>
@@ -83,7 +111,7 @@ const BenefitDialog = ({
           align="center"
           style={{ fontWeight: 'bold', fontSize: '18px', marginBottom: '15px' }}
         >
-          Nuevo seguimiento
+          {`${type === 'UPDATE' ? 'Editar' : 'Crear'} `} seguimiento
         </Typography>
 
         {renderForm(scholarshipType, formik)}
