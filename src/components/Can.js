@@ -8,7 +8,8 @@ const Can = ({ availableTo, yes, no }) => {
     return no()
   }
 
-  const role = user.is_administrator ? 'ADMIN' : 'SIMPLE_USER'
+  const role = user.role.key
+  console.log(role, availableTo)
   return availableTo.includes(role) ? yes() : no()
 }
 

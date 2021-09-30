@@ -32,7 +32,7 @@ const StatusTimeline = () => {
   }, [])
   return (
     <Box p={1}>
-      <Typography style={{ fontSize: '18px', fontWeight: 'BOLD' }}>
+      <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>
         Historial de revisiones
       </Typography>
       <Timeline align="alternate">

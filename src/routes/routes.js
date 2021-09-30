@@ -47,7 +47,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'PROJECTS']}
         yes={() => (
           <Layout>
             <Home />
@@ -65,7 +65,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Constructions />
@@ -81,7 +81,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Construction />
@@ -97,7 +97,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Settings />
@@ -129,7 +129,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Calendar />
@@ -145,7 +145,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Visits />
@@ -161,7 +161,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Visit />
@@ -177,7 +177,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <AssistanceType />
@@ -193,7 +193,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Assistance />
@@ -209,7 +209,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <AttendedEmployee />
@@ -225,7 +225,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Polls />
@@ -241,7 +241,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Poll />
@@ -257,7 +257,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'PROJECTS', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Profile />
@@ -273,7 +273,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'PROJECTS', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Scholarships />
@@ -289,7 +289,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'PROJECTS', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <ApprovedScholarship />
@@ -305,7 +305,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SIMPLE_USER']}
+        availableTo={['ADMIN', 'PROJECTS', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Scholarship />

@@ -14,6 +14,7 @@ import { formatSearchWithRut } from '../../formatters'
 import scholarshipsActions from '../../state/actions/scholarships'
 import CreateDialog from './Create/CreateDialog'
 import { DataTable } from '../Shared'
+import Can from '../Can'
 
 const PostulationList = () => {
   const dispatch = useDispatch()
@@ -98,7 +99,13 @@ const PostulationList = () => {
           </Grid>
           <Grid item xs={12} md={6}>
             <Box display="flex" justifyContent="flex-end">
-              <Button onClick={addButtonClick}>Nueva postulación</Button>
+              <Can
+                availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+                yes={() => (
+                  <Button onClick={addButtonClick}>Nueva postulación</Button>
+                )}
+                no={() => null}
+              />
             </Box>
           </Grid>
         </Grid>

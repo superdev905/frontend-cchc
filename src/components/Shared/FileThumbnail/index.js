@@ -4,6 +4,7 @@ import {
   FiDownloadCloud as DownloadIcon,
   FiEye as ViewIcon
 } from 'react-icons/fi'
+import { RiEdit2Fill } from 'react-icons/ri'
 import { formatDate } from '../../../formatters'
 import PDFIcon from './pdf.png'
 import PictureIcon from './picture.png'
@@ -36,6 +37,7 @@ const PDFCard = ({
   onDelete,
   onView,
   onDownload,
+  onEdit,
   bgWhite
 }) => {
   const classes = useStyles({ bgWhite })

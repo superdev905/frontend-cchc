@@ -15,6 +15,7 @@ import PostulationDetails from '../../components/Scholarships/PostulationDetails
 import CreateDialog from '../../components/Scholarships/Create/CreateDialog'
 import { ConfirmDelete } from '../../components/Shared'
 import ApproveDialog from '../../components/Scholarships/Approve/ApproveDialog'
+import Can from '../../components/Can'
 
 const useStyles = makeStyles((theme) => ({
   head: {
@@ -132,12 +133,24 @@ const ScholarshipDetails = () => {
           </Box>
         </Box>
         <Box>
-          <Button danger onClick={toggleOpenDelete}>
-            Eliminar
-          </Button>
+          <Can
+            availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+            yes={() => (
+              <>
+                <Button danger onClick={toggleOpenDelete}>
+                  Eliminar
+                </Button>
 
-          <Button onClick={toggleOpenEdit}>Editar</Button>
-          <Button onClick={approveDialog}>Aprobar</Button>
+                <Button onClick={toggleOpenEdit}>Editar</Button>
+              </>
+            )}
+            no={() => null}
+          />
+          <Can
+            availableTo={['PROJECTS']}
+            yes={() => <Button onClick={approveDialog}>Revisar</Button>}
+            no={() => null}
+          />
         </Box>
       </Box>
       <PostulationDetails loading={loading} />

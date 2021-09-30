@@ -76,7 +76,7 @@ const LeftDrawer = ({ ...props }) => {
 
   useEffect(() => {
     if (user) {
-      if (user.is_administrator) {
+      if (user.role.key === 'ADMIN') {
         const temp = [...userRoutes]
         const isIncluded = Boolean(temp.find((item) => item.path === '/users'))
         if (!isIncluded) {
@@ -96,6 +96,15 @@ const LeftDrawer = ({ ...props }) => {
           ])
           setUserRoutes(adminRoutes)
         }
+      } else {
+        setUserRoutes([
+          { title: 'Home', path: '/home', icon: <DashboardIcon /> },
+          {
+            title: 'Becas',
+            path: '/scholarships',
+            icon: <SchoolIcon />
+          }
+        ])
       }
     }
   }, [user])
