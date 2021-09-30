@@ -96,10 +96,18 @@ const ApprovedScholarship = () => {
     )
       .then(() => {
         setLoading(false)
+        changeSuccess(true, () => {
+          getAllSalaries()
+          enqueueSnackbar('Liquidación de sueldo agregada', {
+            variant: 'success'
+          })
+        })
         toggleOpenAdd()
       })
-      .catch(() => {
+      .catch((err) => {
+        changeSuccess(false)
         setLoading(false)
+        enqueueSnackbar(err, { variant: 'error' })
       })
   }
 
@@ -112,6 +120,19 @@ const ApprovedScholarship = () => {
         currentFile
       })
     )
+      .then(() => {
+        changeSuccess(true, () => {
+          getAllSalaries()
+          enqueueSnackbar('Liquidación de sueldo actualizada', {
+            variant: 'success'
+          })
+        })
+        toggleOpenEdit()
+      })
+      .catch((err) => {
+        changeSuccess(false)
+        enqueueSnackbar(err, { variant: 'error' })
+      })
   }
 
   const onDeleteSalaryLiquidation = (id) => {
@@ -124,7 +145,7 @@ const ApprovedScholarship = () => {
       .then(() => {
         setDeleting(false)
         toggleOpenDelete()
-        changeSuccess(false, () => {
+        changeSuccess(true, () => {
           getAllSalaries()
           enqueueSnackbar('Liquidación de sueldo eliminda', {
             variant: 'success'
@@ -217,6 +238,7 @@ const ApprovedScholarship = () => {
         <SalaryLiquidation
           open={openAdd}
           onClose={toggleOpenAdd}
+          successFunction={getAllSalaries}
           submitFunction={addSalaryLiquidation}
           successMessage={'Liquidación de sueldo agregada'}
         />
@@ -228,6 +250,7 @@ const ApprovedScholarship = () => {
           data={currentFile}
           open={openEdit}
           onClose={toggleOpenEdit}
+          successFunction={getAllSalaries}
           submitFunction={updateSalaryLiquidation}
           successMessage={'Liquidación de sueldo actualizada'}
         />
