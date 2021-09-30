@@ -108,7 +108,7 @@ const SalaryLiquidation = ({
             >
               Archivo{' '}
             </InputLabel>
-            {formik.values.fileUrl && type === 'UPDATE' ? (
+            {formik.values.fileUrl ? (
               <Box>
                 <FileThumbnail
                   fileName={formik.values.fileUrl}
@@ -152,7 +152,7 @@ const SalaryLiquidation = ({
             type === 'UPDATE' ? 'Actualizar' : 'Agregar'
           } liquidación de sueldo`}</SubmitButton>
         </Box>
-        {type === 'UPDATE' && formik.values.fileUrl && openVisor && (
+        {formik.values.fileUrl && openVisor && (
           <FileVisor
             open={openVisor}
             onClose={toggleOpenVisor}

@@ -4,6 +4,8 @@ import {
   Delete as DeleteIcon,
   Visibility as ViewIcon
 } from '@material-ui/icons'
+import { RiEdit2Line } from 'react-icons/ri'
+
 import PDFIcon from './pdf.png'
 import PictureIcon from './picture.png'
 
@@ -27,7 +29,7 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'space-between'
   }
 }))
-const PDFCard = ({ fileName, onDelete, onView, onDownload }) => {
+const PDFCard = ({ fileName, onDelete, onView, onDownload, onEdit }) => {
   const classes = useStyles()
 
   const getFileName = (url) => url.split('/').pop()
@@ -65,6 +67,11 @@ const PDFCard = ({ fileName, onDelete, onView, onDownload }) => {
           {onDownload && (
             <IconButton onClick={onDownload}>
               <DownloadIcon />
+            </IconButton>
+          )}
+          {onEdit && (
+            <IconButton onClick={onEdit}>
+              <RiEdit2Line />
             </IconButton>
           )}
         </Box>

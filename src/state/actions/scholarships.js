@@ -268,6 +268,47 @@ const getSalaryLiquidation = (id) => (dispatch) =>
       })
   })
 
+const getAllSalaryLiquidations =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.scholarship
+        }/salary-liquidations?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: scholarshipTypes.GET_ALL_SALARY_LIQUIDATIONS,
+            payload: data.items
+          })
+          dispatch({
+            type: scholarshipTypes.SET_TOTAL_LIQUIDATIONS,
+            payload: data.total
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const updateSalaryLiquidation = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(
+      `${config.services.scholarship}/salary-liquidations/${id}`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
 const scholarshipsActions = {
   updateCreate,
   toggleCreateModal,
@@ -286,7 +327,9 @@ const scholarshipsActions = {
   postulationReject,
   postulationRevision,
   createSalaryLiquidation,
-  getSalaryLiquidation
+  getSalaryLiquidation,
+  getAllSalaryLiquidations,
+  updateSalaryLiquidation
 }
 
 export default scholarshipsActions

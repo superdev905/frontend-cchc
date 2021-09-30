@@ -12,14 +12,21 @@ import {
 } from '../../components/ApprovedScholarship'
 import { useToggle } from '../../hooks'
 import SalaryLiquidation from '../../components/ApprovedScholarship/SalaryLiquidation'
+import { FileThumbnail, FileVisor } from '../../components/Shared'
 
 const ApprovedScholarship = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const { idApproved } = useParams()
   const [loading, setLoading] = useState(false)
-  const { approvedScholarship } = useSelector((state) => state.scholarships)
+  const { approvedScholarship, liquidationList } = useSelector(
+    (state) => state.scholarships
+  )
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+
+  const [currentFile, setCurrentFile] = useState(null)
 
   const redirectToApplication = (idApplication) => {
     history.push(`/postulations/${idApplication}`)
@@ -40,6 +47,19 @@ const ApprovedScholarship = () => {
       })
   }
 
+  const getAllSalaries = () => {
+    setLoading(true)
+    dispatch(
+      scholarshipsActions.getAllSalaryLiquidations({ approvedId: idApproved })
+    )
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
   const addSalaryLiquidation = (values) => {
     dispatch(
       scholarshipsActions.createSalaryLiquidation({
@@ -48,8 +68,19 @@ const ApprovedScholarship = () => {
     )
   }
 
+  const updateSalaryLiquidation = (values) => {
+    dispatch(
+      scholarshipsActions.updateSalaryLiquidation(currentFile.id, {
+        ...values,
+        approvedScholarshipId: idApproved,
+        uploadData: new Date()
+      })
+    )
+  }
+
   useEffect(() => {
     fetchData()
+    getAllSalaries()
   }, [idApproved])
 
   return (
@@ -87,11 +118,32 @@ const ApprovedScholarship = () => {
       <ApprovedStatistics />
       <ApprovedTrackingList />
       <BenefitsList />
-      <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Typography style={{ fontWeight: 'bold', fontSize: '18px' }}>
-          Liquidación de Sueldo
-        </Typography>
-        <Button onClick={toggleOpenAdd}>Nueva Liquidación</Button>
+      <Box p={1}>
+        <Box display="flex" justifyContent="space-between">
+          <Typography style={{ fontWeight: 'bold', fontSize: '18px' }}>
+            Liquidación de Sueldo
+          </Typography>
+          <Button onClick={toggleOpenAdd}>Nueva Liquidación</Button>
+        </Box>
+        <Wrapper>
+          {liquidationList.map((item, index) => (
+            <Box>
+              <Box mb="15px" key={index}>
+                <FileThumbnail
+                  fileName={item.fileName}
+                  onView={() => {
+                    toggleOpenVisor()
+                    setCurrentFile(item)
+                  }}
+                  onEdit={() => {
+                    toggleOpenEdit()
+                    setCurrentFile(item)
+                  }}
+                />
+              </Box>
+            </Box>
+          ))}
+        </Wrapper>
       </Box>
 
       {openAdd && (
@@ -99,8 +151,27 @@ const ApprovedScholarship = () => {
           open={openAdd}
           onClose={toggleOpenAdd}
           submitFunction={addSalaryLiquidation}
-          // successFunction={}
           successMessage={'Liquidación de sueldo agregada'}
+        />
+      )}
+
+      {openEdit && currentFile && (
+        <SalaryLiquidation
+          type="UPDATE"
+          data={currentFile}
+          open={openEdit}
+          onClose={toggleOpenEdit}
+          submitFunction={updateSalaryLiquidation}
+          successMessage={'Liquidación de sueldo actualizada'}
+        />
+      )}
+
+      {openVisor && currentFile && (
+        <FileVisor
+          open={openVisor}
+          onClose={toggleOpenVisor}
+          src={currentFile.fileUrl}
+          filename={currentFile.fileName}
         />
       )}
     </Wrapper>
