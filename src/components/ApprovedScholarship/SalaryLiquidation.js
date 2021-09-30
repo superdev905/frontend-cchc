@@ -154,12 +154,11 @@ const SalaryLiquidation = ({
           } liquidación de sueldo`}</SubmitButton>
         </Box>
 
-        {openVisor && uploadFile && (
+        {type === 'UPDATE' && formik.values.fileUrl && openVisor && (
           <FileVisor
             open={openVisor}
             onClose={toggleOpenVisor}
-            src={uploadFile.fileUrl}
-            filename={uploadFile.fileName}
+            src={formik.values.fileUrl}
           />
         )}
       </Box>
