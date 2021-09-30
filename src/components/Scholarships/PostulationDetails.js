@@ -6,6 +6,8 @@ import { LabeledRow, Text } from '../UI'
 import { formatDate, formatText } from '../../formatters'
 import { useToggle } from '../../hooks'
 import { FileThumbnail, FileVisor } from '../Shared'
+import StatusCard from './StatusCard'
+import StatusTimeline from './StatusTimeline'
 
 import files from '../../state/actions/files'
 
@@ -57,6 +59,9 @@ const PostulationDetails = ({ loading }) => {
               <Alert severity="info">
                 Estado de postulación: {application?.revisionStatus.status}{' '}
               </Alert>
+              {application && (
+                <StatusCard status={application?.revisionStatus} />
+              )}
             </Box>
             <Box className={classes.box}>
               <Typography variant="h6" className={classes.title}>
@@ -136,6 +141,9 @@ const PostulationDetails = ({ loading }) => {
               </LabeledRow>
             </Box>
           </Box>
+          <Box>
+            <StatusTimeline />
+          </Box>
         </Grid>
 
         <Grid item xs={12} lg={6} className={classes.files}>
@@ -166,6 +174,7 @@ const PostulationDetails = ({ loading }) => {
             ))}
           </Box>
         </Grid>
+
         {openVisor && currentFile && (
           <FileVisor
             open={openVisor}

@@ -240,6 +240,18 @@ const getApprovedScholarship = (id) => (dispatch) =>
       })
   })
 
+const getApplicationRevisions = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.scholarship}/postulations/${id}/revisions`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const scholarshipsActions = {
   updateCreate,
   toggleCreateModal,
@@ -256,7 +268,8 @@ const scholarshipsActions = {
   deletePostulation,
   postulationApprove,
   postulationReject,
-  postulationRevision
+  postulationRevision,
+  getApplicationRevisions
 }
 
 export default scholarshipsActions
