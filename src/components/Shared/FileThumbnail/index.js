@@ -4,7 +4,7 @@ import {
   Delete as DeleteIcon,
   Visibility as ViewIcon
 } from '@material-ui/icons'
-import { RiEdit2Line } from 'react-icons/ri'
+import { RiEdit2Fill } from 'react-icons/ri'
 
 import PDFIcon from './pdf.png'
 import PictureIcon from './picture.png'
@@ -59,6 +59,11 @@ const PDFCard = ({ fileName, onDelete, onView, onDownload, onEdit }) => {
               <ViewIcon />
             </IconButton>
           )}
+          {onEdit && (
+            <IconButton onClick={onEdit}>
+              <RiEdit2Fill />
+            </IconButton>
+          )}
           {onDelete && (
             <IconButton onClick={onDelete}>
               <DeleteIcon />
@@ -67,11 +72,6 @@ const PDFCard = ({ fileName, onDelete, onView, onDownload, onEdit }) => {
           {onDownload && (
             <IconButton onClick={onDownload}>
               <DownloadIcon />
-            </IconButton>
-          )}
-          {onEdit && (
-            <IconButton onClick={onEdit}>
-              <RiEdit2Line />
             </IconButton>
           )}
         </Box>

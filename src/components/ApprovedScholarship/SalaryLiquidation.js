@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, InputLabel, Typography } from '@material-ui/core'
-import { Dialog, FilePicker, FileThumbnail } from '../Shared'
+import { Dialog, FilePicker, FileThumbnail, FileVisor } from '../Shared'
 import { Button, SubmitButton, TextArea } from '../UI'
 import { useSuccess, useToggle } from '../../hooks'
 import filesActions from '../../state/actions/files'
@@ -38,7 +38,8 @@ const SalaryLiquidation = ({
     initialValues: {
       date: currentDate,
       approvedScholarshipId: idApproved,
-      comments: type === 'UPDATE' ? data.comments : ''
+      comments: type === 'UPDATE' ? data.comments : '',
+      fileUrl: type === 'UPDATE' ? data.fileUrl : ''
     },
     onSubmit: async (values, { resetForm }) => {
       formik.setSubmitting(true)
@@ -102,18 +103,18 @@ const SalaryLiquidation = ({
 
         <Grid container spacing={2}>
           <Grid item xs={12} md={12}>
-            <InputLabel
-              required
-              style={{ fontSize: '15px', marginBottom: '10px' }}
-            >
-              Archivo{' '}
+            <InputLabel style={{ fontSize: '15px', marginBottom: '10px' }}>
+              Archivo
             </InputLabel>
-            {formik.values.fileUrl ? (
+            {formik.values.fileUrl && type === 'UPDATE' ? (
               <Box>
                 <FileThumbnail
                   fileName={formik.values.fileUrl}
                   onView={() => {
                     toggleOpenVisor()
+                  }}
+                  onDelete={() => {
+                    formik.setFieldValue('fileUrl', '')
                   }}
                 />
               </Box>
@@ -152,11 +153,13 @@ const SalaryLiquidation = ({
             type === 'UPDATE' ? 'Actualizar' : 'Agregar'
           } liquidación de sueldo`}</SubmitButton>
         </Box>
-        {formik.values.fileUrl && openVisor && (
+
+        {openVisor && uploadFile && (
           <FileVisor
             open={openVisor}
             onClose={toggleOpenVisor}
-            src={formik.values.fileUrl}
+            src={uploadFile.fileUrl}
+            filename={uploadFile.fileName}
           />
         )}
       </Box>

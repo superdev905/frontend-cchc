@@ -309,6 +309,21 @@ const updateSalaryLiquidation = (id, values) => () =>
       })
   })
 
+const patchSalaryLiquidation = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(
+      `${config.services.scholarship}/salary-liquidations/${id}`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const scholarshipsActions = {
   updateCreate,
   toggleCreateModal,
@@ -329,7 +344,8 @@ const scholarshipsActions = {
   createSalaryLiquidation,
   getSalaryLiquidation,
   getAllSalaryLiquidations,
-  updateSalaryLiquidation
+  updateSalaryLiquidation,
+  patchSalaryLiquidation
 }
 
 export default scholarshipsActions

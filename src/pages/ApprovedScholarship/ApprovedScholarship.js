@@ -1,30 +1,57 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
-import { Box, IconButton, Typography } from '@material-ui/core'
+import { Box, IconButton, Typography, makeStyles } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
+import { useSnackbar } from 'notistack'
 import scholarshipsActions from '../../state/actions/scholarships'
-import { Button, PageHeading, TimeStamp, Wrapper } from '../../components/UI'
+import {
+  Button,
+  LabeledRow,
+  PageHeading,
+  Text,
+  TimeStamp,
+  Wrapper
+} from '../../components/UI'
 import {
   ApprovedStatistics,
   ApprovedTrackingList,
   BenefitsList
 } from '../../components/ApprovedScholarship'
-import { useToggle } from '../../hooks'
+import { useToggle, useSuccess } from '../../hooks'
 import SalaryLiquidation from '../../components/ApprovedScholarship/SalaryLiquidation'
-import { FileThumbnail, FileVisor } from '../../components/Shared'
+import {
+  ConfirmDelete,
+  FileThumbnail,
+  FileVisor
+} from '../../components/Shared'
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    border: `1px solid ${theme.palette.gray.gray400}`,
+    borderRadius: 8,
+    [theme.breakpoints.up('md')]: {
+      minHeight: 150
+    }
+  }
+}))
 
 const ApprovedScholarship = () => {
+  const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
+  const { enqueueSnackbar } = useSnackbar()
   const { idApproved } = useParams()
   const [loading, setLoading] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const { success, changeSuccess } = useSuccess()
   const { approvedScholarship, liquidationList } = useSelector(
     (state) => state.scholarships
   )
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
 
   const [currentFile, setCurrentFile] = useState(null)
 
@@ -61,11 +88,19 @@ const ApprovedScholarship = () => {
   }
 
   const addSalaryLiquidation = (values) => {
+    setLoading(true)
     dispatch(
       scholarshipsActions.createSalaryLiquidation({
         ...values
       })
     )
+      .then(() => {
+        setLoading(false)
+        toggleOpenAdd()
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }
 
   const updateSalaryLiquidation = (values) => {
@@ -73,9 +108,34 @@ const ApprovedScholarship = () => {
       scholarshipsActions.updateSalaryLiquidation(currentFile.id, {
         ...values,
         approvedScholarshipId: idApproved,
-        uploadData: new Date()
+        uploadData: new Date(),
+        currentFile
       })
     )
+  }
+
+  const onDeleteSalaryLiquidation = (id) => {
+    setDeleting(true)
+    dispatch(
+      scholarshipsActions.patchSalaryLiquidation(id, {
+        state: 'DELETED'
+      })
+    )
+      .then(() => {
+        setDeleting(false)
+        toggleOpenDelete()
+        changeSuccess(false, () => {
+          getAllSalaries()
+          enqueueSnackbar('Liquidación de sueldo eliminda', {
+            variant: 'success'
+          })
+        })
+      })
+      .catch((err) => {
+        changeSuccess(false)
+        setDeleting(false)
+        enqueueSnackbar(err, { variant: 'error' })
+      })
   }
 
   useEffect(() => {
@@ -125,7 +185,7 @@ const ApprovedScholarship = () => {
           </Typography>
           <Button onClick={toggleOpenAdd}>Nueva Liquidación</Button>
         </Box>
-        <Wrapper>
+        <Box p={3} className={classes.paper}>
           {liquidationList.map((item, index) => (
             <Box>
               <Box mb="15px" key={index}>
@@ -139,11 +199,18 @@ const ApprovedScholarship = () => {
                     toggleOpenEdit()
                     setCurrentFile(item)
                   }}
+                  onDelete={() => {
+                    toggleOpenDelete()
+                    setCurrentFile(item)
+                  }}
                 />
               </Box>
+              <LabeledRow label="Comentarios:">
+                <Text> {item.comments}</Text>
+              </LabeledRow>
             </Box>
           ))}
-        </Wrapper>
+        </Box>
       </Box>
 
       {openAdd && (
@@ -163,6 +230,22 @@ const ApprovedScholarship = () => {
           onClose={toggleOpenEdit}
           submitFunction={updateSalaryLiquidation}
           successMessage={'Liquidación de sueldo actualizada'}
+        />
+      )}
+
+      {openDelete && currentFile && (
+        <ConfirmDelete
+          open={openDelete}
+          onConfirm={() => onDeleteSalaryLiquidation(currentFile.id)}
+          loading={deleting}
+          success={success}
+          message={
+            <Typography variant="h6" align="center">
+              ¿Estas seguro de eliminar este archivo:{' '}
+              <strong>{currentFile.name}</strong>?
+            </Typography>
+          }
+          onClose={toggleOpenDelete}
         />
       )}
 
