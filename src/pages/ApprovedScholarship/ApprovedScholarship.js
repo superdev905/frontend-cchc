@@ -1,22 +1,59 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
-import { Box, IconButton } from '@material-ui/core'
+import { Box, IconButton, Typography, makeStyles } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
+import { useSnackbar } from 'notistack'
 import scholarshipsActions from '../../state/actions/scholarships'
-import { Button, PageHeading, TimeStamp, Wrapper } from '../../components/UI'
+import {
+  Button,
+  LabeledRow,
+  PageHeading,
+  Text,
+  TimeStamp,
+  Wrapper
+} from '../../components/UI'
 import {
   ApprovedStatistics,
   ApprovedTrackingList,
   BenefitsList
 } from '../../components/ApprovedScholarship'
+import { useToggle, useSuccess } from '../../hooks'
+import SalaryLiquidation from '../../components/ApprovedScholarship/SalaryLiquidation'
+import {
+  ConfirmDelete,
+  FileThumbnail,
+  FileVisor
+} from '../../components/Shared'
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    border: `1px solid ${theme.palette.gray.gray400}`,
+    borderRadius: 8,
+    [theme.breakpoints.up('md')]: {
+      minHeight: 150
+    }
+  }
+}))
 
 const ApprovedScholarship = () => {
+  const classes = useStyles()
   const dispatch = useDispatch()
-  const { idApproved } = useParams()
   const history = useHistory()
+  const { enqueueSnackbar } = useSnackbar()
+  const { idApproved } = useParams()
   const [loading, setLoading] = useState(false)
-  const { approvedScholarship } = useSelector((state) => state.scholarships)
+  const [deleting, setDeleting] = useState(false)
+  const { success, changeSuccess } = useSuccess()
+  const { approvedScholarship, liquidationList } = useSelector(
+    (state) => state.scholarships
+  )
+  const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+
+  const [currentFile, setCurrentFile] = useState(null)
 
   const redirectToApplication = (idApplication) => {
     history.push(`/postulations/${idApplication}`)
@@ -37,8 +74,73 @@ const ApprovedScholarship = () => {
       })
   }
 
+  const getAllSalaries = () => {
+    setLoading(true)
+    dispatch(
+      scholarshipsActions.getAllSalaryLiquidations({ approvedId: idApproved })
+    )
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
+  const addSalaryLiquidation = (values) => {
+    setLoading(true)
+    dispatch(
+      scholarshipsActions.createSalaryLiquidation({
+        ...values
+      })
+    )
+      .then(() => {
+        setLoading(false)
+        toggleOpenAdd()
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
+  const updateSalaryLiquidation = (values) => {
+    dispatch(
+      scholarshipsActions.updateSalaryLiquidation(currentFile.id, {
+        ...values,
+        approvedScholarshipId: idApproved,
+        uploadData: new Date(),
+        currentFile
+      })
+    )
+  }
+
+  const onDeleteSalaryLiquidation = (id) => {
+    setDeleting(true)
+    dispatch(
+      scholarshipsActions.patchSalaryLiquidation(id, {
+        state: 'DELETED'
+      })
+    )
+      .then(() => {
+        setDeleting(false)
+        toggleOpenDelete()
+        changeSuccess(false, () => {
+          getAllSalaries()
+          enqueueSnackbar('Liquidación de sueldo eliminda', {
+            variant: 'success'
+          })
+        })
+      })
+      .catch((err) => {
+        changeSuccess(false)
+        setDeleting(false)
+        enqueueSnackbar(err, { variant: 'error' })
+      })
+  }
+
   useEffect(() => {
     fetchData()
+    getAllSalaries()
   }, [idApproved])
 
   return (
@@ -76,6 +178,85 @@ const ApprovedScholarship = () => {
       <ApprovedStatistics />
       <ApprovedTrackingList />
       <BenefitsList />
+      <Box p={1}>
+        <Box display="flex" justifyContent="space-between">
+          <Typography style={{ fontWeight: 'bold', fontSize: '18px' }}>
+            Liquidación de Sueldo
+          </Typography>
+          <Button onClick={toggleOpenAdd}>Nueva Liquidación</Button>
+        </Box>
+        <Box p={3} className={classes.paper}>
+          {liquidationList.map((item, index) => (
+            <Box>
+              <Box mb="15px" key={index}>
+                <FileThumbnail
+                  fileName={item.fileName}
+                  onView={() => {
+                    toggleOpenVisor()
+                    setCurrentFile(item)
+                  }}
+                  onEdit={() => {
+                    toggleOpenEdit()
+                    setCurrentFile(item)
+                  }}
+                  onDelete={() => {
+                    toggleOpenDelete()
+                    setCurrentFile(item)
+                  }}
+                />
+              </Box>
+              <LabeledRow label="Comentarios:">
+                <Text> {item.comments}</Text>
+              </LabeledRow>
+            </Box>
+          ))}
+        </Box>
+      </Box>
+
+      {openAdd && (
+        <SalaryLiquidation
+          open={openAdd}
+          onClose={toggleOpenAdd}
+          submitFunction={addSalaryLiquidation}
+          successMessage={'Liquidación de sueldo agregada'}
+        />
+      )}
+
+      {openEdit && currentFile && (
+        <SalaryLiquidation
+          type="UPDATE"
+          data={currentFile}
+          open={openEdit}
+          onClose={toggleOpenEdit}
+          submitFunction={updateSalaryLiquidation}
+          successMessage={'Liquidación de sueldo actualizada'}
+        />
+      )}
+
+      {openDelete && currentFile && (
+        <ConfirmDelete
+          open={openDelete}
+          onConfirm={() => onDeleteSalaryLiquidation(currentFile.id)}
+          loading={deleting}
+          success={success}
+          message={
+            <Typography variant="h6" align="center">
+              ¿Estas seguro de eliminar este archivo:{' '}
+              <strong>{currentFile.name}</strong>?
+            </Typography>
+          }
+          onClose={toggleOpenDelete}
+        />
+      )}
+
+      {openVisor && currentFile && (
+        <FileVisor
+          open={openVisor}
+          onClose={toggleOpenVisor}
+          src={currentFile.fileUrl}
+          filename={currentFile.fileName}
+        />
+      )}
     </Wrapper>
   )
 }

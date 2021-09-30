@@ -73,6 +73,11 @@ const PDFCard = ({
               <ViewIcon />
             </IconButton>
           )}
+          {onEdit && (
+            <IconButton onClick={onEdit}>
+              <RiEdit2Fill />
+            </IconButton>
+          )}
           {onDelete && (
             <IconButton onClick={onDelete}>
               <DeleteIcon />

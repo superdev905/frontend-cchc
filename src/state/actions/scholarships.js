@@ -252,6 +252,90 @@ const getApplicationRevisions = (id) => () =>
       })
   })
 
+const createSalaryLiquidation = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.scholarship}/salary-liquidations`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getSalaryLiquidation = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.scholarship}/salary-liquidations/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scholarshipTypes.GET_SALARY_LIQUIDATION,
+          payload: data
+        })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getAllSalaryLiquidations =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.scholarship
+        }/salary-liquidations?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: scholarshipTypes.GET_ALL_SALARY_LIQUIDATIONS,
+            payload: data.items
+          })
+          dispatch({
+            type: scholarshipTypes.SET_TOTAL_LIQUIDATIONS,
+            payload: data.total
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const updateSalaryLiquidation = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(
+      `${config.services.scholarship}/salary-liquidations/${id}`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const patchSalaryLiquidation = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(
+      `${config.services.scholarship}/salary-liquidations/${id}`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const scholarshipsActions = {
   updateCreate,
   toggleCreateModal,
@@ -269,7 +353,12 @@ const scholarshipsActions = {
   postulationApprove,
   postulationReject,
   postulationRevision,
-  getApplicationRevisions
+  getApplicationRevisions,
+  createSalaryLiquidation,
+  getSalaryLiquidation,
+  getAllSalaryLiquidations,
+  updateSalaryLiquidation,
+  patchSalaryLiquidation
 }
 
 export default scholarshipsActions
