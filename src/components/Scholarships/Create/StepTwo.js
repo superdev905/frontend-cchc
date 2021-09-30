@@ -9,84 +9,8 @@ import { Button, SubmitButton } from '../../UI'
 import scholarshipsActions from '../../../state/actions/scholarships'
 import useStyles from './styles'
 import filesActions from '../../../state/actions/files'
-
-import { FilePostulation, FileThumbnail } from '../../Shared'
-
-const initialAttachments = [
-  {
-    name: 'CERTIFICADO EGRESO ENSEÑANZA MEDIA',
-    isRequired: false,
-    key: 'CERTIFICADO_EGRESO_ENSEÑANZA_MEDIA',
-    fileUrl: '',
-    size: '',
-    date: ''
-  },
-  {
-    name: 'LIQUIDACIÓN SUELDO',
-    fileName: '',
-    isRequired: true,
-    key: 'LIQUIDACION_SUELDO',
-    fileUrl: '',
-    size: '',
-    date: ''
-  },
-  {
-    name: 'CERTIFICADO DE NOTAS O NEM',
-    isRequired: true,
-    key: 'CERTIFICADO_DE_NOTAS_O_NEM',
-    fileUrl: '',
-    size: '',
-    date: ''
-  },
-  {
-    name: 'CERTIFICADO ALUMNO REGULAR',
-    isRequired: true,
-    key: 'CERTIFICADO_ALUMNO_REGULAR',
-    fileUrl: '',
-    size: '',
-    date: ''
-  },
-  {
-    name: 'CERTIFICADO DE NACIMIENTO PARA ASIGNACION FAMILIAR',
-    isRequired: true,
-    key: 'CERTIFICADO_DE_NACIMIENTO_PARA _ASIGNACION_FAMILIAR',
-    fileUrl: '',
-    size: '',
-    date: ''
-  },
-  {
-    name: 'CERTIFICADO DE COTIZACIONES HISTORICA TRABAJADOR',
-    isRequired: false,
-    key: 'CERTIFICADO_DE_COTIZACIONES_HISTORICA_TRABAJADOR',
-    fileUrl: '',
-    size: '',
-    date: ''
-  },
-  {
-    name: 'FICHA DE POSTULACIÓN CON FIRMA Y TIMBRE DE LA EMPRESA',
-    isRequired: true,
-    key: 'FICHA_DE_POSTULACIÓN_CON_FIRMA_Y_TIMBRE DE_LA_EMPRESA',
-    fileUrl: '',
-    size: '',
-    date: ''
-  },
-  {
-    name: 'COTIZACIÓN DE LA CARRERA',
-    isRequired: false,
-    key: 'COTIZACIÓN_DE_LA_CARRERA',
-    fileUrl: '',
-    size: '',
-    date: ''
-  },
-  {
-    name: 'CERTIFICADO DE AFILIACION AFP',
-    isRequired: false,
-    key: 'CERTIFICADO_DE_AFILIACION_AFP',
-    fileUrl: '',
-    size: '',
-    date: ''
-  }
-]
+import { FilePostulation } from '../../Shared'
+import { scholarshipConfig } from '../../../config'
 
 const StepTwo = ({ type }) => {
   const classes = useStyles()
@@ -104,6 +28,17 @@ const StepTwo = ({ type }) => {
       date: new Date()
     }
     data.attachments = data.attachments.filter((item) => item.fileUrl !== '')
+    console.log(data)
+    if (!data.businessRelatedId) {
+      delete data.businessRelatedId
+    }
+    if (!data.businessRelatedName) {
+      delete data.businessRelatedName
+    }
+    if (!data.businessRelatedRut) {
+      delete data.businessRelatedRut
+    }
+
     if (create.type === 'CREATE') {
       dispatch(scholarshipsActions.createApplications(data)).then(() => {
         dispatch(
@@ -147,7 +82,7 @@ const StepTwo = ({ type }) => {
     formData.append('file', file)
     const response = await dispatch(filesActions.uploadFile(formData))
     const newAttachment = attachments.map((item) =>
-      item.key === key
+      item.name === key
         ? {
             ...item,
             fileName: response.file_name,
@@ -163,9 +98,9 @@ const StepTwo = ({ type }) => {
   }
 
   const handleDeleteFile = async (key) => {
-    await dispatch(filesActions.deleteFile(key))
+    await dispatch(filesActions.deleteFile())
     const newAttachment = attachments.map((item) =>
-      item.key === key
+      item.name === key
         ? {
             ...item,
             fileName: '',
@@ -191,7 +126,16 @@ const StepTwo = ({ type }) => {
     if (create.type === 'UPDATE') {
       setAttachments(create.application.attachments)
     } else {
-      setAttachments(initialAttachments)
+      setAttachments(
+        scholarshipConfig.postulationAttachments.map((item) => ({
+          ...item,
+          fileName: '',
+          fileKey: '',
+          fileUrl: '',
+          fileSize: '',
+          uploadDate: ''
+        }))
+      )
     }
   }, [create])
 
@@ -202,27 +146,22 @@ const StepTwo = ({ type }) => {
       </Typography>
       <Box>
         <Grid container spacing={2}>
-          {' '}
           {attachments.map((item, index) => (
             <Grid item xs={12} md={6} key={index}>
               <InputLabel
                 required={item.isRequired}
                 style={{ fontSize: '15px', marginBottom: '12px' }}
               >
-                {item.name}
+                {item.displayName}
               </InputLabel>
-              {item.fileUrl ? (
-                <FileThumbnail fileName={item.fileName} />
-              ) : (
-                <FilePostulation
-                  onDelete={() => handleDeleteFile(item.key)}
-                  fileKey={item.fileKey}
-                  id={`${item.key}-${index}`}
-                  onChangeImage={(e) => {
-                    handleUploadFile(e, item.key)
-                  }}
-                />
-              )}
+              <FilePostulation
+                onDelete={() => handleDeleteFile(item.name)}
+                fileKey={item.fileKey}
+                id={`${item.key}-${index}`}
+                onChangeImage={(e) => {
+                  handleUploadFile(e, item.name)
+                }}
+              />
             </Grid>
           ))}
         </Grid>

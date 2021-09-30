@@ -8,7 +8,7 @@ import { Avatar, Box, Grid, Typography } from '@material-ui/core'
 import { Alert, Autocomplete } from '@material-ui/lab'
 import companiesActions from '../../state/actions/companies'
 import commonActions from '../../state/actions/common'
-import { DatePicker, Dialog, TimePicker } from '../Shared'
+import { CompanyRow, DatePicker, Dialog, TimePicker } from '../Shared'
 import { useSuccess } from '../../hooks'
 import {
   Button,
@@ -345,7 +345,7 @@ const EventForm = ({
             </Select>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <Autocomplete
               options={companies}
               value={selectedCompany || ''}
@@ -355,12 +355,7 @@ const EventForm = ({
               disabled={formik.values.type_description === 'TAREA'}
               required={isVisit}
               renderOption={(option) => (
-                <Box>
-                  <Typography>
-                    <strong>{option.business_name}</strong>
-                  </Typography>
-                  <Typography>{`Rut: ${option.rut}`}</Typography>
-                </Box>
+                <CompanyRow.Autocomplete company={option} />
               )}
               renderInput={(params) => (
                 <TextField
@@ -371,7 +366,7 @@ const EventForm = ({
               )}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <Autocomplete
               options={
                 selectedCompany
