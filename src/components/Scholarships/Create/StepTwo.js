@@ -2,23 +2,26 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { useHistory } from 'react-router-dom'
-import { Box, Grid, InputLabel, Typography } from '@material-ui/core'
+import { Box, Grid, Typography } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { useToggle } from '../../../hooks'
 import { Button, SubmitButton } from '../../UI'
 import scholarshipsActions from '../../../state/actions/scholarships'
 import useStyles from './styles'
 import filesActions from '../../../state/actions/files'
-import { FilePostulation } from '../../Shared'
+import { FilePostulation, FileVisor } from '../../Shared'
 import { scholarshipConfig } from '../../../config'
+import { formatText } from '../../../formatters'
 
-const StepTwo = ({ type }) => {
+const StepTwo = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
+  const [currentFile, setCurrentFile] = useState(null)
   const { create } = useSelector((state) => state.scholarships)
   const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
+
   const [attachments, setAttachments] = useState([])
 
   const onCreate = () => {
@@ -27,8 +30,7 @@ const StepTwo = ({ type }) => {
       attachments,
       date: new Date()
     }
-    data.attachments = data.attachments.filter((item) => item.fileUrl !== '')
-    console.log(data)
+    data.attachments = data.attachments.filter((item) => item.fileUrl)
     if (!data.businessRelatedId) {
       delete data.businessRelatedId
     }
@@ -44,7 +46,7 @@ const StepTwo = ({ type }) => {
         dispatch(
           scholarshipsActions.updateCreate({
             ...create,
-            step: create.step + 1
+            step: create.step
           })
         )
       })
@@ -64,7 +66,7 @@ const StepTwo = ({ type }) => {
         dispatch(
           scholarshipsActions.updateCreate({
             ...create,
-            step: create.step + 1
+            step: create.step
           })
         )
       })
@@ -98,7 +100,9 @@ const StepTwo = ({ type }) => {
   }
 
   const handleDeleteFile = async (key) => {
-    await dispatch(filesActions.deleteFile())
+    if (create.type !== 'UPDATE') {
+      await dispatch(filesActions.deleteFile())
+    }
     const newAttachment = attachments.map((item) =>
       item.name === key
         ? {
@@ -124,7 +128,14 @@ const StepTwo = ({ type }) => {
 
   useEffect(() => {
     if (create.type === 'UPDATE') {
-      setAttachments(create.application.attachments)
+      const newList = []
+      const { attachments: list } = create.application
+      scholarshipConfig.postulationAttachments.forEach((item) => {
+        const found = list.find((attach) => attach.name === item.name)
+        newList.push(found ? { ...found, isRequired: item.isRequired } : item)
+      })
+
+      setAttachments(newList)
     } else {
       setAttachments(
         scholarshipConfig.postulationAttachments.map((item) => ({
@@ -148,20 +159,29 @@ const StepTwo = ({ type }) => {
         <Grid container spacing={2}>
           {attachments.map((item, index) => (
             <Grid item xs={12} md={6} key={index}>
-              <InputLabel
-                required={item.isRequired}
-                style={{ fontSize: '15px', marginBottom: '12px' }}
-              >
-                {item.displayName}
-              </InputLabel>
-              <FilePostulation
-                onDelete={() => handleDeleteFile(item.name)}
-                fileKey={item.fileKey}
-                id={`${item.key}-${index}`}
-                onChangeImage={(e) => {
-                  handleUploadFile(e, item.name)
-                }}
-              />
+              <Typography style={{ marginBottom: '10px' }}>
+                {formatText.capitalizeString(item.displayName)}
+              </Typography>
+              {item.fileKey ? (
+                <FilePostulation.PDFPreview
+                  fileName={item.fileName}
+                  fileSize={item.fileSize}
+                  onView={() => {
+                    setCurrentFile(item)
+                    toggleOpenVisor()
+                  }}
+                  onRemove={() => handleDeleteFile(item.name)}
+                />
+              ) : (
+                <FilePostulation
+                  onDelete={() => handleDeleteFile(item.name)}
+                  fileKey={item.fileKey}
+                  id={`${item.key}-${index}`}
+                  onChangeImage={(e) => {
+                    handleUploadFile(e, item.name)
+                  }}
+                />
+              )}
             </Grid>
           ))}
         </Grid>
@@ -170,8 +190,13 @@ const StepTwo = ({ type }) => {
         <Button startIcon={<BackIcon />} variant="outlined" onClick={goBack}>
           Anterior
         </Button>
-        {type === 'UPDATE' && openVisor && (
-          <FileVisor open={openVisor} onClose={toggleOpenVisor} />
+        {openVisor && currentFile && (
+          <FileVisor
+            open={openVisor}
+            onClose={toggleOpenVisor}
+            src={currentFile.fileUrl}
+            filename={currentFile.fileName}
+          />
         )}
         <SubmitButton disabled={getIsRequired()} onClick={onCreate}>
           {create.type === 'UPDATE' ? 'Actualizar' : 'Crear'} Postulación

@@ -183,7 +183,7 @@ const ApprovedScholarship = () => {
           <Typography style={{ fontWeight: 'bold', fontSize: '18px' }}>
             Liquidación de Sueldo
           </Typography>
-          <Button onClick={toggleOpenAdd}>Nueva Liquidación</Button>
+          <Button onClick={toggleOpenAdd}>Registar nuevo</Button>
         </Box>
         <Box p={3} className={classes.paper}>
           {liquidationList.map((item, index) => (

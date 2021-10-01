@@ -7,7 +7,7 @@ import { useSuccess, useToggle } from '../../../hooks'
 import { ConfirmDelete } from '../../Shared'
 import TrackingDialog from './Dialog'
 import TableTracking from './Table'
-import { Button } from '../../UI'
+import { Button, EmptyState } from '../../UI'
 
 const TrackingList = () => {
   const dispatch = useDispatch()
@@ -95,23 +95,29 @@ const TrackingList = () => {
         <Typography style={{ fontWeight: 'bold', fontSize: '18px' }}>
           Seguimiento
         </Typography>
-        <Button onClick={toggleOpenAdd}>Registrar</Button>
+        <Button onClick={toggleOpenAdd}>Nuevo</Button>
       </Box>
       <Box>
-        {details && (
-          <TableTracking
-            type={details.postulation.scholarshipType.key}
-            list={items}
-            loading={loading}
-            onEdit={(item) => {
-              toggleOpenEdit()
-              setCurrentTracking(item)
-            }}
-            onDelete={(item) => {
-              toggleOpenDelete()
-              setCurrentTracking(item)
-            }}
-          />
+        {items.length === 0 ? (
+          <EmptyState message="Esta beca aprobada no tiene seguimiento registrado" />
+        ) : (
+          <>
+            {details && (
+              <TableTracking
+                type={details.postulation.scholarshipType.key}
+                list={items}
+                loading={loading}
+                onEdit={(item) => {
+                  toggleOpenEdit()
+                  setCurrentTracking(item)
+                }}
+                onDelete={(item) => {
+                  toggleOpenDelete()
+                  setCurrentTracking(item)
+                }}
+              />
+            )}
+          </>
         )}
 
         {openAdd && details && (

@@ -2,19 +2,14 @@ import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory, withRouter } from 'react-router-dom'
 import { Box, Grid } from '@material-ui/core'
-import {
-  Button,
-  PageHeading,
-  SearchInput,
-  Select,
-  StatusChip,
-  Wrapper
-} from '../UI'
+import { Button, PageHeading, SearchInput, Select, Wrapper } from '../UI'
 import { formatSearchWithRut } from '../../formatters'
 import scholarshipsActions from '../../state/actions/scholarships'
 import CreateDialog from './Create/CreateDialog'
 import { DataTable } from '../Shared'
 import Can from '../Can'
+import { scholarshipConfig } from '../../config'
+import PostulationChip from './Chip'
 
 const PostulationList = () => {
   const dispatch = useDispatch()
@@ -24,7 +19,7 @@ const PostulationList = () => {
     page: 1,
     size: 30,
     search: '',
-    state: ''
+    status: ''
   })
   const { showCreateModal } = useSelector((state) => state.scholarships)
   const { total, applicationsList } = useSelector((state) => state.scholarships)
@@ -47,7 +42,7 @@ const PostulationList = () => {
     })
   }
   const handleStatusChange = (e) => {
-    setFilters({ ...filters, state: e.target.value })
+    setFilters({ ...filters, status: e.target.value })
   }
 
   const onRowClick = (row) => {
@@ -68,7 +63,7 @@ const PostulationList = () => {
 
   useEffect(() => {
     fetchPostulations()
-  }, [])
+  }, [filters])
 
   return (
     <Wrapper>
@@ -80,11 +75,11 @@ const PostulationList = () => {
           <Grid item xs={12} md={2}>
             <Select name="status" onChange={handleStatusChange}>
               <option value="">Todos</option>
-              {[
-                { key: 'CREATED', name: 'Activos' },
-                { key: 'DELETED', name: 'Eliminados' }
-              ].map((item) => (
-                <option key={`employee--filters-${item.key}`} value={item.key}>
+              {scholarshipConfig.revisionStatus.map((item) => (
+                <option
+                  key={`application--filters-${item.key}`}
+                  value={item.status}
+                >
                   {item.name}
                 </option>
               ))}
@@ -94,7 +89,7 @@ const PostulationList = () => {
             <SearchInput
               value={filters.search}
               onChange={onSearchChange}
-              placeholder="Buscar por: beca, estado"
+              placeholder="Buscar por: Trabajador, benecifiario, empresa"
             />
           </Grid>
           <Grid item xs={12} md={6}>
@@ -122,11 +117,6 @@ const PostulationList = () => {
         pointerOnHover
         columns={[
           {
-            name: 'Beca',
-            selector: (row) => row.scholarshipType?.name,
-            sortable: true
-          },
-          {
             name: 'Trabajador',
             selector: (row) => row.employeeNames
           },
@@ -142,14 +132,8 @@ const PostulationList = () => {
           },
           {
             name: 'Estado',
-            hide: 'md',
-
             cell: (row) => (
-              <StatusChip
-                label={`${row.state === 'DELETED' ? 'Rechazada' : 'Aprobada'} `}
-                success={row.state === 'CREATED'}
-                error={row.state === 'DELETED'}
-              />
+              <PostulationChip label={row.revisionName} status={row.status} />
             )
           }
         ]}
@@ -157,10 +141,10 @@ const PostulationList = () => {
         pagination
         onRowClicked={onRowClick}
         paginationRowsPerPageOptions={[30, 40]}
-        paginationPerPage={filters.limit}
+        paginationPerPage={filters.size}
         paginationServer={true}
         onChangeRowsPerPage={(limit) => {
-          setFilters({ ...filters, limit })
+          setFilters({ ...filters, size: limit })
         }}
         onChangePage={(page) => {
           setFilters({ ...filters, skip: page })

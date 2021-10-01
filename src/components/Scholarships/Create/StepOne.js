@@ -26,8 +26,6 @@ const StepOne = ({ onClose, data }) => {
   )
   const [communes, setCommunes] = useState([])
   const [companies, setCompanies] = useState([])
-  const [employees, setEmployees] = useState([])
-
   const [searchRut, setSearchRut] = useState('')
   const [searchCompany, setSearchCompany] = useState('')
   const [searchList, setSearchList] = useState([])
@@ -128,15 +126,6 @@ const StepOne = ({ onClose, data }) => {
   }, [create.type, formik.values.businessRut, companies])
 
   useEffect(() => {
-    if (create.type === 'UPDATE' && employees.length > 0) {
-      const targetEmployee = employees.find(
-        (item) => item.run === formik.values.employeeRut
-      )
-      setSelectedEmployee(targetEmployee)
-    }
-  }, [create.type, formik.values.employeeRut, employees])
-
-  useEffect(() => {
     if (data) {
       dispatch(
         scholarshipsActions.updateCreate({
@@ -183,18 +172,66 @@ const StepOne = ({ onClose, data }) => {
 
   const changeCompany = (value) => {
     setSelectedCompany(value)
-    formik.setFieldValue('businessName', value?.business_name || '')
-    formik.setFieldValue('businessRut', value?.rut || '')
-    formik.setFieldValue('businessId', value?.id || '')
     setSelectedRelated(null)
   }
 
   useEffect(() => {
-    console.log(selectedEmployee)
+    if (create.type === 'UPDATE') {
+      dispatch(
+        employeeActions.getEmployeeDetails(create.application.employeeId, false)
+      ).then((res) => {
+        setSelectedEmployee(res)
+      })
+      dispatch(
+        companiesActions.getCompany(create.application.businessId, false)
+      ).then((res) => {
+        setSelectedCompany(res)
+      })
+      if (create.application.businessRelatedId) {
+        dispatch(
+          companiesActions.getCompany(create.application.businessId, false)
+        ).then((res) => {
+          setSelectedRelated(res)
+        })
+      }
+      if (create.application.beneficiaryIsRelative) {
+        dispatch(
+          employeeActions.getEmployeeRelative(create.application.beneficiaryId)
+        ).then((res) => {
+          setSelectedBeneficiary({ ...res, isRelative: true })
+        })
+      } else {
+        dispatch(
+          employeeActions.getEmployeeDetails(
+            create.application.employeeId,
+            false
+          )
+        ).then((res) => {
+          setSelectedBeneficiary({ ...res, isRelative: false })
+        })
+      }
+    }
+  }, [create.type])
+
+  useEffect(() => {
     if (selectedEmployee) {
+      formik.setFieldValue(
+        'employeeNames',
+        `${selectedEmployee.names} ${selectedEmployee.paternal_surname} ${selectedEmployee.maternal_surname}`
+      )
+      formik.setFieldValue('employeeRut', selectedEmployee.run)
+      formik.setFieldValue('employeeId', selectedEmployee.id)
       fetchBeneficiaryList()
     }
   }, [selectedEmployee])
+
+  useEffect(() => {
+    if (selectedRelated) {
+      formik.setFieldValue('businessRelatedName', selectedRelated.business_name)
+      formik.setFieldValue('businessRelatedRut', selectedRelated.rut)
+      formik.setFieldValue('businessRelatedId', selectedRelated.id)
+    }
+  }, [selectedRelated])
 
   useEffect(() => {
     if (searchCompany) {
@@ -206,12 +243,32 @@ const StepOne = ({ onClose, data }) => {
 
   useEffect(() => {
     if (selectedCompany) {
-      console.log(selectedCompany)
+      formik.setFieldValue('businessName', selectedCompany?.business_name)
+      formik.setFieldValue('businessRut', selectedCompany?.rut)
+      formik.setFieldValue('businessId', selectedCompany?.id)
       fetchRelatedCompanies()
     } else {
       setRelatedList([])
+      formik.setFieldValue('businessName', '')
+      formik.setFieldValue('businessRut', '')
+      formik.setFieldValue('businessId', '')
     }
   }, [selectedCompany])
+
+  useEffect(() => {
+    if (selectedBeneficiary) {
+      formik.setFieldValue(
+        'beneficiaryNames',
+        `${selectedBeneficiary.names} ${selectedBeneficiary.paternal_surname} ${selectedBeneficiary.maternal_surname}`
+      )
+      formik.setFieldValue('beneficiaryRut', selectedBeneficiary.run)
+      formik.setFieldValue('beneficiaryId', selectedBeneficiary.id)
+      formik.setFieldValue(
+        'beneficiaryIsRelative',
+        selectedBeneficiary.isRelative
+      )
+    }
+  }, [selectedBeneficiary])
 
   useEffect(() => {
     if (searchRut) {
@@ -234,15 +291,9 @@ const StepOne = ({ onClose, data }) => {
     dispatch(commonActions.getRegions())
     dispatch(scholarshipsActions.getScholarshipTypes())
     dispatch(scholarshipsActions.getCareers())
-    dispatch(employeeActions.getEmployees({ state: 'CREATED' }, false)).then(
-      (list) => {
-        setEmployees(
-          list.map((item) => ({ ...item, avatarBg: generateColor() }))
-        )
-      }
-    )
   }, [])
 
+  console.log(formik.errors)
   return (
     <Box className={classes.form}>
       <Box>
@@ -334,12 +385,6 @@ const StepOne = ({ onClose, data }) => {
                     getOptionLabel={(option) => option.business_name || ''}
                     onChange={(__, option) => {
                       setSelectedRelated(option)
-                      formik.setFieldValue(
-                        'businessRelatedName',
-                        option.business_name
-                      )
-                      formik.setFieldValue('businessRelatedRut', option.rut)
-                      formik.setFieldValue('businessRelatedId', option.id)
                     }}
                     renderOption={(option) => (
                       <CompanyRow.Autocomplete
@@ -401,9 +446,6 @@ const StepOne = ({ onClose, data }) => {
                             option={item}
                             onClick={() => {
                               setSelectedEmployee(item)
-                              formik.setFieldValue('employeeNames', item.names)
-                              formik.setFieldValue('employeeRut', item.run)
-                              formik.setFieldValue('employeeId', item.id)
                             }}
                           />
                         ))}
@@ -430,13 +472,6 @@ const StepOne = ({ onClose, data }) => {
                   getOptionLabel={(option) => option.names || ''}
                   onChange={(__, option) => {
                     setSelectedBeneficiary(option)
-                    formik.setFieldValue('beneficiaryNames', option.names)
-                    formik.setFieldValue('beneficiaryRut', option.run)
-                    formik.setFieldValue('beneficiaryId', option.id)
-                    formik.setFieldValue(
-                      'beneficiaryIsRelative',
-                      option.isRelative
-                    )
                   }}
                   required
                   renderOption={(option) => <RowAutocomplete option={option} />}

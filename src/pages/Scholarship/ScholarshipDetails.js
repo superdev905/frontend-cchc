@@ -123,7 +123,7 @@ const ScholarshipDetails = () => {
               {loading ? (
                 <Skeleton width="80%" />
               ) : (
-                `Postulacion ${application?.scholarshipType.name}`
+                `Postulación ${application?.id}: ${application?.beneficiaryNames}`
               )}{' '}
             </PageHeading>
             <Typography className={classes.createdTime}>

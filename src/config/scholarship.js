@@ -46,6 +46,12 @@ const scholarshipConfig = {
       isRequired: false,
       name: 'CERTIFICADO_DE_AFILIACION_AFP'
     }
+  ],
+  revisionStatus: [
+    { status: 'CREADA', name: 'Creada' },
+    { status: 'APROBADA', name: 'Aprobada' },
+    { status: 'RECHAZADA', name: 'Rechazada' },
+    { status: 'POR_REVISAR', name: 'Solucitud de revisión' }
   ]
 }
 

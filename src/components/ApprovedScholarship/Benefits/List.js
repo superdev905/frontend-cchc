@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import { useSuccess, useToggle } from '../../../hooks'
 import scholarshipsActions from '../../../state/actions/scholarships'
 import approvedActions from '../../../state/actions/approvedScholarship'
-import { Button } from '../../UI'
+import { Button, EmptyState } from '../../UI'
 import BenefitCard from './Card'
 import BenefitDialog from './Dialog'
 import { ConfirmDelete } from '../../Shared'
@@ -83,7 +83,7 @@ const List = () => {
         <Typography style={{ fontWeight: 'bold', fontSize: '18px' }}>
           Beneficios
         </Typography>
-        <Button onClick={toggleOpenAdd}>Nuevo beneficio</Button>
+        <Button onClick={toggleOpenAdd}>Nuevo</Button>
       </Box>
       <Box>
         {loading ? (
@@ -93,20 +93,24 @@ const List = () => {
           </>
         ) : (
           <>
-            {benefitsList.map((item) => (
-              <BenefitCard
-                key={`card-${item.id}`}
-                benefit={item}
-                onEdit={() => {
-                  setCurrentBenefit(item)
-                  toggleOpenEdit()
-                }}
-                onDelete={() => {
-                  setCurrentBenefit(item)
-                  toggleOpenDelete()
-                }}
-              />
-            ))}
+            {benefitsList.length === 0 ? (
+              <EmptyState message="No se registraron beneficios" />
+            ) : (
+              benefitsList.map((item) => (
+                <BenefitCard
+                  key={`card-${item.id}`}
+                  benefit={item}
+                  onEdit={() => {
+                    setCurrentBenefit(item)
+                    toggleOpenEdit()
+                  }}
+                  onDelete={() => {
+                    setCurrentBenefit(item)
+                    toggleOpenDelete()
+                  }}
+                />
+              ))
+            )}
           </>
         )}
       </Box>

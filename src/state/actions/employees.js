@@ -26,18 +26,25 @@ const getEmployees =
         })
     })
 
-const getEmployeeDetails = (id) => (dispatch) =>
-  new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/employees/${id}`)
-      .then((response) => {
-        const { data } = response
-        dispatch({ type: employeesTypes.GET_EMPLOYEE_DETAILS, payload: data })
-        resolve(data)
-      })
-      .catch((err) => {
-        reject(err.response.data.detail)
-      })
-  })
+const getEmployeeDetails =
+  (id, handleDispatch = true) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`${config.services.employee}/employees/${id}`)
+        .then((response) => {
+          const { data } = response
+          if (handleDispatch) {
+            dispatch({
+              type: employeesTypes.GET_EMPLOYEE_DETAILS,
+              payload: data
+            })
+          }
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
 
 const createEmployee = (values) => () =>
   new Promise((resolve, reject) => {
@@ -116,6 +123,18 @@ const getEmployeeRelatives = (employeeRun) => () =>
     Axios.get(
       `${config.services.employee}/employee-relatives?employee_run=${employeeRun}`
     )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getEmployeeRelative = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.employee}/employee-relatives/${id}`)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -414,5 +433,6 @@ export default {
   getEmployeeJobs,
   createEmployeeJob,
   updateEmployeeJob,
-  patchEmployeeJob
+  patchEmployeeJob,
+  getEmployeeRelative
 }

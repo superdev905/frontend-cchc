@@ -17,12 +17,12 @@ const validationSchema = Yup.object({
   businessRelatedName: Yup.string(),
   businessRelatedId: Yup.number(),
   beneficiaryRut: Yup.string().test('Check Rut', 'Ingrese Rut válido', (v) => {
-    if (v || v === '') return true
+    if (!v || v === '') return true
     return rutValidation(v)
   }),
   beneficiaryNames: Yup.string().required('Ingrese nombre beneficiario'),
   beneficiaryId: Yup.number().required('Ingrese nombre beneficiario'),
-  beneficiaryIsRelative: Yup.bool().required('Ingrese nombre beneficiario'),
+  beneficiaryIsRelative: Yup.bool().required('El beneficiario es empresa'),
   careerId: Yup.string().required('Ingrese nombre carrera'),
   schoolName: Yup.string().required('Ingrese nombre de institución o colegio'),
   schoolRegion: Yup.number().required(

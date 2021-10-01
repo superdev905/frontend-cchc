@@ -31,7 +31,7 @@ const StatusTimeline = () => {
     fetchRevisions()
   }, [])
   return (
-    <Box p={1}>
+    <Box>
       <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>
         Historial de revisiones
       </Typography>

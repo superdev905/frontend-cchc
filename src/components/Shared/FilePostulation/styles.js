@@ -28,27 +28,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     border: '1px solid #C6C6C6'
   },
-  imgPreview: {
-    width: '50%',
-    padding: 20,
-    height: 300,
-    borderRadius: 5,
-    margin: '0 auto'
-  },
-  deleteImgIcon: {
-    position: 'absolute',
-    top: 20,
-    right: 10,
-    borderRadius: '50%',
-    padding: 4,
-    backgroundColor: theme.palette.common.white,
-    '&:hover': {
-      backgroundColor: theme.palette.common.white
-    },
-    '& svg': {
-      fill: theme.palette.error.main
-    }
-  },
   pdfPreview: {
     backgroundColor: theme.palette.gray.gray100,
     borderRadius: 5,
@@ -63,22 +42,28 @@ const useStyles = makeStyles((theme) => ({
   },
   previewWrapper: {
     backgroundColor: theme.palette.gray.gray100,
-    textAlign: 'center',
-    minHeight: '160px'
+    minHeight: '140px',
+    borderRadius: 5,
+    position: 'relative'
   },
-  viewImgIcon: {
+  actions: {
     position: 'absolute',
-    top: 20,
-    right: 50,
-    borderRadius: '50%',
-    padding: 4,
-    backgroundColor: theme.palette.common.white,
-    '&:hover': {
-      backgroundColor: theme.palette.common.white
-    },
-    '& svg': {
-      fill: theme.palette.info.main
+    right: 5,
+    top: 5,
+    '& button': {
+      padding: 8,
+      marginLeft: 5,
+      backgroundColor: theme.palette.common.white,
+      '&:hover': {
+        backgroundColor: theme.palette.common.white
+      }
     }
+  },
+  removeIcon: {
+    color: theme.palette.error.main
+  },
+  fileSize: {
+    fontSize: 13
   }
 }))
 

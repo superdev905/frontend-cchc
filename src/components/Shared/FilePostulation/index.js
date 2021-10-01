@@ -9,6 +9,7 @@ import {
 import { FiUpload } from 'react-icons/fi'
 import useStyles from './styles'
 import pdfIcon from '../FileThumbnail/pdf.png'
+import PDFPreview from './PDFPreview'
 
 const FilePostulation = ({ onChangeImage, id, onDelete, fileKey }) => {
   const classes = useStyles()
@@ -124,5 +125,7 @@ FilePostulation.propTypes = {
 FilePostulation.defaultProps = {
   id: 'file--picker'
 }
+
+FilePostulation.PDFPreview = PDFPreview
 
 export default FilePostulation
