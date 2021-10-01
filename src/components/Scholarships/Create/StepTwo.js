@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { useHistory } from 'react-router-dom'
+import clsx from 'clsx'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { useToggle } from '../../../hooks'
@@ -159,29 +160,37 @@ const StepTwo = () => {
         <Grid container spacing={2}>
           {attachments.map((item, index) => (
             <Grid item xs={12} md={6} key={index}>
-              <Typography style={{ marginBottom: '10px' }}>
-                {formatText.capitalizeString(item.displayName)}
-              </Typography>
-              {item.fileKey ? (
-                <FilePostulation.PDFPreview
-                  fileName={item.fileName}
-                  fileSize={item.fileSize}
-                  onView={() => {
-                    setCurrentFile(item)
-                    toggleOpenVisor()
-                  }}
-                  onRemove={() => handleDeleteFile(item.name)}
-                />
-              ) : (
-                <FilePostulation
-                  onDelete={() => handleDeleteFile(item.name)}
-                  fileKey={item.fileKey}
-                  id={`${item.key}-${index}`}
-                  onChangeImage={(e) => {
-                    handleUploadFile(e, item.name)
-                  }}
-                />
-              )}
+              <Box
+                p={1}
+                className={clsx(
+                  classes.fileWrapper,
+                  item.isRequired && classes.requiredFile
+                )}
+              >
+                <Typography style={{ marginBottom: '10px' }}>
+                  {formatText.capitalizeString(item.displayName)}
+                </Typography>
+                {item.fileKey ? (
+                  <FilePostulation.PDFPreview
+                    fileName={item.fileName}
+                    fileSize={item.fileSize}
+                    onView={() => {
+                      setCurrentFile(item)
+                      toggleOpenVisor()
+                    }}
+                    onRemove={() => handleDeleteFile(item.name)}
+                  />
+                ) : (
+                  <FilePostulation
+                    onDelete={() => handleDeleteFile(item.name)}
+                    fileKey={item.fileKey}
+                    id={`${item.key}-${index}`}
+                    onChangeImage={(e) => {
+                      handleUploadFile(e, item.name)
+                    }}
+                  />
+                )}
+              </Box>
             </Grid>
           ))}
         </Grid>

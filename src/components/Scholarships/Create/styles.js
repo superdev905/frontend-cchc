@@ -24,6 +24,13 @@ const useStyles = makeStyles((theme) => ({
     '& .mapboxgl-ctrl-bottom-right': {
       display: 'none'
     }
+  },
+  fileWrapper: {
+    border: `2px solid ${theme.palette.gray.gray200}`,
+    borderRadius: 5
+  },
+  requiredFile: {
+    border: `2px solid ${theme.palette.error.main}`
   }
 }))
 
