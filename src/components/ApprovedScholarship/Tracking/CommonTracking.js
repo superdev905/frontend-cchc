@@ -70,7 +70,7 @@ const PmaTracking = ({ form, benefits }) => (
     </Grid>
     <Grid item xs={6}>
       <TextField
-        label="Ramos desprobados"
+        label="Ramos desaprobados"
         required
         name="failedCourses"
         value={form.values.failedCourses}
