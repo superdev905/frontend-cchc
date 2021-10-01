@@ -91,6 +91,15 @@ const SalaryLiquidation = ({
     }
   }, [open])
 
+  const deleteFile = (key) => {
+    dispatch(
+      filesActions.deleteFile(key, {
+        state: 'DELETED'
+      })
+    )
+    formik.setFieldValue('fileUrl', '')
+  }
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
       <Box p={2}>
@@ -113,9 +122,7 @@ const SalaryLiquidation = ({
                   onView={() => {
                     toggleOpenVisor()
                   }}
-                  onDelete={() => {
-                    formik.setFieldValue('fileUrl', '')
-                  }}
+                  onDelete={(key) => deleteFile(key)}
                 />
               </Box>
             ) : (
@@ -154,12 +161,11 @@ const SalaryLiquidation = ({
           } liquidación de sueldo`}</SubmitButton>
         </Box>
 
-        {openVisor && uploadFile && (
+        {type === 'UPDATE' && formik.values.fileUrl && openVisor && (
           <FileVisor
             open={openVisor}
             onClose={toggleOpenVisor}
-            src={uploadFile.fileUrl}
-            filename={uploadFile.fileName}
+            src={formik.values.fileUrl}
           />
         )}
       </Box>
