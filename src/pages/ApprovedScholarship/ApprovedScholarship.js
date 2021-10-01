@@ -175,7 +175,8 @@ const ApprovedScholarship = () => {
           </Box>
           <Box>
             <PageHeading>
-              Beca aprobada {approvedScholarship && approvedScholarship.id}
+              {approvedScholarship &&
+                `Beca aprobada ${approvedScholarship.id}: ${approvedScholarship.postulation.beneficiaryNames}`}
             </PageHeading>
             <TimeStamp
               loading={loading}
@@ -192,7 +193,7 @@ const ApprovedScholarship = () => {
               redirectToApplication(approvedScholarship.postulation.id)
             }
           >
-            Ver postulación
+            Ver detalles
           </Button>
         </Box>
       </Box>

@@ -124,9 +124,7 @@ const BenefitDialog = ({
             onClick={formik.handleSubmit}
             disabled={!formik.isValid}
             success={success}
-          >{`${
-            type === 'UPDATE' ? 'Actualizar' : 'Crear'
-          } Seguimiento`}</SubmitButton>
+          >{`${type === 'UPDATE' ? 'Actualizar' : 'Crear'}`}</SubmitButton>
         </Box>
       </Box>
     </Dialog>

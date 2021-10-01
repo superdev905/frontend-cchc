@@ -74,38 +74,39 @@ const LeftDrawer = ({ ...props }) => {
     props.history.push(path)
   }
 
+  const getRoutes = (roleKey) => {
+    if (roleKey === 'ADMIN') {
+      return userRoutes.concat([
+        { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
+        {
+          index: 5,
+          title: 'Usuarios',
+          path: '/users',
+          icon: <UserIcon />
+        },
+        {
+          title: 'Configuración',
+          path: '/settings',
+          icon: <SettingsIcon />
+        }
+      ])
+    }
+
+    if (roleKey === 'PROJECTS')
+      return [
+        { title: 'Home', path: '/home', icon: <DashboardIcon /> },
+        {
+          title: 'Becas',
+          path: '/scholarships',
+          icon: <SchoolIcon />
+        }
+      ]
+    return commonRoutes
+  }
+
   useEffect(() => {
     if (user) {
-      if (user.role.key === 'ADMIN') {
-        const temp = [...userRoutes]
-        const isIncluded = Boolean(temp.find((item) => item.path === '/users'))
-        if (!isIncluded) {
-          const adminRoutes = userRoutes.concat([
-            { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
-            {
-              index: 5,
-              title: 'Usuarios',
-              path: '/users',
-              icon: <UserIcon />
-            },
-            {
-              title: 'Configuración',
-              path: '/settings',
-              icon: <SettingsIcon />
-            }
-          ])
-          setUserRoutes(adminRoutes)
-        }
-      } else {
-        setUserRoutes([
-          { title: 'Home', path: '/home', icon: <DashboardIcon /> },
-          {
-            title: 'Becas',
-            path: '/scholarships',
-            icon: <SchoolIcon />
-          }
-        ])
-      }
+      setUserRoutes(getRoutes(user.role.key))
     }
   }, [user])
 

@@ -138,19 +138,18 @@ const PMAList = ({ list, loading, onEdit, onDelete }) => (
 
 const TableTracking = ({ loading, list, onDelete, onEdit, type }) => (
   <Box>
-    {type === 'BEST' ||
-      (type === 'BESH' && (
-        <BeshBestList
-          list={list}
-          loading={loading}
-          onEdit={(item) => {
-            onEdit(item)
-          }}
-          onDelete={(item) => {
-            onDelete(item)
-          }}
-        />
-      ))}
+    {(type === 'BEST' || type === 'BESH') && (
+      <BeshBestList
+        list={list}
+        loading={loading}
+        onEdit={(item) => {
+          onEdit(item)
+        }}
+        onDelete={(item) => {
+          onDelete(item)
+        }}
+      />
+    )}
     {type === 'ACADEMIC_EXCELLENCE_SCHOLARSHIP' && (
       <BEAList
         list={list}

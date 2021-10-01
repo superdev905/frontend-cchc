@@ -1,6 +1,7 @@
 import queryString from 'query-string'
 import Axios from '../../Axios'
 import config from '../../config'
+import approvedTypes from '../types/approvedScholarship'
 
 const trackingTypes = {
   ACADEMIC_EXCELLENCE_SCHOLARSHIP: 'scholarship-bea',
@@ -94,13 +95,14 @@ const patchBenefit = (id, values) => () =>
       })
   })
 
-const getApprovedStats = (id) => () =>
+const getApprovedStats = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(
       `${config.services.scholarship}/approved-scholarships/${id}/stats`
     )
       .then((response) => {
         const { data } = response
+        dispatch({ type: approvedTypes.GET_APPROVED_STATS, payload: data })
         resolve(data)
       })
       .catch((err) => {

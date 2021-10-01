@@ -119,7 +119,10 @@ const List = () => {
           open={openAdd}
           onClose={toggleOpenAdd}
           submitFunction={onCreateBenefit}
-          successFunction={fetchBenefits}
+          successFunction={() => {
+            fetchBenefits()
+            dispatch(approvedActions.getApprovedStats(idApproved))
+          }}
           successMessage={'Beneficio creado'}
         />
       )}
@@ -130,7 +133,10 @@ const List = () => {
           data={currentBenefit}
           onClose={toggleOpenEdit}
           submitFunction={onUpdateBenefit}
-          successFunction={fetchBenefits}
+          successFunction={() => {
+            fetchBenefits()
+            dispatch(approvedActions.getApprovedStats(idApproved))
+          }}
           successMessage={'Beneficio actualizado'}
         />
       )}

@@ -1,0 +1,3 @@
+export default {
+  GET_APPROVED_STATS: 'GET_APPROVED_STATS'
+}
