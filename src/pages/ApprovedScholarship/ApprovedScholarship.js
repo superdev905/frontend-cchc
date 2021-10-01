@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
-import { Box, IconButton, Typography, makeStyles } from '@material-ui/core'
+import { Box, IconButton, Typography } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { useSnackbar } from 'notistack'
 import scholarshipsActions from '../../state/actions/scholarships'
 import {
   Button,
+  EmptyState,
   LabeledRow,
   PageHeading,
   Text,
@@ -26,18 +27,7 @@ import {
   FileVisor
 } from '../../components/Shared'
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    border: `1px solid ${theme.palette.gray.gray400}`,
-    borderRadius: 8,
-    [theme.breakpoints.up('md')]: {
-      minHeight: 150
-    }
-  }
-}))
-
 const ApprovedScholarship = () => {
-  const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
@@ -205,31 +195,44 @@ const ApprovedScholarship = () => {
           </Typography>
           <Button onClick={toggleOpenAdd}>Registar nuevo</Button>
         </Box>
-        <Box p={3} className={classes.paper}>
-          {liquidationList.map((item, index) => (
-            <Box>
-              <Box mb="15px" key={index}>
-                <FileThumbnail
-                  fileName={item.fileName}
-                  onView={() => {
-                    toggleOpenVisor()
-                    setCurrentFile(item)
-                  }}
-                  onEdit={() => {
-                    toggleOpenEdit()
-                    setCurrentFile(item)
-                  }}
-                  onDelete={() => {
-                    toggleOpenDelete()
-                    setCurrentFile(item)
-                  }}
-                />
-              </Box>
-              <LabeledRow label="Comentarios:">
-                <Text> {item.comments}</Text>
-              </LabeledRow>
-            </Box>
-          ))}
+        <Box>
+          {liquidationList.length === 0 ? (
+            <EmptyState message="No tiene liquidaciones de suelo registradas" />
+          ) : (
+            <>
+              {liquidationList.map((item, index) => (
+                <Box
+                  mb="15px"
+                  key={`card--${index}`}
+                  border="1px solid"
+                  borderRadius={'8px'}
+                >
+                  <Box p={2}>
+                    <FileThumbnail
+                      fileName={item.fileName}
+                      date={item.uploadDate}
+                      fileSize={item.fileSize}
+                      onView={() => {
+                        toggleOpenVisor()
+                        setCurrentFile(item)
+                      }}
+                      onEdit={() => {
+                        toggleOpenEdit()
+                        setCurrentFile(item)
+                      }}
+                      onDelete={() => {
+                        toggleOpenDelete()
+                        setCurrentFile(item)
+                      }}
+                    />
+                    <LabeledRow label="Comentarios:">
+                      <Text> {item.comments}</Text>
+                    </LabeledRow>
+                  </Box>
+                </Box>
+              ))}
+            </>
+          )}
         </Box>
       </Box>
       <ApprovedTrackingList />

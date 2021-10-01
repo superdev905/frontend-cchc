@@ -65,7 +65,9 @@ const PDFCard = ({
             </Typography>
 
             <Typography className={classes.info}>
-              {`${date && formatDate(date)} - ${fileSize || ''}`}
+              {date &&
+                fileSize &&
+                `${date && formatDate(date)} - ${fileSize || ''}`}
             </Typography>
           </Box>
         </Box>

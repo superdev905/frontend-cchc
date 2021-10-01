@@ -1,7 +1,8 @@
-import { Avatar, Box, Chip, makeStyles, Typography } from '@material-ui/core'
-import { FiSave } from 'react-icons/fi'
+import { Avatar, Box, makeStyles, Typography } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 import { formatDate } from '../../formatters'
 import generateColor from '../../utils/generateColor'
+import PostulationChip from './Chip'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,15 +36,18 @@ const StatusCard = ({ status }) => {
     <Box p={1} className={classes.root}>
       <Typography className={classes.title}>Estado de postulación:</Typography>
       <Box>
-        <Chip
-          className={classes.chip}
-          label={
-            <Box display="flex" alignItems="center">
-              <FiSave fontSize={19} />
-              <Typography style={{ marginLeft: 5 }}>{status.name}</Typography>
-            </Box>
-          }
-        />
+        <Box m={1} textAlign="center">
+          <PostulationChip label={status.name} status={status.status} />
+        </Box>
+        <Box>
+          {status.status === 'POR_REVISAR' && (
+            <Alert severity="warning">
+              <Typography style={{ marginBottom: '10px' }}>
+                {status.comments}
+              </Typography>
+            </Alert>
+          )}
+        </Box>
         <Box display="flex" alignItems="center">
           <Avatar className={classes.avatar}>
             {status.approver.names.charAt(0)}

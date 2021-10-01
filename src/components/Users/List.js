@@ -169,14 +169,13 @@ const List = () => {
             hide: 'md'
           },
           {
-            name: '',
+            name: 'Rol',
             hide: 'md',
-            center: true,
+            left: true,
             cell: (row) => (
               <StatusChip
-                label={`${row.is_administrator ? 'Admin' : 'Usuario'} `}
+                label={row.role.name}
                 success={row.state === 'ACTIVE'}
-                error={row.state === 'DELETED'}
               />
             )
           },

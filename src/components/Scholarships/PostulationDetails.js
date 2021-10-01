@@ -49,6 +49,17 @@ const PostulationDetails = ({ loading }) => {
                   ></Chip>
                 </Text>
               </LabeledRow>
+              {application && application.state === 'DELETED' && (
+                <LabeledRow label="Estado">
+                  <Text loading={loading}>
+                    <Chip
+                      color="error"
+                      label={'Esta postulacion fue eliminada'}
+                    ></Chip>
+                  </Text>
+                </LabeledRow>
+              )}
+
               <LabeledRow label="Creado por">
                 <Text loading={loading}>
                   {`${application?.createdBy.names} ${application?.createdBy.paternalSurname}`}

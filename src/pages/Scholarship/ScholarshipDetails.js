@@ -137,18 +137,34 @@ const ScholarshipDetails = () => {
             availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
             yes={() => (
               <>
-                <Button danger onClick={toggleOpenDelete}>
+                <Button
+                  danger
+                  disabled={application?.state === 'DELETED'}
+                  onClick={toggleOpenDelete}
+                >
                   Eliminar
                 </Button>
 
-                <Button onClick={toggleOpenEdit}>Editar</Button>
+                <Button
+                  disabled={application?.state === 'DELETED'}
+                  onClick={toggleOpenEdit}
+                >
+                  Editar
+                </Button>
               </>
             )}
             no={() => null}
           />
           <Can
             availableTo={['PROJECTS', 'ADMIN']}
-            yes={() => <Button onClick={approveDialog}>Revisar</Button>}
+            yes={() => (
+              <Button
+                disabled={application?.state === 'DELETED'}
+                onClick={approveDialog}
+              >
+                Revisar
+              </Button>
+            )}
             no={() => null}
           />
         </Box>

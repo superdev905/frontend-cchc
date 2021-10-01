@@ -3,15 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import {
-  Avatar,
-  Box,
-  Grid,
-  InputLabel,
-  makeStyles,
-  Switch,
-  Typography
-} from '@material-ui/core'
+import { Avatar, Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Dialog } from '../Shared'
 import { SubmitButton, Button, TextField, Select } from '../UI'
 import { useSuccess } from '../../hooks'
@@ -47,7 +39,7 @@ const validationSchema = Yup.object().shape({
   paternal_surname: Yup.string().required('Ingrese paterno'),
   email: Yup.string().email('Ingrese correo válido').required('Ingrese email'),
   charge_id: Yup.string('Seleccione cargo').nullable(),
-  role_id: Yup.number('Seleccione rol'),
+  role_id: Yup.number('Seleccione rol').required('Seleccione rol'),
   charge_name: Yup.string(),
   is_administrator: Yup.bool()
 })
@@ -220,27 +212,6 @@ const Form = ({
                 />
               </Grid>
             )}
-
-            <Grid item xs={12} md={6}>
-              <Select
-                label="Cargo"
-                name="charge_id"
-                required
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.charge_id}
-                helperText={formik.touched.charge_id && formik.errors.charge_id}
-                error={
-                  formik.touched.charge_id && Boolean(formik.errors.charge_id)
-                }
-                inputProps={{ readOnly }}
-              >
-                <option value="">Sin cargo</option>
-                {charges.map((item) => (
-                  <option value={item.id}>{item.name}</option>
-                ))}
-              </Select>
-            </Grid>
             <Grid item xs={12} md={6}>
               <Select
                 label="Rol"
@@ -261,18 +232,24 @@ const Form = ({
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <InputLabel className={classes.label}>
-                Usuario administrador
-              </InputLabel>
-              <Switch
-                checked={formik.values.is_administrator}
-                color="primary"
-                onChange={(e) => {
-                  formik.setFieldValue('is_administrator', e.target.checked)
-                }}
-                name="checked-administrator"
-                disabled={readOnly}
-              />
+              <Select
+                label="Cargo"
+                name="charge_id"
+                required
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.charge_id}
+                helperText={formik.touched.charge_id && formik.errors.charge_id}
+                error={
+                  formik.touched.charge_id && Boolean(formik.errors.charge_id)
+                }
+                inputProps={{ readOnly }}
+              >
+                <option value="">Sin cargo</option>
+                {charges.map((item) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
+              </Select>
             </Grid>
           </Grid>
           <Box textAlign="center">
