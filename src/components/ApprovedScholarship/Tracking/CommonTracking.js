@@ -39,7 +39,7 @@ const PmaTracking = ({ form, benefits }) => (
       />
     </Grid>
     <Grid item xs={6}>
-      <TextField
+      <Select
         label="Nivel en curso"
         placeholder={`Ejemplo: I SEMETRE`}
         required
@@ -50,7 +50,12 @@ const PmaTracking = ({ form, benefits }) => (
           form.touched.levelInProgress && Boolean(form.errors.levelInProgress)
         }
         helperText={form.touched.levelInProgress && form.errors.levelInProgress}
-      />
+      >
+        <option value="">Seleccione semestre</option>
+        {['I Semestre', 'II Semestre'].map((item) => (
+          <option value={item}>{item}</option>
+        ))}
+      </Select>
     </Grid>
     <Grid item xs={6}>
       <TextField
