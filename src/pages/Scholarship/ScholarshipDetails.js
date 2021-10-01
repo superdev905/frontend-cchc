@@ -14,7 +14,7 @@ import scholarshipsActions from '../../state/actions/scholarships'
 import PostulationDetails from '../../components/Scholarships/PostulationDetails'
 import CreateDialog from '../../components/Scholarships/Create/CreateDialog'
 import { ConfirmDelete } from '../../components/Shared'
-import ApproveDialog from '../../components/Scholarships/Approve/ApproveDialog'
+import ApproveDialog from '../../components/Scholarships/Approve'
 import Can from '../../components/Can'
 
 const useStyles = makeStyles((theme) => ({
@@ -147,7 +147,7 @@ const ScholarshipDetails = () => {
             no={() => null}
           />
           <Can
-            availableTo={['PROJECTS']}
+            availableTo={['PROJECTS', 'ADMIN']}
             yes={() => <Button onClick={approveDialog}>Revisar</Button>}
             no={() => null}
           />
@@ -176,7 +176,13 @@ const ScholarshipDetails = () => {
         />
       )}
 
-      <ApproveDialog open={showCreateModal} onClose={toggleCreateModal} />
+      {showCreateModal && (
+        <ApproveDialog
+          open={showCreateModal}
+          onClose={toggleCreateModal}
+          successFunction={fetchPostulationDetails}
+        />
+      )}
     </Wrapper>
   )
 }

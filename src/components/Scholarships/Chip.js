@@ -1,5 +1,4 @@
 import clsx from 'clsx'
-import PropTypes from 'prop-types'
 import {
   FiCheckCircle as ApprovedIcon,
   FiSave as CreatedIcon,
@@ -32,14 +31,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const StatusChip = ({ label, success, status }) => {
+const StatusChip = ({ label, success, status, className, iconSize }) => {
   const classes = useStyles({ success })
 
   const icons = {
-    CREADA: <CreatedIcon fontSize={18} />,
-    APROBADA: <ApprovedIcon fontSize={18} />,
-    POR_REVISAR: <FiClock fontSize={18} />,
-    RECHAZADA: <FiX fontSize={18} />
+    CREADA: <CreatedIcon fontSize={iconSize} />,
+    APROBADA: <ApprovedIcon fontSize={iconSize} />,
+    POR_REVISAR: <FiClock fontSize={iconSize} />,
+    RECHAZADA: <FiX fontSize={iconSize} />
   }
 
   return (
@@ -47,7 +46,9 @@ const StatusChip = ({ label, success, status }) => {
       label={
         <Box display="flex" alignItems="center">
           {icons[status]}
-          <Typography className={classes.label}>{label}</Typography>
+          <Typography className={clsx(classes.label, className)}>
+            {label}
+          </Typography>
         </Box>
       }
       className={clsx(
@@ -61,10 +62,8 @@ const StatusChip = ({ label, success, status }) => {
   )
 }
 
-StatusChip.propTypes = {
-  label: PropTypes.string,
-  error: PropTypes.bool,
-  success: PropTypes.bool
+StatusChip.defaultProps = {
+  iconSize: 18
 }
 
 export default StatusChip

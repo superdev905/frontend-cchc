@@ -198,12 +198,10 @@ const ApprovedScholarship = () => {
         </Box>
       </Box>
       <ApprovedStatistics />
-      <ApprovedTrackingList />
-      <BenefitsList />
       <Box p={1}>
         <Box display="flex" justifyContent="space-between">
           <Typography style={{ fontWeight: 'bold', fontSize: '18px' }}>
-            Liquidación de Sueldo
+            Liquidaciónes de Sueldo
           </Typography>
           <Button onClick={toggleOpenAdd}>Registar nuevo</Button>
         </Box>
@@ -234,6 +232,8 @@ const ApprovedScholarship = () => {
           ))}
         </Box>
       </Box>
+      <ApprovedTrackingList />
+      <BenefitsList />
 
       {openAdd && (
         <SalaryLiquidation

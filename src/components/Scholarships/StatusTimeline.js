@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import {
@@ -18,6 +18,7 @@ const StatusTimeline = () => {
   const dispatch = useDispatch()
   const { idPostulation } = useParams()
   const [revisions, setRevisions] = useState([])
+  const { application } = useSelector((state) => state.scholarships)
   const fetchRevisions = () => {
     dispatch(scholarshipsActions.getApplicationRevisions(idPostulation)).then(
       (result) => {
@@ -29,7 +30,7 @@ const StatusTimeline = () => {
 
   useEffect(() => {
     fetchRevisions()
-  }, [])
+  }, [application])
   return (
     <Box>
       <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>
