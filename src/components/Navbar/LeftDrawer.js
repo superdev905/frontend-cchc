@@ -61,6 +61,11 @@ const commonRoutes = [
     title: 'Becas',
     path: '/scholarships',
     icon: <SchoolIcon />
+  },
+  {
+    title: 'Cursos',
+    path: '/courses',
+    icon: <SchoolIcon />
   }
 ]
 
