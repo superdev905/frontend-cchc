@@ -22,7 +22,6 @@ const StatusTimeline = () => {
   const fetchRevisions = () => {
     dispatch(scholarshipsActions.getApplicationRevisions(idPostulation)).then(
       (result) => {
-        console.log(result)
         setRevisions(result)
       }
     )

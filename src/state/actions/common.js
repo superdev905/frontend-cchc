@@ -1,3 +1,4 @@
+import queryString from 'query-string'
 import Axios from '../../Axios'
 import commonTypes from '../types/common'
 import config from '../../config'
@@ -364,6 +365,68 @@ const getRoles = () => (dispatch) =>
       })
   })
 
+const getAllOTECS =
+  (query, handleDispatch = true) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.parameters}/otecs?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          if (handleDispatch) {
+            dispatch({
+              type: commonTypes.GET_OTECS,
+              payload: data.items
+            })
+            dispatch({
+              type: commonTypes.SET_TOTAL_OTECS,
+              payload: data.total
+            })
+          }
+          resolve(data.items)
+        })
+        .catch((err) => {
+          reject(err.response.data)
+        })
+    })
+
+const createOTEC = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.parameters}/otecs`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateOTEC = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.parameters}/otecs/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const deleteOTEC = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`${config.services.parameters}/otecs/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getRegions,
   getCharges,
@@ -391,5 +454,9 @@ export default {
   getManagement,
   getTopics,
   getInterventionDetails,
-  getRoles
+  getRoles,
+  getAllOTECS,
+  createOTEC,
+  updateOTEC,
+  deleteOTEC
 }

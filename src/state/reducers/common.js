@@ -25,7 +25,9 @@ const initialState = {
   topics: [],
   managementList: [],
   areas: [],
-  roles: []
+  roles: [],
+  otecs: [],
+  totalOtecs: 0
 }
 
 const commonReducer = (state = initialState, { type, payload }) => {
@@ -80,6 +82,11 @@ const commonReducer = (state = initialState, { type, payload }) => {
       return { ...state, areas: payload }
     case commonTypes.GET_ROLES:
       return { ...state, roles: payload }
+    case commonTypes.GET_OTECS:
+      return { ...state, otecs: payload }
+    case commonTypes.SET_TOTAL_OTECS:
+      return { ...state, totalOtecs: payload }
+
     default:
       return state
   }

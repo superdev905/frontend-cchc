@@ -1,12 +1,19 @@
 import { useState } from 'react'
 import { withRouter } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { Box, Grid } from '@material-ui/core'
 import { Button, SearchInput, Select, Wrapper } from '../UI'
 import { formatSearchWithRut } from '../../formatters'
+import { useToggle } from '../../hooks'
 import Can from '../Can'
 import { scholarshipConfig } from '../../config'
+import commonActions from '../../state/actions/common'
+import CreateCourse from './CreateCourse'
 
 const CoursesList = () => {
+  const dispatch = useDispatch()
+  const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+
   const [filters, setFilters] = useState({
     page: 1,
     size: 30,
@@ -26,6 +33,13 @@ const CoursesList = () => {
   const handleStatusChange = (e) => {
     setFilters({ ...filters, status: e.target.value })
   }
+
+  const createCourse = (values) =>
+    dispatch(
+      commonActions.createOTEC({
+        ...values
+      })
+    )
 
   return (
     <Wrapper>
@@ -55,13 +69,19 @@ const CoursesList = () => {
             <Box display="flex" justifyContent="flex-end">
               <Can
                 availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
-                yes={() => <Button>Nuevo curso</Button>}
+                yes={() => <Button onClick={toggleOpenAdd}>Nuevo curso</Button>}
                 no={() => null}
               />
             </Box>
           </Grid>
         </Grid>
       </Box>
+      <CreateCourse
+        successMessage="Curso creado"
+        open={openAdd}
+        onClose={toggleOpenAdd}
+        submitFunction={createCourse}
+      />
     </Wrapper>
   )
 }

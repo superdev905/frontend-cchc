@@ -5,6 +5,7 @@ import { PollsDot } from '../../components/Polls'
 import { PageHeading } from '../../components/UI'
 import uiActions from '../../state/actions/ui'
 import CoursesList from '../../components/Courses/CoursesList'
+import OTECSList from '../../components/Courses/OTECSList'
 
 const Courses = () => {
   const dispatch = useDispatch()
@@ -19,6 +20,7 @@ const Courses = () => {
         Cursos <PollsDot module="CURSOS" />
       </PageHeading>
       <CoursesList />
+      <OTECSList />
     </Box>
   )
 }

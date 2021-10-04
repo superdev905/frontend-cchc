@@ -164,7 +164,6 @@ const StepOne = ({ onClose, data }) => {
   const fetchRelatedCompanies = () => {
     dispatch(companiesActions.getRelatedCompanies(selectedCompany.id)).then(
       (list) => {
-        console.log(list)
         setRelatedList(list)
       }
     )
@@ -293,7 +292,6 @@ const StepOne = ({ onClose, data }) => {
     dispatch(scholarshipsActions.getCareers())
   }, [])
 
-  console.log(formik.errors)
   return (
     <Box className={classes.form}>
       <Box>
