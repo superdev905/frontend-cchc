@@ -2,7 +2,8 @@ import coursesTypes from '../types/courses'
 
 const initialState = {
   coursesList: [],
-  totalCourses: 0
+  totalCourses: 0,
+  courseDetails: null
 }
 
 const coursesReducer = (state = initialState, { type, payload }) => {
@@ -11,6 +12,8 @@ const coursesReducer = (state = initialState, { type, payload }) => {
       return { ...state, coursesList: payload }
     case coursesTypes.SET_TOTAL_COURSES:
       return { ...state, totalCourses: payload }
+    case coursesTypes.GET_COURSE_DETAILS:
+      return { ...state, courseDetails: payload }
 
     default:
       return state
