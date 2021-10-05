@@ -48,9 +48,9 @@ const updateCourse = (id, values) => () =>
       })
   })
 
-const patchCourse = (id) => () =>
+const patchCourse = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.delete(`${config.services.courses}/courses/${id}`)
+    Axios.patch(`${config.services.courses}/courses/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)

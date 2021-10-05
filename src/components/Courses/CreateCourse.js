@@ -11,7 +11,7 @@ import { useSuccess } from '../../hooks'
 import commonActions from '../../state/actions/common'
 
 const validationSchema = Yup.object().shape({
-  code: Yup.string().required('Ingrese código'),
+  code: Yup.number('Ingrese código válido').min(5).required('Ingrese código'),
   name: Yup.string().required('Ingrese nombre del curso'),
   otecId: Yup.string().required('Seleccione otec'),
   description: Yup.string().required('Ingrese descripción')
@@ -126,9 +126,6 @@ const CreateCourse = ({
                 onBlur={formik.handleBlur}
                 error={formik.touched.code && Boolean(formik.errors.code)}
                 helperText={formik.touched.code && formik.errors.code}
-                inputProps={{
-                  maxLength: 9
-                }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
