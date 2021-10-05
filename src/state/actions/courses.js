@@ -60,9 +60,23 @@ const patchCourse = (id, values) => () =>
       })
   })
 
+const getCourse = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.courses}/courses/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: coursesTypes.GET_COURSE_DETAILS, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getCourses,
   createCourse,
   updateCourse,
-  patchCourse
+  patchCourse,
+  getCourse
 }
