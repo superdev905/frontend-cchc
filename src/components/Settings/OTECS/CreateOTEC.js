@@ -39,7 +39,7 @@ const CreateOTEC = ({
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
-  const { regions } = useSelector((state) => state.common)
+  const { regions, otecs } = useSelector((state) => state.common)
 
   const formik = useFormik({
     validateOnMount: true,
@@ -113,6 +113,13 @@ const CreateOTEC = ({
       setCommunes(regions.find((item) => item.id === data?.regionId).communes)
     }
   }, [regions])
+
+  useEffect(() => {
+    if (type === 'CREATE') {
+      otecs.find((item) => item.rut === data?.rut)
+    }
+    return false
+  }, [otecs])
 
   useEffect(() => {
     if (open) {
