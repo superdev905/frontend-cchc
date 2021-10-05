@@ -28,22 +28,6 @@ const courseRoutes = [
     )
   },
   {
-    path: `/${rootPath}/:idCourse`,
-    key: 'COURSE-PAGE',
-    exact: true,
-    component: ({ authenticated }) => (
-      <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
-        yes={() => (
-          <Layout>
-            <Course />
-          </Layout>
-        )}
-        no={() => (authenticated ? <Forbidden /> : <Login />)}
-      />
-    )
-  },
-  {
     path: `/${rootPath}/:idCourse/classes`,
     key: 'COURSE-PAGE-CLASSES',
     exact: true,

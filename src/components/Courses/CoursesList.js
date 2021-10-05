@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { withRouter } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
@@ -14,6 +14,7 @@ import { ConfirmDelete, DataTable } from '../Shared'
 
 const CoursesList = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
   const [currentCourse, setCurrentCourse] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -54,6 +55,9 @@ const CoursesList = () => {
     ).then(() => {
       setLoading(false)
     })
+  }
+  const onRowClick = (row) => {
+    history.push(`/courses/${row.id}/classes`)
   }
 
   const createCourse = (values) => {
@@ -208,6 +212,7 @@ const CoursesList = () => {
           }
         ]}
         data={coursesList}
+        onRowClicked={onRowClick}
         pagination
         paginationRowsPerPageOptions={[30, 40]}
         paginationPerPage={filters.size}
@@ -255,4 +260,4 @@ const CoursesList = () => {
   )
 }
 
-export default withRouter(CoursesList)
+export default CoursesList
