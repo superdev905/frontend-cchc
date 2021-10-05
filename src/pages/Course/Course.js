@@ -7,7 +7,7 @@ import { CourseDetails, CourseTab } from '../../components/Course'
 import { HeadingWithButton } from '../../components/Shared'
 import { Button, Wrapper } from '../../components/UI'
 
-const Course = () => {
+const Course = ({ children }) => {
   const dispatch = useDispatch()
   const { idCourse } = useParams()
   const [loading, setLoading] = useState(null)
@@ -22,7 +22,7 @@ const Course = () => {
 
   useEffect(() => {
     fetchCourse()
-  }, [idCourse])
+  }, [])
 
   return (
     <Wrapper>
@@ -37,8 +37,8 @@ const Course = () => {
           <Button>Editar</Button>
         </Box>
       </Box>
-      <CourseDetails />
-      <CourseTab />
+      <CourseDetails loading={loading} />
+      <CourseTab>{children}</CourseTab>
     </Wrapper>
   )
 }

@@ -1,5 +1,6 @@
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { Box, IconButton } from '@material-ui/core'
+import { Skeleton } from '@material-ui/lab'
 import { PageHeading, TimeStamp } from '../UI'
 
 const BackHeading = ({ goBack, title, loading, timeAgo }) => (
@@ -10,7 +11,11 @@ const BackHeading = ({ goBack, title, loading, timeAgo }) => (
       </IconButton>
     </Box>
     <Box>
-      <PageHeading>{title}</PageHeading>
+      {!loading ? (
+        <PageHeading>{title}</PageHeading>
+      ) : (
+        <Skeleton width="200px"></Skeleton>
+      )}
       <TimeStamp loading={loading} text={timeAgo} />
     </Box>
   </Box>
