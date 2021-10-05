@@ -80,7 +80,7 @@ const courseRoutes = [
     )
   },
   {
-    path: `/${rootPath}/:idCourse/employees`,
+    path: `/${rootPath}/:idCourse/enroll`,
     key: 'COURSE-PAGE-EMPLOYEES',
     exact: true,
     component: ({ authenticated }) => (

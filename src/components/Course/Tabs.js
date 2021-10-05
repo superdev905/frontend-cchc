@@ -8,14 +8,14 @@ const PollTabs = ({ children }) => {
   const history = useHistory()
 
   const getRoute = (index) => {
-    if (index === 2) return 'employees'
+    if (index === 2) return 'enroll'
     if (index === 1) return 'payments'
     return 'classes'
   }
 
   const getCurrentTab = () => {
     const { pathname } = history.location
-    if (pathname.includes('employees')) return 2
+    if (pathname.includes('enroll')) return 2
     if (pathname.includes('payments')) return 1
     return 0
   }
