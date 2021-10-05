@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box } from '@material-ui/core'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import coursesActions from '../../state/actions/courses'
 import { CourseDetails, CourseTab } from '../../components/Course'
 import { HeadingWithButton } from '../../components/Shared'
@@ -9,6 +9,7 @@ import { Button, Wrapper } from '../../components/UI'
 
 const Course = ({ children }) => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const { idCourse } = useParams()
   const [loading, setLoading] = useState(null)
   const { courseDetails: course } = useSelector((state) => state.courses)
@@ -20,6 +21,10 @@ const Course = ({ children }) => {
     })
   }
 
+  const goBack = () => {
+    history.push('/courses')
+  }
+
   useEffect(() => {
     fetchCourse()
   }, [])
@@ -28,6 +33,7 @@ const Course = ({ children }) => {
     <Wrapper>
       <Box display="flex" justifyContent="space-between">
         <HeadingWithButton
+          goBack={goBack}
           title={course && `${course.code} - ${course.name}`}
           timeAgo="Hace 1 día"
           loading={loading}
