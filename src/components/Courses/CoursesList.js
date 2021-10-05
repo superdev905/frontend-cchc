@@ -1,18 +1,28 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import { useSnackbar } from 'notistack'
 import { Box, Grid } from '@material-ui/core'
 import { Button, SearchInput, Select, Wrapper } from '../UI'
 import { formatSearchWithRut } from '../../formatters'
-import { useToggle } from '../../hooks'
+import { useToggle, useSuccess } from '../../hooks'
 import Can from '../Can'
 import { scholarshipConfig } from '../../config'
-import commonActions from '../../state/actions/common'
+import coursesActions from '../../state/actions/courses'
 import CreateCourse from './CreateCourse'
 
 const CoursesList = () => {
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
+  const [currentCourse] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const { success, changeSuccess } = useSuccess()
+
+  // const { totalCourses, coursesList } = useSelector((state) => state.courses)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
+  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
 
   const [filters, setFilters] = useState({
     page: 1,
@@ -21,6 +31,7 @@ const CoursesList = () => {
     status: ''
   })
 
+  console.log(loading)
   const onSearchChange = (e) => {
     const { value } = e.target
 
@@ -34,12 +45,83 @@ const CoursesList = () => {
     setFilters({ ...filters, status: e.target.value })
   }
 
-  const createCourse = (values) =>
+  const fetchCourses = () => {
+    setLoading(true)
     dispatch(
-      commonActions.createOTEC({
+      coursesActions.getCourses({
+        ...filters
+      })
+    ).then(() => {
+      setLoading(false)
+    })
+  }
+
+  const createCourse = (values) => {
+    dispatch(
+      coursesActions.createCourse({
         ...values
       })
     )
+      .then(() => {
+        setLoading(false)
+        changeSuccess(true)
+        toggleOpenAdd()
+        fetchCourses()
+        enqueueSnackbar('Curso creado correctamente', {
+          autoHideDuration: 1500,
+          variant: 'success'
+        })
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+  const updateCourse = (values) => {
+    dispatch(
+      coursesActions.updateCourse(currentCourse.id, {
+        ...values,
+        createdBy: currentCourse.createdBy
+      })
+    )
+      .then(() => {
+        setLoading(false)
+        changeSuccess(true)
+        toggleOpenUpdate()
+        fetchCourses()
+        enqueueSnackbar('Curso actualizado correctamente', {
+          autoHideDuration: 1500,
+          variant: 'success'
+        })
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
+  const deleteCourses = (id) => {
+    dispatch(
+      coursesActions.patchCourse(id, {
+        state: 'DELETED'
+      })
+    )
+      .then(() => {
+        setDeleting(false)
+        changeSuccess(true)
+        toggleOpenDelete()
+        fetchCourses()
+        enqueueSnackbar('El contacto fue eliminado', {
+          autoHideDuration: 1500,
+          variant: 'success'
+        })
+      })
+      .catch(() => {
+        setDeleting(false)
+      })
+  }
+
+  useEffect(() => {
+    fetchCourses()
+  }, [filters])
 
   return (
     <Wrapper>
@@ -82,6 +164,31 @@ const CoursesList = () => {
         onClose={toggleOpenAdd}
         submitFunction={createCourse}
       />
+      {currentCourse && openUpdate && (
+        <CreateCourse
+          type="UPDATE"
+          open={openUpdate}
+          onClose={toggleOpenUpdate}
+          data={currentCourse}
+          submitFunction={updateCourse}
+          successFunction={fetchCourses}
+        />
+      )}
+
+      {currentCourse && openDelete && (
+        <ConfirmDelete
+          open={openDelete}
+          onClose={toggleOpenDelete}
+          onConfirm={() => deleteCourses(currentCourse.id)}
+          message={
+            <Typography variant="h6">
+              ¿Estás seguro de eliminar este curso?
+            </Typography>
+          }
+          loading={deleting}
+          success={success}
+        />
+      )}
     </Wrapper>
   )
 }

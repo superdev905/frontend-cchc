@@ -13,6 +13,7 @@ import assistance from './assistance'
 import poll from './poll'
 import scholarships from './scholarships'
 import approvedScholarship from './approvedScholarship'
+import courses from './courses'
 
 const reducers = (history) =>
   combineReducers({
@@ -29,6 +30,7 @@ const reducers = (history) =>
     poll,
     scholarships,
     approvedScholarship,
+    courses,
     router: connectRouter(history)
   })
 

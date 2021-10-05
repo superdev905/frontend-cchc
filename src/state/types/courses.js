@@ -1,0 +1,4 @@
+export default {
+  GET_COURSES: 'GET_COURSES',
+  SET_TOTAL_COURSES: 'SET_TOTAL_COURSES'
+}
