@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
@@ -14,6 +14,7 @@ import { ConfirmDelete, DataTable } from '../Shared'
 
 const CoursesList = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
   const [currentCourse, setCurrentCourse] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -31,7 +32,6 @@ const CoursesList = () => {
     status: ''
   })
 
-  console.log(loading)
   const onSearchChange = (e) => {
     const { value } = e.target
 
@@ -43,6 +43,10 @@ const CoursesList = () => {
   }
   const handleStatusChange = (e) => {
     setFilters({ ...filters, status: e.target.value })
+  }
+
+  const onRowClick = (row) => {
+    history.push(`/courses/${row.id}`)
   }
 
   const fetchCourses = () => {
@@ -202,13 +206,13 @@ const CoursesList = () => {
                   setCurrentCourse(row)
                   toggleOpenDelete()
                 }}
-                //  onView={() => { props.history.push(`/obras/${row.id}`)  }}
               />
             )
           }
         ]}
         data={coursesList}
         pagination
+        onRowClicked={onRowClick}
         paginationRowsPerPageOptions={[30, 40]}
         paginationPerPage={filters.size}
         paginationServer={true}

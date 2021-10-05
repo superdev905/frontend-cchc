@@ -71,6 +71,18 @@ const CreateCourse = ({
         })
     }
   })
+  const correctCode = () => {
+    if (formik.values.code < 5) return false
+    return true
+  }
+
+  useEffect(() => {
+    if (open && formik.values.code < 5) {
+      enqueueSnackbar('El código debe tener al menos 5 caracteres', {
+        variant: 'info'
+      })
+    }
+  }, [open, type])
 
   useEffect(() => {
     const { otecId } = formik.values
@@ -203,7 +215,7 @@ const CreateCourse = ({
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
-              disabled={!formik.isValid || formik.isSubmitting}
+              disabled={!formik.isValid || formik.isSubmitting || correctCode()}
               loading={formik.isSubmitting}
               success={success}
             >
