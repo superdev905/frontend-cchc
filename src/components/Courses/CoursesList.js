@@ -1,25 +1,25 @@
 import { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
-import { Box, Grid } from '@material-ui/core'
-import { Button, SearchInput, Select, Wrapper } from '../UI'
+import { Box, Grid, Typography } from '@material-ui/core'
+import { ActionsTable, Button, SearchInput, Select, Wrapper } from '../UI'
 import { formatSearchWithRut } from '../../formatters'
 import { useToggle, useSuccess } from '../../hooks'
 import Can from '../Can'
 import { scholarshipConfig } from '../../config'
 import coursesActions from '../../state/actions/courses'
 import CreateCourse from './CreateCourse'
+import { ConfirmDelete, DataTable } from '../Shared'
 
 const CoursesList = () => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
-  const [currentCourse] = useState(null)
+  const [currentCourse, setCurrentCourse] = useState(null)
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const { success, changeSuccess } = useSuccess()
-
-  // const { totalCourses, coursesList } = useSelector((state) => state.courses)
+  const { totalCourses, coursesList } = useSelector((state) => state.courses)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
@@ -109,7 +109,7 @@ const CoursesList = () => {
         changeSuccess(true)
         toggleOpenDelete()
         fetchCourses()
-        enqueueSnackbar('El contacto fue eliminado', {
+        enqueueSnackbar('Curso eliminado exitosamente', {
           autoHideDuration: 1500,
           variant: 'success'
         })
@@ -158,6 +158,68 @@ const CoursesList = () => {
           </Grid>
         </Grid>
       </Box>
+      <DataTable
+        progressPending={loading}
+        emptyMessage={
+          filters.search
+            ? `No se encontraron resultados para: ${filters.search}`
+            : 'Aún no hay postulaciones'
+        }
+        highlightOnHover
+        pointerOnHover
+        columns={[
+          {
+            name: 'Código',
+            selector: (row) => row.code
+          },
+          {
+            name: 'Nombre',
+            selector: (row) => row.name,
+            hide: 'md'
+          },
+          {
+            name: 'OTEC',
+            selector: (row) => row.otecId,
+            hide: 'md'
+          },
+          {
+            name: 'Relator',
+            selector: (row) => row.instructorId,
+            hide: 'md'
+          },
+          {
+            name: '',
+            right: true,
+            cell: (row) => (
+              <ActionsTable
+                {...row}
+                disabledDelete={row.state === 'DELETED'}
+                onEdit={() => {
+                  setCurrentCourse(row)
+                  toggleOpenUpdate()
+                }}
+                onDelete={() => {
+                  setCurrentCourse(row)
+                  toggleOpenDelete()
+                }}
+                //  onView={() => { props.history.push(`/obras/${row.id}`)  }}
+              />
+            )
+          }
+        ]}
+        data={coursesList}
+        pagination
+        paginationRowsPerPageOptions={[30, 40]}
+        paginationPerPage={filters.size}
+        paginationServer={true}
+        onChangeRowsPerPage={(limit) => {
+          setFilters({ ...filters, size: limit })
+        }}
+        onChangePage={(page) => {
+          setFilters({ ...filters, skip: page })
+        }}
+        paginationTotalRows={totalCourses}
+      />
       <CreateCourse
         successMessage="Curso creado"
         open={openAdd}
