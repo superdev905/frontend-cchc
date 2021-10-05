@@ -1,29 +1,40 @@
-import { useState } from 'react'
+import { memo } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
 import { Box } from '@material-ui/core'
 import { Tabs } from '../Shared'
-import PaymentTab from './Payments'
-import ClassesTab from './Classes'
 
-const PollTabs = () => {
-  const [tabValue, setTabValue] = useState(0)
+const PollTabs = ({ children }) => {
+  const { idCourse } = useParams()
+  const history = useHistory()
 
-  const getCurrentTab = (index) => {
-    if (index === 0) return <ClassesTab />
-    return <PaymentTab />
+  const getRoute = (index) => {
+    if (index === 2) return 'enroll'
+    if (index === 1) return 'payments'
+    return 'classes'
   }
+
+  const getCurrentTab = () => {
+    const { pathname } = history.location
+    if (pathname.includes('enroll')) return 2
+    if (pathname.includes('payments')) return 1
+    return 0
+  }
+
+  const handleTabChange = (__, value) => {
+    history.push(`/courses/${idCourse}/${getRoute(value)}`)
+  }
+
   return (
     <Box p={1}>
       <Tabs
         fullWidth
-        value={tabValue}
-        tabs={['Clases', 'Pagos', 'Trabajadores']}
-        onChange={(__, value) => {
-          setTabValue(value)
-        }}
+        value={getCurrentTab()}
+        tabs={['Clases', 'Pagos a OTEC', 'Trabajadores']}
+        onChange={handleTabChange}
       >
-        {getCurrentTab(tabValue)}
+        {children}
       </Tabs>
     </Box>
   )
 }
-export default PollTabs
+export default memo(PollTabs)

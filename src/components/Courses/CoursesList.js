@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { withRouter, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
@@ -45,10 +45,6 @@ const CoursesList = () => {
     setFilters({ ...filters, status: e.target.value })
   }
 
-  const onRowClick = (row) => {
-    history.push(`/courses/${row.id}`)
-  }
-
   const fetchCourses = () => {
     setLoading(true)
     dispatch(
@@ -58,6 +54,9 @@ const CoursesList = () => {
     ).then(() => {
       setLoading(false)
     })
+  }
+  const onRowClick = (row) => {
+    history.push(`/courses/${row.id}/classes`)
   }
 
   const createCourse = (values) => {
@@ -211,6 +210,7 @@ const CoursesList = () => {
           }
         ]}
         data={coursesList}
+        onRowClicked={onRowClick}
         pagination
         onRowClicked={onRowClick}
         paginationRowsPerPageOptions={[30, 40]}
@@ -259,4 +259,4 @@ const CoursesList = () => {
   )
 }
 
-export default withRouter(CoursesList)
+export default CoursesList
