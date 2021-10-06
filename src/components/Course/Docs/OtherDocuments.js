@@ -11,10 +11,10 @@ import {
   FilePicker,
   FileThumbnail,
   FileVisor
-} from '../Shared'
-import { Button, SubmitButton, TextField } from '../UI'
-import filesAction from '../../state/actions/files'
-import { useSuccess, useToggle } from '../../hooks'
+} from '../../Shared'
+import { Button, SubmitButton, TextField } from '../../UI'
+import filesAction from '../../../state/actions/files'
+import { useSuccess, useToggle } from '../../../hooks'
 
 const validationSchema = Yup.object().shape({
   date: Yup.string().required('Seleccione fecha'),

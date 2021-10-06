@@ -3,6 +3,7 @@ import OTECPaymentCard from './Card'
 import OTECPaymentDialog from './Dialog'
 import { useToggle } from '../../../hooks'
 import { Button } from '../../UI'
+import ExtraPaymentsList from '../ExtraPayments/List'
 
 const PaymentsList = () => {
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
@@ -20,6 +21,9 @@ const PaymentsList = () => {
       <Box>
         <OTECPaymentCard />
         <OTECPaymentCard />
+      </Box>
+      <Box>
+        <ExtraPaymentsList />
       </Box>
       <OTECPaymentDialog open={openAdd} onClose={toggleOpenAdd} />
     </Box>

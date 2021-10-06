@@ -133,6 +133,56 @@ const patchCourseDoc = (id, values) => () =>
       })
   })
 
+const getExtraPayments =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.courses}/extra-payments?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: coursesTypes.GET_EXTRA_PAYMENTS,
+            payload: data.items
+          })
+          dispatch({
+            type: coursesTypes.SET_TOTAL_EXTRA_PAYMENTS,
+            payload: data.total
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const createExtraPayment = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.courses}/extra-payments`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchExtraPayment = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${config.services.courses}/extra-payments/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getCourses,
   createCourse,
@@ -142,5 +192,8 @@ export default {
   getCoursesDocs,
   createCourseDoc,
   getCourseDoc,
-  patchCourseDoc
+  patchCourseDoc,
+  getExtraPayments,
+  createExtraPayment,
+  patchExtraPayment
 }

@@ -11,7 +11,7 @@ import { scholarshipConfig } from '../../config'
 import coursesActions from '../../state/actions/courses'
 import CreateCourse from './CreateCourse'
 import { ConfirmDelete, DataTable } from '../Shared'
-import OtherDocuments from './OtherDocuments'
+import OtherDocuments from '../Course/Docs/OtherDocuments'
 
 const CoursesList = () => {
   const dispatch = useDispatch()
