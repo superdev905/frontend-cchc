@@ -5,7 +5,7 @@ import { Image as ImageIcon, Close as CloseIcon } from '@material-ui/icons'
 import useStyles from './styles'
 import pdfIcon from '../FileThumbnail/pdf.png'
 
-const ImagePicker = ({ onChangeImage }) => {
+const FilePicker = ({ id, onChange, acceptedFiles, icon }) => {
   const classes = useStyles()
   const [uploadImg, setUploadImg] = useState(null)
   const [preview, setPreview] = useState(null)
@@ -33,7 +33,7 @@ const ImagePicker = ({ onChangeImage }) => {
     return <></>
   }
 
-  const onChange = (e) => {
+  const onChangeFile = (e) => {
     e.preventDefault()
     if (e.target?.files.length === 1) {
       const file = e.target.files[0]
@@ -67,7 +67,9 @@ const ImagePicker = ({ onChangeImage }) => {
   }
 
   useEffect(() => {
-    onChangeImage(uploadImg)
+    if (uploadImg) {
+      onChange(uploadImg)
+    }
     dataPreview(uploadImg)
   }, [uploadImg])
   return (
@@ -89,13 +91,13 @@ const ImagePicker = ({ onChangeImage }) => {
           <input
             className={classes.input}
             type="file"
-            id="cenco-img-uploader"
-            accept={['image/*', '.pdf']}
-            onChange={onChange}
+            id={id}
+            accept={acceptedFiles}
+            onChange={onChangeFile}
           ></input>
-          <label className={classes.label} htmlFor="cenco-img-uploader">
+          <label className={classes.label} htmlFor={id}>
             <Box p={2} className={classes.labelWrapper}>
-              <ImageIcon fontSize="large" color="primary" />
+              <Box>{icon}</Box>
               <Typography>
                 <strong>Selecciona un archivo</strong>
               </Typography>
@@ -108,8 +110,14 @@ const ImagePicker = ({ onChangeImage }) => {
   )
 }
 
-ImagePicker.propTypes = {
-  onChange: PropTypes.func
+FilePicker.defaultProps = {
+  acceptedFiles: ['image/*', '.pdf'],
+  id: 'file-picker',
+  icon: <ImageIcon fontSize="large" color="primary" />
+}
+FilePicker.propTypes = {
+  onChange: PropTypes.func,
+  acceptedFiles: PropTypes.array
 }
 
-export default ImagePicker
+export default FilePicker
