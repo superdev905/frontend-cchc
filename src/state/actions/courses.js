@@ -73,6 +73,48 @@ const getCourse = (id) => (dispatch) =>
       })
   })
 
+const getOTECPayments =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.courses}/otec-payments?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const createOTECPayment = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.courses}/otec-payments`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchOTECPayment = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${config.services.courses}/otec-payments/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const getCoursesDocs =
   (query = {}) =>
   (dispatch) =>
@@ -189,6 +231,9 @@ export default {
   updateCourse,
   patchCourse,
   getCourse,
+  createOTECPayment,
+  getOTECPayments,
+  patchOTECPayment,
   getCoursesDocs,
   createCourseDoc,
   getCourseDoc,
