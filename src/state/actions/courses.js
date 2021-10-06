@@ -103,6 +103,66 @@ const createOTECPayment = (values) => () =>
       })
   })
 
+const getCoursesDocs =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.courses}/courses-docs?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({ type: coursesTypes.GET_COURSES_DOCS, payload: data.items })
+          dispatch({
+            type: coursesTypes.SET_TOTAL_COURSES_DOCS,
+            payload: data.total
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const createCourseDoc = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.courses}/courses-docs`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getCourseDoc = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.courses}/courses-docs/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: coursesTypes.GET_COURSE_DOC_DETAILS, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchCourseDoc = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${config.services.courses}/courses-docs/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getCourses,
   createCourse,
@@ -110,5 +170,9 @@ export default {
   patchCourse,
   getCourse,
   createOTECPayment,
-  getOTECPayments
+  getOTECPayments,
+  getCoursesDocs,
+  createCourseDoc,
+  getCourseDoc,
+  patchCourseDoc
 }
