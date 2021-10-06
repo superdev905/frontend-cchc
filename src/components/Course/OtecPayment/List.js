@@ -7,7 +7,7 @@ import coursesActions from '../../../state/actions/courses'
 import OTECPaymentCard from './Card'
 import OTECPaymentDialog from './Dialog'
 import { useSuccess, useToggle } from '../../../hooks'
-import { Button } from '../../UI'
+import { Button, EmptyState } from '../../UI'
 import { ConfirmDelete, FileVisor } from '../../Shared'
 
 const PaymentsList = () => {
@@ -84,20 +84,24 @@ const PaymentsList = () => {
           </>
         ) : (
           <>
-            {payments.map((item) => (
-              <OTECPaymentCard
-                payment={item}
-                key={`payment-card-${item.id}`}
-                onView={(file) => {
-                  setCurrentFile(file)
-                  toggleOpenVisor()
-                }}
-                onDelete={() => {
-                  setCurrentPayment(item)
-                  toggleOpenDelete()
-                }}
-              />
-            ))}
+            {payments.length === 0 ? (
+              <EmptyState message="Este curso no tiene ningún pago a OTEC" />
+            ) : (
+              payments.map((item) => (
+                <OTECPaymentCard
+                  payment={item}
+                  key={`payment-card-${item.id}`}
+                  onView={(file) => {
+                    setCurrentFile(file)
+                    toggleOpenVisor()
+                  }}
+                  onDelete={() => {
+                    setCurrentPayment(item)
+                    toggleOpenDelete()
+                  }}
+                />
+              ))
+            )}
           </>
         )}
       </Box>
