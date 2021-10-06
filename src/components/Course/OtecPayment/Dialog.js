@@ -59,8 +59,8 @@ const PaymentDialog = ({
     },
     onSubmit: async (values) => {
       const invoiceUpload = await uploadFile(invoiceFile)
-      const orderUpload = await uploadFile(invoiceFile)
-      const agreementUpload = await uploadFile(invoiceFile)
+      const orderUpload = await uploadFile(orderFile)
+      const agreementUpload = await uploadFile(agreementFile)
 
       const form = {
         ...values,
@@ -109,7 +109,14 @@ const PaymentDialog = ({
     >
       <Box>
         <Box>
-          <Typography align="center" style={{ marginBottom: '15px' }}>
+          <Typography
+            align="center"
+            style={{
+              marginBottom: '15px',
+              fontWeight: 'bold',
+              fontSize: '18px'
+            }}
+          >
             Registrar pago OTEC
           </Typography>
         </Box>
