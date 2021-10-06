@@ -494,7 +494,7 @@ const WorkerInterventionRecord = ({
               <InputLabel>Archivo adjunto</InputLabel>
 
               <FilePicker
-                onChangeImage={(e) => {
+                onChange={(e) => {
                   setAttachedFile(e)
                 }}
               />

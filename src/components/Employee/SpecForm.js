@@ -310,7 +310,7 @@ const HousingForm = ({
               ) : (
                 <>
                   <FilePicker
-                    onChangeImage={(e) => {
+                    onChange={(e) => {
                       setUploadFile(e)
                     }}
                   />

@@ -128,7 +128,7 @@ const SalaryLiquidation = ({
             ) : (
               <>
                 <FilePicker
-                  onChangeImage={(e) => {
+                  onChange={(e) => {
                     setUploadFile(e)
                   }}
                 />
