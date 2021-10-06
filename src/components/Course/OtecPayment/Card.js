@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const OTECPaymentCard = () => {
+const OTECPaymentCard = ({ payment }) => {
   const classes = useStyles()
   return (
     <Box className={classes.root}>
@@ -34,33 +34,33 @@ const OTECPaymentCard = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} md={4}>
               <Typography className={classes.info}>
-                Factura : FACT-001
+                Factura : {payment.invoiceNumber}
               </Typography>
               <FileThumbnail
-                fileName="Url.pdf"
-                date={new Date()}
-                fileSize={'1 mb'}
+                fileName={payment.invoiceFile.fileName}
+                date={new Date(payment.invoiceFile.uploadDate)}
+                fileSize={payment.invoiceFile.fileSize}
               />
             </Grid>
             <Grid item xs={12} md={8}>
               <Box>
                 <Typography className={classes.info}>
-                  Factura : FACT-001
+                  Número de OC : {payment.ocNumber}
                 </Typography>
               </Box>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
                   <FileThumbnail
-                    fileName="Url.pdf"
-                    date={new Date()}
-                    fileSize={'1 mb'}
+                    fileName={payment.ocFile.fileName}
+                    date={new Date(payment.ocFile.uploadDate)}
+                    fileSize={payment.ocFile.fileSize}
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <FileThumbnail
-                    fileName="Url.pdf"
-                    date={new Date()}
-                    fileSize={'1 mb'}
+                    fileName={payment.agreementFile.fileName}
+                    date={new Date(payment.agreementFile.uploadDate)}
+                    fileSize={payment.agreementFile.fileSize}
                   />
                 </Grid>
               </Grid>

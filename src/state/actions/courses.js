@@ -73,10 +73,42 @@ const getCourse = (id) => (dispatch) =>
       })
   })
 
+const getOTECPayments =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.courses}/otec-payments?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const createOTECPayment = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.courses}/otec-payments`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getCourses,
   createCourse,
   updateCourse,
   patchCourse,
-  getCourse
+  getCourse,
+  createOTECPayment,
+  getOTECPayments
 }
