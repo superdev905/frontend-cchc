@@ -103,6 +103,18 @@ const createOTECPayment = (values) => () =>
       })
   })
 
+const patchOTECPayment = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${config.services.courses}/otec-payments/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const getCoursesDocs =
   (query = {}) =>
   (dispatch) =>
@@ -171,6 +183,7 @@ export default {
   getCourse,
   createOTECPayment,
   getOTECPayments,
+  patchOTECPayment,
   getCoursesDocs,
   createCourseDoc,
   getCourseDoc,

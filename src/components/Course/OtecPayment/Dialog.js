@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
@@ -64,6 +64,7 @@ const PaymentDialog = ({
 
       const form = {
         ...values,
+        date: new Date().toISOString(),
         invoiceFile: invoiceUpload,
         ocFile: orderUpload,
         agreementFile: agreementUpload
@@ -86,9 +87,17 @@ const PaymentDialog = ({
 
   const getValidStatus = () => {
     if (invoiceFile && orderFile && agreementFile) return true
-
     return false
   }
+
+  useEffect(() => {
+    if (open) {
+      formik.resetForm()
+      setInvoiceFile(null)
+      setOrderFile(null)
+      setAgreementFile(null)
+    }
+  }, [open])
 
   return (
     <Dialog
@@ -106,12 +115,17 @@ const PaymentDialog = ({
         </Box>
         <Grid container spacing={2}>
           <Grid item xs={12} m={6} lg={4}>
-            <TextField value={formatDate(currentDate)} label="Fecha" />
+            <TextField
+              value={formatDate(currentDate)}
+              label="Fecha"
+              inputProps={{ readOnly: true }}
+            />
           </Grid>
           <Grid item xs={12} m={6} lg={4}>
             <TextField
               label="Número de factura"
               name="invoiceNumber"
+              required
               value={formik.values.invoiceNumber}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -129,6 +143,7 @@ const PaymentDialog = ({
             <TextField
               label="Número OC"
               name="ocNumber"
+              required
               value={formik.values.ocNumber}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -174,7 +189,9 @@ const PaymentDialog = ({
           </Grid>
         </Grid>
         <Box p={2} textAlign="center">
-          <Button variant="outlined">Cancelar</Button>
+          <Button onClick={onClose} variant="outlined">
+            Cancelar
+          </Button>
           <SubmitButton
             loading={formik.isSubmitting}
             onClick={formik.handleSubmit}
