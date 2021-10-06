@@ -11,7 +11,9 @@ import { useSuccess } from '../../hooks'
 import commonActions from '../../state/actions/common'
 
 const validationSchema = Yup.object().shape({
-  code: Yup.number('Ingrese código válido').min(5).required('Ingrese código'),
+  code: Yup.string()
+    .min(5, 'Debe contener al menos 5 caracteres')
+    .required('Ingrese código'),
   name: Yup.string().required('Ingrese nombre del curso'),
   otecId: Yup.string().required('Seleccione otec'),
   description: Yup.string().required('Ingrese descripción')
@@ -71,18 +73,6 @@ const CreateCourse = ({
         })
     }
   })
-  const correctCode = () => {
-    if (formik.values.code < 5) return false
-    return true
-  }
-
-  useEffect(() => {
-    if (open && formik.values.code < 5) {
-      enqueueSnackbar('El código debe tener al menos 5 caracteres', {
-        variant: 'info'
-      })
-    }
-  }, [open, type])
 
   useEffect(() => {
     const { otecId } = formik.values
@@ -138,6 +128,7 @@ const CreateCourse = ({
                 onBlur={formik.handleBlur}
                 error={formik.touched.code && Boolean(formik.errors.code)}
                 helperText={formik.touched.code && formik.errors.code}
+                rules={{ maxLength: 10, required: true, min: 3 }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -215,7 +206,7 @@ const CreateCourse = ({
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
-              disabled={!formik.isValid || formik.isSubmitting || correctCode()}
+              disabled={!formik.isValid || formik.isSubmitting}
               loading={formik.isSubmitting}
               success={success}
             >
