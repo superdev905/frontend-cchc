@@ -1,12 +1,19 @@
 import * as Yup from 'yup'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { addMonths } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { Dialog } from '../Shared'
-import { Button, Select, SubmitButton, TextArea, TextField } from '../UI'
+import { Autocomplete } from '@material-ui/lab'
+import { CompanyRow, Dialog } from '../Shared'
+import {
+  Button,
+  InputLabel,
+  Select,
+  SubmitButton,
+  TextArea,
+  TextField
+} from '../UI'
 import { useSuccess } from '../../hooks'
 import commonActions from '../../state/actions/common'
 
@@ -31,6 +38,7 @@ const CreateCourse = ({
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
+  const [selectedOTEC, setSelectedOTEC] = useState(null)
   const { isMobile } = useSelector((state) => state.ui)
   const { otecs, roles } = useSelector((state) => state.common)
 
@@ -49,16 +57,15 @@ const CreateCourse = ({
     onSubmit: (values, { resetForm }) => {
       submitFunction({
         ...values,
-        createDate: new Date(addMonths(new Date(), 1))
+        createDate: new Date().toISOString()
       })
         .then(() => {
           formik.setSubmitting(false)
-          enqueueSnackbar(successMessage, {
-            variant: 'success'
-          })
-
           changeSuccess(true, () => {
             onClose()
+            enqueueSnackbar(successMessage, {
+              variant: 'success'
+            })
             resetForm()
             if (successFunction) {
               successFunction()
@@ -75,14 +82,20 @@ const CreateCourse = ({
   })
 
   useEffect(() => {
-    const { otecId } = formik.values
-    if (otecId && otecs.length > 0) {
-      const currentOtec = otecs.find((item) => item.id === parseInt(otecId, 10))
-      formik.setFieldValue('otecName', currentOtec.name)
-    } else {
-      formik.setFieldValue('otecName', '')
+    if (type === 'UPDATE' && otecs.length > 0) {
+      const currentOtec = otecs.find(
+        (item) => item.id === parseInt(data.otecId, 10)
+      )
+      setSelectedOTEC(currentOtec)
     }
-  }, [formik.values.otecId, otecs])
+  }, [type, otecs])
+
+  useEffect(() => {
+    const otecId = selectedOTEC?.id || ''
+    const otecName = selectedOTEC?.businessName || ''
+    formik.setFieldValue('otecId', otecId)
+    formik.setFieldValue('otecName', otecName)
+  }, [selectedOTEC])
 
   useEffect(() => {
     const { instructorId } = formik.values
@@ -106,20 +119,21 @@ const CreateCourse = ({
 
   useEffect(() => {
     if (open) {
+      formik.resetForm()
       dispatch(commonActions.getAllOTECS())
       dispatch(commonActions.getRoles())
     }
   }, [open, type])
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullScreen={isMobile}>
+    <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
       <Box>
         <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
-          {`${type === 'Registrar' ? 'Actualizar' : 'Nuevo'} Curso`}
+          {`${type === 'UPDATE' ? 'Actualizar' : 'Nuevo'} Curso`}
         </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={3}>
               <TextField
                 label="Código"
                 name="code"
@@ -132,7 +146,7 @@ const CreateCourse = ({
                 inputProps={{ maxLength: 5 }}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={9}>
               <TextField
                 label="Nombre"
                 required
@@ -144,24 +158,35 @@ const CreateCourse = ({
                 helperText={formik.touched.name && formik.errors.name}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Select
-                label="OTEC"
-                name="otecId"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.otecId}
-                helperText={formik.touched.otecId && formik.errors.otecId}
-                error={formik.touched.otecId && Boolean(formik.errors.otecId)}
-                required
-              >
-                <option value="">Seleccione OTEC</option>
-                {otecs.map((item) => (
-                  <option value={item.id}>{item.businessName}</option>
-                ))}
-              </Select>
+            <Grid item xs={12}>
+              <InputLabel required>OTEC</InputLabel>
+              {selectedOTEC ? (
+                <CompanyRow
+                  company={selectedOTEC}
+                  onDelete={() => {
+                    setSelectedOTEC(null)
+                  }}
+                />
+              ) : (
+                <Autocomplete
+                  required
+                  options={otecs}
+                  value={''}
+                  getOptionLabel={(option) => option.businessName || ''}
+                  onChange={(__, option) => {
+                    setSelectedOTEC(option)
+                  }}
+                  renderOption={(option) => (
+                    <CompanyRow.Autocomplete
+                      company={option}
+                      iconColor="#BD52F2"
+                    />
+                  )}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              )}
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={12}>
               <Select
                 label="Relator"
                 name="instructorId"

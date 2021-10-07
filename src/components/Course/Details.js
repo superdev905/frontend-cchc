@@ -1,7 +1,7 @@
 import { Avatar, Box, Grid, Typography } from '@material-ui/core'
 import { useSelector } from 'react-redux'
 import { formatDate } from '../../formatters'
-import { LabeledRow, Text } from '../UI'
+import { LabeledRow, StatusChip, Text } from '../UI'
 import generateColor from '../../utils/generateColor'
 
 const Details = ({ loading }) => {
@@ -16,6 +16,13 @@ const Details = ({ loading }) => {
           <LabeledRow label="Nombre:">
             <Text loading={loading}>{course && course.name}</Text>
           </LabeledRow>
+          {course && course.state === 'DELETED' && (
+            <LabeledRow label="Estado:">
+              <Text loading={loading}>
+                <StatusChip error label="Este curso fue eliminado" />
+              </Text>
+            </LabeledRow>
+          )}
           <Box mt={'15px'}>
             <Typography style={{ fontWeight: 'bold' }}>OTEC</Typography>
             <LabeledRow label="Rut:">

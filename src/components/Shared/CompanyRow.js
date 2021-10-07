@@ -43,18 +43,27 @@ const CompanyInfo = ({ company, iconColor = '#03C48C' }) => {
         <IoMdBusiness color={iconColor} fontSize="35px" />
       </Box>
       <Box ml={1}>
-        <Typography className={classes.name}>
-          {company.business_name}
-        </Typography>
+        {company.business_name && (
+          <Typography className={classes.name}>
+            {company.business_name}
+          </Typography>
+        )}
+        {company.businessName && (
+          <Typography className={classes.name}>
+            {company.businessName}
+          </Typography>
+        )}
         <Typography
           className={classes.info}
         >{`Rut: ${company.rut}`}</Typography>
         <Typography
           className={classes.info}
         >{`Dirección: ${company.address}`}</Typography>
-        <Typography
-          className={classes.info}
-        >{`Tipo: ${formatText.capitalizeString(company.type)}`}</Typography>
+        {company.type && (
+          <Typography
+            className={classes.info}
+          >{`Tipo: ${formatText.capitalizeString(company.type)}`}</Typography>
+        )}
       </Box>
     </Box>
   )

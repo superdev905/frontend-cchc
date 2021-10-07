@@ -18,10 +18,11 @@ import {
   BusinessCenter as BusinessIcon,
   People as UserIcon,
   AssignmentInd as EmployeeIcon,
-  Assignment as AssistanceIcon
+  Assignment as AssistanceIcon,
+  School as SchoolIcon,
+  BorderColor as BorderColorIcon,
+  Book as BookIcon
 } from '@material-ui/icons'
-import SchoolIcon from '@material-ui/icons/School'
-import BorderColorIcon from '@material-ui/icons/BorderColor'
 import clsx from 'clsx'
 
 const useStyles = makeStyles((theme) => ({
@@ -65,7 +66,7 @@ const commonRoutes = [
   {
     title: 'Cursos',
     path: '/courses',
-    icon: <SchoolIcon />
+    icon: <BookIcon />
   }
 ]
 

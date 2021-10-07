@@ -1,35 +1,35 @@
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { useSnackbar } from 'notistack'
-import { Box, Grid, Typography } from '@material-ui/core'
-import { ActionsTable, Button, SearchInput, Select, Wrapper } from '../UI'
-import { formatSearchWithRut } from '../../formatters'
-import { useToggle, useSuccess } from '../../hooks'
+import { FiArrowRight as NextIcon } from 'react-icons/fi'
+import { Box, Grid } from '@material-ui/core'
+import {
+  ActionsTable,
+  Button,
+  SearchInput,
+  Select,
+  StatusChip,
+  Wrapper
+} from '../UI'
+import { formatDate } from '../../formatters'
+import { useToggle } from '../../hooks'
 import Can from '../Can'
-import { scholarshipConfig } from '../../config'
 import coursesActions from '../../state/actions/courses'
 import CreateCourse from './CreateCourse'
-import { ConfirmDelete, DataTable } from '../Shared'
+import { DataTable } from '../Shared'
 
 const CoursesList = () => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const { enqueueSnackbar } = useSnackbar()
-  const [currentCourse, setCurrentCourse] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [deleting, setDeleting] = useState(false)
-  const { success, changeSuccess } = useSuccess()
   const { totalCourses, coursesList } = useSelector((state) => state.courses)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
-  const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
-  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
 
   const [filters, setFilters] = useState({
     page: 1,
     size: 30,
     search: '',
-    status: ''
+    state: ''
   })
 
   const onSearchChange = (e) => {
@@ -37,12 +37,12 @@ const CoursesList = () => {
 
     setFilters({
       ...filters,
-      search: formatSearchWithRut(value.toString()),
+      search: value.toString(),
       page: 1
     })
   }
   const handleStatusChange = (e) => {
-    setFilters({ ...filters, status: e.target.value })
+    setFilters({ ...filters, state: e.target.value })
   }
 
   const fetchCourses = () => {
@@ -59,68 +59,12 @@ const CoursesList = () => {
     history.push(`/courses/${row.id}/classes`)
   }
 
-  const createCourse = (values) => {
+  const createCourse = (values) =>
     dispatch(
       coursesActions.createCourse({
         ...values
       })
     )
-      .then(() => {
-        setLoading(false)
-        changeSuccess(true)
-        toggleOpenAdd()
-        fetchCourses()
-        enqueueSnackbar('Curso creado correctamente', {
-          autoHideDuration: 1500,
-          variant: 'success'
-        })
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
-  const updateCourse = (values) => {
-    dispatch(
-      coursesActions.updateCourse(currentCourse.id, {
-        ...values,
-        createdBy: currentCourse.createdBy
-      })
-    )
-      .then(() => {
-        setLoading(false)
-        changeSuccess(true)
-        toggleOpenUpdate()
-        fetchCourses()
-        enqueueSnackbar('Curso actualizado correctamente', {
-          autoHideDuration: 1500,
-          variant: 'success'
-        })
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
-
-  const deleteCourses = (id) => {
-    dispatch(
-      coursesActions.patchCourse(id, {
-        state: 'DELETED'
-      })
-    )
-      .then(() => {
-        setDeleting(false)
-        changeSuccess(true)
-        toggleOpenDelete()
-        fetchCourses()
-        enqueueSnackbar('Curso eliminado exitosamente', {
-          autoHideDuration: 1500,
-          variant: 'success'
-        })
-      })
-      .catch(() => {
-        setDeleting(false)
-      })
-  }
 
   useEffect(() => {
     fetchCourses()
@@ -133,10 +77,13 @@ const CoursesList = () => {
           <Grid item xs={12} md={2}>
             <Select name="status" onChange={handleStatusChange}>
               <option value="">Todos</option>
-              {scholarshipConfig.revisionStatus.map((item) => (
+              {[
+                { key: 'ACTIVE', name: 'Activos' },
+                { key: 'DELETED', name: 'Eliminados' }
+              ].map((item) => (
                 <option
                   key={`application--filters-${item.key}`}
-                  value={item.status}
+                  value={item.key}
                 >
                   {item.name}
                 </option>
@@ -147,7 +94,7 @@ const CoursesList = () => {
             <SearchInput
               value={filters.search}
               onChange={onSearchChange}
-              placeholder="Buscar por: Trabajador, curso, empresa"
+              placeholder="Buscar por: Nombre de curso, código"
             />
           </Grid>
           <Grid item xs={12} md={6}>
@@ -166,7 +113,7 @@ const CoursesList = () => {
         emptyMessage={
           filters.search
             ? `No se encontraron resultados para: ${filters.search}`
-            : 'Aún no hay postulaciones'
+            : 'Aún no hay cursos'
         }
         highlightOnHover
         pointerOnHover
@@ -177,17 +124,22 @@ const CoursesList = () => {
           },
           {
             name: 'Nombre',
-            selector: (row) => row.name,
+            selector: (row) => row.name
+          },
+          {
+            name: 'Fecha de creación',
+            selector: (row) => formatDate(row.createDate),
             hide: 'md'
           },
           {
-            name: 'OTEC',
-            selector: (row) => row.otec?.businessName,
-            hide: 'md'
-          },
-          {
-            name: 'Relator',
-            selector: (row) => row.instructorId,
+            name: 'Estado',
+            selector: (row) => (
+              <StatusChip
+                label={`${row.state === 'ACTIVE' ? 'Activo' : 'Eliminado'}`}
+                success={row.state === 'ACTIVE'}
+                error={row.state !== 'ACTIVE'}
+              />
+            ),
             hide: 'md'
           },
           {
@@ -196,15 +148,14 @@ const CoursesList = () => {
             cell: (row) => (
               <ActionsTable
                 {...row}
-                disabledDelete={row.state === 'DELETED'}
-                onEdit={() => {
-                  setCurrentCourse(row)
-                  toggleOpenUpdate()
-                }}
-                onDelete={() => {
-                  setCurrentCourse(row)
-                  toggleOpenDelete()
-                }}
+                moreOptions={[
+                  {
+                    icon: <NextIcon />,
+                    onClick: () => {
+                      onRowClick(row)
+                    }
+                  }
+                ]}
               />
             )
           }
@@ -229,32 +180,9 @@ const CoursesList = () => {
         open={openAdd}
         onClose={toggleOpenAdd}
         submitFunction={createCourse}
+        successMessage="Curso creado correctamente"
+        successFunction={fetchCourses}
       />
-      {currentCourse && openUpdate && (
-        <CreateCourse
-          type="UPDATE"
-          open={openUpdate}
-          onClose={toggleOpenUpdate}
-          data={currentCourse}
-          submitFunction={updateCourse}
-          successFunction={fetchCourses}
-        />
-      )}
-
-      {currentCourse && openDelete && (
-        <ConfirmDelete
-          open={openDelete}
-          onClose={toggleOpenDelete}
-          onConfirm={() => deleteCourses(currentCourse.id)}
-          message={
-            <Typography variant="h6">
-              ¿Estás seguro de eliminar este curso?
-            </Typography>
-          }
-          loading={deleting}
-          success={success}
-        />
-      )}
     </Wrapper>
   )
 }
