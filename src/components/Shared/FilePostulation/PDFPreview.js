@@ -6,8 +6,8 @@ import {
 import useStyles from './styles'
 import pdfIcon from '../FileThumbnail/pdf.png'
 
-const FilePostulation = ({ onRemove, onView, fileName, fileSize }) => {
-  const classes = useStyles()
+const FilePostulation = ({ onRemove, onView, bgWhite, fileName, fileSize }) => {
+  const classes = useStyles({ bgWhite })
 
   return (
     <Box>

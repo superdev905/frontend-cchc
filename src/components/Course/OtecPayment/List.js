@@ -9,6 +9,8 @@ import OTECPaymentDialog from './Dialog'
 import { useSuccess, useToggle } from '../../../hooks'
 import { Button, EmptyState } from '../../UI'
 import { ConfirmDelete, FileVisor } from '../../Shared'
+import ExtraPaymentsList from '../ExtraPayments/List'
+import DocumentList from '../Docs/List'
 
 const PaymentsList = () => {
   const dispatch = useDispatch()
@@ -104,6 +106,10 @@ const PaymentsList = () => {
             )}
           </>
         )}
+      </Box>
+      <Box>
+        <DocumentList />
+        <ExtraPaymentsList />
       </Box>
       {openAdd && (
         <OTECPaymentDialog

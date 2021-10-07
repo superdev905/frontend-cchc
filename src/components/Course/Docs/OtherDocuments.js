@@ -2,23 +2,25 @@ import { useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
+import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography, InputLabel } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
+import { FiUpload } from 'react-icons/fi'
 import {
   DatePicker,
   Dialog,
   FilePicker,
   FileThumbnail,
   FileVisor
-} from '../Shared'
-import { Button, SubmitButton, TextField } from '../UI'
-import filesAction from '../../state/actions/files'
-import { useSuccess, useToggle } from '../../hooks'
+} from '../../Shared'
+import { Button, SubmitButton, TextField } from '../../UI'
+import filesAction from '../../../state/actions/files'
+import { useSuccess, useToggle } from '../../../hooks'
 
 const validationSchema = Yup.object().shape({
   date: Yup.string().required('Seleccione fecha'),
-  documentName: Yup.string().required('Ingrese nombre de documento')
+  fileName: Yup.string().required('Ingrese nombre de documento')
 })
 
 const OtherDocuments = ({
@@ -31,7 +33,7 @@ const OtherDocuments = ({
   successFunction
 }) => {
   const dispatch = useDispatch()
-
+  const { idCourse } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const [uploading] = useState(false)
@@ -44,9 +46,10 @@ const OtherDocuments = ({
     validateOnMount: true,
     validationSchema,
     initialValues: {
+      courseId: idCourse,
       date: type === 'UPDATE' ? data.date : '',
-      documentName: type === 'UPDATE' ? data.documentName : '',
-      paymentFile: type === 'UPDATE' ? data.paymentFile : ''
+      fileName: type === 'UPDATE' ? data.fileName : '',
+      fileUrl: type === 'UPDATE' ? data.fileUrl : ''
     },
     onSubmit: async (values, { resetForm }) => {
       formik.setSubmitting(true)
@@ -59,9 +62,9 @@ const OtherDocuments = ({
 
       submitFunction({
         ...values,
-        paymentFile: resultUpload ? resultUpload.file_url : '',
+        fileUrl: resultUpload ? resultUpload.file_url : '',
         fileKey: resultUpload ? resultUpload.file_key : '',
-        fileName: resultUpload ? resultUpload.file_name : '',
+        //  fileName: resultUpload ? resultUpload.file_name : '',
         fileSize: resultUpload ? resultUpload.file_size : '',
         uploadDate: resultUpload ? resultUpload.upload_date : ''
       })
@@ -111,17 +114,14 @@ const OtherDocuments = ({
             <Grid item xs={12} md={6}>
               <TextField
                 label="Nombre de documento"
-                name="documentName"
-                value={formik.values.documentName}
+                name="fileName"
+                value={formik.values.fileName}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.documentName &&
-                  Boolean(formik.errors.documentName)
+                  formik.touched.fileName && Boolean(formik.errors.fileName)
                 }
-                helperText={
-                  formik.touched.documentName && formik.errors.documentName
-                }
+                helperText={formik.touched.fileName && formik.errors.fileName}
               />
             </Grid>
 
@@ -129,24 +129,26 @@ const OtherDocuments = ({
               <InputLabel style={{ fontSize: '15px', marginBottom: '10px' }}>
                 Archivo
               </InputLabel>
-              {formik.values.paymentFile && type === 'UPDATE' ? (
+              {formik.values.fileUrl && type === 'UPDATE' ? (
                 <Box>
                   <FileThumbnail
-                    fileName={formik.values.paymentFile}
+                    fileName={formik.values.fileUrl}
                     onView={() => {
                       toggleOpenVisor()
                     }}
                     onDelete={() => {
-                      formik.setFieldValue('paymentFile', '')
+                      formik.setFieldValue('fileUrl', '')
                     }}
                   />
                 </Box>
               ) : (
                 <>
                   <FilePicker
-                    onChangeImage={(e) => {
+                    acceptedFiles={['.pdf']}
+                    onChange={(e) => {
                       setUploadFile(e)
                     }}
+                    icon={<FiUpload fontSize="24px" />}
                   />
                 </>
               )}
@@ -175,11 +177,11 @@ const OtherDocuments = ({
             </SubmitButton>
           </Box>
         </Box>
-        {type === 'UPDATE' && formik.values.paymentFile && openVisor && (
+        {type === 'UPDATE' && formik.values.fileUrl && openVisor && (
           <FileVisor
             open={openVisor}
             onClose={toggleOpenVisor}
-            src={formik.values.paymentFile}
+            src={formik.values.fileUrl}
           />
         )}
       </Box>

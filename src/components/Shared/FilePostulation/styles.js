@@ -40,19 +40,22 @@ const useStyles = makeStyles((theme) => ({
     width: 50,
     height: 50
   },
-  previewWrapper: {
-    backgroundColor: theme.palette.gray.gray100,
-    minHeight: '140px',
+  previewWrapper: ({ bgWhite }) => ({
+    backgroundColor: bgWhite ? theme.palette.common.white : '#f5f6f8',
+    //   backgroundColor: theme.palette.gray.gray100,
+    minHeight: '120px',
     borderRadius: 5,
-    position: 'relative'
-  },
+    position: 'relative',
+    justifyContent: 'space-between'
+  }),
   actions: {
     position: 'absolute',
     right: 5,
-    top: 5,
+    top: 8,
+    bottom: 5,
     '& button': {
-      padding: 8,
-      marginLeft: 5,
+      padding: 2,
+      marginLeft: 7,
       backgroundColor: theme.palette.common.white,
       '&:hover': {
         backgroundColor: theme.palette.common.white
