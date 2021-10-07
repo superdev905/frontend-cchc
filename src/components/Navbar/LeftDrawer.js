@@ -11,19 +11,8 @@ import {
   makeStyles,
   Typography
 } from '@material-ui/core'
-import {
-  DashboardOutlined as DashboardIcon,
-  Business as ConstructionIcon,
-  Settings as SettingsIcon,
-  BusinessCenter as BusinessIcon,
-  People as UserIcon,
-  AssignmentInd as EmployeeIcon,
-  Assignment as AssistanceIcon,
-  School as SchoolIcon,
-  BorderColor as BorderColorIcon,
-  Book as BookIcon
-} from '@material-ui/icons'
 import clsx from 'clsx'
+import rolesByModules from './roles'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -44,35 +33,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const commonRoutes = [
-  { title: 'Home', path: '/home', icon: <DashboardIcon /> },
-  { title: 'Empresas', path: '/companies', icon: <BusinessIcon /> },
-  { title: 'Obras', path: '/obras', icon: <ConstructionIcon /> },
-  {
-    title: 'Trabajadores',
-    path: '/employees',
-    icon: <EmployeeIcon />
-  },
-  {
-    title: 'Visitas',
-    path: '/visits',
-    icon: <AssistanceIcon />
-  },
-  {
-    title: 'Becas',
-    path: '/scholarships',
-    icon: <SchoolIcon />
-  },
-  {
-    title: 'Cursos',
-    path: '/courses',
-    icon: <BookIcon />
-  }
-]
-
 const LeftDrawer = ({ ...props }) => {
   const classes = useStyles()
-  const [userRoutes, setUserRoutes] = useState([...commonRoutes])
+  const [userRoutes, setUserRoutes] = useState([])
   const { location } = useSelector((state) => state.router)
   const { user } = useSelector((state) => state.auth)
 
@@ -81,33 +44,9 @@ const LeftDrawer = ({ ...props }) => {
   }
 
   const getRoutes = (roleKey) => {
-    if (roleKey === 'ADMIN') {
-      return userRoutes.concat([
-        { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
-        {
-          index: 5,
-          title: 'Usuarios',
-          path: '/users',
-          icon: <UserIcon />
-        },
-        {
-          title: 'Configuración',
-          path: '/settings',
-          icon: <SettingsIcon />
-        }
-      ])
-    }
+    const items = rolesByModules[roleKey]
 
-    if (roleKey === 'PROJECTS')
-      return [
-        { title: 'Home', path: '/home', icon: <DashboardIcon /> },
-        {
-          title: 'Becas',
-          path: '/scholarships',
-          icon: <SchoolIcon />
-        }
-      ]
-    return commonRoutes
+    return rolesByModules.COMMON.concat(items)
   }
 
   useEffect(() => {
