@@ -13,12 +13,16 @@ const FilePostulation = ({ onRemove, onView, bgWhite, fileName, fileSize }) => {
     <Box>
       <Box className={classes.previewWrapper} p={2}>
         <Box className={classes.actions}>
-          <IconButton color="primary" onClick={onView}>
-            <ViewIcon />
-          </IconButton>
-          <IconButton onClick={onRemove}>
-            <DeleteIcon className={classes.removeIcon} />
-          </IconButton>
+          {onView && (
+            <IconButton color="primary" onClick={onView}>
+              <ViewIcon />
+            </IconButton>
+          )}
+          {onRemove && (
+            <IconButton onClick={onRemove}>
+              <DeleteIcon className={classes.removeIcon} />
+            </IconButton>
+          )}
         </Box>
         <Box mt={2}>
           <Box textAlign="center">

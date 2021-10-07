@@ -104,7 +104,7 @@ const ExtraPaymentsList = () => {
             <ExtraPaymentCard.Loader />
           </>
         ) : (
-          <>
+          <ExtraPaymentCard.Container>
             {extraPaymentsList.length === 0 ? (
               <EmptyState message="Este curso no tiene ningún pago a OTEC" />
             ) : (
@@ -126,7 +126,7 @@ const ExtraPaymentsList = () => {
                 />
               ))
             )}
-          </>
+          </ExtraPaymentCard.Container>
         )}
       </Box>
 

@@ -132,6 +132,7 @@ const ExtraPayments = ({
               <TextField
                 label="Monto"
                 name="amount"
+                type="number"
                 value={formik.values.amount}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
