@@ -25,6 +25,12 @@ const useStyles = makeStyles((theme) => ({
   },
   info: {
     fontWeight: 'bold'
+  },
+  Grid: {
+    marginBottom: '15px',
+    border: '1px solid black',
+    borderRadius: '8px',
+    width: '100%'
   }
 }))
 
@@ -91,52 +97,54 @@ const ExtraPaymentsCard = ({ loader }) => {
               <EmptyState message="No hay pagos extra registrados" />
             ) : (
               <>
-                {extraPaymentsList?.map((item, index) => (
-                  <Box
-                    mb="15px"
-                    key={`card--${index}`}
-                    border="1px solid"
-                    borderRadius={'8px'}
-                    width="100%"
-                  >
-                    <Box p={2}>
-                      <Box>
-                        <Typography className={classes.date}>
-                          {formatDate(new Date())}
-                        </Typography>
+                <Grid container>
+                  {extraPaymentsList?.map((item, index) => (
+                    <Grid
+                      item
+                      xs={6}
+                      md={6}
+                      key={`card--${index}`}
+                      className={classes.Grid}
+                    >
+                      <Box p={2} marginRight={2}>
+                        <Box>
+                          <Typography className={classes.date}>
+                            {formatDate(item.date)}
+                          </Typography>
+                        </Box>
+                        <Box
+                          p={2}
+                          display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
+                        >
+                          <Typography className={classes.info}>
+                            Item : {item.item}
+                          </Typography>
+                          <Typography className={classes.info}>
+                            {item.amount}
+                          </Typography>
+                        </Box>
+                        <FileThumbnail
+                          fileName={item.file.fileName}
+                          date={item.file.uploadDate}
+                          fileSize={item.file.fileSize}
+                          onView={() => {
+                            toggleOpenVisor()
+                            setCurrentExtraPayment(item)
+                          }}
+                          onDownload={() => {
+                            dispatch(files.downloadFile(item.file.fileUrl))
+                          }}
+                          onDelete={() => {
+                            toggleOpenDelete()
+                            setCurrentExtraPayment(item)
+                          }}
+                        />
                       </Box>
-                      <Box
-                        p={2}
-                        display="flex"
-                        justifyContent="space-between"
-                        alignItems="center"
-                      >
-                        <Typography className={classes.info}>
-                          Item : {item.item}
-                        </Typography>
-                        <Typography className={classes.info}>
-                          {item.amount}
-                        </Typography>
-                      </Box>
-                      <FileThumbnail
-                        fileName={item.file.fileName}
-                        date={item.file.uploadDate}
-                        fileSize={item.file.fileSize}
-                        onView={() => {
-                          toggleOpenVisor()
-                          setCurrentExtraPayment(item)
-                        }}
-                        onDownload={() => {
-                          dispatch(files.downloadFile(item.file.fileUrl))
-                        }}
-                        onDelete={() => {
-                          toggleOpenDelete()
-                          setCurrentExtraPayment(item)
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                ))}
+                    </Grid>
+                  ))}
+                </Grid>
               </>
             )}
           </Grid>

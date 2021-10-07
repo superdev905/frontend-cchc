@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
 import { useToggle, useSuccess } from '../../../hooks'
@@ -10,6 +11,7 @@ import ExtraPaymentsCard from './Card'
 
 const ExtraPaymentsList = () => {
   const dispatch = useDispatch()
+  const { idCourse } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -19,6 +21,15 @@ const ExtraPaymentsList = () => {
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
 
   console.log(loading)
+
+  const fetchExtraPayments = () => {
+    setLoading(true)
+    dispatch(coursesActions.getExtraPayments({ courseId: idCourse })).then(
+      () => {
+        setLoading(false)
+      }
+    )
+  }
 
   const createExtraPayment = (values) => {
     dispatch(
@@ -30,6 +41,7 @@ const ExtraPaymentsList = () => {
         setLoading(false)
         changeSuccess(true)
         toggleOpenAdd()
+        fetchExtraPayments()
         enqueueSnackbar('Pago agregado exitosamente', {
           autoHideDuration: 1500,
           variant: 'success'
@@ -59,6 +71,10 @@ const ExtraPaymentsList = () => {
         setDeleting(false)
       })
   }
+
+  useEffect(() => {
+    fetchExtraPayments()
+  }, [])
 
   return (
     <Box>

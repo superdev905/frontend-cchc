@@ -11,7 +11,6 @@ import { scholarshipConfig } from '../../config'
 import coursesActions from '../../state/actions/courses'
 import CreateCourse from './CreateCourse'
 import { ConfirmDelete, DataTable } from '../Shared'
-import OtherDocuments from '../Course/Docs/OtherDocuments'
 
 const CoursesList = () => {
   const dispatch = useDispatch()
@@ -25,7 +24,6 @@ const CoursesList = () => {
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
-  const { open: openDoc, toggleOpen: toggleOpenDoc } = useToggle()
 
   const [filters, setFilters] = useState({
     page: 1,
@@ -128,27 +126,6 @@ const CoursesList = () => {
     fetchCourses()
   }, [filters])
 
-  const createDoc = (values) => {
-    dispatch(
-      coursesActions.createCourseDoc({
-        ...values
-      })
-    )
-      .then(() => {
-        setLoading(false)
-        changeSuccess(true)
-        toggleOpenAdd()
-        fetchCourses()
-        enqueueSnackbar('Documento agregado correctamente', {
-          autoHideDuration: 1500,
-          variant: 'success'
-        })
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
-
   return (
     <Wrapper>
       <Box>
@@ -247,7 +224,6 @@ const CoursesList = () => {
         }}
         paginationTotalRows={totalCourses}
       />
-      <Button onClick={toggleOpenDoc}> Otros documentos </Button>
       <CreateCourse
         successMessage="Curso creado"
         open={openAdd}
@@ -279,13 +255,6 @@ const CoursesList = () => {
           success={success}
         />
       )}
-
-      <OtherDocuments
-        successMessage="Otro documento creado"
-        open={openDoc}
-        onClose={toggleOpenDoc}
-        submitFunction={createDoc}
-      />
     </Wrapper>
   )
 }
