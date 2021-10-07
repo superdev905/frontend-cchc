@@ -175,6 +175,46 @@ const patchCourseDoc = (id, values) => () =>
       })
   })
 
+const getClasses =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.courses}/classes?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const createClass = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.courses}/classes`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchClass = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${config.services.courses}/classes/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getCourses,
   createCourse,
@@ -187,5 +227,8 @@ export default {
   getCoursesDocs,
   createCourseDoc,
   getCourseDoc,
-  patchCourseDoc
+  patchCourseDoc,
+  getClasses,
+  createClass,
+  patchClass
 }

@@ -1,5 +1,16 @@
-import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
-import { FiPlus } from 'react-icons/fi'
+import {
+  Box,
+  Grid,
+  IconButton,
+  makeStyles,
+  Typography
+} from '@material-ui/core'
+
+import {
+  FiPlus,
+  FiEdit2 as EditIcon,
+  FiTrash2 as DeleteIcon
+} from 'react-icons/fi'
 import { formatDate } from '../../../formatters'
 
 const Container = ({ children }) => (
@@ -19,8 +30,19 @@ const useStyles = makeStyles((theme) => ({
     color: completed ? theme.palette.common.white : theme.palette.common.black,
     border: `1px solid ${
       completed ? 'transparent' : theme.palette.common.black
-    }`
+    }`,
+    position: 'relative'
   }),
+  actions: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    '& button': {
+      padding: 5,
+      color: theme.palette.primary.main
+    }
+  },
+  deleteIcon: { color: theme.palette.error.main },
   addRoot: {
     height: 200,
     borderRadius: 5,
@@ -43,17 +65,23 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const ClassesCard = ({ completed }) => {
+const ClassesCard = ({ completed, item, onDelete, onEdit }) => {
   const classes = useStyles({ completed })
   return (
-    <Grid item xs={6} md={4} lg={3}>
+    <Grid item xs={12} md={4} lg={3}>
       <Box p={2} className={classes.root}>
-        <Typography className={classes.tag}>Clase 1</Typography>
-        <Typography className={classes.title}>
-          Introducción a la clase
-        </Typography>
+        <Box className={classes.actions}>
+          <IconButton onClick={onEdit}>
+            <EditIcon />
+          </IconButton>
+          <IconButton onClick={onDelete}>
+            <DeleteIcon className={classes.deleteIcon} />
+          </IconButton>
+        </Box>
+        <Typography className={classes.tag}>{item.name}</Typography>
+        <Typography className={classes.title}>{item.title}</Typography>
         <Typography className={classes.date}>
-          {formatDate(new Date(), {
+          {formatDate(new Date(item.date), {
             weekday: 'long',
             month: 'long',
             day: 'numeric'
@@ -67,7 +95,7 @@ const ClassesCard = ({ completed }) => {
 const AddCard = ({ onClick }) => {
   const classes = useStyles()
   return (
-    <Grid item xs={6} md={4} lg={3}>
+    <Grid item xs={12} md={4} lg={3}>
       <Box p={2} className={classes.addRoot} onClick={onClick}>
         <FiPlus fontSize={40} opacity={0.7} />
       </Box>
