@@ -65,6 +65,7 @@ const DocsCard = ({ loader }) => {
         setLoading(false)
         changeSuccess(true)
         toggleOpenAdd()
+        fetchDocuments()
         enqueueSnackbar('Documento agregado exitosamente', {
           autoHideDuration: 1500,
           variant: 'success'
