@@ -1,61 +1,18 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
+import { Box, Grid, Typography } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
-import { FiPlus } from 'react-icons/fi'
 import { useToggle, useSuccess } from '../../../hooks'
-import OtherDocuments from './OtherDocuments'
 import coursesActions from '../../../state/actions/courses'
 import DocsCard from './Card'
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    borderRadius: 5,
-    marginBottom: 10
-  },
-  addRoot: {
-    minHeight: 200,
-    borderRadius: 5,
-    display: 'flex',
-    cursor: 'pointer',
-    justifyContent: 'center',
-    alignItems: 'center',
-    border: `2px dashed ${theme.palette.gray.gray500}`
-  }
-}))
-
 const DocumentList = () => {
-  const classes = useStyles()
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
-  const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [currentDocument] = useState(null)
   const { success, changeSuccess } = useSuccess()
-  const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
-
-  console.log(loading)
-
-  const createDoc = (values) => {
-    dispatch(
-      coursesActions.createCourseDoc({
-        ...values
-      })
-    )
-      .then(() => {
-        setLoading(false)
-        changeSuccess(true)
-        toggleOpenAdd()
-        enqueueSnackbar('Documento agregado exitosamente', {
-          autoHideDuration: 1500,
-          variant: 'success'
-        })
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
 
   const deleteDoc = (id) => {
     dispatch(
@@ -93,20 +50,8 @@ const DocumentList = () => {
         </Typography>
       </Box>
       <Grid container>
-        <Grid item xs={6} md={4} lg={3}>
-          <Box p={2} mr={3} className={classes.addRoot} onClick={toggleOpenAdd}>
-            <FiPlus fontSize={40} opacity={0.7} />
-          </Box>
-        </Grid>
-
         <DocsCard />
       </Grid>
-
-      <OtherDocuments
-        open={openAdd}
-        onClose={toggleOpenAdd}
-        submitFunction={createDoc}
-      />
 
       {currentDocument && openDelete && (
         <ConfirmDelete
