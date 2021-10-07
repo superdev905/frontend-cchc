@@ -144,7 +144,7 @@ const DocsCard = ({ loader }) => {
                     <Grid container>
                       <Grid item xs={9} md={9} lg={9}>
                         <Typography className={classes.date}>
-                          {formatDate(new Date())}
+                          {formatDate(item.date)}
                         </Typography>
                       </Grid>
                       <Grid item xs={3} md={3} lg={3}>
