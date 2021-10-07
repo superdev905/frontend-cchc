@@ -35,7 +35,7 @@ const Course = ({ children }) => {
         <HeadingWithButton
           goBack={goBack}
           title={course && `${course.code} - ${course.name}`}
-          timeAgo="Hace 1 día"
+          timeAgo={course && course.timeAgo}
           loading={loading}
         />
         <Box>

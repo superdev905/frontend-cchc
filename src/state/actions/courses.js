@@ -203,6 +203,18 @@ const createClass = (values) => () =>
       })
   })
 
+const updateClass = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.courses}/classes/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const patchClass = (id, values) => () =>
   new Promise((resolve, reject) => {
     Axios.patch(`${config.services.courses}/classes/${id}`, values)
@@ -230,5 +242,6 @@ export default {
   patchCourseDoc,
   getClasses,
   createClass,
-  patchClass
+  patchClass,
+  updateClass
 }

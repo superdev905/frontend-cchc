@@ -4,10 +4,9 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { useSelector } from 'react-redux'
-import { Dialog } from '../../Shared'
+import { DatePicker, Dialog } from '../../Shared'
 import { Button, SubmitButton, TextArea, TextField } from '../../UI'
 import { useSuccess } from '../../../hooks'
-import { formatDate } from '../../../formatters'
 
 const validationSchema = Yup.object().shape({
   date: Yup.date().required('Seleccione fecha'),
@@ -34,7 +33,7 @@ const ClassDialog = ({
     validateOnMount: true,
     validateOnBlur: true,
     initialValues: {
-      date: type !== 'ADD' ? data.date : currentDate,
+      date: type !== 'ADD' ? new Date(data.date) : currentDate,
       title: type !== 'ADD' ? data.title : '',
       description: type !== 'ADD' ? data.description : ''
     },
@@ -55,6 +54,12 @@ const ClassDialog = ({
     }
   })
 
+  const renderTitle = (action) => {
+    if (action === 'UPDATE') return 'Actualizar'
+    if (action === 'ADD') return 'Nueva'
+    return 'Ver'
+  }
+
   useEffect(() => {
     if (open) {
       formik.resetForm()
@@ -73,15 +78,19 @@ const ClassDialog = ({
               fontSize: '18px'
             }}
           >
-            Nueva Clase
+            {`${renderTitle(type)} Clase`}
           </Typography>
         </Box>
         <Grid container spacing={2}>
-          <Grid item xs={12} m={6} lg={4}>
-            <TextField
-              value={formatDate(currentDate)}
+          <Grid item xs={12} md={12}>
+            <DatePicker
+              value={formik.values.date}
               label="Fecha"
-              inputProps={{ readOnly: true }}
+              onChange={(date) => {
+                formik.setFieldValue('date', date)
+              }}
+              disabledPast
+              disabledFuture={false}
             />
           </Grid>
           <Grid item xs={12} m={12}>
@@ -123,7 +132,7 @@ const ClassDialog = ({
             success={success}
             disabled={!formik.isValid}
           >
-            Guardar
+            {`${type === 'ADD' ? 'Guardar' : 'Actualizar'}`}
           </SubmitButton>
         </Box>
       </Box>

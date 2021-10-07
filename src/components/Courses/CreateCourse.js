@@ -123,12 +123,13 @@ const CreateCourse = ({
               <TextField
                 label="Código"
                 name="code"
+                required
                 value={formik.values.code}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.code && Boolean(formik.errors.code)}
                 helperText={formik.touched.code && formik.errors.code}
-                rules={{ maxLength: 10, required: true, min: 3 }}
+                inputProps={{ maxLength: 5 }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
