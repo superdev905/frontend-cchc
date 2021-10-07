@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
 import { useToggle, useSuccess } from '../../../hooks'
-import { Button } from '../../UI'
+import { Button, EmptyState } from '../../UI'
 import ExtraPayments from './ExtraPayments'
 import coursesActions from '../../../state/actions/courses'
-import ExtraPaymentsCard from './Card'
+import ExtraPaymentCard from './Card'
+import { ConfirmDelete, FileVisor } from '../../Shared'
+import files from '../../../state/actions/files'
 
 const ExtraPaymentsList = () => {
   const dispatch = useDispatch()
@@ -15,10 +17,13 @@ const ExtraPaymentsList = () => {
   const { enqueueSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
-  const [currentExtraPayment] = useState(null)
+  const [currentFile, setCurrentFile] = useState(null)
+  const [currentExtraPayment, setCurrentExtraPayment] = useState(null)
   const { success, changeSuccess } = useSuccess()
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const { extraPaymentsList } = useSelector((state) => state.courses)
 
   console.log(loading)
 
@@ -62,6 +67,7 @@ const ExtraPaymentsList = () => {
         setDeleting(false)
         changeSuccess(true)
         toggleOpenDelete()
+        fetchExtraPayments()
         enqueueSnackbar('Pago eliminado exitosamente', {
           autoHideDuration: 1500,
           variant: 'success'
@@ -91,9 +97,38 @@ const ExtraPaymentsList = () => {
         </Typography>
         <Button onClick={toggleOpenAdd}> Agregar </Button>
       </Box>
-      <Grid item xs={12} md={12}>
-        <ExtraPaymentsCard />
-      </Grid>
+      <Box>
+        {loading ? (
+          <>
+            <ExtraPaymentCard.Loader />
+            <ExtraPaymentCard.Loader />
+          </>
+        ) : (
+          <>
+            {extraPaymentsList.length === 0 ? (
+              <EmptyState message="Este curso no tiene ningún pago a OTEC" />
+            ) : (
+              extraPaymentsList.map((item) => (
+                <ExtraPaymentCard
+                  payment={item}
+                  key={`payment-card-${item.id}`}
+                  onView={(file) => {
+                    setCurrentFile(file)
+                    toggleOpenVisor()
+                  }}
+                  onDelete={() => {
+                    setCurrentExtraPayment(item)
+                    toggleOpenDelete()
+                  }}
+                  onDownload={() => {
+                    dispatch(files.downloadFile(item.file.fileUrl))
+                  }}
+                />
+              ))
+            )}
+          </>
+        )}
+      </Box>
 
       <ExtraPayments
         open={openAdd}
@@ -113,6 +148,15 @@ const ExtraPaymentsList = () => {
           }
           loading={deleting}
           success={success}
+        />
+      )}
+
+      {currentFile && openVisor && (
+        <FileVisor
+          open={openVisor}
+          onClose={toggleOpenVisor}
+          filename={currentFile.fileName}
+          src={currentFile.fileUrl}
         />
       )}
     </Box>

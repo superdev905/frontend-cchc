@@ -1,180 +1,131 @@
-import { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
-import { useSnackbar } from 'notistack'
+import { FiTrash2 as DeleteIcon } from 'react-icons/fi'
+import {
+  Box,
+  Grid,
+  IconButton,
+  makeStyles,
+  Typography
+} from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
-import { ConfirmDelete, FileThumbnail, FileVisor } from '../../Shared'
-import { formatDate } from '../../../formatters'
-import { EmptyState } from '../../UI'
-import { useToggle, useSuccess } from '../../../hooks'
-import coursesActions from '../../../state/actions/courses'
-import files from '../../../state/actions/files'
+import { FileThumbnail } from '../../Shared'
+import { formatDate, formatHours } from '../../../formatters'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     borderRadius: 5,
+    border: `1px solid ${theme.palette.common.black}`,
     marginBottom: 10
   },
   paper: {
-    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    position: 'relative'
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: 5,
+    right: 5
+  },
+  deleteIcon: {
+    color: theme.palette.error.main
   },
   date: {
     fontSize: 15,
     marginBottom: 5
   },
   info: {
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginBottom: 5
   },
-  Grid: {
-    marginBottom: '15px',
-    border: '1px solid black',
-    borderRadius: '8px',
-    width: '100%'
+  dateLoader: {
+    marginBottom: 15,
+    width: '30%'
+  },
+  thumbnailLoader: {
+    height: 60,
+    width: '100%',
+    transform: 'none'
   }
 }))
 
-const ExtraPaymentsCard = ({ loader }) => {
+const Loader = () => {
   const classes = useStyles()
-  const dispatch = useDispatch()
-  const { idCourse } = useParams()
-  const { enqueueSnackbar } = useSnackbar()
-  const [deleting, setDeleting] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [currentExtraPayment, setCurrentExtraPayment] = useState(null)
-  const { success, changeSuccess } = useSuccess()
-  const { extraPaymentsList } = useSelector((state) => state.courses)
-  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
-  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
-
-  const fetchExtraPayments = () => {
-    setLoading(true)
-    dispatch(coursesActions.getExtraPayments({ courseId: idCourse })).then(
-      () => {
-        setLoading(false)
-      }
-    )
-  }
-
-  console.log(loading)
-
-  const deleteExtraPayment = (id) => {
-    dispatch(
-      coursesActions.patchExtraPayment(id, {
-        state: 'DELETED'
-      })
-    )
-      .then(() => {
-        setDeleting(false)
-        changeSuccess(true)
-        toggleOpenDelete()
-        fetchExtraPayments()
-        enqueueSnackbar('Pago eliminado exitosamente', {
-          autoHideDuration: 1500,
-          variant: 'success'
-        })
-      })
-      .catch(() => {
-        setDeleting(false)
-      })
-  }
-
-  useEffect(() => {
-    fetchExtraPayments()
-  }, [])
-
   return (
     <Box className={classes.root}>
-      <Box>
-        {loader ? (
-          <Box display="flex" marginBottom="10px">
-            <Skeleton width="30px"></Skeleton>
-            <Skeleton width="40%" style={{ marginLeft: '10px' }}></Skeleton>
-          </Box>
-        ) : (
-          <Grid container spacing={2}>
-            {extraPaymentsList.length === 0 ? (
-              <EmptyState message="No hay pagos extra registrados" />
-            ) : (
-              <>
-                <Grid container>
-                  {extraPaymentsList?.map((item, index) => (
-                    <Grid
-                      item
-                      xs={6}
-                      md={6}
-                      key={`card--${index}`}
-                      className={classes.Grid}
-                    >
-                      <Box p={2} marginRight={2}>
-                        <Box>
-                          <Typography className={classes.date}>
-                            {formatDate(item.date)}
-                          </Typography>
-                        </Box>
-                        <Box
-                          p={2}
-                          display="flex"
-                          justifyContent="space-between"
-                          alignItems="center"
-                        >
-                          <Typography className={classes.info}>
-                            Item : {item.item}
-                          </Typography>
-                          <Typography className={classes.info}>
-                            {item.amount}
-                          </Typography>
-                        </Box>
-                        <FileThumbnail
-                          fileName={item.file.fileName}
-                          date={item.file.uploadDate}
-                          fileSize={item.file.fileSize}
-                          onView={() => {
-                            toggleOpenVisor()
-                            setCurrentExtraPayment(item)
-                          }}
-                          onDownload={() => {
-                            dispatch(files.downloadFile(item.file.fileUrl))
-                          }}
-                          onDelete={() => {
-                            toggleOpenDelete()
-                            setCurrentExtraPayment(item)
-                          }}
-                        />
-                      </Box>
-                    </Grid>
-                  ))}
-                </Grid>
-              </>
-            )}
+      <Box className={classes.paper}>
+        <Skeleton className={classes.dateLoader}></Skeleton>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={4}>
+            <Skeleton width="30%"></Skeleton>
+            <Skeleton className={classes.thumbnailLoader}></Skeleton>
           </Grid>
-        )}
+          <Grid item xs={12} md={8}>
+            <Box>
+              <Skeleton width="20%"></Skeleton>
+            </Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <Skeleton className={classes.thumbnailLoader}></Skeleton>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Skeleton className={classes.thumbnailLoader}></Skeleton>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       </Box>
-      {openVisor && currentExtraPayment && (
-        <FileVisor
-          open={openVisor}
-          onClose={toggleOpenVisor}
-          src={currentExtraPayment.file.fileUrl}
-          filename={currentExtraPayment.file.fileName}
-        />
-      )}
-
-      {currentExtraPayment && openDelete && (
-        <ConfirmDelete
-          open={openDelete}
-          onClose={toggleOpenDelete}
-          onConfirm={() => deleteExtraPayment(currentExtraPayment.id)}
-          message={
-            <Typography variant="h6">
-              ¿Estás seguro de eliminar este pago?
-            </Typography>
-          }
-          loading={deleting}
-          success={success}
-        />
-      )}
     </Box>
   )
 }
 
-export default ExtraPaymentsCard
+const ExtraPaymentCard = ({ payment, onView, onDelete, onDownload }) => {
+  const classes = useStyles()
+  return (
+    <Grid item md={6} className={classes.root}>
+      <Box className={classes.paper}>
+        <Box marginBottom={3}>
+          <Typography className={classes.date}>
+            {`${formatDate(new Date(payment.date))}- ${formatHours(
+              new Date(payment.date)
+            )}`}
+          </Typography>
+        </Box>
+        <IconButton className={classes.deleteButton} onClick={onDelete}>
+          <DeleteIcon className={classes.deleteIcon} />
+        </IconButton>
+        <Box>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography className={classes.info}>
+                  Item : {payment.item}
+                </Typography>
+                <Typography className={classes.info}>
+                  {payment.amount}
+                </Typography>
+              </Box>
+              <FileThumbnail
+                fileName={payment.file.fileName}
+                date={new Date(payment.file.uploadDate)}
+                fileSize={payment.file.fileSize}
+                onView={() => {
+                  onView(payment.file)
+                }}
+                onDownload={() => {
+                  onDownload(payment.file)
+                }}
+              />
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
+    </Grid>
+  )
+}
+
+ExtraPaymentCard.Loader = Loader
+
+export default ExtraPaymentCard
