@@ -16,14 +16,16 @@ import {
 } from '../UI'
 import { useSuccess } from '../../hooks'
 import commonActions from '../../state/actions/common'
+import usersActions from '../../state/actions/users'
 
 const validationSchema = Yup.object().shape({
   code: Yup.string()
     .min(5, 'Debe contener al menos 5 caracteres')
     .required('Ingrese código'),
   name: Yup.string().required('Ingrese nombre del curso'),
-  otecId: Yup.string().required('Seleccione otec'),
-  description: Yup.string().required('Ingrese descripción')
+  otecId: Yup.number().required('Seleccione otec'),
+  description: Yup.string().required('Ingrese descripción'),
+  instructorId: Yup.number().required('Seleccione relator')
 })
 
 const CreateCourse = ({
@@ -39,8 +41,9 @@ const CreateCourse = ({
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const [selectedOTEC, setSelectedOTEC] = useState(null)
+  const [instructorsList, setInstructorList] = useState([])
   const { isMobile } = useSelector((state) => state.ui)
-  const { otecs, roles } = useSelector((state) => state.common)
+  const { otecs } = useSelector((state) => state.common)
 
   const formik = useFormik({
     validateOnMount: true,
@@ -99,29 +102,31 @@ const CreateCourse = ({
 
   useEffect(() => {
     const { instructorId } = formik.values
-    if (instructorId && roles.length > 0) {
-      const currentInstructor = roles.find(
+    if (instructorId && instructorsList.length > 0) {
+      const currentInstructor = instructorsList.find(
         (item) => item.id === parseInt(instructorId, 10)
       )
       formik.setFieldValue('instructorName', currentInstructor.name)
     } else {
       formik.setFieldValue('instructorName', '')
     }
-  }, [formik.values.instructorId, roles])
+  }, [formik.values.instructorId, instructorsList])
 
   useEffect(() => {
     const { instructorId } = formik.values
     if (instructorId === '') {
-      formik.setFieldValue('instructorId', 0)
-      formik.setFieldValue('instructorName', 0)
+      formik.setFieldValue('instructorId', '')
+      formik.setFieldValue('instructorName', '')
     }
-  }, [formik.values.instructorId, roles])
+  }, [formik.values.instructorId, instructorsList])
 
   useEffect(() => {
     if (open) {
       formik.resetForm()
       dispatch(commonActions.getAllOTECS())
-      dispatch(commonActions.getRoles())
+      dispatch(usersActions.getOTECUsers()).then((result) => {
+        setInstructorList(result)
+      })
     }
   }, [open, type])
 
@@ -189,6 +194,7 @@ const CreateCourse = ({
             <Grid item xs={12} md={12}>
               <Select
                 label="Relator"
+                required
                 name="instructorId"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -202,8 +208,10 @@ const CreateCourse = ({
                 }
               >
                 <option value="">Seleccione relator</option>
-                {roles.map((item) => (
-                  <option value={item.id}>{item.name}</option>
+                {instructorsList.map((item) => (
+                  <option
+                    value={item.id}
+                  >{`${item.names} ${item.paternal_surname} ${item.maternal_surname}`}</option>
                 ))}
               </Select>
             </Grid>

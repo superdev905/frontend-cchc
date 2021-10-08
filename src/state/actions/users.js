@@ -18,6 +18,24 @@ const getUsers =
         })
     })
 
+const getOTECUsers =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.auth}/users/search/otec?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const getUserDetails = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.auth}/users/${id}`)
@@ -86,5 +104,6 @@ export default {
   updateUser,
   patchUser,
   getUserDetails,
-  updatePassword
+  updatePassword,
+  getOTECUsers
 }

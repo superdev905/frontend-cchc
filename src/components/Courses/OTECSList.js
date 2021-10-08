@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import { ActionsTable, Button, Wrapper } from '../UI'
 import { ConfirmDelete, DataTable } from '../Shared'
 import Can from '../Can'
@@ -110,17 +110,16 @@ const OTECList = () => {
   return (
     <Wrapper>
       <Box>
-        <Grid container spacing={1} alignItems="end">
-          <Grid item xs={12} md={6}>
-            <Box display="flex" justifyContent="flex-end">
-              <Can
-                availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
-                yes={() => <Button onClick={toggleOpenAdd}>Nueva OTEC</Button>}
-                no={() => null}
-              />
-            </Box>
-          </Grid>
-        </Grid>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography style={{ fontSize: 18, fontWeight: 'bold' }}>
+            Lista de OTECs
+          </Typography>
+          <Can
+            availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+            yes={() => <Button onClick={toggleOpenAdd}>Nueva OTEC</Button>}
+            no={() => null}
+          />
+        </Box>
       </Box>
 
       <DataTable

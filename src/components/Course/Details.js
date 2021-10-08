@@ -47,7 +47,7 @@ const Details = ({ loading }) => {
           <LabeledRow label="Relator">
             <Text loading={loading}>
               {course && course.instructor
-                ? `${course.instructor.names}`
+                ? `${course.instructor.names} ${course.instructor.paternalSurname}`
                 : 'Sin relator'}
             </Text>
           </LabeledRow>
