@@ -59,12 +59,10 @@ const OtherDocuments = ({
         formData.append('file', uploadFile, uploadFile.name)
         resultUpload = await dispatch(filesAction.uploadFileToStorage(formData))
       }
-
       submitFunction({
         ...values,
         fileUrl: resultUpload ? resultUpload.file_url : '',
         fileKey: resultUpload ? resultUpload.file_key : '',
-        //  fileName: resultUpload ? resultUpload.file_name : '',
         fileSize: resultUpload ? resultUpload.file_size : '',
         uploadDate: resultUpload ? resultUpload.upload_date : ''
       })
@@ -90,6 +88,11 @@ const OtherDocuments = ({
     }
   })
 
+  const getValidation = () => {
+    if (uploadFile) return true
+    return false
+  }
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
       <Box>
@@ -113,6 +116,7 @@ const OtherDocuments = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
+                required
                 label="Nombre de documento"
                 name="fileName"
                 value={formik.values.fileName}
@@ -168,7 +172,7 @@ const OtherDocuments = ({
             <SubmitButton
               onClick={formik.handleSubmit}
               success={success}
-              disabled={!formik.isValid || formik.isSubmitting || uploading}
+              disabled={!formik.isValid || !getValidation() || uploading}
               loading={formik.isSubmitting}
             >
               {`${
