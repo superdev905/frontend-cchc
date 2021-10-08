@@ -8,6 +8,7 @@ import { Box, Grid, Typography, InputLabel } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { FiUpload } from 'react-icons/fi'
 import {
+  CurrencyTextField,
   DatePicker,
   Dialog,
   FilePicker,
@@ -140,10 +141,10 @@ const ExtraPayments = ({
             </Grid>
 
             <Grid item xs={12} md={4}>
-              <TextField
+              <CurrencyTextField
                 label="Monto"
                 name="amount"
-                type="number"
+                required
                 value={formik.values.amount}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
