@@ -25,8 +25,6 @@ const ExtraPaymentsList = () => {
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const { extraPaymentsList } = useSelector((state) => state.courses)
 
-  console.log(loading)
-
   const fetchExtraPayments = () => {
     setLoading(true)
     dispatch(coursesActions.getExtraPayments({ courseId: idCourse })).then(
@@ -104,7 +102,7 @@ const ExtraPaymentsList = () => {
             <ExtraPaymentCard.Loader />
           </>
         ) : (
-          <>
+          <ExtraPaymentCard.Container>
             {extraPaymentsList.length === 0 ? (
               <EmptyState message="Este curso no tiene ningún pago a OTEC" />
             ) : (
@@ -126,7 +124,7 @@ const ExtraPaymentsList = () => {
                 />
               ))
             )}
-          </>
+          </ExtraPaymentCard.Container>
         )}
       </Box>
 

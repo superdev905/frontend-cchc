@@ -95,6 +95,11 @@ const ExtraPayments = ({
     }
   })
 
+  const getValidation = () => {
+    if (uploadFile) return true
+    return false
+  }
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
       <Box>
@@ -132,6 +137,7 @@ const ExtraPayments = ({
               <TextField
                 label="Monto"
                 name="amount"
+                type="number"
                 value={formik.values.amount}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -183,7 +189,12 @@ const ExtraPayments = ({
             <SubmitButton
               onClick={formik.handleSubmit}
               success={success}
-              disabled={!formik.isValid || formik.isSubmitting || uploading}
+              disabled={
+                !formik.isValid ||
+                !getValidation() ||
+                formik.isSubmitting ||
+                uploading
+              }
               loading={formik.isSubmitting}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Registrar'} pago extra`}

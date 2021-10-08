@@ -8,16 +8,22 @@ import {
 } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
 import { FileThumbnail } from '../../Shared'
-import { formatDate, formatHours } from '../../../formatters'
+import { formatDate, formatCurrency } from '../../../formatters'
+
+const Container = ({ children }) => (
+  <Grid container spacing={2}>
+    {children}
+  </Grid>
+)
 
 const useStyles = makeStyles((theme) => ({
   root: {
     borderRadius: 5,
     border: `1px solid ${theme.palette.common.black}`,
-    marginBottom: 10
-  },
-  paper: {
-    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    marginBottom: 10,
+    height: 200,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
     position: 'relative'
   },
   deleteButton: {
@@ -80,13 +86,11 @@ const Loader = () => {
 const ExtraPaymentCard = ({ payment, onView, onDelete, onDownload }) => {
   const classes = useStyles()
   return (
-    <Grid item md={6} className={classes.root}>
-      <Box className={classes.paper}>
+    <Grid item xs={12} md={6} lg={6}>
+      <Box p={2} className={classes.root}>
         <Box marginBottom={3}>
           <Typography className={classes.date}>
-            {`${formatDate(new Date(payment.date))}- ${formatHours(
-              new Date(payment.date)
-            )}`}
+            {formatDate(new Date(payment.date))}
           </Typography>
         </Box>
         <IconButton className={classes.deleteButton} onClick={onDelete}>
@@ -104,7 +108,7 @@ const ExtraPaymentCard = ({ payment, onView, onDelete, onDownload }) => {
                   Item : {payment.item}
                 </Typography>
                 <Typography className={classes.info}>
-                  {payment.amount}
+                  {formatCurrency(payment.amount)}
                 </Typography>
               </Box>
               <FileThumbnail
@@ -126,6 +130,7 @@ const ExtraPaymentCard = ({ payment, onView, onDelete, onDownload }) => {
   )
 }
 
+ExtraPaymentCard.Container = Container
 ExtraPaymentCard.Loader = Loader
 
 export default ExtraPaymentCard
