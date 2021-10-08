@@ -1,12 +1,13 @@
 import * as Yup from 'yup'
+import { useEffect } from 'react'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { addMonths } from 'date-fns'
 import { useSelector } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { Dialog } from '../Shared'
-import { Button, RutTextField, SubmitButton, TextField } from '../UI'
-import { useSuccess } from '../../hooks'
+import { Dialog } from '../../Shared'
+import { Button, RutTextField, SubmitButton, TextField } from '../../UI'
+import { useSuccess } from '../../../hooks'
 
 const validationSchema = Yup.object().shape({
   rut: Yup.string().required('Ingrese rut'),
@@ -33,7 +34,7 @@ const WorkerRegistration = ({
       rut: type === 'UPDATE' ? data.rut : '',
       name: type === 'UPDATE' ? data.name : ''
     },
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: (values) => {
       submitFunction({
         ...values,
         createDate: new Date(addMonths(new Date(), 1))
@@ -46,7 +47,6 @@ const WorkerRegistration = ({
 
           changeSuccess(true, () => {
             onClose()
-            resetForm()
             if (successFunction) {
               successFunction()
             }
@@ -61,6 +61,12 @@ const WorkerRegistration = ({
     }
   })
 
+  useEffect(() => {
+    if (open) {
+      formik.resetForm()
+    }
+  }, [open])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullScreen={isMobile}>
       <Box>
@@ -69,7 +75,7 @@ const WorkerRegistration = ({
         </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={12}>
               <RutTextField
                 label="Rut"
                 name="rut"
@@ -81,7 +87,7 @@ const WorkerRegistration = ({
                 required
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={12}>
               <TextField
                 label="Nombre"
                 required
