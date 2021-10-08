@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
@@ -51,7 +51,7 @@ const OtherDocuments = ({
       fileName: type === 'UPDATE' ? data.fileName : '',
       fileUrl: type === 'UPDATE' ? data.fileUrl : ''
     },
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values) => {
       formik.setSubmitting(true)
       let resultUpload = null
       if (uploadFile) {
@@ -76,7 +76,6 @@ const OtherDocuments = ({
           }
           changeSuccess(true, () => {
             onClose()
-            resetForm()
           })
         })
         .catch((err) => {
@@ -92,6 +91,13 @@ const OtherDocuments = ({
     if (uploadFile) return true
     return false
   }
+
+  useEffect(() => {
+    if (open) {
+      formik.resetForm()
+      setUploadFile(null)
+    }
+  }, [open])
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>

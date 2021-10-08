@@ -117,7 +117,7 @@ const OtherDocsCard = ({ doc, onView, onRemove }) => {
                 marginBottom={1}
               >
                 <Typography className={classes.date}>
-                  {formatDate(new Date(doc.date))}
+                  {formatDate(new Date(doc.file.uploadDate))}
                 </Typography>
                 <Typography className={classes.date}>
                   {doc.file.fileSize}

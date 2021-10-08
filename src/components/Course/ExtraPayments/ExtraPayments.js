@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
@@ -8,6 +8,7 @@ import { Box, Grid, Typography, InputLabel } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { FiUpload } from 'react-icons/fi'
 import {
+  CurrencyTextField,
   DatePicker,
   Dialog,
   FilePicker,
@@ -55,7 +56,7 @@ const ExtraPayments = ({
       amount: type === 'UPDATE' ? data.amount : '',
       fileUrl: type === 'UPDATE' ? data.fileUrl : ''
     },
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values) => {
       formik.setSubmitting(true)
       let resultUpload = null
       if (uploadFile) {
@@ -83,7 +84,6 @@ const ExtraPayments = ({
           }
           changeSuccess(true, () => {
             onClose()
-            resetForm()
           })
         })
         .catch((err) => {
@@ -99,6 +99,13 @@ const ExtraPayments = ({
     if (uploadFile) return true
     return false
   }
+
+  useEffect(() => {
+    if (open) {
+      formik.resetForm()
+      setUploadFile(null)
+    }
+  }, [open])
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
@@ -134,10 +141,10 @@ const ExtraPayments = ({
             </Grid>
 
             <Grid item xs={12} md={4}>
-              <TextField
+              <CurrencyTextField
                 label="Monto"
                 name="amount"
-                type="number"
+                required
                 value={formik.values.amount}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
