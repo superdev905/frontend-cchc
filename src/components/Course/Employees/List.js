@@ -3,13 +3,12 @@ import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { ActionsTable, Button, SearchInput, Select, Wrapper } from '../../UI'
-import { formatSearchWithRut, formatDate } from '../../../formatters'
+import { ActionsTable, Button, Wrapper } from '../../UI'
+import { formatDate } from '../../../formatters'
 import { useToggle, useSuccess } from '../../../hooks'
-import Can from '../../Can'
-import { scholarshipConfig } from '../../../config'
-import coursesActions from '../../../state/actions/courses'
 import { ConfirmDelete, DataTable } from '../../Shared'
+import Can from '../../Can'
+import coursesActions from '../../../state/actions/courses'
 import WorkerRegistration from './WorkerRegistration'
 
 const EmployeesRegistrationList = () => {
@@ -23,26 +22,11 @@ const EmployeesRegistrationList = () => {
   const { studentsCourse } = useSelector((state) => state.courses)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
-
-  const [filters, setFilters] = useState({
+  const [filters] = useState({
     page: 1,
     size: 30,
-    search: '',
     status: ''
   })
-
-  const onSearchChange = (e) => {
-    const { value } = e.target
-
-    setFilters({
-      ...filters,
-      search: formatSearchWithRut(value.toString()),
-      page: 1
-    })
-  }
-  const handleStatusChange = (e) => {
-    setFilters({ ...filters, status: e.target.value })
-  }
 
   const fetchEmployees = () => {
     setLoading(true)
@@ -97,32 +81,10 @@ const EmployeesRegistrationList = () => {
     fetchEmployees()
   }, [filters])
 
-  console.log(studentsCourse)
-
   return (
     <Wrapper>
       <Box>
         <Grid container spacing={1} alignItems="center">
-          <Grid item xs={12} md={2}>
-            <Select name="status" onChange={handleStatusChange}>
-              <option value="">Todos</option>
-              {scholarshipConfig.revisionStatus.map((item) => (
-                <option
-                  key={`application--filters-${item.key}`}
-                  value={item.status}
-                >
-                  {item.name}
-                </option>
-              ))}
-            </Select>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <SearchInput
-              value={filters.search}
-              onChange={onSearchChange}
-              placeholder="Buscar por: Trabajador"
-            />
-          </Grid>
           <Grid item xs={12} md={6}>
             <Box display="flex" justifyContent="flex-end">
               <Can
@@ -147,7 +109,7 @@ const EmployeesRegistrationList = () => {
         emptyMessage={
           filters.search
             ? `No se encontraron resultados para: ${filters.search}`
-            : 'Aún no hay postulaciones'
+            : 'Aún no hay trabajadores inscritos'
         }
         highlightOnHover
         pointerOnHover
@@ -158,7 +120,11 @@ const EmployeesRegistrationList = () => {
           },
           {
             name: 'Fecha',
-            selector: (row) => formatDate(row.date)
+            selector: (row) => formatDate(row.enrollDate)
+          },
+          {
+            name: 'Estado',
+            selector: (row) => row.state
           },
           {
             name: '',
@@ -178,15 +144,8 @@ const EmployeesRegistrationList = () => {
         ]}
         data={studentsCourse}
         pagination
-        paginationRowsPerPageOptions={[30, 40]}
-        paginationPerPage={filters.size}
+        paginationRowsPerPageOptions={[20, 30]}
         paginationServer={true}
-        onChangeRowsPerPage={(limit) => {
-          setFilters({ ...filters, size: limit })
-        }}
-        onChangePage={(page) => {
-          setFilters({ ...filters, skip: page })
-        }}
       />
 
       <WorkerRegistration
@@ -203,7 +162,7 @@ const EmployeesRegistrationList = () => {
           onConfirm={() => deleteEmployeeRegistration(currentStudent.id)}
           message={
             <Typography variant="h6">
-              ¿Estás seguro de eliminar este curso?
+              ¿Estás seguro de eliminar este estudiante?
             </Typography>
           }
           loading={deleting}
