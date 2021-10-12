@@ -98,7 +98,6 @@ const EmployeesRegistrationList = () => {
           </Grid>
         </Grid>
       </Box>
-
       <DataTable
         progressPending={loading}
         emptyMessage={'Aún no hay trabajadores inscritos'}
