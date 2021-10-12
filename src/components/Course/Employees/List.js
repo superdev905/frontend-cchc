@@ -22,11 +22,6 @@ const EmployeesRegistrationList = () => {
   const { studentsCourse } = useSelector((state) => state.courses)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
-  const [filters] = useState({
-    page: 1,
-    size: 30,
-    status: ''
-  })
 
   const fetchEmployees = () => {
     setLoading(true)
@@ -79,7 +74,7 @@ const EmployeesRegistrationList = () => {
 
   useEffect(() => {
     fetchEmployees()
-  }, [filters])
+  }, [])
 
   return (
     <Wrapper>
@@ -106,11 +101,7 @@ const EmployeesRegistrationList = () => {
 
       <DataTable
         progressPending={loading}
-        emptyMessage={
-          filters.search
-            ? `No se encontraron resultados para: ${filters.search}`
-            : 'Aún no hay trabajadores inscritos'
-        }
+        emptyMessage={'Aún no hay trabajadores inscritos'}
         highlightOnHover
         pointerOnHover
         columns={[
