@@ -289,6 +289,31 @@ const enrollEmployee = (values) => () =>
       })
   })
 
+const unenrollEmployee = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.courses}/student/unenroll`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getStudentsCourse = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.courses}/courses/${id}/students`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: coursesTypes.GET_STUDENTS_COURSE, payload: data })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getCourses,
   createCourse,
@@ -309,5 +334,7 @@ export default {
   getExtraPayments,
   createExtraPayment,
   patchExtraPayment,
-  enrollEmployee
+  enrollEmployee,
+  unenrollEmployee,
+  getStudentsCourse
 }

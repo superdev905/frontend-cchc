@@ -4,6 +4,7 @@ import { useFormik } from 'formik'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
+import { Skeleton } from '@material-ui/lab'
 import { addMonths } from 'date-fns'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Dialog } from '../../Shared'
@@ -23,6 +24,7 @@ const WorkerRegistration = ({
   onClose,
   type,
   data,
+  loader,
   submitFunction,
   successMessage,
   successFunction
@@ -104,6 +106,7 @@ const WorkerRegistration = ({
   useEffect(() => {
     if (open) {
       formik.resetForm()
+      setSelectedEmployee(null)
     }
   }, [open])
 
@@ -113,55 +116,70 @@ const WorkerRegistration = ({
         <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
           {`${type === 'Registrar' ? 'Actualizar' : 'Nuevo'} Trabajador`}
         </Typography>
-
         <Box>
-          {selectedEmployee ? (
-            <Box>
-              <Typography>Trabajador</Typography>
-              <EmployeeRow
-                option={selectedEmployee}
-                onDelete={() => {
-                  setSelectedEmployee(null)
-                }}
-              />
-            </Box>
+          {loader ? (
+            <>
+              <Box p={2}>
+                <Box display="flex" marginBottom="10px">
+                  <Skeleton width="30px"></Skeleton>
+                  <Skeleton
+                    width="40%"
+                    style={{ marginLeft: '10px' }}
+                  ></Skeleton>
+                </Box>
+              </Box>
+            </>
           ) : (
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <TextField
-                  label="Rut de trabajador"
-                  value={searchRut}
-                  onChange={(e) => {
-                    setSearchRut(formatSearchWithRut(e.target.value))
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                {searchList.length === 0 ? (
-                  <>
-                    <EmptyState
-                      message={`${
-                        searchRut
-                          ? `No se encontraron resultados para: ${searchRut}`
-                          : 'Ingrese el rut del trabajador'
-                      }`}
+            <Box>
+              {selectedEmployee ? (
+                <Box>
+                  <Typography>Trabajador</Typography>
+                  <EmployeeRow
+                    option={selectedEmployee}
+                    onDelete={() => {
+                      setSelectedEmployee(null)
+                    }}
+                  />
+                </Box>
+              ) : (
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Rut de trabajador"
+                      value={searchRut}
+                      onChange={(e) => {
+                        setSearchRut(formatSearchWithRut(e.target.value))
+                      }}
                     />
-                  </>
-                ) : (
-                  <>
-                    {searchList.map((item) => (
-                      <EmployeeRow
-                        selectable
-                        option={item}
-                        onClick={() => {
-                          setSelectedEmployee(item)
-                        }}
-                      />
-                    ))}
-                  </>
-                )}
-              </Grid>
-            </Grid>
+                  </Grid>
+                  <Grid item xs={12}>
+                    {searchList.length === 0 ? (
+                      <>
+                        <EmptyState
+                          message={`${
+                            searchRut
+                              ? `No se encontraron resultados para: ${searchRut}`
+                              : 'Ingrese el rut del trabajador'
+                          }`}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        {searchList.map((item) => (
+                          <EmployeeRow
+                            selectable
+                            option={item}
+                            onClick={() => {
+                              setSelectedEmployee(item)
+                            }}
+                          />
+                        ))}
+                      </>
+                    )}
+                  </Grid>
+                </Grid>
+              )}
+            </Box>
           )}
         </Box>
 

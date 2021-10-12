@@ -8,7 +8,8 @@ const initialState = {
   totalCoursesDocs: 0,
   totalExtraPayments: 0,
   courseDetails: null,
-  courseDocDetails: null
+  courseDocDetails: null,
+  studentsCourse: []
 }
 
 const coursesReducer = (state = initialState, { type, payload }) => {
@@ -29,6 +30,8 @@ const coursesReducer = (state = initialState, { type, payload }) => {
       return { ...state, extraPaymentsList: payload }
     case coursesTypes.SET_TOTAL_EXTRA_PAYMENTS:
       return { ...state, totalExtraPayments: payload }
+    case coursesTypes.GET_STUDENTS_COURSE:
+      return { ...state, studentsCourse: payload }
     default:
       return state
   }
