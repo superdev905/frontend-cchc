@@ -51,18 +51,14 @@ const EmployeesRegistrationList = () => {
       })
   }
 
-  const deleteEmployeeRegistration = (id) => {
-    dispatch(
-      coursesActions.unenrollEmployee(id, {
-        state: 'DELETED'
-      })
-    )
+  const deleteEmployeeRegistration = () => {
+    dispatch(coursesActions.unenrollEmployee(currentStudent))
       .then(() => {
         setDeleting(false)
         changeSuccess(true)
         toggleOpenDelete()
         fetchEmployees()
-        enqueueSnackbar('Trabajador eliminado exitosamente', {
+        enqueueSnackbar('Estudiante eliminado de este curso', {
           autoHideDuration: 1500,
           variant: 'success'
         })
@@ -80,7 +76,7 @@ const EmployeesRegistrationList = () => {
     <Wrapper>
       <Box>
         <Grid container spacing={1} alignItems="center">
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={12}>
             <Box display="flex" justifyContent="flex-end">
               <Can
                 availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
