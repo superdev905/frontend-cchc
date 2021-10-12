@@ -1,9 +1,10 @@
 import * as Yup from 'yup'
 import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
+import { useParams } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { addMonths } from 'date-fns'
-import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Dialog } from '../../Shared'
 import { formatSearchWithRut } from '../../../formatters'
@@ -14,8 +15,7 @@ import employeesActions from '../../../state/actions/employees'
 import generateColor from '../../../utils/generateColor'
 
 const validationSchema = Yup.object().shape({
-  rut: Yup.string().required('Ingrese rut'),
-  name: Yup.string().required('Ingrese nombre del trabajador')
+  employeeId: Yup.string().required('Ingrese trabajador')
 })
 
 const WorkerRegistration = ({
@@ -28,9 +28,11 @@ const WorkerRegistration = ({
   successFunction
 }) => {
   const dispatch = useDispatch()
+  const { idCourse } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
+  const [currentDate] = useState(new Date())
   const [searchRut, setSearchRut] = useState('')
   const [searchList, setSearchList] = useState([])
   const [selectedEmployee, setSelectedEmployee] = useState(null)
@@ -39,8 +41,10 @@ const WorkerRegistration = ({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      rut: type === 'UPDATE' ? data.rut : '',
-      name: type === 'UPDATE' ? data.name : ''
+      courseId: idCourse,
+      enrollDate: currentDate,
+      employeeId: type === 'UPDATE' ? data.employeeId : '',
+      employeeNames: type === 'UPDATE' ? data.employeeNames : ''
     },
     onSubmit: (values) => {
       submitFunction({

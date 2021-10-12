@@ -9,6 +9,7 @@ import Can from '../Can'
 import { useToggle, useSuccess } from '../../hooks'
 import commonActions from '../../state/actions/common'
 import CreateOTEC from '../Settings/OTECS/CreateOTEC'
+import EmployeeTracking from '../Course/EmployeeTracking'
 
 const OTECList = () => {
   const dispatch = useDispatch()
@@ -25,6 +26,8 @@ const OTECList = () => {
   })
   const { otecs, totalOtecs } = useSelector((state) => state.common)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openNew, toggleOpen: toggleOpenNew } = useToggle()
+
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
 
@@ -120,6 +123,7 @@ const OTECList = () => {
             no={() => null}
           />
         </Box>
+        <Button onClick={toggleOpenNew}>Nuevo seguimiento</Button>
       </Box>
 
       <DataTable
@@ -189,6 +193,8 @@ const OTECList = () => {
         onClose={toggleOpenAdd}
         submitFunction={createOTEC}
       />
+
+      <EmployeeTracking open={openNew} onClose={toggleOpenNew} />
 
       {currentOTEC && openUpdate && (
         <CreateOTEC

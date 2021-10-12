@@ -61,7 +61,7 @@ const EmployeesRegistrationList = () => {
 
   const createEmployeeRegistration = (values) => {
     dispatch(
-      coursesActions.createEmployeeRegistration({
+      coursesActions.enrollEmployee({
         ...values
       })
     )
@@ -155,7 +155,12 @@ const EmployeesRegistrationList = () => {
               <Can
                 availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
                 yes={() => (
-                  <Button onClick={toggleOpenAdd}>Registrar Asistencia</Button>
+                  <Box>
+                    <Button>Registrar Asistencia</Button>
+                    <Button onClick={toggleOpenAdd}>
+                      Inscribir trabajador
+                    </Button>
+                  </Box>
                 )}
                 no={() => null}
               />

@@ -277,6 +277,18 @@ const patchExtraPayment = (id, values) => () =>
       })
   })
 
+const enrollEmployee = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.courses}/student/enroll`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getCourses,
   createCourse,
@@ -296,5 +308,6 @@ export default {
   updateClass,
   getExtraPayments,
   createExtraPayment,
-  patchExtraPayment
+  patchExtraPayment,
+  enrollEmployee
 }
