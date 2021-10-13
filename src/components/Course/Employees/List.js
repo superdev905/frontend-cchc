@@ -10,6 +10,7 @@ import { ConfirmDelete, DataTable } from '../../Shared'
 import Can from '../../Can'
 import coursesActions from '../../../state/actions/courses'
 import WorkerRegistration from './WorkerRegistration'
+import EmployeeDialog from './Dialog'
 
 const EmployeesRegistrationList = () => {
   const dispatch = useDispatch()
@@ -22,6 +23,7 @@ const EmployeesRegistrationList = () => {
   const { studentsCourse } = useSelector((state) => state.courses)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const { open: openView, toggleOpen: toggleOpenView } = useToggle()
 
   const fetchEmployees = () => {
     setLoading(true)
@@ -123,11 +125,18 @@ const EmployeesRegistrationList = () => {
                   setCurrentStudent(row)
                   toggleOpenDelete()
                 }}
-                //  onView={() => { props.history.push(`//${row.id}`)  }}
+                onView={() => {
+                  setCurrentStudent(row)
+                  toggleOpenView()
+                }}
               />
             )
           }
         ]}
+        onRowClicked={(row) => {
+          setCurrentStudent(row)
+          toggleOpenView()
+        }}
         data={studentsCourse}
         pagination
         paginationRowsPerPageOptions={[20, 30]}
@@ -153,6 +162,13 @@ const EmployeesRegistrationList = () => {
           }
           loading={deleting}
           success={success}
+        />
+      )}
+      {currentStudent && openView && (
+        <EmployeeDialog
+          open={openView}
+          onClose={toggleOpenView}
+          idEmployee={currentStudent.studentId}
         />
       )}
     </Wrapper>

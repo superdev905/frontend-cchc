@@ -314,6 +314,20 @@ const getStudentsCourse = (id) => (dispatch) =>
       })
   })
 
+const getStudentDetails = (courseId, employeeId) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.courses}/courses/${courseId}/students/${employeeId}`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getCourses,
   createCourse,
@@ -336,5 +350,6 @@ export default {
   patchExtraPayment,
   enrollEmployee,
   unenrollEmployee,
-  getStudentsCourse
+  getStudentsCourse,
+  getStudentDetails
 }

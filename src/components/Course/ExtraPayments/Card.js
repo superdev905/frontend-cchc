@@ -50,43 +50,30 @@ const useStyles = makeStyles((theme) => ({
     height: 60,
     width: '100%',
     transform: 'none'
+  },
+  itemLoader: {
+    marginBottom: 10,
+    width: '40%'
   }
 }))
 
-const Loader = () => {
+const Loader = ({ size = 6 }) => {
   const classes = useStyles()
   return (
-    <Box className={classes.root}>
-      <Box className={classes.paper}>
-        <Skeleton className={classes.dateLoader}></Skeleton>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={4}>
-            <Skeleton width="30%"></Skeleton>
-            <Skeleton className={classes.thumbnailLoader}></Skeleton>
-          </Grid>
-          <Grid item xs={12} md={8}>
-            <Box>
-              <Skeleton width="20%"></Skeleton>
-            </Box>
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
-                <Skeleton className={classes.thumbnailLoader}></Skeleton>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Skeleton className={classes.thumbnailLoader}></Skeleton>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
+    <Grid item xs={12} md={size} lg={size}>
+      <Box className={classes.root} p={2}>
+        <Skeleton className={classes.dateLoader} />
+        <Skeleton className={classes.itemLoader} />
+        <Skeleton className={classes.thumbnailLoader} />
       </Box>
-    </Box>
+    </Grid>
   )
 }
 
-const ExtraPaymentCard = ({ payment, onView, onDelete, onDownload }) => {
+const ExtraPaymentCard = ({ payment, onView, onDelete, onDownload, size }) => {
   const classes = useStyles()
   return (
-    <Grid item xs={12} md={6} lg={6}>
+    <Grid item xs={12} md={size} lg={size}>
       <Box p={2} className={classes.root}>
         <Box marginBottom={3}>
           <Typography className={classes.date}>
@@ -128,6 +115,10 @@ const ExtraPaymentCard = ({ payment, onView, onDelete, onDownload }) => {
       </Box>
     </Grid>
   )
+}
+
+ExtraPaymentCard.defaultProps = {
+  size: 6
 }
 
 ExtraPaymentCard.Container = Container

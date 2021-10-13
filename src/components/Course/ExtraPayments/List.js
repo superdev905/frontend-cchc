@@ -98,8 +98,10 @@ const ExtraPaymentsList = () => {
       <Box>
         {loading ? (
           <>
-            <ExtraPaymentCard.Loader />
-            <ExtraPaymentCard.Loader />
+            <ExtraPaymentCard.Container>
+              <ExtraPaymentCard.Loader />
+              <ExtraPaymentCard.Loader />
+            </ExtraPaymentCard.Container>
           </>
         ) : (
           <ExtraPaymentCard.Container>
