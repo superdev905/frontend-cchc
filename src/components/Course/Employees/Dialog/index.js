@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
 import { Box, Drawer, Grid, IconButton, Typography } from '@material-ui/core'
 import { FiArrowLeft as BackIcon } from 'react-icons/fi'
 import { formatDate } from '../../../../formatters'
@@ -14,6 +15,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { idCourse } = useParams()
+  const { enqueueSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(false)
   const [student, setStudent] = useState(null)
   const { isMobile } = useSelector((state) => state.ui)
@@ -26,7 +28,13 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
         setStudent(result)
       })
       .catch(() => {
-        setLoading(false)
+        setTimeout(() => {
+          setLoading(false)
+          onClose()
+          enqueueSnackbar('Error al obtener datos del estudiante', {
+            variant: 'error'
+          })
+        }, 500)
       })
   }
 
