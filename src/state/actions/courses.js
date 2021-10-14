@@ -314,11 +314,131 @@ const getStudentsCourse = (id) => (dispatch) =>
       })
   })
 
+const getScores =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.courses}/scores?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: coursesTypes.GET_SCORES,
+            payload: data.items
+          })
+          dispatch({
+            type: coursesTypes.SET_TOTAL_SCORES,
+            payload: data.total
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const getStudentDetails = (courseId, employeeId) => () =>
   new Promise((resolve, reject) => {
     Axios.get(
       `${config.services.courses}/courses/${courseId}/students/${employeeId}`
     )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const createScore = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.courses}/scores`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateScore = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.courses}/scores/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const patchScore = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${config.services.courses}/scores/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getStatus =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.courses}/status?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: coursesTypes.GET_STATUS,
+            payload: data.items
+          })
+          dispatch({
+            type: coursesTypes.SET_TOTAL_STATUS,
+            payload: data.total
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const createStatus = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.courses}/status`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateStatus = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.courses}/status/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const patchStatus = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${config.services.courses}/status/${id}`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -363,6 +483,14 @@ export default {
   enrollEmployee,
   unenrollEmployee,
   getStudentsCourse,
+  getScores,
   getStudentDetails,
+  createScore,
+  patchScore,
+  updateScore,
+  getStatus,
+  createStatus,
+  updateStatus,
+  patchStatus,
   createAttendance
 }

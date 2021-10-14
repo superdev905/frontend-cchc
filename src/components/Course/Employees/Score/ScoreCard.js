@@ -1,10 +1,27 @@
-import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
-import { formatDate } from '../../../formatters'
+import {
+  Box,
+  Grid,
+  IconButton,
+  makeStyles,
+  Typography
+} from '@material-ui/core'
+import { FiEdit2 as EditIcon, FiTrash2 as DeleteIcon } from 'react-icons/fi'
+import { formatDate } from '../../../../formatters'
+
+const Container = ({ children }) => (
+  <Grid container spacing={2}>
+    {children}
+  </Grid>
+)
 
 const useStyles = makeStyles((theme) => ({
   root: {
     border: '1px solid',
-    borderRadius: 5
+    borderRadius: 5,
+    display: 'flex',
+    height: 200,
+    flexDirection: 'column',
+    justifyContent: 'flex-end'
   },
   infoBox: {
     backgroundColor: theme.palette.gray.gray100
@@ -16,14 +33,36 @@ const useStyles = makeStyles((theme) => ({
   date: {
     marginBottom: 10,
     fontSize: 14
+  },
+  deleteIcon: { color: theme.palette.error.main },
+  actions: {
+    top: 10,
+    right: 10,
+    '& button': {
+      padding: 5,
+      color: theme.palette.primary.main
+    }
   }
 }))
 
-const ScoreCard = ({ score, avg }) => {
+const ScoreCard = ({ score, avg, onEdit, onDelete }) => {
   const classes = useStyles()
   return (
-    <Grid item xs={6} md={4}>
+    <Grid item xs={6} md={6}>
       <Box p={2} className={classes.root}>
+        <Box
+          display="flex"
+          justifyContent="flex-end"
+          alignItems="center"
+          className={classes.actions}
+        >
+          <IconButton onClick={onEdit}>
+            <EditIcon />
+          </IconButton>
+          <IconButton onClick={onDelete}>
+            <DeleteIcon className={classes.deleteIcon} />
+          </IconButton>
+        </Box>
         <Box className={classes.date}>{`Fecha: ${formatDate(new Date())}`}</Box>
         <Grid container spacing={2}>
           <Grid item xs={6}>
@@ -47,5 +86,7 @@ const ScoreCard = ({ score, avg }) => {
     </Grid>
   )
 }
+
+ScoreCard.Container = Container
 
 export default ScoreCard

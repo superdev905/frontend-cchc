@@ -161,7 +161,6 @@ const CoursesList = () => {
           }
         ]}
         data={coursesList}
-        onRowClicked={onRowClick}
         pagination
         onRowClicked={onRowClick}
         paginationRowsPerPageOptions={[15, 30]}

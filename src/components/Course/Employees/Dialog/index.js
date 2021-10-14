@@ -5,11 +5,17 @@ import { useSnackbar } from 'notistack'
 import { Box, Drawer, Grid, IconButton, Typography } from '@material-ui/core'
 import { FiArrowLeft as BackIcon } from 'react-icons/fi'
 import { formatDate } from '../../../../formatters'
-import { Button, LabeledRow, Text } from '../../../UI'
+import { Button, EmptyState, LabeledRow, Text } from '../../../UI'
+import { useToggle, useSuccess } from '../../../../hooks'
 import useStyles from './styles'
 import PaymentCard from '../../ExtraPayments/Card'
-import ScoreCard from '../ScoreCard'
+import ScoreCard from '../Score/ScoreCard'
 import courses from '../../../../state/actions/courses'
+import EmployeeTracking from '../../EmployeeTracking'
+import AddScore from '../Score/AddScore'
+import CourseStatus from '../Status/CourseStatus'
+import StatusList from '../Status/List'
+import { ConfirmDelete } from '../../../Shared'
 
 const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const classes = useStyles()
@@ -17,8 +23,18 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const { idCourse } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [student, setStudent] = useState(null)
+  const [currentScore, setCurrentScore] = useState(null)
   const { isMobile } = useSelector((state) => state.ui)
+  const { scoresList } = useSelector((state) => state.courses)
+  const { success, changeSuccess } = useSuccess()
+  const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openAddScore, toggleOpen: toggleOpenAddScore } = useToggle()
+  const { open: openStatus, toggleOpen: toggleOpenStatus } = useToggle()
+  const { open: openEditScore, toggleOpen: toggleOpenEditScore } = useToggle()
+  const { open: openDeleteScore, toggleOpen: toggleOpenDeleteScore } =
+    useToggle()
 
   const fetchDetails = () => {
     setLoading(true)
@@ -38,11 +54,116 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
       })
   }
 
+  console.log(success)
+  const fetchScores = () => {
+    setLoading(true)
+    dispatch(courses.getScores({ courseId: idCourse })).then(() => {
+      setLoading(false)
+    })
+  }
+
+  const fetchStatus = () => {
+    setLoading(true)
+    dispatch(courses.getStatus({ courseId: idCourse })).then(() => {
+      setLoading(false)
+    })
+  }
+
+  const addScore = (values) => {
+    dispatch(
+      courses.createScore({
+        ...values,
+        studentId: student.studentId
+      })
+    )
+      .then(() => {
+        setLoading(false)
+        changeSuccess(true)
+        toggleOpenAddScore()
+        fetchScores()
+        enqueueSnackbar('Nota agregada exitosamente', {
+          autoHideDuration: 1800,
+          variant: 'success'
+        })
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
+  const addStatus = (values) => {
+    dispatch(
+      courses.createStatus({
+        ...values,
+        studentId: student.student.id
+      })
+    )
+      .then(() => {
+        setLoading(false)
+        changeSuccess(true)
+        toggleOpenStatus()
+        fetchStatus()
+        enqueueSnackbar('Estado agregado exitosamente', {
+          autoHideDuration: 1800,
+          variant: 'success'
+        })
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
+  const updateScore = (values) => {
+    dispatch(
+      courses.updateScore(currentScore.id, {
+        ...values,
+        studentId: student.student.id
+      })
+    )
+      .then(() => {
+        setLoading(false)
+        changeSuccess(true)
+        toggleOpenEditScore()
+        fetchScores()
+        enqueueSnackbar('Nota actualizada correctamente', {
+          autoHideDuration: 1800,
+          variant: 'success'
+        })
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
+  const deleteScore = (id) => {
+    dispatch(
+      courses.patchScore(id, {
+        state: 'DELETED'
+      })
+    )
+      .then(() => {
+        setDeleting(false)
+        changeSuccess(true)
+        toggleOpenDeleteScore()
+        fetchScores()
+        enqueueSnackbar('Nota eliminada exitosamente', {
+          autoHideDuration: 1500,
+          variant: 'success'
+        })
+      })
+      .catch(() => {
+        setDeleting(false)
+      })
+  }
+
   useEffect(() => {
     if (open) {
       fetchDetails()
+      fetchScores()
+      fetchStatus()
     }
   }, [open])
+
   return (
     <Drawer
       classes={{ paper: classes.root }}
@@ -88,7 +209,9 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
         <Box>
           <Box className={classes.centeredSpaced}>
             <Typography>Pagos</Typography>
-            <Button size="small">Agregar</Button>
+            <Button size="small" onClick={toggleOpenAdd}>
+              Agregar
+            </Button>
           </Box>
           <Box>
             <PaymentCard.Container>
@@ -98,23 +221,94 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
           </Box>
         </Box>
         <Box>
-          <Box className={classes.centeredSpaced}>
+          <Box marginBottom={2} className={classes.centeredSpaced}>
             <Typography>Notas</Typography>
-            <Button size="small">Agregar</Button>
+            <Button size="small" onClick={toggleOpenAddScore}>
+              Agregar
+            </Button>
           </Box>
           <Box>
             <Grid container spacing={2}>
-              <ScoreCard score={10} avg={12} />
+              {scoresList.length === 0 ? (
+                <EmptyState
+                  message="Aún no hay notas"
+                  actionMessage="Nueva nota"
+                  event={toggleOpenAddScore}
+                />
+              ) : (
+                <ScoreCard.Container>
+                  {scoresList.map((item) => (
+                    <ScoreCard
+                      key={`score-i-${item.id}`}
+                      score={item.score}
+                      avg={item.average}
+                      onEdit={() => {
+                        setCurrentScore(item)
+                        toggleOpenEditScore()
+                      }}
+                      onDelete={() => {
+                        setCurrentScore(item)
+                        toggleOpenDeleteScore()
+                      }}
+                    />
+                  ))}
+                </ScoreCard.Container>
+              )}
             </Grid>
           </Box>
         </Box>
         <Box>
-          <Box className={classes.centeredSpaced}>
+          <Box marginTop={2} className={classes.centeredSpaced}>
             <Typography>Estado de curso</Typography>
-            <Button size="small">Agregar</Button>
+            <Button size="small" onClick={toggleOpenStatus}>
+              Agregar
+            </Button>
           </Box>
+          <StatusList />
         </Box>
       </Box>
+
+      <EmployeeTracking open={openAdd} onClose={toggleOpenAdd} />
+
+      <AddScore
+        open={openAddScore}
+        onClose={toggleOpenAddScore}
+        submitFunction={addScore}
+        successFunction={fetchScores}
+      />
+
+      {currentScore && openEditScore && (
+        <AddScore
+          type="UPDATE"
+          open={openEditScore}
+          onClose={toggleOpenEditScore}
+          data={currentScore}
+          submitFunction={updateScore}
+          successFunction={fetchScores}
+        />
+      )}
+
+      {currentScore && openDeleteScore && (
+        <ConfirmDelete
+          open={openDeleteScore}
+          onClose={toggleOpenDeleteScore}
+          onConfirm={() => deleteScore(currentScore.id)}
+          message={
+            <Typography variant="h6">
+              ¿Estás seguro de eliminar esta nota?
+            </Typography>
+          }
+          loading={deleting}
+          success={success}
+        />
+      )}
+
+      <CourseStatus
+        open={openStatus}
+        onClose={toggleOpenStatus}
+        submitFunction={addStatus}
+        successFunction={fetchStatus}
+      />
     </Drawer>
   )
 }
