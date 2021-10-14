@@ -1,20 +1,26 @@
 import * as Yup from 'yup'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
+import { capitalize } from 'lodash'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { DatePicker, Dialog } from '../Shared'
-import { Button, SubmitButton, TextField } from '../UI'
-import { useSuccess } from '../../hooks'
+import { Dialog } from '../../../Shared'
+import { Button, Select, SubmitButton } from '../../../UI'
+import { useSuccess } from '../../../../hooks'
+
+const statusCourseList = ['DESARROLLO', 'CONVOCATIORIA', 'REALIZADO']
+const statusStudentList = ['APROBADO', 'REPROBADO']
 
 const validationSchema = Yup.object().shape({
-  date: Yup.string().required('Ingrese fecha'),
-  assistance: Yup.string().required('Ingrese asistencia'),
-  summary: Yup.string().required('Ingrese resumen')
+  courseStatus: Yup.string().required('Ingrese estado del curso'),
+  studentStatus: Yup.string().required(
+    'Ingrese estado de aprobación del alumno'
+  )
 })
 
-const AddScore = ({
+const CourseStatus = ({
   open,
   onClose,
   type,
@@ -23,6 +29,8 @@ const AddScore = ({
   successMessage,
   successFunction
 }) => {
+  const [currentDate] = useState(new Date())
+  const { idCourse } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
@@ -31,9 +39,10 @@ const AddScore = ({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      date: type === 'UPDATE' ? data.date : '',
-      assistance: type === 'UPDATE' ? data.assistance : '',
-      summary: type === 'UPDATE' ? data.summary : ''
+      courseId: idCourse,
+      date: currentDate,
+      courseStatus: type === 'UPDATE' ? data.courseStatus : '',
+      studentStatus: type === 'UPDATE' ? data.studentStatus : ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction({
@@ -72,47 +81,51 @@ const AddScore = ({
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
       <Box>
         <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
-          {`${type === 'UPDATE' ? 'Actualizar' : 'Nueva'} Seguimiento`}
+          {`${type === 'UPDATE' ? 'Actualizar' : 'Nuevo'} Seguimiento`}
         </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <DatePicker
-                label="Fecha"
-                value={formik.values.date}
-                onChange={formik.handleChange}
-                helperText={formik.touched.date && formik.errors.date}
-                error={formik.touched.date && Boolean(formik.errors.date)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Asistencia"
+              <Select
+                label="Estado curso"
                 required
-                name="assistance"
-                value={formik.values.assistance}
+                name="courseStatus"
+                value={formik.values.courseStatus}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 error={
-                  formik.touched.assistance && Boolean(formik.errors.assistance)
+                  formik.touched.courseStatus &&
+                  Boolean(formik.errors.courseStatus)
                 }
                 helperText={
-                  formik.touched.assistance && formik.errors.assistance
+                  formik.touched.courseStatus && formik.errors.courseStatus
                 }
-              />
+              >
+                <option value="">Seleccione estado del curso</option>
+                {statusCourseList.map((item) => (
+                  <option value={item}>{capitalize(item)}</option>
+                ))}
+              </Select>
             </Grid>
-
             <Grid item xs={12}>
-              <TextField
-                label="Resumen"
+              <Select
+                label="Estado alumno"
                 required
-                name="summary"
-                value={formik.values.summary}
+                name="studentStatus"
+                value={formik.values.studentStatus}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.summary && Boolean(formik.errors.summary)}
-                helperText={formik.touched.summary && formik.errors.summary}
-              />
+                error={
+                  formik.touched.studentStatus &&
+                  Boolean(formik.errors.studentStatus)
+                }
+                helperText={
+                  formik.touched.studentStatus && formik.errors.studentStatus
+                }
+              >
+                <option value="">Seleccione estado del estudiante</option>
+                {statusStudentList.map((item) => (
+                  <option value={item}>{capitalize(item)}</option>
+                ))}
+              </Select>
             </Grid>
           </Grid>
 
@@ -135,8 +148,8 @@ const AddScore = ({
   )
 }
 
-AddScore.defaultProps = {
+CourseStatus.defaultProps = {
   type: 'CREATE'
 }
 
-export default AddScore
+export default CourseStatus
