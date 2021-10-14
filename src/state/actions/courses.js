@@ -328,6 +328,18 @@ const getStudentDetails = (courseId, employeeId) => () =>
       })
   })
 
+const createAttendance = (lectureId, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.courses}/attendance/${lectureId}/`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getCourses,
   createCourse,
@@ -351,5 +363,6 @@ export default {
   enrollEmployee,
   unenrollEmployee,
   getStudentsCourse,
-  getStudentDetails
+  getStudentDetails,
+  createAttendance
 }
