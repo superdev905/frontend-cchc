@@ -4,12 +4,14 @@ const initialState = {
   coursesList: [],
   coursesDocs: [],
   extraPaymentsList: [],
+  studentsCourse: [],
+  scoresList: [],
   totalCourses: 0,
   totalCoursesDocs: 0,
   totalExtraPayments: 0,
+  totalScores: 0,
   courseDetails: null,
-  courseDocDetails: null,
-  studentsCourse: []
+  courseDocDetails: null
 }
 
 const coursesReducer = (state = initialState, { type, payload }) => {
@@ -32,6 +34,10 @@ const coursesReducer = (state = initialState, { type, payload }) => {
       return { ...state, totalExtraPayments: payload }
     case coursesTypes.GET_STUDENTS_COURSE:
       return { ...state, studentsCourse: payload }
+    case coursesTypes.GET_SCORES:
+      return { ...state, scoresList: payload }
+    case coursesTypes.SET_TOTAL_SCORES:
+      return { ...state, totalScores: payload }
     default:
       return state
   }

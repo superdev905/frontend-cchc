@@ -314,6 +314,30 @@ const getStudentsCourse = (id) => (dispatch) =>
       })
   })
 
+const getScores =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.courses}/scores?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: coursesTypes.GET_SCORES,
+            payload: data.items
+          })
+          dispatch({
+            type: coursesTypes.SET_TOTAL_SCORES,
+            payload: data.total
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 export default {
   getCourses,
   createCourse,
@@ -336,5 +360,6 @@ export default {
   patchExtraPayment,
   enrollEmployee,
   unenrollEmployee,
-  getStudentsCourse
+  getStudentsCourse,
+  getScores
 }

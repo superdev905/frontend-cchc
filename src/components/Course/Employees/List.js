@@ -17,7 +17,6 @@ const EmployeesRegistrationList = () => {
   const { enqueueSnackbar } = useSnackbar()
   const [currentStudent, setCurrentStudent] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [deleting, setDeleting] = useState(false)
   const { success, changeSuccess } = useSuccess()
   const { studentsCourse } = useSelector((state) => state.courses)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
@@ -51,10 +50,15 @@ const EmployeesRegistrationList = () => {
       })
   }
 
-  const deleteEmployeeRegistration = () => {
-    dispatch(coursesActions.unenrollEmployee(currentStudent))
+  const unenrollEmployee = () => {
+    dispatch(
+      coursesActions.unenrollEmployee({
+        courseId: idCourse,
+        employeeId: currentStudent.student.id
+      })
+    )
       .then(() => {
-        setDeleting(false)
+        setLoading(false)
         changeSuccess(true)
         toggleOpenDelete()
         fetchEmployees()
@@ -64,7 +68,7 @@ const EmployeesRegistrationList = () => {
         })
       })
       .catch(() => {
-        setDeleting(false)
+        setLoading(false)
       })
   }
 
@@ -123,7 +127,6 @@ const EmployeesRegistrationList = () => {
                   setCurrentStudent(row)
                   toggleOpenDelete()
                 }}
-                //  onView={() => { props.history.push(`//${row.id}`)  }}
               />
             )
           }
@@ -145,13 +148,12 @@ const EmployeesRegistrationList = () => {
         <ConfirmDelete
           open={openDelete}
           onClose={toggleOpenDelete}
-          onConfirm={() => deleteEmployeeRegistration(currentStudent.id)}
+          onConfirm={() => unenrollEmployee(currentStudent.id)}
           message={
             <Typography variant="h6">
               ¿Estás seguro de eliminar este estudiante?
             </Typography>
           }
-          loading={deleting}
           success={success}
         />
       )}
