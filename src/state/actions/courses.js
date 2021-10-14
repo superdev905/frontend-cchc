@@ -424,6 +424,30 @@ const createStatus = (values) => () =>
       })
   })
 
+const updateStatus = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.courses}/status/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const patchStatus = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${config.services.courses}/status/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getCourses,
   createCourse,
@@ -453,5 +477,7 @@ export default {
   patchScore,
   updateScore,
   getStatus,
-  createStatus
+  createStatus,
+  updateStatus,
+  patchStatus
 }
