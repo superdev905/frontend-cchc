@@ -3,14 +3,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { Box, Typography } from '@material-ui/core'
-import { ActionsTable, Button, Wrapper } from '../UI'
-import { ConfirmDelete, DataTable } from '../Shared'
-import Can from '../Can'
-import { useToggle, useSuccess } from '../../hooks'
-import commonActions from '../../state/actions/common'
-import CreateOTEC from '../Settings/OTECS/CreateOTEC'
+import { ActionsTable, Button, Wrapper } from '../../UI'
+import { ConfirmDelete, DataTable } from '../../Shared'
+import Can from '../../Can'
+import { useToggle, useSuccess } from '../../../hooks'
+import commonActions from '../../../state/actions/common'
+import CreateOTEC from './CreateOTEC'
 
-const OTECList = () => {
+const OTECSList = () => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
@@ -219,4 +219,4 @@ const OTECList = () => {
   )
 }
 
-export default withRouter(OTECList)
+export default withRouter(OTECSList)

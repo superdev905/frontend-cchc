@@ -99,27 +99,34 @@ const DocumentList = () => {
             <OtherDocsCard.Loader />
           </>
         ) : (
-          <OtherDocsCard.Container>
-            <OtherDocsCard.AddCard onClick={toggleOpenAdd} />
+          <>
             {coursesDocs.length === 0 ? (
-              <EmptyState message="Aún no hay documentos" />
+              <EmptyState
+                message="Aún no hay documentos"
+                actionMessage="Nuevo documento"
+                event={toggleOpenAdd}
+              />
             ) : (
-              coursesDocs.map((item) => (
-                <OtherDocsCard
-                  doc={item}
-                  key={`doc-card-${item.id}`}
-                  onView={(file) => {
-                    setCurrentFile(file)
-                    toggleOpenVisor()
-                  }}
-                  onRemove={() => {
-                    setCurrentDocument(item)
-                    toggleOpenDelete()
-                  }}
-                />
-              ))
+              <OtherDocsCard.Container>
+                <OtherDocsCard.AddCard onClick={toggleOpenAdd} />
+
+                {coursesDocs.map((item) => (
+                  <OtherDocsCard
+                    doc={item}
+                    key={`doc-card-${item.id}`}
+                    onView={(file) => {
+                      setCurrentFile(file)
+                      toggleOpenVisor()
+                    }}
+                    onRemove={() => {
+                      setCurrentDocument(item)
+                      toggleOpenDelete()
+                    }}
+                  />
+                ))}
+              </OtherDocsCard.Container>
             )}
-          </OtherDocsCard.Container>
+          </>
         )}
       </Box>
 
