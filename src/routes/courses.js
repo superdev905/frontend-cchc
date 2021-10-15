@@ -69,7 +69,7 @@ const courseRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'OTEC']}
         yes={() => (
           <Layout>
             <Course>
