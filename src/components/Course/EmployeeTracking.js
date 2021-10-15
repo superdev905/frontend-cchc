@@ -119,6 +119,33 @@ const EmployeeTracking = ({
     }
   })
 
+  const handleBilledTarget = (e) => {
+    const { value } = e.target
+    formik.setFieldValue('billedTarget', value)
+  }
+
+  const getIsValid = () => {
+    const {
+      invoiceNumber,
+      paymentBusiness,
+      ticketNumber,
+      paymentEmployee,
+      billedTarget,
+      paymentFundation
+    } = formik.values
+    if (billedTarget === 'EMPRESA') {
+      return invoiceNumber && paymentBusiness && uploadFile
+    }
+    if (billedTarget === 'TRABAJADOR') {
+      return ticketNumber && paymentEmployee
+    }
+    if (billedTarget === 'FUNDACIÓN') {
+      return Boolean(paymentFundation)
+    }
+
+    return true
+  }
+
   const handleClose = () => {
     formik.resetForm()
     onClose()
@@ -129,6 +156,14 @@ const EmployeeTracking = ({
       formik.resetForm()
     }
   }, [open])
+
+  useEffect(() => {
+    const { billedTarget } = formik.values
+    if (billedTarget === 'EMPRESA') {
+      formik.setFieldValue('paymentEmployee', '')
+      formik.setFieldValue('ticketNumber', '')
+    }
+  }, [formik.values.billedTarget])
 
   const deleteFile = (key) => {
     dispatch(
@@ -156,7 +191,7 @@ const EmployeeTracking = ({
               name="billedTarget"
               required
               value={formik.values.billedTarget}
-              onChange={formik.handleChange}
+              onChange={handleBilledTarget}
               onBlur={formik.handleBlur}
               error={
                 formik.touched.billedTarget &&
@@ -321,7 +356,7 @@ const EmployeeTracking = ({
           <SubmitButton
             loading={formik.isSubmitting}
             onClick={formik.handleSubmit}
-            disabled={!formik.isValid}
+            disabled={!formik.isValid || !getIsValid()}
             success={success}
           >{`${
             type === 'UPDATE' ? 'Actualizar' : 'Crear'
