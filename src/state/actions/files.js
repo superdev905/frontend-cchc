@@ -3,7 +3,6 @@ import config from '../../config'
 
 const downloadFile = (fileUrl) => () =>
   new Promise((resolve, reject) => {
-    const extension = fileUrl.split('.').pop()
     const fileName = fileUrl.split('/').pop()
     const instance = Axios.create()
     delete instance.defaults.headers.common.Authorization
@@ -14,7 +13,7 @@ const downloadFile = (fileUrl) => () =>
         const url = window.URL.createObjectURL(new Blob([response.data]))
         const link = document.createElement('a')
         link.href = url
-        link.setAttribute('download', `${fileName}.${extension}`)
+        link.setAttribute('download', `${fileName}`)
         document.body.appendChild(link)
         link.click()
         link.parentNode.removeChild(link)

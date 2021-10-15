@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { Box, Drawer, IconButton, Typography } from '@material-ui/core'
 import { FiArrowLeft as BackIcon } from 'react-icons/fi'
-import { formatDate } from '../../../../formatters'
+import { formatDate, formatText } from '../../../../formatters'
 import { Button, EmptyState, LabeledRow, Text } from '../../../UI'
 import { useToggle, useSuccess } from '../../../../hooks'
 import useStyles from './styles'
@@ -16,12 +16,17 @@ import AddScore from '../Score/AddScore'
 import CourseStatus from '../Status/CourseStatus'
 import StatusList from '../Status/List'
 import { ConfirmDelete } from '../../../Shared'
+import StudentPaymentCard from '../PaymentCard'
 
 const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { idCourse } = useParams()
   const { enqueueSnackbar } = useSnackbar()
+  const [loadingPayments, setLoadingPayments] = useState(false)
+  const [deletingPayment, setDeletingPayment] = useState(false)
+  const [studentPayments, setStudentPayments] = useState([])
+  const [currentPayment, setCurrentPayment] = useState(null)
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [student, setStudent] = useState(null)
@@ -29,7 +34,13 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const { isMobile } = useSelector((state) => state.ui)
   const { scoresList } = useSelector((state) => state.courses)
   const { success, changeSuccess } = useSuccess()
+  const {
+    success: successDeletePayment,
+    changeSuccess: changeSuccessDeletePayment
+  } = useSuccess()
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openDeletePayment, toggleOpen: toggleOpenDeletePayment } =
+    useToggle()
   const { open: openAddScore, toggleOpen: toggleOpenAddScore } = useToggle()
   const { open: openStatus, toggleOpen: toggleOpenStatus } = useToggle()
   const { open: openEditScore, toggleOpen: toggleOpenEditScore } = useToggle()
@@ -155,11 +166,50 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
       })
   }
 
+  const fetchStudentPayments = () => {
+    setLoadingPayments(true)
+    dispatch(
+      courses.getStudentPayments({ courseId: idCourse, studentId: idEmployee })
+    ).then((result) => {
+      setStudentPayments(result.items)
+      setLoadingPayments(false)
+    })
+  }
+
+  const createStudentPayment = (values) =>
+    dispatch(
+      courses.createStudentPayment({
+        ...values,
+        courseId: idCourse,
+        studentId: idEmployee
+      })
+    )
+  const deleteStudentPayment = () => {
+    setDeletingPayment(true)
+    dispatch(
+      courses.patchStudentPayment(currentPayment.id, {
+        state: 'DELETED'
+      })
+    )
+      .then(() => {
+        setDeletingPayment(false)
+        changeSuccessDeletePayment(true, () => {
+          toggleOpenDeletePayment()
+          enqueueSnackbar('Pago eliminado', { variant: 'success' })
+          fetchStudentPayments()
+        })
+      })
+      .catch((err) => {
+        setDeletingPayment(false)
+        enqueueSnackbar(err, { variant: 'success' })
+      })
+  }
   useEffect(() => {
     if (open) {
       fetchDetails()
       fetchScores()
       fetchStatus()
+      fetchStudentPayments()
     }
   }, [open])
 
@@ -233,10 +283,31 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
             </Button>
           </Box>
           <Box>
-            <PaymentCard.Container>
-              <PaymentCard.Loader size={12} />
-              <PaymentCard.Loader size={12} />
-            </PaymentCard.Container>
+            {loadingPayments ? (
+              <PaymentCard.Container>
+                <PaymentCard.Loader size={12} />
+                <PaymentCard.Loader size={12} />
+              </PaymentCard.Container>
+            ) : (
+              <>
+                {studentPayments.length === 0 ? (
+                  <EmptyState message="Este trabajador no tiene pagos registrados" />
+                ) : (
+                  <>
+                    {studentPayments.map((item) => (
+                      <StudentPaymentCard
+                        payment={item}
+                        key={`payment-card-${item.id}`}
+                        onDelete={() => {
+                          setCurrentPayment(item)
+                          toggleOpenDeletePayment()
+                        }}
+                      />
+                    ))}
+                  </>
+                )}
+              </>
+            )}
           </Box>
         </Box>
         <Box>
@@ -285,7 +356,39 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
         </Box>
       </Box>
 
-      <EmployeeTracking open={openAdd} onClose={toggleOpenAdd} />
+      {openAdd && (
+        <EmployeeTracking
+          open={openAdd}
+          submitFunction={createStudentPayment}
+          onClose={toggleOpenAdd}
+          successFunction={fetchStudentPayments}
+          successMessage={'Pago creado'}
+        />
+      )}
+      {openDeletePayment && currentPayment && (
+        <ConfirmDelete
+          open={openDeletePayment}
+          onClose={toggleOpenDeletePayment}
+          onConfirm={() => deleteStudentPayment()}
+          message={
+            <>
+              <Typography variant="h6">
+                ¿Estás seguro de eliminar este pago?
+              </Typography>
+              <Typography>
+                {`Facturación a: ${formatText.capitalizeString(
+                  currentPayment.billedTarget
+                )}`}
+              </Typography>
+              <Typography>
+                {`Fecha: ${formatDate(currentPayment.date)}`}
+              </Typography>
+            </>
+          }
+          loading={deletingPayment}
+          success={successDeletePayment}
+        />
+      )}
 
       <AddScore
         open={openAddScore}

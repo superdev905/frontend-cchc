@@ -460,6 +460,59 @@ const createAttendance = (lectureId, values) => () =>
       })
   })
 
+const createStudentPayment = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.courses}/student-payments`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getStudentPayments =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.courses}/student-payments?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+const updateStudentPayment = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.courses}/student-payments/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const patchStudentPayment = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${config.services.courses}/student-payments/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getCourses,
   createCourse,
@@ -492,5 +545,9 @@ export default {
   createStatus,
   updateStatus,
   patchStatus,
-  createAttendance
+  createAttendance,
+  createStudentPayment,
+  getStudentPayments,
+  updateStudentPayment,
+  patchStudentPayment
 }
