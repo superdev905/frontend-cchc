@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import { Box, Drawer, Grid, IconButton, Typography } from '@material-ui/core'
+import { Box, Drawer, IconButton, Typography } from '@material-ui/core'
 import { FiArrowLeft as BackIcon } from 'react-icons/fi'
 import { formatDate } from '../../../../formatters'
 import { Button, EmptyState, LabeledRow, Text } from '../../../UI'
@@ -208,6 +208,26 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
         </Box>
         <Box>
           <Box className={classes.centeredSpaced}>
+            <Typography>Porcentaje de inasistencias</Typography>
+          </Box>
+          <Box
+            style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              border: '2px solid red',
+              fontSize: '18px',
+              fontWeight: 'bold'
+            }}
+          >
+            {student && `${student.absencesPercentage}`}
+          </Box>
+        </Box>
+        <Box>
+          <Box className={classes.centeredSpaced}>
             <Typography>Pagos</Typography>
             <Button size="small" onClick={toggleOpenAdd}>
               Agregar
@@ -228,33 +248,31 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
             </Button>
           </Box>
           <Box>
-            <Grid container spacing={2}>
-              {scoresList.length === 0 ? (
-                <EmptyState
-                  message="Aún no hay notas"
-                  actionMessage="Nueva nota"
-                  event={toggleOpenAddScore}
-                />
-              ) : (
-                <ScoreCard.Container>
-                  {scoresList.map((item) => (
-                    <ScoreCard
-                      key={`score-i-${item.id}`}
-                      score={item.score}
-                      avg={item.average}
-                      onEdit={() => {
-                        setCurrentScore(item)
-                        toggleOpenEditScore()
-                      }}
-                      onDelete={() => {
-                        setCurrentScore(item)
-                        toggleOpenDeleteScore()
-                      }}
-                    />
-                  ))}
-                </ScoreCard.Container>
-              )}
-            </Grid>
+            {scoresList.length === 0 ? (
+              <EmptyState
+                message="Aún no hay notas"
+                actionMessage="Nueva nota"
+                event={toggleOpenAddScore}
+              />
+            ) : (
+              <ScoreCard.Container>
+                {scoresList.map((item) => (
+                  <ScoreCard
+                    key={`score-i-${item.id}`}
+                    score={item.score}
+                    avg={item.average}
+                    onEdit={() => {
+                      setCurrentScore(item)
+                      toggleOpenEditScore()
+                    }}
+                    onDelete={() => {
+                      setCurrentScore(item)
+                      toggleOpenDeleteScore()
+                    }}
+                  />
+                ))}
+              </ScoreCard.Container>
+            )}
           </Box>
         </Box>
         <Box>

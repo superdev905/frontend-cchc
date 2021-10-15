@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 10,
     '& p': {
       fontSize: 16,
       fontWeight: 'bold'

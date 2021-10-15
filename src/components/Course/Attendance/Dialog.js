@@ -1,21 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Box, Checkbox, Grid, Typography } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Select, SubmitButton } from '../../UI'
+import { useSnackbar } from 'notistack'
+import { Button, Select, SubmitButton, TextField } from '../../UI'
 import coursesActions from '../../../state/actions/courses'
-import { DataTable, DatePicker, Dialog } from '../../Shared'
-import { useSuccess } from '../../../hooks'
+import { ConfirmDelete, DataTable, Dialog } from '../../Shared'
+import { useSuccess, useToggle } from '../../../hooks'
+import { formatDate } from '../../../formatters'
 
-const AssistanceDialog = ({
-  open,
-  onClose,
-  idCourse
-  // data,
-  // submitFunction,
-  // successFunction,
-  // successMessage
-}) => {
+const AssistanceDialog = ({ open, onClose, idCourse }) => {
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
   const [loading, setLoading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -24,6 +19,7 @@ const AssistanceDialog = ({
   const [lectureId, setLectureId] = useState('')
   const { studentsCourse: studentList } = useSelector((state) => state.courses)
   const { success, changeSuccess } = useSuccess()
+  const { open: openConfirm, toggleOpen: toggleOpenConfirm } = useToggle()
 
   const fetchStudentList = () => {
     dispatch(coursesActions.getStudentsCourse(idCourse)).then(() => {
@@ -52,16 +48,20 @@ const AssistanceDialog = ({
       studentId: item.studentId
     }))
     setIsSubmitting(true)
-    dispatch(
-      coursesActions.createAttendance(lectureId, { students: data })
-    ).then(() => {
-      setIsSubmitting(false)
-
-      success(true)
-      changeSuccess(false, () => {
-        onClose()
+    dispatch(coursesActions.createAttendance(lectureId, { students: data }))
+      .then(() => {
+        setIsSubmitting(false)
+        changeSuccess(true, () => {
+          toggleOpenConfirm()
+          onClose()
+          enqueueSnackbar('Asistencia registrada', { variant: 'success' })
+        })
       })
-    })
+      .catch((err) => {
+        setIsSubmitting(false)
+        toggleOpenConfirm()
+        enqueueSnackbar(err, { variant: 'error' })
+      })
   }
 
   useEffect(() => {
@@ -100,13 +100,7 @@ const AssistanceDialog = ({
           <Box p={1}>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
-                <DatePicker
-                  label="Fecha"
-                  value={new Date()}
-                  onChange={(date) => {
-                    console.log(date)
-                  }}
-                />
+                <TextField label="Fecha" value={formatDate(new Date())} />
               </Grid>
               <Grid item xs={12} md={6}>
                 <Select
@@ -160,14 +154,26 @@ const AssistanceDialog = ({
           <Button onClick={onClose} variant="outlined">
             Cancelar
           </Button>
-          <SubmitButton
-            success={success}
-            loading={isSubmitting}
-            onClick={registerAttendance}
-          >
+          <SubmitButton disabled={!lectureId} onClick={toggleOpenConfirm}>
             Registrar asistencia
           </SubmitButton>
         </Box>
+        {openConfirm && (
+          <ConfirmDelete
+            event={'CREATE'}
+            open={openConfirm}
+            onClose={toggleOpenConfirm}
+            onConfirm={registerAttendance}
+            confirmText={'Aceptar'}
+            message={
+              <Typography variant="h6">
+                ¿Estás seguro de registrar asistencia?
+              </Typography>
+            }
+            loading={isSubmitting}
+            success={success}
+          />
+        )}
       </Box>
     </Dialog>
   )
