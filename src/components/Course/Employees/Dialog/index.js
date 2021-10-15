@@ -54,7 +54,6 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
       })
   }
 
-  console.log(success)
   const fetchScores = () => {
     setLoading(true)
     dispatch(courses.getScores({ courseId: idCourse })).then(() => {

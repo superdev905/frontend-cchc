@@ -11,7 +11,10 @@ import { useSuccess } from '../../../../hooks'
 
 const validationSchema = Yup.object().shape({
   date: Yup.string().required('Seleccione fecha'),
-  score: Yup.number().min(1).max(7).required('Ingrese nota')
+  score: Yup.number()
+    .min(1, 'La nota debe ser mayor o igual a 1')
+    .max(7, 'La nota debe ser menor o igual a 7')
+    .required('Ingrese nota')
 })
 
 const AddScore = ({
