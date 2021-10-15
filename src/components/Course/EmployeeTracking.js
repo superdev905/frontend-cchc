@@ -6,7 +6,6 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { capitalize } from 'lodash'
-import { formatDate } from '../../formatters'
 import { Button, InputLabel, SubmitButton, TextField, Select } from '../UI'
 import { useSuccess, useToggle } from '../../hooks'
 import {
@@ -14,7 +13,8 @@ import {
   FileThumbnail,
   CurrencyTextField,
   Dialog,
-  FileVisor
+  FileVisor,
+  DatePicker
 } from '../Shared'
 import filesActions from '../../state/actions/files'
 
@@ -22,7 +22,7 @@ const billedList = ['TRABAJADOR', 'EMPRESA', 'FUNDACIÓN']
 
 const validationSchema = Yup.object().shape({
   date: Yup.date().required('Seleccione fecha'),
-  whoBilled: Yup.string().required('Seleccione a quien facturo')
+  billedTarget: Yup.string().required('Seleccione a quien facturó')
 })
 
 const EmployeeTracking = ({
@@ -42,36 +42,61 @@ const EmployeeTracking = ({
   const { success, changeSuccess } = useSuccess()
   const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
 
+  const clearValues = (form) => {
+    if (form.billedTarget === 'EMPRESA') {
+      delete form.paymentEmployee
+      delete form.paymentFundation
+      return form
+    }
+    if (form.billedTarget === 'TRABAJADOR') {
+      delete form.paymentBusiness
+      delete form.paymentFundation
+      return form
+    }
+    delete form.paymentBusiness
+    delete form.paymentEmployee
+
+    return form
+  }
+
   const formik = useFormik({
     enableReinitialize: true,
     validateOnMount: true,
+    validateOnBlur: true,
     validationSchema,
     initialValues: {
       date: currentDate,
-      whoBilled: type === 'UPDATE' ? data.whoBilled : '',
+      billedTarget: type === 'UPDATE' ? data.billedTarget : '',
       ticketNumber: type === 'UPDATE' ? data.ticketNumber : '',
-      employeeCredit: type === 'UPDATE' ? data.employeeCredit : '',
+      paymentEmployee: type === 'UPDATE' ? data.paymentEmployee : '',
       invoiceNumber: type === 'UPDATE' ? data.invoiceNumber : '',
-      companyCredit: type === 'UPDATE' ? data.companyCredit : '',
-      fileUrl: type === 'UPDATE' ? data.fileUrl : '',
-      foundationCredit: type === 'UPDATE' ? data.foundationCredit : ''
+      paymentBusiness: type === 'UPDATE' ? data.paymentBusiness : '',
+      paymentFundation: type === 'UPDATE' ? data.paymentFundation : ''
     },
     onSubmit: async (values) => {
       formik.setSubmitting(true)
       let resultUpload = null
-      if (uploadFile) {
+
+      if (uploadFile && values.billedTarget === 'EMPRESA') {
         const formData = new FormData()
         formData.append('file', uploadFile, uploadFile.name)
         resultUpload = await dispatch(
           filesActions.uploadFileToStorage(formData)
         )
       }
+      const formattedData = clearValues(values)
+
       submitFunction({
-        ...values,
-        fileUrl: resultUpload ? resultUpload.file_url : '',
-        fileKey: resultUpload ? resultUpload.file_key : '',
-        fileSize: resultUpload ? resultUpload.file_size : '',
-        uploadDate: resultUpload ? resultUpload.upload_date : ''
+        ...formattedData,
+        invoiceFile: resultUpload
+          ? {
+              fileUrl: resultUpload.file_url,
+              fileName: resultUpload.file_name,
+              fileKey: resultUpload.file_key,
+              fileSize: resultUpload.file_size,
+              uploadDate: resultUpload.upload_date
+            }
+          : null
       })
         .then(() => {
           formik.setSubmitting(false)
@@ -121,24 +146,27 @@ const EmployeeTracking = ({
           align="center"
           style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px' }}
         >
-          {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} seguimiento`}
+          {`${type === 'UPDATE' ? 'Nuevo' : 'Actualizar'} pago`}
         </Typography>
 
         <Grid container spacing={2}>
           <Grid item xs={12} md={6} lg={6}>
             <Select
               label="A quien facturo"
-              name="whoBilled"
+              name="billedTarget"
               required
-              value={formik.values.whoBilled}
+              value={formik.values.billedTarget}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={
-                formik.touched.whoBilled && Boolean(formik.errors.whoBilled)
+                formik.touched.billedTarget &&
+                Boolean(formik.errors.billedTarget)
               }
-              helperText={formik.touched.whoBilled && formik.errors.whoBilled}
+              helperText={
+                formik.touched.billedTarget && formik.errors.billedTarget
+              }
             >
-              <option value="">Seleccione estado</option>
+              <option value="">Seleccione opción</option>
               {billedList.map((item) => (
                 <option value={item}>{capitalize(item)}</option>
               ))}
@@ -146,20 +174,21 @@ const EmployeeTracking = ({
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <TextField
+            <DatePicker
               label="Fecha"
-              value={`${formatDate(currentDate)}`}
-              inputProps={{ readOnly: true }}
+              value={formik.values.date}
+              onChange={(date) => {
+                formik.setFieldValue('date', date)
+              }}
             />
           </Grid>
 
-          {type === 'ADD' && formik.values.whoBilled === 'TRABAJADOR' && (
-            <Grid container spacing={2}>
+          {formik.values.billedTarget === 'TRABAJADOR' && (
+            <>
               <Grid item xs={12} md={6}>
                 <TextField
                   name="ticketNumber"
                   label="Número de boleta"
-                  type="number"
                   required
                   value={formik.values.ticketNumber}
                   onChange={formik.handleChange}
@@ -170,32 +199,33 @@ const EmployeeTracking = ({
                   helperText={
                     formik.touched.ticketNumber && formik.errors.ticketNumber
                   }
+                  inputProps={{ maxLength: 7 }}
                 />
               </Grid>
 
               <Grid item xs={12} md={6}>
                 <CurrencyTextField
                   label="Abono trabajador"
-                  name="employeeCredit"
+                  name="paymentEmployee"
                   required
-                  value={formik.values.employeeCredit}
+                  value={formik.values.paymentEmployee}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={
-                    formik.touched.employeeCredit &&
-                    Boolean(formik.errors.employeeCredit)
+                    formik.touched.paymentEmployee &&
+                    Boolean(formik.errors.paymentEmployee)
                   }
                   helperText={
-                    formik.touched.employeeCredit &&
-                    formik.errors.employeeCredit
+                    formik.touched.paymentEmployee &&
+                    formik.errors.paymentEmployee
                   }
                 />
               </Grid>
-            </Grid>
+            </>
           )}
 
-          {type === 'ADD' && formik.values.whoBilled === 'EMPRESA' && (
-            <Grid container spacing={2}>
+          {formik.values.billedTarget === 'EMPRESA' && (
+            <>
               <Grid item xs={12} md={6}>
                 <TextField
                   name="invoiceNumber"
@@ -210,22 +240,24 @@ const EmployeeTracking = ({
                   helperText={
                     formik.touched.invoiceNumber && formik.errors.invoiceNumber
                   }
+                  inputProps={{ maxLength: 7 }}
                 />
               </Grid>
 
               <Grid item xs={12} md={6}>
                 <CurrencyTextField
-                  name="companyCredit"
+                  name="paymentBusiness"
                   label="Abono empresa"
                   required
-                  value={formik.values.companyCredit}
+                  value={formik.values.paymentBusiness}
                   onChange={formik.handleChange}
                   error={
-                    formik.touched.companyCredit &&
-                    Boolean(formik.errors.companyCredit)
+                    formik.touched.paymentBusiness &&
+                    Boolean(formik.errors.paymentBusiness)
                   }
                   helperText={
-                    formik.touched.companyCredit && formik.errors.companyCredit
+                    formik.touched.paymentBusiness &&
+                    formik.errors.paymentBusiness
                   }
                 />
               </Grid>
@@ -256,33 +288,33 @@ const EmployeeTracking = ({
                   </>
                 )}
               </Grid>
-            </Grid>
+            </>
           )}
 
-          {type === 'ADD' && formik.values.whoBilled === 'FUNDACIÓN' && (
-            <Grid container spacing={2}>
+          {formik.values.billedTarget === 'FUNDACIÓN' && (
+            <>
               <Grid item xs={12}>
                 <CurrencyTextField
-                  name="foundationCredit"
+                  name="paymentFundation"
                   label="Abono fundación"
                   required
-                  value={formik.values.foundationCredit}
+                  value={formik.values.paymentFundation}
                   onChange={formik.handleChange}
                   error={
-                    formik.touched.foundationCredit &&
-                    Boolean(formik.errors.foundationCredit)
+                    formik.touched.paymentFundation &&
+                    Boolean(formik.errors.paymentFundation)
                   }
                   helperText={
-                    formik.touched.foundationCredit &&
-                    formik.errors.foundationCredit
+                    formik.touched.paymentFundation &&
+                    formik.errors.paymentFundation
                   }
                 />
               </Grid>
-            </Grid>
+            </>
           )}
         </Grid>
 
-        <Box textAlign="center">
+        <Box textAlign="center" marginTop={'15px'}>
           <Button variant="outlined" onClick={handleClose}>
             Cancelar
           </Button>
