@@ -19,6 +19,7 @@ const Courses = () => {
       <PageHeading>
         Cursos <PollsDot module="CURSOS" />
       </PageHeading>
+
       <CoursesList />
       <OTECSList />
     </Box>
