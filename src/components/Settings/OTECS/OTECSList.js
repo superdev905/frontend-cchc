@@ -111,9 +111,7 @@ const OTECSList = () => {
     <Wrapper>
       <Box>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography style={{ fontSize: 18, fontWeight: 'bold' }}>
-            Lista de OTECs
-          </Typography>
+          <Typography>Lista de OTEC</Typography>
           <Can
             availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
             yes={() => <Button onClick={toggleOpenAdd}>Nueva OTEC</Button>}
