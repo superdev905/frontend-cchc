@@ -1,0 +1,3 @@
+export default {
+  BENEFIT_UPDATE_CREATE: 'BENEFIT_UPDATE_CREATE'
+}
