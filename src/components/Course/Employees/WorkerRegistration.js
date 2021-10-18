@@ -106,15 +106,23 @@ const WorkerRegistration = ({
   useEffect(() => {
     if (open) {
       formik.resetForm()
+      setSearchRut('')
+      setSearchList([])
       setSelectedEmployee(null)
     }
   }, [open])
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullScreen={isMobile}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth={'md'}
+      fullScreen={isMobile}
+    >
       <Box>
         <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
-          {`${type === 'Registrar' ? 'Actualizar' : 'Nuevo'} Trabajador`}
+          Inscribir nuevo trabajador
         </Typography>
         <Box>
           {loader ? (
