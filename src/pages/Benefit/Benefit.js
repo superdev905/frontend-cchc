@@ -6,6 +6,7 @@ import { ConfirmDelete, HeadingWithButton } from '../../components/Shared'
 import benefitsActions from '../../state/actions/benefits'
 import { Button, Wrapper } from '../../components/UI'
 import { useSuccess, useToggle } from '../../hooks'
+import { BenefitDetails, BenefitTabs } from '../../components/Benefit'
 
 const Benefits = () => {
   const dispatch = useDispatch()
@@ -66,6 +67,8 @@ const Benefits = () => {
           <Button disabled={benefit?.state === 'DELETED'}>Editar</Button>
         </Box>
       </Box>
+      <BenefitDetails />
+      <BenefitTabs />
       {benefit && openDelete && (
         <ConfirmDelete
           open={openDelete}

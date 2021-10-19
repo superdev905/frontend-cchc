@@ -1,10 +1,3 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-
-const BenefitDetails = () => {
-  return <div></div>
-}
-
-BenefitDetails.propTypes = {}
+const BenefitDetails = () => <div>Details</div>
 
 export default BenefitDetails
