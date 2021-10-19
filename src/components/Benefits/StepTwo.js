@@ -20,7 +20,9 @@ const StepTwo = () => {
   const onCreate = () => {
     const data = {
       ...create.benefit,
-      date: new Date()
+      description: '',
+      projectName: '',
+      createdDate: new Date()
     }
     if (create.type === 'CREATE') {
       dispatch(benefitsActions.createBenefit(data)).then(() => {
@@ -37,7 +39,7 @@ const StepTwo = () => {
         variant: 'success'
       })
     } else {
-      dispatch(benefitsActions.updatePostulation(create.benefit.id, data)).then(
+      dispatch(benefitsActions.updateBenefit(create.benefit.id, data)).then(
         () => {
           enqueueSnackbar('Beneficio actualizado exitosamente', {
             autoHideDuration: 1500,

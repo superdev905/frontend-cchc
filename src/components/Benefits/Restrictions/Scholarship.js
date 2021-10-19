@@ -11,9 +11,9 @@ import { useSuccess } from '../../../hooks'
 const statusList = ['OPCION 1', 'OPCION 2', 'OPCION 3']
 
 const validationSchema = Yup.object().shape({
-  careerName: Yup.string().required('Seleccione nombre de carrera'),
-  promedio: Yup.string().required('Ingrese promedio'),
-  ageCareer: Yup.string().required('Ingrese año de carrera'),
+  careerId: Yup.string().required('Seleccione nombre de carrera'),
+  averageLastYear: Yup.string().required('Ingrese averageLastYear'),
+  semester: Yup.string().required('Ingrese año de carrera'),
   tracking: Yup.string().required('Ingrese segumiento')
 })
 
@@ -34,9 +34,9 @@ const Scholarship = ({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      careerName: type === 'UPDATE' ? data.careerName : '',
-      promedio: type === 'UPDATE' ? data.promedio : '',
-      ageCareer: type === 'UPDATE' ? data.ageCareer : '',
+      careerId: type === 'UPDATE' ? data.careerId : '',
+      averageLastYear: type === 'UPDATE' ? data.averageLastYear : '',
+      semester: type === 'UPDATE' ? data.semester : '',
       tracking: type === 'UPDATE' ? data.tracking : ''
     },
     onSubmit: (values, { resetForm }) => {
@@ -78,43 +78,45 @@ const Scholarship = ({
               <TextField
                 label="Promedio de ultimo año cursado"
                 required
-                name="promedio"
-                value={formik.values.promedio}
+                name="averageLastYear"
+                value={formik.values.averageLastYear}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.promedio && Boolean(formik.errors.promedio)
+                  formik.touched.averageLastYear &&
+                  Boolean(formik.errors.averageLastYear)
                 }
-                helperText={formik.touched.promedio && formik.errors.promedio}
+                helperText={
+                  formik.touched.averageLastYear &&
+                  formik.errors.averageLastYear
+                }
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 label="Año de carrera"
                 required
-                name="ageCareer"
-                value={formik.values.ageCareer}
+                name="semester"
+                value={formik.values.semester}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.ageCareer && Boolean(formik.errors.ageCareer)
+                  formik.touched.semester && Boolean(formik.errors.semester)
                 }
-                helperText={formik.touched.ageCareer && formik.errors.ageCareer}
+                helperText={formik.touched.semester && formik.errors.semester}
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <Select
                 label="Nombre de Carrera"
                 required
-                name="careerName"
+                name="careerId"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.careerName}
-                helperText={
-                  formik.touched.careerName && formik.errors.careerName
-                }
+                value={formik.values.careerId}
+                helperText={formik.touched.careerId && formik.errors.careerId}
                 error={
-                  formik.touched.careerName && Boolean(formik.errors.careerName)
+                  formik.touched.careerId && Boolean(formik.errors.careerId)
                 }
               >
                 <option value="">Seleccione nacionalidad</option>

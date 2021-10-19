@@ -1,30 +1,31 @@
 import { capitalize } from 'lodash'
 import * as Yup from 'yup'
-
+import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Autocomplete } from '@material-ui/lab'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { Dialog } from '../../Shared'
-import { Button, Select, SubmitButton, TextField } from '../../UI'
+import { CompanyRow, Dialog } from '../../Shared'
+import { Button, InputLabel, Select, SubmitButton, TextField } from '../../UI'
 import { useSuccess } from '../../../hooks'
+import commonActions from '../../../state/actions/common'
+import usersActions from '../../../state/actions/users'
 
-const statusList = ['OPCION 1', 'OPCION 2', 'OPCION 3']
+const optionsList = ['OPCION 1', 'OPCION 2', 'OPCION 3']
 
 const validationSchema = Yup.object().shape({
-  empresaQueCapacita: Yup.string().required(
+  otecId: Yup.string().required(
     'Seleccione empresa que realiza la capacitación'
   ),
-  relator: Yup.string().required('Ingrese relator'),
-  lugar: Yup.string().required('Ingrese lugar'),
-  modalidad: Yup.string().required('Seleccione modalidad'),
-  participantes: Yup.string().required('Ingrese participantes'),
-  horasDelCurso: Yup.string().required('Ingrese horas del curso'),
-  nombreDelOficio: Yup.string().required('Seleccione nombre oficio'),
-  responsableFundacion: Yup.string().required(
-    'Seleccione responsable de fundación'
-  ),
-  costoMatricula: Yup.string().required('Ingrese costo de matrícula')
+  instructorId: Yup.string().required('Ingrese relator'),
+  place: Yup.string().required('Ingrese lugar'),
+  modality: Yup.string().required('Seleccione modalidad'),
+  participants: Yup.string().required('Ingrese participantes'),
+  courseHours: Yup.string().required('Ingrese horas del curso'),
+  occupationName: Yup.string().required('Seleccione nombre oficio'),
+  assigned_to: Yup.string().required('Seleccione responsable de fundación'),
+  enrollCost: Yup.string().required('Ingrese costo de matrícula')
 })
 
 const Course = ({
@@ -36,23 +37,29 @@ const Course = ({
   successMessage,
   successFunction
 }) => {
+  const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
+  const { otecs } = useSelector((state) => state.common)
+  const [selectedOTEC, setSelectedOTEC] = useState(null)
+  const [instructorsList, setInstructorList] = useState([])
 
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      empresaQueCapacita: type === 'UPDATE' ? data.empresaQueCapacita : '',
-      relator: type === 'UPDATE' ? data.relator : '',
-      lugar: type === 'UPDATE' ? data.lugar : '',
-      modalidad: type === 'UPDATE' ? data.modalidad : '',
-      participantes: type === 'UPDATE' ? data.participantes : '',
-      horasDelCurso: type === 'UPDATE' ? data.horasDelCurso : '',
-      nombreDelOficio: type === 'UPDATE' ? data.nombreDelOficio : '',
-      responsableFundacion: type === 'UPDATE' ? data.responsableFundacion : '',
-      costoMatricula: type === 'UPDATE' ? data.costoMatricula : ''
+      otecId: type === 'UPDATE' ? data.otecId : '',
+      otecName: type === 'UPDATE' ? data.otecName : '',
+      instructorId: type === 'UPDATE' ? data.instructorId : '',
+      instructorName: type === 'UPDATE' ? data.instructorName : '',
+      place: type === 'UPDATE' ? data.place : '',
+      modality: type === 'UPDATE' ? data.modality : '',
+      participants: type === 'UPDATE' ? data.participants : '',
+      courseHours: type === 'UPDATE' ? data.courseHours : '',
+      occupationName: type === 'UPDATE' ? data.occupationName : '',
+      assigned_to: type === 'UPDATE' ? data.assigned_to : '',
+      enrollCost: type === 'UPDATE' ? data.enrollCost : ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction({
@@ -81,6 +88,52 @@ const Course = ({
     }
   })
 
+  useEffect(() => {
+    if (type === 'UPDATE' && otecs.length > 0) {
+      const currentOtec = otecs.find(
+        (item) => item.id === parseInt(data.otecId, 10)
+      )
+      setSelectedOTEC(currentOtec)
+    }
+  }, [type, otecs])
+
+  useEffect(() => {
+    const otecId = selectedOTEC?.id || ''
+    const otecName = selectedOTEC?.businessName || ''
+    formik.setFieldValue('otecId', otecId)
+    formik.setFieldValue('otecName', otecName)
+  }, [selectedOTEC])
+
+  useEffect(() => {
+    const { instructorId } = formik.values
+    if (instructorId && instructorsList.length > 0) {
+      const currentInstructor = instructorsList.find(
+        (item) => item.id === parseInt(instructorId, 10)
+      )
+      formik.setFieldValue('instructorName', currentInstructor.name)
+    } else {
+      formik.setFieldValue('instructorName', '')
+    }
+  }, [formik.values.instructorId, instructorsList])
+
+  useEffect(() => {
+    const { instructorId } = formik.values
+    if (instructorId === '') {
+      formik.setFieldValue('instructorId', '')
+      formik.setFieldValue('instructorName', '')
+    }
+  }, [formik.values.instructorId, instructorsList])
+
+  useEffect(() => {
+    if (open) {
+      formik.resetForm()
+      dispatch(commonActions.getAllOTECS())
+      dispatch(usersActions.getOTECUsers()).then((result) => {
+        setInstructorList(result)
+      })
+    }
+  }, [open, type])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
       <Box>
@@ -91,173 +144,185 @@ const Course = ({
         </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
+              <InputLabel required>Empresa que capacita</InputLabel>
+              {selectedOTEC ? (
+                <CompanyRow
+                  company={selectedOTEC}
+                  onDelete={() => {
+                    setSelectedOTEC(null)
+                  }}
+                />
+              ) : (
+                <Autocomplete
+                  required
+                  options={otecs}
+                  value={''}
+                  getOptionLabel={(option) => option.businessName || ''}
+                  onChange={(__, option) => {
+                    setSelectedOTEC(option)
+                  }}
+                  renderOption={(option) => (
+                    <CompanyRow.Autocomplete
+                      company={option}
+                      iconColor="#BD52F2"
+                    />
+                  )}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              )}
+            </Grid>
+            <Grid item xs={12} md={6}>
               <Select
-                label="Empresa que capacita"
+                label="Relator"
                 required
-                name="empresaQueCapacita"
+                name="instructorId"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.empresaQueCapacita}
+                value={formik.values.instructorId}
                 helperText={
-                  formik.touched.empresaQueCapacita &&
-                  formik.errors.empresaQueCapacita
+                  formik.touched.instructorId && formik.errors.instructorId
                 }
                 error={
-                  formik.touched.empresaQueCapacita &&
-                  Boolean(formik.errors.empresaQueCapacita)
+                  formik.touched.instructorId &&
+                  Boolean(formik.errors.instructorId)
                 }
               >
-                <option value="">Seleccione empresa</option>
-                {statusList.map((item) => (
-                  <option value={item}>{capitalize(item)}</option>
+                <option value="">Seleccione relator</option>
+                {instructorsList.map((item) => (
+                  <option
+                    value={item.id}
+                  >{`${item.names} ${item.paternal_surname} ${item.maternal_surname}`}</option>
                 ))}
               </Select>
             </Grid>
 
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Relator"
-                name="relator"
-                required
-                value={formik.values.relator}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.relator && Boolean(formik.errors.relator)}
-                helperText={formik.touched.relator && formik.errors.relator}
-                inputProps={{ maxLength: 3 }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Lugar"
                 required
-                name="lugar"
-                value={formik.values.lugar}
+                name="place"
+                value={formik.values.place}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.lugar && Boolean(formik.errors.lugar)}
-                helperText={formik.touched.lugar && formik.errors.lugar}
+                error={formik.touched.place && Boolean(formik.errors.place)}
+                helperText={formik.touched.place && formik.errors.place}
               />
             </Grid>
 
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <Select
                 label="Modalidad"
                 required
-                name="modalidad"
+                name="modality"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.modalidad}
-                helperText={formik.touched.modalidad && formik.errors.modalidad}
+                value={formik.values.modality}
+                helperText={formik.touched.modality && formik.errors.modality}
                 error={
-                  formik.touched.modalidad && Boolean(formik.errors.modalidad)
+                  formik.touched.modality && Boolean(formik.errors.modality)
                 }
               >
-                <option value="">Seleccione modalidad</option>
-                {statusList.map((item) => (
+                <option value="">Seleccione modality</option>
+                {optionsList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
             </Grid>
 
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Participantes"
                 required
-                name="participantes"
-                value={formik.values.participantes}
+                name="participants"
+                value={formik.values.participants}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.participantes &&
-                  Boolean(formik.errors.participantes)
+                  formik.touched.participants &&
+                  Boolean(formik.errors.participants)
                 }
                 helperText={
-                  formik.touched.participantes && formik.errors.participantes
+                  formik.touched.participants && formik.errors.participants
                 }
               />
             </Grid>
 
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Horas del curso"
                 required
-                name="horasDelCurso"
-                value={formik.values.horasDelCurso}
+                name="courseHours"
+                value={formik.values.courseHours}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.horasDelCurso &&
-                  Boolean(formik.errors.horasDelCurso)
+                  formik.touched.courseHours &&
+                  Boolean(formik.errors.courseHours)
                 }
                 helperText={
-                  formik.touched.horasDelCurso && formik.errors.horasDelCurso
+                  formik.touched.courseHours && formik.errors.courseHours
                 }
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <Select
                 label="Nombre del oficio"
                 required
-                name="nombreDelOficio"
+                name="occupationName"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.nombreDelOficio}
+                value={formik.values.occupationName}
                 helperText={
-                  formik.touched.nombreDelOficio &&
-                  formik.errors.nombreDelOficio
+                  formik.touched.occupationName && formik.errors.occupationName
                 }
                 error={
-                  formik.touched.nombreDelOficio &&
-                  Boolean(formik.errors.nombreDelOficio)
+                  formik.touched.occupationName &&
+                  Boolean(formik.errors.occupationName)
                 }
               >
                 <option value="">Seleccione oficio</option>
-                {statusList.map((item) => (
+                {optionsList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <Select
                 label="Responsable fundación"
                 required
-                name="responsableFundacion"
+                name="assigned_to"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.responsableFundacion}
+                value={formik.values.assigned_to}
                 helperText={
-                  formik.touched.responsableFundacion &&
-                  formik.errors.responsableFundacion
+                  formik.touched.assigned_to && formik.errors.assigned_to
                 }
                 error={
-                  formik.touched.responsableFundacion &&
-                  Boolean(formik.errors.responsableFundacion)
+                  formik.touched.assigned_to &&
+                  Boolean(formik.errors.assigned_to)
                 }
               >
                 <option value="">Seleccione responsable</option>
-                {statusList.map((item) => (
+                {optionsList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
             </Grid>
 
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Costo de matricula"
                 required
-                name="costoMatricula"
-                value={formik.values.costoMatricula}
+                name="enrollCost"
+                value={formik.values.enrollCost}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.costoMatricula &&
-                  Boolean(formik.errors.costoMatricula)
+                  formik.touched.enrollCost && Boolean(formik.errors.enrollCost)
                 }
                 helperText={
-                  formik.touched.costoMatricula && formik.errors.costoMatricula
+                  formik.touched.enrollCost && formik.errors.enrollCost
                 }
               />
             </Grid>

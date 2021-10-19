@@ -1,25 +1,33 @@
 import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Box } from '@material-ui/core'
 import uiActions from '../../state/actions/ui'
-import { useToggle } from '../../hooks'
 import CreateDialog from '../../components/Benefits/CreateDialog'
 import { Button } from '../../components/UI'
+import benefitsActions from '../../state/actions/benefits'
 
 const Benefits = () => {
   const dispatch = useDispatch()
-  const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { showCreateModal } = useSelector((state) => state.benefits)
 
   useEffect(() => {
     dispatch(uiActions.setCurrentModule('BENEFICIOS'))
   }, [])
 
+  const toggleCreateModal = () => {
+    dispatch(benefitsActions.toggleCreateModal(showCreateModal))
+  }
+
+  const addButtonClick = () => {
+    dispatch(benefitsActions.toggleCreateModal(showCreateModal))
+  }
+
   return (
     <Box>
       <Box>
-        <Button onClick={toggleOpenAdd}>Crear Beneficio</Button>
+        <Button onClick={addButtonClick}>Crear Beneficio</Button>
       </Box>
-      <CreateDialog open={openAdd} onClose={toggleOpenAdd} />
+      <CreateDialog open={showCreateModal} onClose={toggleCreateModal} />
     </Box>
   )
 }
