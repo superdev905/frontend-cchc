@@ -3,8 +3,10 @@ import { useDispatch } from 'react-redux'
 import { Box } from '@material-ui/core'
 import uiActions from '../../state/actions/ui'
 import { useToggle } from '../../hooks'
+import { PollsDot } from '../../components/Polls'
 import CreateDialog from '../../components/Benefits/CreateDialog'
-import { Button } from '../../components/UI'
+import { Button, PageHeading } from '../../components/UI'
+import BenefitList from '../../components/Benefits/List'
 
 const Benefits = () => {
   const dispatch = useDispatch()
@@ -16,8 +18,12 @@ const Benefits = () => {
 
   return (
     <Box>
+      <PageHeading>
+        Beneficios <PollsDot module="BENEFICIOS" />
+      </PageHeading>
       <Box>
         <Button onClick={toggleOpenAdd}>Crear Beneficio</Button>
+        <BenefitList />
       </Box>
       <CreateDialog open={openAdd} onClose={toggleOpenAdd} />
     </Box>

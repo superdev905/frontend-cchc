@@ -25,7 +25,8 @@ const Profile = lazy(() => import('../pages/Profile/Profile'))
 const Scholarships = lazy(() => import('../pages/Scholarships/Scholarships'))
 const ApprovedScholarship = lazy(() => import('../pages/ApprovedScholarship'))
 const Scholarship = lazy(() => import('../pages/Scholarship'))
-const Benefits = lazy(() => import('../pages/Benefits/Benefits'))
+const Benefits = lazy(() => import('../pages/Benefits'))
+const BenefitPage = lazy(() => import('../pages/Benefit'))
 
 const routes = [
   {
@@ -321,10 +322,26 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'PROJECTS', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Benefits />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/benefits/:benefitId',
+    key: 'BENEFITS-PAGE',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <BenefitPage />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}

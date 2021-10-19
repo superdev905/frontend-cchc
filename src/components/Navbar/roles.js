@@ -8,7 +8,8 @@ import {
   Assignment as AssistanceIcon,
   School as SchoolIcon,
   BorderColor as BorderColorIcon,
-  Book as BookIcon
+  Book as BookIcon,
+  Favorite as BenefitIcon
 } from '@material-ui/icons'
 
 const modulesByRole = {
@@ -35,6 +36,11 @@ const modulesByRole = {
       title: 'Cursos',
       path: '/courses',
       icon: <BookIcon />
+    },
+    {
+      title: 'Beneficios',
+      path: '/benefits',
+      icon: <BenefitIcon />
     },
     { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
     {
@@ -71,6 +77,11 @@ const modulesByRole = {
       title: 'Cursos',
       path: '/courses',
       icon: <BookIcon />
+    },
+    {
+      title: 'Beneficios',
+      path: '/benefits',
+      icon: <BenefitIcon />
     }
   ],
   PROJECTS: [
