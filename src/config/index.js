@@ -46,6 +46,11 @@ const services = {
     development: `${BASEURL[env]}:5192/api/v1`,
     testing: `${BASEURL[env]}:5199/api/v1`,
     production: `${BASEURL[env]}:5109/api/v1`
+  },
+  benefits: {
+    development: `${BASEURL[env]}:5192/api/v1`,
+    testing: `${BASEURL[env]}:5199/api/v1`,
+    production: `${BASEURL[env]}:5109/api/v1`
   }
 }
 
@@ -58,7 +63,8 @@ const config = {
     auth: services.auth[env],
     employee: services.employee[env],
     scholarship: services.scholarship[env],
-    courses: services.courses[env]
+    courses: services.courses[env],
+    benefits: services.benefits[env]
   }
 }
 

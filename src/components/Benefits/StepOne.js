@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { capitalize } from 'lodash'
-import { Select, TextField, InputLabel } from '../UI'
+import { Select, TextField } from '../UI'
 import useStyles from './styles'
 import Actions from './Actions'
 import benefitsActions from '../../state/actions/benefits'
@@ -39,7 +39,6 @@ const StepOne = ({ onClose, data }) => {
       annualQuotas: create?.benefit?.annualQuotas || '',
       state: create?.benefit?.state || ''
     },
-
     onSubmit: (values) => {
       dispatch(
         benefitsActions.updateCreate({
@@ -101,24 +100,31 @@ const StepOne = ({ onClose, data }) => {
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <InputLabel required>Fecha de inicio</InputLabel>
             <DatePicker
+              required
+              label="Fecha de inicio"
               value={formik.values.startDate}
-              onChange={(date) => {
-                if (date < formik.values.endDate) {
-                  formik.setFieldValue('startDate', new Date(date))
-                }
+              helperText={formik.touched.startDate && formik.errors.startDate}
+              error={
+                formik.touched.startDate && Boolean(formik.errors.startDate)
+              }
+              onChange={(startDate) => {
+                formik.setFieldTouched('startDate')
+                formik.setFieldValue('startDate', startDate)
               }}
             />
           </Grid>
+
           <Grid item xs={12} md={6}>
-            <InputLabel required>Fecha de termino</InputLabel>
             <DatePicker
+              required
+              label="Fecha de termino"
               value={formik.values.endDate}
-              onChange={(date) => {
-                if (date > formik.values.startDate) {
-                  formik.setFieldValue('endDate', new Date(date))
-                }
+              helperText={formik.touched.endDate && formik.errors.endDate}
+              error={formik.touched.endDate && Boolean(formik.errors.endDate)}
+              onChange={(endDate) => {
+                formik.setFieldTouched('endDate')
+                formik.setFieldValue('endDate', endDate)
               }}
             />
           </Grid>
