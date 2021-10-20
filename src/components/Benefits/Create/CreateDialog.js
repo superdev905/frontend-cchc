@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Stepper, Step, StepLabel, Typography } from '@material-ui/core'
-import { Button } from '../UI'
+import { Button } from '../../UI'
 import StepTwo from './StepTwo'
 import StepOne from './StepOne'
-import { Dialog } from '../Shared'
-import benefitsActions from '../../state/actions/benefits'
+import { Dialog } from '../../Shared'
+import benefitsActions from '../../../state/actions/benefits'
 
 function getSteps() {
   return ['Datos', 'Restricciones']

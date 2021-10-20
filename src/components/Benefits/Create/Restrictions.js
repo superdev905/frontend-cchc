@@ -9,14 +9,14 @@ import {
   FaCity,
   FaClipboardList
 } from 'react-icons/fa'
-import { Button, SubmitButton, Text } from '../UI'
-import { useSuccess, useToggle } from '../../hooks'
-import { Dialog } from '../Shared'
-import generateColor from '../../utils/generateColor'
-import General from './Restrictions/General'
-import Scholarship from './Restrictions/Scholarship'
-import Course from './Restrictions/Course'
-import Company from './Restrictions/Company'
+import { Button, SubmitButton, Text } from '../../UI'
+import { useSuccess, useToggle } from '../../../hooks'
+import { Dialog } from '../../Shared'
+import generateColor from '../../../utils/generateColor'
+import General from '../Restrictions/General'
+import Scholarship from '../Restrictions/Scholarship'
+import Course from '../Restrictions/Course'
+import Company from '../Restrictions/Company'
 
 const Restrictions = ({
   open,

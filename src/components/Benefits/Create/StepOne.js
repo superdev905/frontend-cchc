@@ -4,11 +4,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { capitalize } from 'lodash'
-import { Select, TextField } from '../UI'
-import useStyles from './styles'
-import Actions from './Actions'
-import benefitsActions from '../../state/actions/benefits'
-import { DatePicker } from '../Shared'
+import { Select, TextField } from '../../UI'
+import useStyles from '../styles'
+import Actions from '../Actions'
+import benefitsActions from '../../../state/actions/benefits'
+import { DatePicker } from '../../Shared'
 
 const statusList = ['VIGENTE', 'NO VIGENTE']
 
