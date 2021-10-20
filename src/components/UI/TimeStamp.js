@@ -1,5 +1,6 @@
 import { FiCalendar as CalendarIcon } from 'react-icons/fi'
 import { makeStyles, Typography } from '@material-ui/core'
+import { formatText } from '../../formatters'
 
 const useStyles = makeStyles((theme) => ({
   createdTime: {
@@ -18,7 +19,7 @@ const TimeStamp = ({ loading, text }) => {
   return (
     <Typography className={classes.createdTime}>
       <CalendarIcon className={classes.icon} />
-      {!loading && `Creado ${text}`}
+      {!loading && formatText.capitalizeString(`Creado ${text}`)}
     </Typography>
   )
 }

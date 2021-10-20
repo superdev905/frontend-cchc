@@ -53,7 +53,7 @@ const Benefits = () => {
         <HeadingWithButton
           goBack={goBack}
           title={benefit && `${benefit.code} - ${benefit.name}`}
-          timeAgo={'Hace un día'}
+          timeAgo={benefit && benefit.timeAgo}
           loading={loading}
         />
         <Box>
@@ -67,7 +67,7 @@ const Benefits = () => {
           <Button disabled={benefit?.state === 'DELETED'}>Editar</Button>
         </Box>
       </Box>
-      <BenefitDetails />
+      <BenefitDetails loading={loading} />
       <BenefitTabs />
       {benefit && openDelete && (
         <ConfirmDelete
