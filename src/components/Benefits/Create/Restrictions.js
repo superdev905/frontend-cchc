@@ -1,6 +1,5 @@
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { useSelector } from 'react-redux'
 import { Avatar, Box, Grid } from '@material-ui/core'
 import {
   FaUserGraduate,
@@ -11,7 +10,6 @@ import {
 } from 'react-icons/fa'
 import { Button, SubmitButton, Text } from '../../UI'
 import { useSuccess, useToggle } from '../../../hooks'
-import { Dialog } from '../../Shared'
 import generateColor from '../../../utils/generateColor'
 import General from '../Restrictions/General'
 import Scholarship from '../Restrictions/Scholarship'
@@ -19,7 +17,6 @@ import Course from '../Restrictions/Course'
 import Company from '../Restrictions/Company'
 
 const Restrictions = ({
-  open,
   onClose,
   type,
   data,
@@ -29,7 +26,6 @@ const Restrictions = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
-  const { isMobile } = useSelector((state) => state.ui)
   const { open: openAddGeneral, toggleOpen: toggleOpenAddGeneral } = useToggle()
   const { open: openAddScholarship, toggleOpen: toggleOpenAddScholarship } =
     useToggle()
@@ -69,7 +65,7 @@ const Restrictions = ({
   })
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
+    <Box>
       <Box>
         <Box p={2}>
           <Grid container spacing={2}>
@@ -182,7 +178,7 @@ const Restrictions = ({
       />
       <Course open={openAddCouse} onClose={toggleOpenAddCourse} />
       <Company open={openAddCompany} onClose={toggleOpenAddCompany} />
-    </Dialog>
+    </Box>
   )
 }
 

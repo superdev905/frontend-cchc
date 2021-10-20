@@ -1,87 +1,80 @@
 import { capitalize } from 'lodash'
 import * as Yup from 'yup'
-
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
-import { useSnackbar } from 'notistack'
-import { useSelector } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { Dialog } from '../../Shared'
+import { CurrencyTextField, Dialog } from '../../Shared'
 import { Button, Select, SubmitButton, TextField } from '../../UI'
 import { useSuccess } from '../../../hooks'
+import { genderList, decisionList } from '../../../config'
+import commonActions from '../../../state/actions/common'
+import benefitsActions from '../../../state/actions/benefits'
 
-const statusList = ['OPCION 1', 'OPCION 2', 'OPCION 3']
+const activityTypes = ['INDIVIDUAL', 'MASIVO']
+const inscribers = ['TRABAJADOR', 'EMPRESA']
+const fundingList = ['PROYECTO SOCIAL', 'GOBIERNO', 'PROPIA EMPRESA', 'OTRO']
 
 const validationSchema = Yup.object().shape({
-  nationality: Yup.string().required('Seleccione nacionalidad'),
-  rsh: Yup.string().required('Seleccione rsh'),
+  nationalityId: Yup.string().required('Seleccione nacionalidad'),
+  rshId: Yup.string().required('Seleccione rsh'),
   legalCharge: Yup.string().required('Seleccione carga legal'),
   prevision: Yup.string().required('Seleccione previsión'),
-  jubilado: Yup.string().required('Seleccione estado de jubilación'),
-  reconocer: Yup.string().required('Seleccione si pertenece a reconocer'),
-  age: Yup.string().required('Ingrese edad'),
+  retired: Yup.string().required('Seleccione estado de jubilación'),
+  belongToReconocer: Yup.string().required(
+    'Seleccione si pertenece a reconocer'
+  ),
+  isAdult: Yup.string().required('Ingrese edad'),
   gender: Yup.string().required('Seleccione genero'),
-  typeActivity: Yup.string().required('Seleccione tipo de actividad'),
-  quienInscribe: Yup.string().required('Seleccione quien inscribe'),
-  financiamiento: Yup.string().required('Seleccione financiamiento'),
-  renta: Yup.string().required('Ingrese renta')
+  activityType: Yup.string().required('Seleccione tipo de actividad'),
+  inscriber: Yup.string().required('Seleccione quien inscribe'),
+  funding: Yup.string().required('Seleccione financiamiento'),
+  maxSalary: Yup.string().required('Ingrese renta')
 })
 
-const General = ({
-  open,
-  onClose,
-  type,
-  data,
-  submitFunction,
-  successMessage,
-  successFunction
-}) => {
-  const { enqueueSnackbar } = useSnackbar()
-  const { success, changeSuccess } = useSuccess()
+const General = ({ open, onClose, type, data }) => {
+  const dispatch = useDispatch()
+  const { success } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
+  const { create } = useSelector((state) => state.benefits)
+  const { nationalities, rshList, IsapreFonasaList } = useSelector(
+    (state) => state.common
+  )
 
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      nationality: type === 'UPDATE' ? data.nationality : '',
-      rsh: type === 'UPDATE' ? data.rsh : '',
+      nationalityId: type === 'UPDATE' ? data.nationalityId : '',
+      rshId: type === 'UPDATE' ? data.rshId : '',
       legalCharge: type === 'UPDATE' ? data.legalCharge : '',
       prevision: type === 'UPDATE' ? data.prevision : '',
-      jubilado: type === 'UPDATE' ? data.jubilado : '',
-      reconocer: type === 'UPDATE' ? data.reconocer : '',
-      age: type === 'UPDATE' ? data.age : '',
+      retired: type === 'UPDATE' ? data.retired : '',
+      belongToReconocer: type === 'UPDATE' ? data.belongToReconocer : '',
+      isAdult: type === 'UPDATE' ? data.isAdult : '',
       gender: type === 'UPDATE' ? data.gender : '',
-      typeActivity: type === 'UPDATE' ? data.typeActivity : '',
-      quienInscribe: type === 'UPDATE' ? data.quienInscribe : '',
-      financiamiento: type === 'UPDATE' ? data.financiamiento : '',
-      renta: type === 'UPDATE' ? data.renta : ''
+      activityType: type === 'UPDATE' ? data.activityType : '',
+      inscriber: type === 'UPDATE' ? data.inscriber : '',
+      funding: type === 'UPDATE' ? data.funding : '',
+      maxSalary: type === 'UPDATE' ? data.maxSalary : ''
     },
-    onSubmit: (values, { resetForm }) => {
-      submitFunction({
-        ...values,
-        createDate: new Date().toISOString()
-      })
-        .then(() => {
-          formik.setSubmitting(false)
-          changeSuccess(true, () => {
-            onClose()
-            enqueueSnackbar(successMessage, {
-              variant: 'success'
-            })
-            resetForm()
-            if (successFunction) {
-              successFunction()
-            }
-          })
+    onSubmit: (values) => {
+      useDispatch(
+        benefitsActions.updateCreate({
+          ...create,
+          benefit: { ...create.benefit, ...values }
         })
-        .catch((err) => {
-          formik.setSubmitting(false)
-          enqueueSnackbar(err, {
-            variant: 'error'
-          })
-        })
+      )
     }
   })
+
+  useEffect(() => {
+    if (open) {
+      dispatch(commonActions.getNationalities())
+      dispatch(commonActions.getRSH())
+      dispatch(commonActions.getIsapreFonasa())
+    }
+  }, [open])
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
@@ -94,39 +87,43 @@ const General = ({
             <Grid item xs={12} md={4}>
               <Select
                 label="Nacionalidad"
+                name="nationalityId"
                 required
-                name="nationality"
+                value={formik.values.nationalityId}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.nationality}
-                helperText={
-                  formik.touched.nationality && formik.errors.nationality
-                }
                 error={
-                  formik.touched.nationality &&
-                  Boolean(formik.errors.nationality)
+                  formik.touched.nationalityId &&
+                  Boolean(formik.errors.nationalityId)
+                }
+                helperText={
+                  formik.touched.nationalityId && formik.errors.nationalityId
                 }
               >
                 <option value="">Seleccione nacionalidad</option>
-                {statusList.map((item) => (
-                  <option value={item}>{capitalize(item)}</option>
+                {nationalities.map((item, i) => (
+                  <option key={`natinality-${i}-${item.id}`} value={item.id}>
+                    {item.description}
+                  </option>
                 ))}
               </Select>
             </Grid>
             <Grid item xs={12} md={4}>
               <Select
-                label="RSH"
-                required
-                name="rsh"
+                label="RSH %"
+                name="rshId"
+                value={formik.values.rshId}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.rsh}
-                helperText={formik.touched.rsh && formik.errors.rsh}
-                error={formik.touched.rsh && Boolean(formik.errors.rsh)}
+                error={formik.touched.rshId && Boolean(formik.errors.rshId)}
+                helperText={formik.touched.rshId && formik.errors.rshId}
               >
-                <option value="">Seleccione rsh</option>
-                {statusList.map((item) => (
-                  <option value={item}>{capitalize(item)}</option>
+                <option value="">Sin RSH %</option>
+                {rshList.map((item, i) => (
+                  <option
+                    key={`rsh-percentage-item-${i}-${item.id}`}
+                    value={item.id}
+                  >
+                    {item.description}
+                  </option>
                 ))}
               </Select>
             </Grid>
@@ -146,9 +143,11 @@ const General = ({
                   Boolean(formik.errors.legalCharge)
                 }
               >
-                <option value="">Seleccione carga legal</option>
-                {statusList.map((item) => (
-                  <option value={item}>{capitalize(item)}</option>
+                <option value="">Seleccione opción</option>
+                {decisionList.map((item, i) => (
+                  <option key={`alive-${i}-${item}`} value={item}>
+                    {item}
+                  </option>
                 ))}
               </Select>
             </Grid>
@@ -165,9 +164,11 @@ const General = ({
                   formik.touched.prevision && Boolean(formik.errors.prevision)
                 }
               >
-                <option value="">Seleccione previsión</option>
-                {statusList.map((item) => (
-                  <option value={item}>{capitalize(item)}</option>
+                <option value="">Seleccione una opción</option>
+                {IsapreFonasaList.map((item, index) => (
+                  <option key={`region--${index}`} value={`${item.id}`}>
+                    {`${item.description}`}
+                  </option>
                 ))}
               </Select>
             </Grid>
@@ -175,17 +176,15 @@ const General = ({
               <Select
                 label="Jubilado"
                 required
-                name="jubilado"
+                name="retired"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.jubilado}
-                helperText={formik.touched.jubilado && formik.errors.jubilado}
-                error={
-                  formik.touched.jubilado && Boolean(formik.errors.jubilado)
-                }
+                value={formik.values.retired}
+                helperText={formik.touched.retired && formik.errors.retired}
+                error={formik.touched.retired && Boolean(formik.errors.retired)}
               >
                 <option value="">Seleccione estado de jubilación</option>
-                {statusList.map((item) => (
+                {decisionList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
@@ -194,17 +193,21 @@ const General = ({
               <Select
                 label="Pertenece a reconocer"
                 required
-                name="reconocer"
+                name="belongToReconocer"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.reconocer}
-                helperText={formik.touched.reconocer && formik.errors.reconocer}
+                value={formik.values.belongToReconocer}
+                helperText={
+                  formik.touched.belongToReconocer &&
+                  formik.errors.belongToReconocer
+                }
                 error={
-                  formik.touched.reconocer && Boolean(formik.errors.reconocer)
+                  formik.touched.belongToReconocer &&
+                  Boolean(formik.errors.belongToReconocer)
                 }
               >
                 <option value="">Seleccione opcion</option>
-                {statusList.map((item) => (
+                {decisionList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
@@ -212,13 +215,13 @@ const General = ({
             <Grid item xs={12} md={4}>
               <TextField
                 label="Edad"
-                name="age"
+                name="isAdult"
                 required
-                value={formik.values.age}
+                value={formik.values.isAdult}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.age && Boolean(formik.errors.age)}
-                helperText={formik.touched.age && formik.errors.age}
+                error={formik.touched.isAdult && Boolean(formik.errors.isAdult)}
+                helperText={formik.touched.isAdult && formik.errors.isAdult}
                 inputProps={{ maxLength: 3 }}
               />
             </Grid>
@@ -233,9 +236,11 @@ const General = ({
                 helperText={formik.touched.gender && formik.errors.gender}
                 error={formik.touched.gender && Boolean(formik.errors.gender)}
               >
-                <option value="">Seleccione opcion</option>
-                {statusList.map((item) => (
-                  <option value={item}>{capitalize(item)}</option>
+                <option value="">Seleccione estado civil</option>
+                {genderList.map((item, i) => (
+                  <option key={`gender-${i}-${item.key}`} value={item.key}>
+                    {item.name}
+                  </option>
                 ))}
               </Select>
             </Grid>
@@ -243,20 +248,20 @@ const General = ({
               <Select
                 label="Tipo de actividad por participantes"
                 required
-                name="typeActivity"
+                name="activityType"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.typeActivity}
+                value={formik.values.activityType}
                 helperText={
-                  formik.touched.typeActivity && formik.errors.typeActivity
+                  formik.touched.activityType && formik.errors.activityType
                 }
                 error={
-                  formik.touched.typeActivity &&
-                  Boolean(formik.errors.typeActivity)
+                  formik.touched.activityType &&
+                  Boolean(formik.errors.activityType)
                 }
               >
                 <option value="">Seleccione opcion</option>
-                {statusList.map((item) => (
+                {activityTypes.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
@@ -265,20 +270,17 @@ const General = ({
               <Select
                 label="Quien inscribe"
                 required
-                name="quienInscribe"
+                name="inscriber"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.quienInscribe}
-                helperText={
-                  formik.touched.quienInscribe && formik.errors.quienInscribe
-                }
+                value={formik.values.inscriber}
+                helperText={formik.touched.inscriber && formik.errors.inscriber}
                 error={
-                  formik.touched.quienInscribe &&
-                  Boolean(formik.errors.quienInscribe)
+                  formik.touched.inscriber && Boolean(formik.errors.inscriber)
                 }
               >
                 <option value="">Seleccione quien inscribe</option>
-                {statusList.map((item) => (
+                {inscribers.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
@@ -287,34 +289,31 @@ const General = ({
               <Select
                 label="Financiamiento"
                 required
-                name="financiamiento"
+                name="funding"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.financiamiento}
-                helperText={
-                  formik.touched.financiamiento && formik.errors.financiamiento
-                }
-                error={
-                  formik.touched.financiamiento &&
-                  Boolean(formik.errors.financiamiento)
-                }
+                value={formik.values.funding}
+                helperText={formik.touched.funding && formik.errors.funding}
+                error={formik.touched.funding && Boolean(formik.errors.funding)}
               >
                 <option value="">Seleccione financiamiento</option>
-                {statusList.map((item) => (
+                {fundingList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
             </Grid>
             <Grid item xs={12} md={4}>
-              <TextField
+              <CurrencyTextField
                 label="Renta tope para postular"
                 required
-                name="renta"
-                value={formik.values.renta}
+                name="maxSalary"
+                value={formik.values.maxSalary}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.renta && Boolean(formik.errors.renta)}
-                helperText={formik.touched.renta && formik.errors.renta}
+                error={
+                  formik.touched.maxSalary && Boolean(formik.errors.maxSalary)
+                }
+                helperText={formik.touched.maxSalary && formik.errors.maxSalary}
               />
             </Grid>
           </Grid>

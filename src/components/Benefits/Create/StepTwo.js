@@ -7,7 +7,7 @@ import { Button, SubmitButton, EmptyState } from '../../UI'
 import { useToggle } from '../../../hooks'
 import useStyles from '../styles'
 import benefitsActions from '../../../state/actions/benefits'
-import Restrictions from './Restrictions'
+import RestrictionsDialog from '../Restrictions/RestrictionsDialog'
 
 const StepTwo = () => {
   const classes = useStyles()
@@ -63,7 +63,7 @@ const StepTwo = () => {
   return (
     <Box className={classes.form}>
       <EmptyState
-        message="No se agregarón restricciones"
+        message="No se agregaron restricciones"
         actionMessage="Agregar restricción"
         event={toggleOpenAdd}
       />
@@ -76,7 +76,7 @@ const StepTwo = () => {
           {create.type === 'UPDATE' ? 'Actualizar' : 'Crear'} Beneficio
         </SubmitButton>
       </Box>
-      <Restrictions open={openAdd} onClose={toggleOpenAdd} />
+      <RestrictionsDialog open={openAdd} onClose={toggleOpenAdd} />
     </Box>
   )
 }

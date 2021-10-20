@@ -2,15 +2,15 @@ import { capitalize } from 'lodash'
 import * as Yup from 'yup'
 import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
-import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
 import { Autocomplete } from '@material-ui/lab'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { CompanyRow, Dialog } from '../../Shared'
+import { CompanyRow, CurrencyTextField, Dialog } from '../../Shared'
 import { Button, InputLabel, Select, SubmitButton, TextField } from '../../UI'
 import { useSuccess } from '../../../hooks'
 import commonActions from '../../../state/actions/common'
 import usersActions from '../../../state/actions/users'
+import benefitsActions from '../../../state/actions/benefits'
 
 const optionsList = ['OPCION 1', 'OPCION 2', 'OPCION 3']
 
@@ -28,20 +28,12 @@ const validationSchema = Yup.object().shape({
   enrollCost: Yup.string().required('Ingrese costo de matrícula')
 })
 
-const Course = ({
-  open,
-  onClose,
-  type,
-  data,
-  submitFunction,
-  successMessage,
-  successFunction
-}) => {
+const Course = ({ open, onClose, type, data }) => {
   const dispatch = useDispatch()
-  const { enqueueSnackbar } = useSnackbar()
-  const { success, changeSuccess } = useSuccess()
+  const { success } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
   const { otecs } = useSelector((state) => state.common)
+  const { create } = useSelector((state) => state.benefits)
   const [selectedOTEC, setSelectedOTEC] = useState(null)
   const [instructorsList, setInstructorList] = useState([])
 
@@ -61,30 +53,13 @@ const Course = ({
       assigned_to: type === 'UPDATE' ? data.assigned_to : '',
       enrollCost: type === 'UPDATE' ? data.enrollCost : ''
     },
-    onSubmit: (values, { resetForm }) => {
-      submitFunction({
-        ...values,
-        createDate: new Date().toISOString()
-      })
-        .then(() => {
-          formik.setSubmitting(false)
-          changeSuccess(true, () => {
-            onClose()
-            enqueueSnackbar(successMessage, {
-              variant: 'success'
-            })
-            resetForm()
-            if (successFunction) {
-              successFunction()
-            }
-          })
+    onSubmit: (values) => {
+      dispatch(
+        benefitsActions.updateCreate({
+          ...create,
+          benefit: { ...create.benefit, ...values }
         })
-        .catch((err) => {
-          formik.setSubmitting(false)
-          enqueueSnackbar(err, {
-            variant: 'error'
-          })
-        })
+      )
     }
   })
 
@@ -223,7 +198,7 @@ const Course = ({
                   formik.touched.modality && Boolean(formik.errors.modality)
                 }
               >
-                <option value="">Seleccione modality</option>
+                <option value="">Seleccione modalidad</option>
                 {optionsList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
@@ -233,6 +208,7 @@ const Course = ({
             <Grid item xs={12} md={6}>
               <TextField
                 label="Participantes"
+                type="number"
                 required
                 name="participants"
                 value={formik.values.participants}
@@ -251,6 +227,7 @@ const Course = ({
             <Grid item xs={12} md={6}>
               <TextField
                 label="Horas del curso"
+                type="number"
                 required
                 name="courseHours"
                 value={formik.values.courseHours}
@@ -311,7 +288,7 @@ const Course = ({
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <TextField
+              <CurrencyTextField
                 label="Costo de matricula"
                 required
                 name="enrollCost"

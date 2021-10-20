@@ -72,13 +72,13 @@ const StepOne = ({ onClose, data }) => {
             <TextField
               label="Código"
               name="code"
+              type="number"
               required
               value={formik.values.code}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.code && Boolean(formik.errors.code)}
               helperText={formik.touched.code && formik.errors.code}
-              inputProps={{ maxLength: 5 }}
             />
           </Grid>
 
@@ -147,6 +147,7 @@ const StepOne = ({ onClose, data }) => {
             <TextField
               label="Cupos anuales"
               name="usersQuantity"
+              type="number"
               required
               value={formik.values.usersQuantity}
               onChange={formik.handleChange}

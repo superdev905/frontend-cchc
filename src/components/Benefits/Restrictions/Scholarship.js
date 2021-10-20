@@ -1,34 +1,32 @@
 import { capitalize } from 'lodash'
 import * as Yup from 'yup'
+import { useEffect } from 'react'
 import { useFormik } from 'formik'
-import { useSnackbar } from 'notistack'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Dialog } from '../../Shared'
 import { Button, Select, SubmitButton, TextField } from '../../UI'
 import { useSuccess } from '../../../hooks'
-
-const statusList = ['OPCION 1', 'OPCION 2', 'OPCION 3']
+import { decisionList } from '../../../config'
+import benefitsActions from '../../../state/actions/benefits'
+import scholarshipsActions from '../../../state/actions/scholarships'
 
 const validationSchema = Yup.object().shape({
   careerId: Yup.string().required('Seleccione nombre de carrera'),
-  averageLastYear: Yup.string().required('Ingrese averageLastYear'),
+  averageLastYear: Yup.number()
+    .min(1, 'El promedio debe ser mayor o igual a 1')
+    .max(7, 'El promedio debe ser menor o igual a 7')
+    .required('Ingrese nota'),
   semester: Yup.string().required('Ingrese año de carrera'),
   tracking: Yup.string().required('Ingrese segumiento')
 })
 
-const Scholarship = ({
-  open,
-  onClose,
-  type,
-  data,
-  submitFunction,
-  successMessage,
-  successFunction
-}) => {
-  const { enqueueSnackbar } = useSnackbar()
-  const { success, changeSuccess } = useSuccess()
+const Scholarship = ({ open, onClose, type, data }) => {
+  const dispatch = useDispatch()
+  const { success } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
+  const { create } = useSelector((state) => state.benefits)
+  const { careers } = useSelector((state) => state.scholarships)
 
   const formik = useFormik({
     validateOnMount: true,
@@ -39,32 +37,21 @@ const Scholarship = ({
       semester: type === 'UPDATE' ? data.semester : '',
       tracking: type === 'UPDATE' ? data.tracking : ''
     },
-    onSubmit: (values, { resetForm }) => {
-      submitFunction({
-        ...values,
-        createDate: new Date().toISOString()
-      })
-        .then(() => {
-          formik.setSubmitting(false)
-          changeSuccess(true, () => {
-            onClose()
-            enqueueSnackbar(successMessage, {
-              variant: 'success'
-            })
-            resetForm()
-            if (successFunction) {
-              successFunction()
-            }
-          })
+    onSubmit: (values) => {
+      dispatch(
+        benefitsActions.updateCreate({
+          ...create,
+          benefit: { ...create.benefit, ...values },
+          step: create.step === 1
         })
-        .catch((err) => {
-          formik.setSubmitting(false)
-          enqueueSnackbar(err, {
-            variant: 'error'
-          })
-        })
+      )
+      onClose()
     }
   })
+
+  useEffect(() => {
+    dispatch(scholarshipsActions.getCareers())
+  }, [])
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
@@ -78,6 +65,7 @@ const Scholarship = ({
               <TextField
                 label="Promedio de ultimo año cursado"
                 required
+                type="number"
                 name="averageLastYear"
                 value={formik.values.averageLastYear}
                 onChange={formik.handleChange}
@@ -96,6 +84,7 @@ const Scholarship = ({
               <TextField
                 label="Año de carrera"
                 required
+                type="number"
                 name="semester"
                 value={formik.values.semester}
                 onChange={formik.handleChange}
@@ -108,36 +97,31 @@ const Scholarship = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <Select
-                label="Nombre de Carrera"
-                required
+                label="Carrera"
                 name="careerId"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 value={formik.values.careerId}
-                helperText={formik.touched.careerId && formik.errors.careerId}
-                error={
-                  formik.touched.careerId && Boolean(formik.errors.careerId)
-                }
+                required
+                onChange={formik.handleChange}
               >
-                <option value="">Seleccione nacionalidad</option>
-                {statusList.map((item) => (
-                  <option value={item}>{capitalize(item)}</option>
+                <option value="">Seleccione carrera</option>
+                {careers.map((item) => (
+                  <option value={item.id}>{item.name}</option>
                 ))}
               </Select>
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
+              <Select
                 label="Seguimiento"
-                required
                 name="tracking"
                 value={formik.values.tracking}
+                required
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.tracking && Boolean(formik.errors.tracking)
-                }
-                helperText={formik.touched.tracking && formik.errors.tracking}
-              />
+              >
+                <option value="">Seleccione seguimiento</option>
+                {decisionList.map((item) => (
+                  <option value={item}>{capitalize(item)}</option>
+                ))}
+              </Select>
             </Grid>
           </Grid>
 

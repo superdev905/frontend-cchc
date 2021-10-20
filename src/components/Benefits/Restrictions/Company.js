@@ -2,7 +2,6 @@ import { capitalize } from 'lodash'
 import * as Yup from 'yup'
 import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
-import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
@@ -10,8 +9,22 @@ import { CompanyRow, Dialog } from '../../Shared'
 import { Button, Select, SubmitButton, TextField } from '../../UI'
 import { useSuccess } from '../../../hooks'
 import companiesActions from '../../../state/actions/companies'
+import benefitsActions from '../../../state/actions/benefits'
+import { decisionList } from '../../../config'
 
-const statusList = ['OPCION 1', 'OPCION 2', 'OPCION 3']
+const officeList = [
+  'ANTOFAGASTA',
+  'CALAMA',
+  'CONCEPCION',
+  'LOS ANGELES',
+  'PUERTO MONTT',
+  'OSORNO'
+]
+const companyTypes = ['SOCIA CCHC', 'NO SOCIA']
+const coverageList = ['NACIONAL', 'REGIONAL', 'SANTIAGO', 'CRITERIO EMPRESAS']
+const targetList = ['TIPOS DE TRABAJADORES', 'FAMILIA', 'OTRO']
+const businessFieldList = ['TODOS', 'EMPRESAS DE LA CONSTRUCCIÓN']
+const employeeTypes = ['TRABAJADOR', 'PREVENCIONISTA DE RIESGOS', 'OTROS']
 
 const validationSchema = Yup.object().shape({
   businessId: Yup.string().required('Seleccione empresa'),
@@ -25,19 +38,11 @@ const validationSchema = Yup.object().shape({
   office: Yup.string().required('Seleccione oficina regional')
 })
 
-const Company = ({
-  open,
-  onClose,
-  type,
-  data,
-  submitFunction,
-  successMessage,
-  successFunction
-}) => {
+const Company = ({ open, onClose, type, data }) => {
   const dispatch = useDispatch()
-  const { enqueueSnackbar } = useSnackbar()
-  const { success, changeSuccess } = useSuccess()
+  const { success } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
+  const { create } = useSelector((state) => state.benefits)
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [selectedCons, setSelectedCons] = useState(null)
   const [companies, setCompanies] = useState([])
@@ -58,30 +63,13 @@ const Company = ({
       target: type === 'UPDATE' ? data.target : '',
       office: type === 'UPDATE' ? data.office : ''
     },
-    onSubmit: (values, { resetForm }) => {
-      submitFunction({
-        ...values,
-        createDate: new Date().toISOString()
-      })
-        .then(() => {
-          formik.setSubmitting(false)
-          changeSuccess(true, () => {
-            onClose()
-            enqueueSnackbar(successMessage, {
-              variant: 'success'
-            })
-            resetForm()
-            if (successFunction) {
-              successFunction()
-            }
-          })
+    onSubmit: (values) => {
+      dispatch(
+        benefitsActions.updateCreate({
+          ...create,
+          benefit: { ...create.benefit, ...values }
         })
-        .catch((err) => {
-          formik.setSubmitting(false)
-          enqueueSnackbar(err, {
-            variant: 'error'
-          })
-        })
+      )
     }
   })
 
@@ -203,8 +191,8 @@ const Company = ({
                   Boolean(formik.errors.businessType)
                 }
               >
-                <option value="">Seleccione tipo de businessId</option>
-                {statusList.map((item) => (
+                <option value="">Seleccione tipo de empresa</option>
+                {companyTypes.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
@@ -226,7 +214,7 @@ const Company = ({
                 }
               >
                 <option value="">Seleccione relacion</option>
-                {statusList.map((item) => (
+                {decisionList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
@@ -248,7 +236,7 @@ const Company = ({
                 }
               >
                 <option value="">Seleccione giro</option>
-                {statusList.map((item) => (
+                {businessFieldList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
@@ -270,7 +258,7 @@ const Company = ({
                 }
               >
                 <option value="">Seleccione tipo</option>
-                {statusList.map((item) => (
+                {employeeTypes.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
@@ -290,7 +278,7 @@ const Company = ({
                 }
               >
                 <option value="">Seleccione coverage</option>
-                {statusList.map((item) => (
+                {coverageList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
@@ -307,7 +295,7 @@ const Company = ({
                 error={formik.touched.target && Boolean(formik.errors.target)}
               >
                 <option value="">Seleccione oficina</option>
-                {statusList.map((item) => (
+                {targetList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
@@ -324,7 +312,7 @@ const Company = ({
                 error={formik.touched.office && Boolean(formik.errors.office)}
               >
                 <option value="">Seleccione oficina</option>
-                {statusList.map((item) => (
+                {officeList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
