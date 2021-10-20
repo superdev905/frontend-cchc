@@ -41,8 +41,7 @@ const Scholarship = ({ open, onClose, type, data }) => {
       dispatch(
         benefitsActions.updateCreate({
           ...create,
-          benefit: { ...create.benefit, ...values },
-          step: create.step === 1
+          benefit: { ...create.benefit, ...values }
         })
       )
       onClose()
@@ -132,7 +131,6 @@ const Scholarship = ({ open, onClose, type, data }) => {
             <SubmitButton
               onClick={formik.handleSubmit}
               disabled={!formik.isValid || formik.isSubmitting}
-              loading={formik.isSubmitting}
               success={success}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} restricción`}

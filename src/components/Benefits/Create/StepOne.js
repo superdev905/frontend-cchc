@@ -98,6 +98,7 @@ const StepOne = ({ onClose, data }) => {
           <Grid item xs={12} md={6}>
             <DatePicker
               required
+              disabledFuture={false}
               label="Fecha de inicio"
               value={formik.values.startDate}
               helperText={formik.touched.startDate && formik.errors.startDate}
@@ -114,6 +115,8 @@ const StepOne = ({ onClose, data }) => {
           <Grid item xs={12} md={6}>
             <DatePicker
               required
+              disabledPast
+              disabledFuture={false}
               label="Fecha de termino"
               value={formik.values.endDate}
               helperText={formik.touched.endDate && formik.errors.endDate}

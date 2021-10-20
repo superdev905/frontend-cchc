@@ -13,6 +13,7 @@ import usersActions from '../../../state/actions/users'
 import benefitsActions from '../../../state/actions/benefits'
 
 const optionsList = ['OPCION 1', 'OPCION 2', 'OPCION 3']
+const modalities = ['PRESENCIAL', 'E-LEARNING', 'ON LINE']
 
 const validationSchema = Yup.object().shape({
   otecId: Yup.string().required(
@@ -32,7 +33,7 @@ const Course = ({ open, onClose, type, data }) => {
   const dispatch = useDispatch()
   const { success } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
-  const { otecs } = useSelector((state) => state.common)
+  const { otecs, specList } = useSelector((state) => state.common)
   const { create } = useSelector((state) => state.benefits)
   const [selectedOTEC, setSelectedOTEC] = useState(null)
   const [instructorsList, setInstructorList] = useState([])
@@ -103,6 +104,7 @@ const Course = ({ open, onClose, type, data }) => {
     if (open) {
       formik.resetForm()
       dispatch(commonActions.getAllOTECS())
+      dispatch(commonActions.getSpecList())
       dispatch(usersActions.getOTECUsers()).then((result) => {
         setInstructorList(result)
       })
@@ -199,7 +201,7 @@ const Course = ({ open, onClose, type, data }) => {
                 }
               >
                 <option value="">Seleccione modalidad</option>
-                {optionsList.map((item) => (
+                {modalities.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
@@ -259,8 +261,10 @@ const Course = ({ open, onClose, type, data }) => {
                 }
               >
                 <option value="">Seleccione oficio</option>
-                {optionsList.map((item) => (
-                  <option value={item}>{capitalize(item)}</option>
+                {specList.map((item, index) => (
+                  <option key={`specialty_id--${index}`} value={`${item.id}`}>
+                    {`${item.description}`}
+                  </option>
                 ))}
               </Select>
             </Grid>

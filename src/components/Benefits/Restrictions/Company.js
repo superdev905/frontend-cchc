@@ -118,7 +118,7 @@ const Company = ({ open, onClose, type, data }) => {
         <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
           {`${
             type === 'UPDATE' ? 'Actualizar' : 'Nueva'
-          } restricción por businessId`}
+          } restricción por empresa`}
         </Typography>
         <Box p={2}>
           <Grid container spacing={2}>

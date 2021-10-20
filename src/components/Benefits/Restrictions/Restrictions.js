@@ -11,10 +11,10 @@ import {
 import { Button, SubmitButton, Text } from '../../UI'
 import { useSuccess, useToggle } from '../../../hooks'
 import generateColor from '../../../utils/generateColor'
-import General from '../Restrictions/General'
-import Scholarship from '../Restrictions/Scholarship'
-import Course from '../Restrictions/Course'
-import Company from '../Restrictions/Company'
+import General from './General'
+import Scholarship from './Scholarship'
+import Course from './Course'
+import Company from './Company'
 
 const Restrictions = ({
   onClose,
@@ -163,7 +163,6 @@ const Restrictions = ({
             <SubmitButton
               onClick={formik.handleSubmit}
               disabled={!formik.isValid || formik.isSubmitting}
-              loading={formik.isSubmitting}
               success={success}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} restricción`}

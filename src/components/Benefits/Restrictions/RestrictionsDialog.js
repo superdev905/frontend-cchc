@@ -4,7 +4,7 @@ import { Box, Stepper, Step, StepLabel, Typography } from '@material-ui/core'
 import { Button } from '../../UI'
 import { Dialog } from '../../Shared'
 import benefitsActions from '../../../state/actions/benefits'
-import Restrictions from '../Create/Restrictions'
+import Restrictions from './Restrictions'
 
 function getSteps() {
   return ['', '']
