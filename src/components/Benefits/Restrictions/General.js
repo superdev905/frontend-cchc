@@ -73,8 +73,6 @@ const General = ({ open, onClose, type, benefit }) => {
         isActive: true,
         generalRestriction: values
       }
-      console.log(values)
-      console.log(data)
       if (create.type === 'CREATE') {
         dispatch(benefitsActions.createBenefit(data)).then(() => {
           dispatch(
