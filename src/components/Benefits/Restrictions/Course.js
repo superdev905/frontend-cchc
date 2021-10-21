@@ -64,19 +64,17 @@ const Course = ({ open, onClose, type, benefit }) => {
         ...create.benefit,
         createdDate: new Date(),
         description: '',
-        projectName: '',
         isActive: true,
         courseRestriction: values
       }
       if (create.type === 'CREATE') {
-        dispatch(benefitsActions.createBenefit(data)).then(() => {
-          dispatch(
-            benefitsActions.updateCreate({
-              ...create,
-              step: create.step + 1
-            })
-          )
-        })
+        dispatch(
+          benefitsActions.updateCreate({
+            ...create,
+            ...data,
+            step: create.step - 1
+          })
+        )
       }
     }
   })

@@ -18,7 +18,6 @@ const StepTwo = () => {
     const data = {
       ...create.benefit,
       description: '',
-      projectName: '',
       isActive: true,
       createdDate: new Date()
     }
