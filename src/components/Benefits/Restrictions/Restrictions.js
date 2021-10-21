@@ -1,6 +1,6 @@
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { Avatar, Box, Grid } from '@material-ui/core'
+import { Avatar, Box, Grid, makeStyles } from '@material-ui/core'
 import {
   FaUserGraduate,
   FaAward,
@@ -18,6 +18,18 @@ import Course from './Course'
 import Company from './Company'
 import benefitsActions from '../../../state/actions/benefits'
 
+const useStyles = makeStyles(() => ({
+  Box: {
+    cursor: 'pointer',
+    border: '2px solid grey',
+    borderRadius: 7,
+    padding: '7px',
+    '&:hover': {
+      backgroundColor: 'rgba(114, 115, 130, 0.11)'
+    }
+  }
+}))
+
 const Restrictions = ({
   onClose,
   type,
@@ -26,6 +38,7 @@ const Restrictions = ({
   successMessage,
   successFunction
 }) => {
+  const classes = useStyles()
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
@@ -82,6 +95,7 @@ const Restrictions = ({
                 onClick={toggleOpenAddGeneral}
                 display="flex"
                 alignItems="center"
+                className={classes.Box}
               >
                 <Avatar
                   style={{
@@ -99,6 +113,7 @@ const Restrictions = ({
               <Box
                 display="flex"
                 alignItems="center"
+                className={classes.Box}
                 onClick={toggleOpenAddCompany}
               >
                 <Avatar
@@ -117,6 +132,7 @@ const Restrictions = ({
               <Box
                 display="flex"
                 alignItems="center"
+                className={classes.Box}
                 onClick={toggleOpenAddScholarship}
               >
                 <Avatar
@@ -135,6 +151,7 @@ const Restrictions = ({
               <Box
                 display="flex"
                 alignItems="center"
+                className={classes.Box}
                 onClick={toggleOpenAddCourse}
               >
                 <Avatar
@@ -150,7 +167,7 @@ const Restrictions = ({
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <Box display="flex" alignItems="center">
+              <Box display="flex" alignItems="center" className={classes.Box}>
                 <Avatar
                   style={{
                     backgroundColor: generateColor(),
