@@ -2,30 +2,24 @@ import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Stepper, Step, StepLabel, Typography } from '@material-ui/core'
 import { Button } from '../../UI'
-import StepTwo from './StepTwo'
-import StepOne from './StepOne'
 import { Dialog } from '../../Shared'
 import benefitsActions from '../../../state/actions/benefits'
-import Restrictions from '../Restrictions/Restrictions'
+import Restrictions from './Restrictions'
 
 function getSteps() {
-  return ['Datos', 'Restricciones', '']
+  return ['', '']
 }
 
 function getStepContent(stepIndex, { onClose }) {
   switch (stepIndex) {
     case 0:
-      return <StepOne onClose={onClose} />
-    case 1:
-      return <StepTwo />
-    case 2:
-      return <Restrictions />
+      return <Restrictions onClose={onClose} />
     default:
-      return <span>Paso no encontrado</span>
+      return <Restrictions onClose={onClose} />
   }
 }
 
-const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
+const RestrictionsDialog = ({ open, onClose, type, data, successFunction }) => {
   const steps = getSteps()
   const dispatch = useDispatch()
   const { create } = useSelector((state) => state.benefits)
@@ -61,7 +55,7 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
         ...create,
         open,
         type,
-        step: open ? 0 : create.step,
+        step: open ? 1 : create.step,
         benefit: type === 'UPDATE' ? data : null
       })
     )
@@ -103,8 +97,8 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
   )
 }
 
-CreateDialog.defaultProps = {
+RestrictionsDialog.defaultProps = {
   type: 'CREATE'
 }
 
-export default CreateDialog
+export default RestrictionsDialog

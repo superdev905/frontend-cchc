@@ -13,9 +13,7 @@ import { DatePicker } from '../../Shared'
 const statusList = ['VIGENTE', 'NO VIGENTE']
 
 const validationSchema = Yup.object().shape({
-  code: Yup.string()
-    .min(5, 'Debe contener al menos 5 caracteres')
-    .required('Ingrese código'),
+  code: Yup.string().required('Ingrese código'),
   name: Yup.string().required('Ingrese nombre del curso'),
   startDate: Yup.date().required('Seleccione fecha de inicio'),
   endDate: Yup.date().required('Seleccione fecha de termino'),
@@ -72,13 +70,13 @@ const StepOne = ({ onClose, data }) => {
             <TextField
               label="Código"
               name="code"
+              type="number"
               required
               value={formik.values.code}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.code && Boolean(formik.errors.code)}
               helperText={formik.touched.code && formik.errors.code}
-              inputProps={{ maxLength: 5 }}
             />
           </Grid>
 
@@ -98,6 +96,7 @@ const StepOne = ({ onClose, data }) => {
           <Grid item xs={12} md={6}>
             <DatePicker
               required
+              disabledFuture={false}
               label="Fecha de inicio"
               value={formik.values.startDate}
               helperText={formik.touched.startDate && formik.errors.startDate}
@@ -114,6 +113,8 @@ const StepOne = ({ onClose, data }) => {
           <Grid item xs={12} md={6}>
             <DatePicker
               required
+              disabledPast
+              disabledFuture={false}
               label="Fecha de termino"
               value={formik.values.endDate}
               helperText={formik.touched.endDate && formik.errors.endDate}
@@ -147,6 +148,7 @@ const StepOne = ({ onClose, data }) => {
             <TextField
               label="Cupos anuales"
               name="usersQuantity"
+              type="number"
               required
               value={formik.values.usersQuantity}
               onChange={formik.handleChange}

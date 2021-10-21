@@ -4,10 +4,8 @@ import { useHistory } from 'react-router-dom'
 import { Box } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { Button, SubmitButton, EmptyState } from '../../UI'
-import { useToggle } from '../../../hooks'
 import useStyles from '../styles'
 import benefitsActions from '../../../state/actions/benefits'
-import Restrictions from './Restrictions'
 
 const StepTwo = () => {
   const classes = useStyles()
@@ -15,13 +13,13 @@ const StepTwo = () => {
   const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
   const { create } = useSelector((state) => state.benefits)
-  const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
 
   const onCreate = () => {
     const data = {
       ...create.benefit,
       description: '',
       projectName: '',
+      isActive: true,
       createdDate: new Date()
     }
     if (create.type === 'CREATE') {
@@ -60,12 +58,16 @@ const StepTwo = () => {
     dispatch(benefitsActions.updateCreate({ ...create, step: create.step - 1 }))
   }
 
+  const handleNext = () => {
+    dispatch(benefitsActions.updateCreate({ ...create, step: create.step + 1 }))
+  }
+
   return (
     <Box className={classes.form}>
       <EmptyState
-        message="No se agregarón restricciones"
+        message="No se agregaron restricciones"
         actionMessage="Agregar restricción"
-        event={toggleOpenAdd}
+        event={handleNext}
       />
       <Box className={classes.actions}>
         <Button startIcon={<BackIcon />} variant="outlined" onClick={goBack}>
@@ -76,7 +78,6 @@ const StepTwo = () => {
           {create.type === 'UPDATE' ? 'Actualizar' : 'Crear'} Beneficio
         </SubmitButton>
       </Box>
-      <Restrictions open={openAdd} onClose={toggleOpenAdd} />
     </Box>
   )
 }

@@ -137,6 +137,7 @@ const EmployeeModal = ({
     dispatch(commonActions.getBanks())
     dispatch(commonActions.getRSH())
   }, [])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
       <Box>

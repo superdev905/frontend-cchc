@@ -2,17 +2,18 @@ import { capitalize } from 'lodash'
 import * as Yup from 'yup'
 import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
-import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
 import { Autocomplete } from '@material-ui/lab'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { CompanyRow, Dialog } from '../../Shared'
+import { CompanyRow, CurrencyTextField, Dialog } from '../../Shared'
 import { Button, InputLabel, Select, SubmitButton, TextField } from '../../UI'
 import { useSuccess } from '../../../hooks'
 import commonActions from '../../../state/actions/common'
 import usersActions from '../../../state/actions/users'
+import benefitsActions from '../../../state/actions/benefits'
 
-const optionsList = ['OPCION 1', 'OPCION 2', 'OPCION 3']
+const optionsList = [1, 2, 3]
+const modalities = ['PRESENCIAL', 'E-LEARNING', 'ON LINE']
 
 const validationSchema = Yup.object().shape({
   otecId: Yup.string().required(
@@ -24,24 +25,16 @@ const validationSchema = Yup.object().shape({
   participants: Yup.string().required('Ingrese participantes'),
   courseHours: Yup.string().required('Ingrese horas del curso'),
   occupationName: Yup.string().required('Seleccione nombre oficio'),
-  assigned_to: Yup.string().required('Seleccione responsable de fundación'),
+  assignedTo: Yup.string().required('Seleccione responsable de fundación'),
   enrollCost: Yup.string().required('Ingrese costo de matrícula')
 })
 
-const Course = ({
-  open,
-  onClose,
-  type,
-  data,
-  submitFunction,
-  successMessage,
-  successFunction
-}) => {
+const Course = ({ open, onClose, type, benefit }) => {
   const dispatch = useDispatch()
-  const { enqueueSnackbar } = useSnackbar()
-  const { success, changeSuccess } = useSuccess()
+  const { success } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
-  const { otecs } = useSelector((state) => state.common)
+  const { otecs, specList } = useSelector((state) => state.common)
+  const { create } = useSelector((state) => state.benefits)
   const [selectedOTEC, setSelectedOTEC] = useState(null)
   const [instructorsList, setInstructorList] = useState([])
 
@@ -49,49 +42,49 @@ const Course = ({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      otecId: type === 'UPDATE' ? data.otecId : '',
-      otecName: type === 'UPDATE' ? data.otecName : '',
-      instructorId: type === 'UPDATE' ? data.instructorId : '',
-      instructorName: type === 'UPDATE' ? data.instructorName : '',
-      place: type === 'UPDATE' ? data.place : '',
-      modality: type === 'UPDATE' ? data.modality : '',
-      participants: type === 'UPDATE' ? data.participants : '',
-      courseHours: type === 'UPDATE' ? data.courseHours : '',
-      occupationName: type === 'UPDATE' ? data.occupationName : '',
-      assigned_to: type === 'UPDATE' ? data.assigned_to : '',
-      enrollCost: type === 'UPDATE' ? data.enrollCost : ''
+      otecId: type === 'UPDATE' ? benefit.courseRestriction.otecId : '',
+      otecName: type === 'UPDATE' ? benefit.courseRestriction.otecName : '',
+      instructorId:
+        type === 'UPDATE' ? benefit.courseRestriction.instructorId : '',
+      instructorName:
+        type === 'UPDATE' ? benefit.courseRestriction.instructorName : '',
+      place: type === 'UPDATE' ? benefit.courseRestriction.place : '',
+      modality: type === 'UPDATE' ? benefit.courseRestriction.modality : '',
+      participants:
+        type === 'UPDATE' ? benefit.courseRestriction.participants : '',
+      courseHours:
+        type === 'UPDATE' ? benefit.courseRestriction.courseHours : '',
+      occupationName:
+        type === 'UPDATE' ? benefit.courseRestriction.occupationName : '',
+      assignedTo: type === 'UPDATE' ? benefit.courseRestriction.assignedTo : '',
+      enrollCost: type === 'UPDATE' ? benefit.courseRestriction.enrollCost : ''
     },
-    onSubmit: (values, { resetForm }) => {
-      submitFunction({
-        ...values,
-        createDate: new Date().toISOString()
-      })
-        .then(() => {
-          formik.setSubmitting(false)
-          changeSuccess(true, () => {
-            onClose()
-            enqueueSnackbar(successMessage, {
-              variant: 'success'
+    onSubmit: (values) => {
+      const data = {
+        ...create.benefit,
+        createdDate: new Date(),
+        description: '',
+        projectName: '',
+        isActive: true,
+        courseRestriction: values
+      }
+      if (create.type === 'CREATE') {
+        dispatch(benefitsActions.createBenefit(data)).then(() => {
+          dispatch(
+            benefitsActions.updateCreate({
+              ...create,
+              step: create.step + 1
             })
-            resetForm()
-            if (successFunction) {
-              successFunction()
-            }
-          })
+          )
         })
-        .catch((err) => {
-          formik.setSubmitting(false)
-          enqueueSnackbar(err, {
-            variant: 'error'
-          })
-        })
+      }
     }
   })
 
   useEffect(() => {
     if (type === 'UPDATE' && otecs.length > 0) {
       const currentOtec = otecs.find(
-        (item) => item.id === parseInt(data.otecId, 10)
+        (item) => item.id === parseInt(benefit.otecId, 10)
       )
       setSelectedOTEC(currentOtec)
     }
@@ -128,6 +121,7 @@ const Course = ({
     if (open) {
       formik.resetForm()
       dispatch(commonActions.getAllOTECS())
+      dispatch(commonActions.getSpecList())
       dispatch(usersActions.getOTECUsers()).then((result) => {
         setInstructorList(result)
       })
@@ -223,8 +217,8 @@ const Course = ({
                   formik.touched.modality && Boolean(formik.errors.modality)
                 }
               >
-                <option value="">Seleccione modality</option>
-                {optionsList.map((item) => (
+                <option value="">Seleccione modalidad</option>
+                {modalities.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
@@ -233,6 +227,7 @@ const Course = ({
             <Grid item xs={12} md={6}>
               <TextField
                 label="Participantes"
+                type="number"
                 required
                 name="participants"
                 value={formik.values.participants}
@@ -251,6 +246,7 @@ const Course = ({
             <Grid item xs={12} md={6}>
               <TextField
                 label="Horas del curso"
+                type="number"
                 required
                 name="courseHours"
                 value={formik.values.courseHours}
@@ -282,8 +278,10 @@ const Course = ({
                 }
               >
                 <option value="">Seleccione oficio</option>
-                {optionsList.map((item) => (
-                  <option value={item}>{capitalize(item)}</option>
+                {specList.map((item, index) => (
+                  <option key={`specialty_id--${index}`} value={`${item.id}`}>
+                    {`${item.description}`}
+                  </option>
                 ))}
               </Select>
             </Grid>
@@ -291,16 +289,15 @@ const Course = ({
               <Select
                 label="Responsable fundación"
                 required
-                name="assigned_to"
+                name="assignedTo"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.assigned_to}
+                value={formik.values.assignedTo}
                 helperText={
-                  formik.touched.assigned_to && formik.errors.assigned_to
+                  formik.touched.assignedTo && formik.errors.assignedTo
                 }
                 error={
-                  formik.touched.assigned_to &&
-                  Boolean(formik.errors.assigned_to)
+                  formik.touched.assignedTo && Boolean(formik.errors.assignedTo)
                 }
               >
                 <option value="">Seleccione responsable</option>
@@ -311,7 +308,7 @@ const Course = ({
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <TextField
+              <CurrencyTextField
                 label="Costo de matricula"
                 required
                 name="enrollCost"

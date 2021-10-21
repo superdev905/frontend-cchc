@@ -15,6 +15,7 @@ import {
 } from '../UI'
 import { formatDate } from '../../formatters'
 import Can from '../Can'
+import CreateDialog from './Create/CreateDialog'
 
 const BenefitList = () => {
   const dispatch = useDispatch()
@@ -25,9 +26,20 @@ const BenefitList = () => {
     page: 1,
     search: ''
   })
-  const { benefits, t6tal: totalBenefits } = useSelector(
-    (state) => state.benefits
-  )
+  const {
+    benefits,
+    t6tal: totalBenefits,
+    showCreateModal
+  } = useSelector((state) => state.benefits)
+
+  const toggleCreateModal = () => {
+    dispatch(benefitsActions.toggleCreateModal(showCreateModal))
+  }
+
+  const addButtonClick = () => {
+    dispatch(benefitsActions.toggleCreateModal(showCreateModal))
+  }
+
   const fetchBenefits = () => {
     setLoading(true)
     dispatch(
@@ -95,7 +107,9 @@ const BenefitList = () => {
             <Box display="flex" justifyContent="flex-end">
               <Can
                 availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
-                yes={() => <Button>Crear beneficio</Button>}
+                yes={() => (
+                  <Button onClick={addButtonClick}>Crear beneficio</Button>
+                )}
                 no={() => null}
               />
             </Box>
@@ -178,6 +192,8 @@ const BenefitList = () => {
         }}
         paginationTotalRows={totalBenefits}
       />
+
+      <CreateDialog open={showCreateModal} onClose={toggleCreateModal} />
     </Wrapper>
   )
 }
