@@ -23,6 +23,17 @@ const createBenefit = (values) => () =>
         reject(err.response.data.detail)
       })
   })
+const updateBenefit = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.benefits}/benefits/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 const getBenefits =
   (query = {}) =>
@@ -89,7 +100,8 @@ const benefitsActions = {
   deleteBenefits,
   getBenefits,
   getBenefitDetails,
-  deleteBenefit
+  deleteBenefit,
+  updateBenefit
 }
 
 export default benefitsActions

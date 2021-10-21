@@ -7,6 +7,7 @@ import benefitsActions from '../../state/actions/benefits'
 import { Button, Wrapper } from '../../components/UI'
 import { useSuccess, useToggle } from '../../hooks'
 import { BenefitDetails, BenefitTabs } from '../../components/Benefit'
+import { BenefitEdit } from '../../components/Benefits'
 
 const Benefits = () => {
   const dispatch = useDispatch()
@@ -16,6 +17,7 @@ const Benefits = () => {
   const [deleting, setDeleting] = useState(false)
   const { benefitDetails: benefit } = useSelector((state) => state.benefits)
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { success, changeSuccess } = useSuccess()
 
   const goBack = () => {
@@ -66,7 +68,12 @@ const Benefits = () => {
           >
             Eliminar
           </Button>
-          <Button disabled={benefit?.state === 'DELETED'}>Editar</Button>
+          <Button
+            disabled={benefit?.state === 'DELETED'}
+            onClick={toggleOpenEdit}
+          >
+            Editar
+          </Button>
         </Box>
       </Box>
       <BenefitDetails loading={loading} />
@@ -83,6 +90,14 @@ const Benefits = () => {
           }
           loading={deleting}
           success={success}
+        />
+      )}
+      {benefit && openEdit && (
+        <BenefitEdit
+          open={openEdit}
+          benefit={benefit}
+          onClose={toggleOpenEdit}
+          successFunction={fetchDetails}
         />
       )}
     </Wrapper>

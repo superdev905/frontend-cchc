@@ -1,72 +1,20 @@
-import * as Yup from 'yup'
-import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { useFormik } from 'formik'
-import { Box, Grid, Typography } from '@material-ui/core'
-import { capitalize } from 'lodash'
+import { Box, Grid } from '@material-ui/core'
 import { Select, TextField } from '../../UI'
-import useStyles from '../styles'
-import Actions from '../Actions'
-import benefitsActions from '../../../state/actions/benefits'
 import { DatePicker } from '../../Shared'
 
 const statusList = ['VIGENTE', 'NO VIGENTE']
 
-const validationSchema = Yup.object().shape({
-  code: Yup.string()
-    .min(5, 'Debe contener al menos 5 caracteres')
-    .required('Ingrese código'),
-  name: Yup.string().required('Ingrese nombre del curso'),
-  startDate: Yup.date().required('Seleccione fecha de inicio'),
-  endDate: Yup.date().required('Seleccione fecha de termino'),
-  isActive: Yup.string().required('Seleccione estado'),
-  usersQuantity: Yup.string().required('Ingrese cupos anuales')
-})
-
-const StepOne = ({ onClose, data }) => {
-  const classes = useStyles()
-  const dispatch = useDispatch()
-  const { create } = useSelector((state) => state.benefits)
-
-  const formik = useFormik({
-    validateOnMount: true,
-    validationSchema,
-    initialValues: {
-      code: create?.benefit?.code || '',
-      startDate: create?.benefit?.startDate || '',
-      endDate: create?.benefit?.endDate || '',
-      name: create?.benefit?.name || '',
-      usersQuantity: create?.benefit?.usersQuantity || '',
-      isActive: create?.benefit?.isActive || ''
-    },
-    onSubmit: (values) => {
-      dispatch(
-        benefitsActions.updateCreate({
-          ...create,
-          benefit: { ...create.benefit, ...values },
-          step: create.step + 1
-        })
-      )
-    }
-  })
-
-  useEffect(() => {
-    if (data) {
-      dispatch(
-        benefitsActions.updateCreate({
-          ...create,
-          ...data
-        })
-      )
-    }
-  }, [data])
-
+const BenefitForm = ({ formik, actions }) => {
+  const validNumber = (num) => {
+    if (num === '') return ''
+    if (Number.isNaN(num)) return ''
+    if (num * 1 < 0) return ''
+    if (num === '0') return ''
+    return parseInt(num, 10)
+  }
   return (
-    <Box className={classes.form}>
+    <Box>
       <Box>
-        <Typography align="center" className={classes.subtitle}>
-          Nuevo Beneficio
-        </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <TextField
@@ -78,10 +26,9 @@ const StepOne = ({ onClose, data }) => {
               onBlur={formik.handleBlur}
               error={formik.touched.code && Boolean(formik.errors.code)}
               helperText={formik.touched.code && formik.errors.code}
-              inputProps={{ maxLength: 5 }}
+              inputProps={{ maxLength: 7 }}
             />
           </Grid>
-
           <Grid item xs={12} md={6}>
             <TextField
               label="Nombre del beneficio"
@@ -94,11 +41,27 @@ const StepOne = ({ onClose, data }) => {
               helperText={formik.touched.name && formik.errors.name}
             />
           </Grid>
-
+          <Grid item xs={12} md={6}>
+            <TextField
+              label="Nombre del proyecto"
+              name="projectName"
+              required
+              value={formik.values.projectName}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.projectName && Boolean(formik.errors.projectName)
+              }
+              helperText={
+                formik.touched.projectName && formik.errors.projectName
+              }
+            />
+          </Grid>
           <Grid item xs={12} md={6}>
             <DatePicker
               required
               label="Fecha de inicio"
+              disabledFuture={false}
               value={formik.values.startDate}
               helperText={formik.touched.startDate && formik.errors.startDate}
               error={
@@ -115,6 +78,9 @@ const StepOne = ({ onClose, data }) => {
             <DatePicker
               required
               label="Fecha de termino"
+              minDate={formik.values.startDate}
+              disabledPast
+              disabledFuture={false}
               value={formik.values.endDate}
               helperText={formik.touched.endDate && formik.errors.endDate}
               error={formik.touched.endDate && Boolean(formik.errors.endDate)}
@@ -138,7 +104,7 @@ const StepOne = ({ onClose, data }) => {
             >
               <option value="">Seleccione estado</option>
               {statusList.map((item) => (
-                <option value={item}>{capitalize(item)}</option>
+                <option value={item}>{item}</option>
               ))}
             </Select>
           </Grid>
@@ -148,8 +114,15 @@ const StepOne = ({ onClose, data }) => {
               label="Cupos anuales"
               name="usersQuantity"
               required
+              type="number"
               value={formik.values.usersQuantity}
-              onChange={formik.handleChange}
+              onChange={(e) => {
+                formik.setFieldTouched('usersQuantity')
+                formik.setFieldValue(
+                  'usersQuantity',
+                  validNumber(e.target.value)
+                )
+              }}
               onBlur={formik.handleBlur}
               error={
                 formik.touched.usersQuantity &&
@@ -162,15 +135,9 @@ const StepOne = ({ onClose, data }) => {
           </Grid>
         </Grid>
       </Box>
-      <Actions
-        showBackIcon={false}
-        handleBack={onClose}
-        backText="Cancelar"
-        disableNext={!formik.isValid}
-        handleNext={formik.handleSubmit}
-      />
+      {actions}
     </Box>
   )
 }
 
-export default StepOne
+export default BenefitForm
