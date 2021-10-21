@@ -38,7 +38,7 @@ const validationSchema = Yup.object().shape({
   office: Yup.string().required('Seleccione oficina regional')
 })
 
-const Company = ({ open, onClose, type, data }) => {
+const Company = ({ open, onClose, type, benefit }) => {
   const dispatch = useDispatch()
   const { success } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
@@ -51,25 +51,45 @@ const Company = ({ open, onClose, type, data }) => {
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      businessId: type === 'UPDATE' ? data.businessId : '',
-      businessName: type === 'UPDATE' ? data.businessName : '',
-      constructionId: type === 'UPDATE' ? data.constructionId : '',
-      constructionName: type === 'UPDATE' ? data.constructionName : '',
-      businessType: type === 'UPDATE' ? data.businessType : '',
-      socialService: type === 'UPDATE' ? data.socialService : '',
-      businessField: type === 'UPDATE' ? data.businessField : '',
-      employeeType: type === 'UPDATE' ? data.employeeType : '',
-      coverage: type === 'UPDATE' ? data.coverage : '',
-      target: type === 'UPDATE' ? data.target : '',
-      office: type === 'UPDATE' ? data.office : ''
+      businessId:
+        type === 'UPDATE' ? benefit.businessRestriction.businessId : '',
+      businessName:
+        type === 'UPDATE' ? benefit.businessRestriction.businessName : '',
+      constructionId:
+        type === 'UPDATE' ? benefit.businessRestriction.constructionId : '',
+      constructionName:
+        type === 'UPDATE' ? benefit.businessRestriction.constructionName : '',
+      businessType:
+        type === 'UPDATE' ? benefit.businessRestriction.businessType : '',
+      socialService:
+        type === 'UPDATE' ? benefit.businessRestriction.socialService : '',
+      businessField:
+        type === 'UPDATE' ? benefit.businessRestriction.businessField : '',
+      employeeType:
+        type === 'UPDATE' ? benefit.businessRestriction.employeeType : '',
+      coverage: type === 'UPDATE' ? benefit.businessRestriction.coverage : '',
+      target: type === 'UPDATE' ? benefit.businessRestriction.target : '',
+      office: type === 'UPDATE' ? benefit.businessRestriction.office : ''
     },
     onSubmit: (values) => {
-      dispatch(
-        benefitsActions.updateCreate({
-          ...create,
-          benefit: { ...create.benefit, ...values }
+      const data = {
+        ...create.benefit,
+        createdDate: new Date(),
+        description: '',
+        projectName: '',
+        isActive: true,
+        businessRestriction: values
+      }
+      if (create.type === 'CREATE') {
+        dispatch(benefitsActions.createBenefit(data)).then(() => {
+          dispatch(
+            benefitsActions.updateCreate({
+              ...create,
+              step: create.step + 1
+            })
+          )
         })
-      )
+      }
     }
   })
 
@@ -101,6 +121,26 @@ const Company = ({ open, onClose, type, data }) => {
       )
     }
   }, [type, companies])
+
+  useEffect(() => {
+    const { businessId } = formik.values
+    if (businessId && companies.length > 0) {
+      const currentBusiness = companies.find(
+        (item) => item.id === parseInt(businessId, 10)
+      )
+      formik.setFieldValue('businessName', currentBusiness.name)
+    } else {
+      formik.setFieldValue('businessName', '')
+    }
+  }, [formik.values.businessId, companies])
+
+  useEffect(() => {
+    const { businessId } = formik.values
+    if (businessId === '') {
+      formik.setFieldValue('businessId', '')
+      formik.setFieldValue('businessName', '')
+    }
+  }, [formik.values.businessId, companies])
 
   useEffect(() => {
     if (open) {

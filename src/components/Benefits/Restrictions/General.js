@@ -12,6 +12,7 @@ import commonActions from '../../../state/actions/common'
 import benefitsActions from '../../../state/actions/benefits'
 
 const activityTypes = ['INDIVIDUAL', 'MASIVO']
+const previsionList = ['N/A', 'FONASA A', 'TODOS EXCEPTO FONASA A']
 const inscribers = ['TRABAJADOR', 'EMPRESA']
 const fundingList = ['PROYECTO SOCIAL', 'GOBIERNO', 'PROPIA EMPRESA', 'OTRO']
 
@@ -21,7 +22,7 @@ const validationSchema = Yup.object().shape({
   legalCharge: Yup.string().required('Seleccione carga legal'),
   prevision: Yup.string().required('Seleccione previsión'),
   retired: Yup.string().required('Seleccione estado de jubilación'),
-  belongToReconocer: Yup.string().required(
+  belongsToReconocer: Yup.string().required(
     'Seleccione si pertenece a reconocer'
   ),
   isAdult: Yup.string().required('Ingrese edad'),
@@ -32,47 +33,103 @@ const validationSchema = Yup.object().shape({
   maxSalary: Yup.string().required('Ingrese renta')
 })
 
-const General = ({ open, onClose, type, data }) => {
+const General = ({ open, onClose, type, benefit }) => {
   const dispatch = useDispatch()
   const { success } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
   const { create } = useSelector((state) => state.benefits)
-  const { nationalities, rshList, IsapreFonasaList } = useSelector(
-    (state) => state.common
-  )
+  const { nationalities, rshList } = useSelector((state) => state.common)
 
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      nationalityId: type === 'UPDATE' ? data.nationalityId : '',
-      rshId: type === 'UPDATE' ? data.rshId : '',
-      legalCharge: type === 'UPDATE' ? data.legalCharge : '',
-      prevision: type === 'UPDATE' ? data.prevision : '',
-      retired: type === 'UPDATE' ? data.retired : '',
-      belongToReconocer: type === 'UPDATE' ? data.belongToReconocer : '',
-      isAdult: type === 'UPDATE' ? data.isAdult : '',
-      gender: type === 'UPDATE' ? data.gender : '',
-      activityType: type === 'UPDATE' ? data.activityType : '',
-      inscriber: type === 'UPDATE' ? data.inscriber : '',
-      funding: type === 'UPDATE' ? data.funding : '',
-      maxSalary: type === 'UPDATE' ? data.maxSalary : ''
+      nationalityId:
+        type === 'UPDATE' ? benefit.generalRestriction.nationalityId : '',
+      nationalityName:
+        type === 'UPDATE' ? benefit.generalRestriction.nationalityName : '',
+      rshId: type === 'UPDATE' ? benefit.generalRestriction.rshId : '',
+      rshName: type === 'UPDATE' ? benefit.generalRestriction.rshName : '',
+      legalCharge:
+        type === 'UPDATE' ? benefit.generalRestriction.legalCharge : '',
+      prevision: type === 'UPDATE' ? benefit.generalRestriction.prevision : '',
+      retired: type === 'UPDATE' ? benefit.generalRestriction.retired : '',
+      belongsToReconocer:
+        type === 'UPDATE' ? benefit.generalRestriction.belongsToReconocer : '',
+      isAdult: type === 'UPDATE' ? benefit.generalRestriction.isAdult : '',
+      gender: type === 'UPDATE' ? benefit.generalRestriction.gender : '',
+      activityType:
+        type === 'UPDATE' ? benefit.generalRestriction.activityType : '',
+      inscriber: type === 'UPDATE' ? benefit.generalRestriction.inscriber : '',
+      funding: type === 'UPDATE' ? benefit.generalRestriction.funding : '',
+      maxSalary: type === 'UPDATE' ? benefit.generalRestriction.maxSalary : ''
     },
     onSubmit: (values) => {
-      useDispatch(
-        benefitsActions.updateCreate({
-          ...create,
-          benefit: { ...create.benefit, ...values }
+      const data = {
+        ...create.benefit,
+        createdDate: new Date(),
+        description: '',
+        projectName: '',
+        isActive: true,
+        generalRestriction: values
+      }
+      console.log(values)
+      console.log(data)
+      if (create.type === 'CREATE') {
+        dispatch(benefitsActions.createBenefit(data)).then(() => {
+          dispatch(
+            benefitsActions.updateCreate({
+              ...create,
+              step: create.step + 1
+            })
+          )
         })
-      )
+      }
     }
   })
+
+  useEffect(() => {
+    const { nationalityId } = formik.values
+    if (nationalityId && nationalities.length > 0) {
+      const currentNationality = nationalities.find(
+        (item) => item.id === parseInt(nationalityId, 10)
+      )
+      formik.setFieldValue('nationalityName', currentNationality.description)
+    } else {
+      formik.setFieldValue('nationalityName', '')
+    }
+  }, [formik.values.nationalityId, nationalities])
+
+  useEffect(() => {
+    const { nationalityId } = formik.values
+    if (nationalityId === '') {
+      formik.setFieldValue('nationalityId', '')
+      formik.setFieldValue('nationalityName', '')
+    }
+  }, [formik.values.nationalityId, nationalities])
+
+  useEffect(() => {
+    const { rshId } = formik.values
+    if (rshId && rshList.length > 0) {
+      const currentRSH = rshList.find((item) => item.id === parseInt(rshId, 10))
+      formik.setFieldValue('rshName', currentRSH.description)
+    } else {
+      formik.setFieldValue('rshName', '')
+    }
+  }, [formik.values.rshId, rshList])
+
+  useEffect(() => {
+    const { rshId } = formik.values
+    if (rshId === '') {
+      formik.setFieldValue('rshId', '')
+      formik.setFieldValue('rshName', '')
+    }
+  }, [formik.values.rshId, rshList])
 
   useEffect(() => {
     if (open) {
       dispatch(commonActions.getNationalities())
       dispatch(commonActions.getRSH())
-      dispatch(commonActions.getIsapreFonasa())
     }
   }, [open])
 
@@ -164,11 +221,9 @@ const General = ({ open, onClose, type, data }) => {
                   formik.touched.prevision && Boolean(formik.errors.prevision)
                 }
               >
-                <option value="">Seleccione una opción</option>
-                {IsapreFonasaList.map((item, index) => (
-                  <option key={`region--${index}`} value={`${item.id}`}>
-                    {`${item.description}`}
-                  </option>
+                <option value="">Seleccione prevision</option>
+                {previsionList.map((item) => (
+                  <option value={item}>{capitalize(item)}</option>
                 ))}
               </Select>
             </Grid>
@@ -193,17 +248,17 @@ const General = ({ open, onClose, type, data }) => {
               <Select
                 label="Pertenece a reconocer"
                 required
-                name="belongToReconocer"
+                name="belongsToReconocer"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.belongToReconocer}
+                value={formik.values.belongsToReconocer}
                 helperText={
-                  formik.touched.belongToReconocer &&
-                  formik.errors.belongToReconocer
+                  formik.touched.belongsToReconocer &&
+                  formik.errors.belongsToReconocer
                 }
                 error={
-                  formik.touched.belongToReconocer &&
-                  Boolean(formik.errors.belongToReconocer)
+                  formik.touched.belongsToReconocer &&
+                  Boolean(formik.errors.belongsToReconocer)
                 }
               >
                 <option value="">Seleccione opcion</option>

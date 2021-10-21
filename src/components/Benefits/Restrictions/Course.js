@@ -12,7 +12,7 @@ import commonActions from '../../../state/actions/common'
 import usersActions from '../../../state/actions/users'
 import benefitsActions from '../../../state/actions/benefits'
 
-const optionsList = ['OPCION 1', 'OPCION 2', 'OPCION 3']
+const optionsList = [1, 2, 3]
 const modalities = ['PRESENCIAL', 'E-LEARNING', 'ON LINE']
 
 const validationSchema = Yup.object().shape({
@@ -25,11 +25,11 @@ const validationSchema = Yup.object().shape({
   participants: Yup.string().required('Ingrese participantes'),
   courseHours: Yup.string().required('Ingrese horas del curso'),
   occupationName: Yup.string().required('Seleccione nombre oficio'),
-  assigned_to: Yup.string().required('Seleccione responsable de fundación'),
+  assignedTo: Yup.string().required('Seleccione responsable de fundación'),
   enrollCost: Yup.string().required('Ingrese costo de matrícula')
 })
 
-const Course = ({ open, onClose, type, data }) => {
+const Course = ({ open, onClose, type, benefit }) => {
   const dispatch = useDispatch()
   const { success } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
@@ -42,32 +42,49 @@ const Course = ({ open, onClose, type, data }) => {
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      otecId: type === 'UPDATE' ? data.otecId : '',
-      otecName: type === 'UPDATE' ? data.otecName : '',
-      instructorId: type === 'UPDATE' ? data.instructorId : '',
-      instructorName: type === 'UPDATE' ? data.instructorName : '',
-      place: type === 'UPDATE' ? data.place : '',
-      modality: type === 'UPDATE' ? data.modality : '',
-      participants: type === 'UPDATE' ? data.participants : '',
-      courseHours: type === 'UPDATE' ? data.courseHours : '',
-      occupationName: type === 'UPDATE' ? data.occupationName : '',
-      assigned_to: type === 'UPDATE' ? data.assigned_to : '',
-      enrollCost: type === 'UPDATE' ? data.enrollCost : ''
+      otecId: type === 'UPDATE' ? benefit.courseRestriction.otecId : '',
+      otecName: type === 'UPDATE' ? benefit.courseRestriction.otecName : '',
+      instructorId:
+        type === 'UPDATE' ? benefit.courseRestriction.instructorId : '',
+      instructorName:
+        type === 'UPDATE' ? benefit.courseRestriction.instructorName : '',
+      place: type === 'UPDATE' ? benefit.courseRestriction.place : '',
+      modality: type === 'UPDATE' ? benefit.courseRestriction.modality : '',
+      participants:
+        type === 'UPDATE' ? benefit.courseRestriction.participants : '',
+      courseHours:
+        type === 'UPDATE' ? benefit.courseRestriction.courseHours : '',
+      occupationName:
+        type === 'UPDATE' ? benefit.courseRestriction.occupationName : '',
+      assignedTo: type === 'UPDATE' ? benefit.courseRestriction.assignedTo : '',
+      enrollCost: type === 'UPDATE' ? benefit.courseRestriction.enrollCost : ''
     },
     onSubmit: (values) => {
-      dispatch(
-        benefitsActions.updateCreate({
-          ...create,
-          benefit: { ...create.benefit, ...values }
+      const data = {
+        ...create.benefit,
+        createdDate: new Date(),
+        description: '',
+        projectName: '',
+        isActive: true,
+        courseRestriction: values
+      }
+      if (create.type === 'CREATE') {
+        dispatch(benefitsActions.createBenefit(data)).then(() => {
+          dispatch(
+            benefitsActions.updateCreate({
+              ...create,
+              step: create.step + 1
+            })
+          )
         })
-      )
+      }
     }
   })
 
   useEffect(() => {
     if (type === 'UPDATE' && otecs.length > 0) {
       const currentOtec = otecs.find(
-        (item) => item.id === parseInt(data.otecId, 10)
+        (item) => item.id === parseInt(benefit.otecId, 10)
       )
       setSelectedOTEC(currentOtec)
     }
@@ -272,16 +289,15 @@ const Course = ({ open, onClose, type, data }) => {
               <Select
                 label="Responsable fundación"
                 required
-                name="assigned_to"
+                name="assignedTo"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.assigned_to}
+                value={formik.values.assignedTo}
                 helperText={
-                  formik.touched.assigned_to && formik.errors.assigned_to
+                  formik.touched.assignedTo && formik.errors.assignedTo
                 }
                 error={
-                  formik.touched.assigned_to &&
-                  Boolean(formik.errors.assigned_to)
+                  formik.touched.assignedTo && Boolean(formik.errors.assignedTo)
                 }
               >
                 <option value="">Seleccione responsable</option>

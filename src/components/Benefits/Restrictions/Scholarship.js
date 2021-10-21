@@ -21,7 +21,7 @@ const validationSchema = Yup.object().shape({
   tracking: Yup.string().required('Ingrese segumiento')
 })
 
-const Scholarship = ({ open, onClose, type, data }) => {
+const Scholarship = ({ open, onClose, type, benefit }) => {
   const dispatch = useDispatch()
   const { success } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
@@ -32,21 +32,57 @@ const Scholarship = ({ open, onClose, type, data }) => {
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      careerId: type === 'UPDATE' ? data.careerId : '',
-      averageLastYear: type === 'UPDATE' ? data.averageLastYear : '',
-      semester: type === 'UPDATE' ? data.semester : '',
-      tracking: type === 'UPDATE' ? data.tracking : ''
+      careerId:
+        type === 'UPDATE' ? benefit.scholarshipRestriction.careerId : '',
+      careerName:
+        type === 'UPDATE' ? benefit.scholarshipRestriction.careerName : '',
+      averageLastYear:
+        type === 'UPDATE' ? benefit.scholarshipRestriction.averageLastYear : '',
+      semester:
+        type === 'UPDATE' ? benefit.scholarshipRestriction.semester : '',
+      tracking: type === 'UPDATE' ? benefit.scholarshipRestriction.tracking : ''
     },
     onSubmit: (values) => {
-      dispatch(
-        benefitsActions.updateCreate({
-          ...create,
-          benefit: { ...create.benefit, ...values }
+      const data = {
+        ...create.benefit,
+        createdDate: new Date(),
+        description: '',
+        projectName: '',
+        isActive: true,
+        scholarshipRestriction: values
+      }
+      if (create.type === 'CREATE') {
+        dispatch(benefitsActions.createBenefit(data)).then(() => {
+          dispatch(
+            benefitsActions.updateCreate({
+              ...create,
+              step: create.step + 1
+            })
+          )
         })
-      )
-      onClose()
+      }
     }
   })
+
+  useEffect(() => {
+    const { careerId } = formik.values
+    if (careerId && careers.length > 0) {
+      const currentCareer = careers.find(
+        (item) => item.id === parseInt(careerId, 10)
+      )
+      formik.setFieldValue('careerName', currentCareer.name)
+    } else {
+      formik.setFieldValue('careerName', '')
+    }
+  }, [formik.values.careerId, careers])
+
+  useEffect(() => {
+    const { careerId } = formik.values
+    if (careerId === '') {
+      formik.setFieldValue('careerId', '')
+      formik.setFieldValue('careerName', '')
+    }
+  }, [formik.values.careerId, careers])
 
   useEffect(() => {
     dispatch(scholarshipsActions.getCareers())

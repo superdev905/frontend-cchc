@@ -8,6 +8,7 @@ import {
   FaCity,
   FaClipboardList
 } from 'react-icons/fa'
+import { useDispatch, useSelector } from 'react-redux'
 import { Button, SubmitButton, Text } from '../../UI'
 import { useSuccess, useToggle } from '../../../hooks'
 import generateColor from '../../../utils/generateColor'
@@ -15,6 +16,7 @@ import General from './General'
 import Scholarship from './Scholarship'
 import Course from './Course'
 import Company from './Company'
+import benefitsActions from '../../../state/actions/benefits'
 
 const Restrictions = ({
   onClose,
@@ -24,8 +26,10 @@ const Restrictions = ({
   successMessage,
   successFunction
 }) => {
+  const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
+  const { create } = useSelector((state) => state.benefits)
   const { open: openAddGeneral, toggleOpen: toggleOpenAddGeneral } = useToggle()
   const { open: openAddScholarship, toggleOpen: toggleOpenAddScholarship } =
     useToggle()
@@ -63,6 +67,10 @@ const Restrictions = ({
         })
     }
   })
+
+  const handleBack = () => {
+    dispatch(benefitsActions.updateCreate({ ...create, step: create.step - 1 }))
+  }
 
   return (
     <Box>
@@ -159,6 +167,9 @@ const Restrictions = ({
           <Box textAlign="center" marginTop="10px">
             <Button onClick={onClose} variant="outlined">
               Cancelar
+            </Button>
+            <Button onClick={handleBack} variant="outlined">
+              Volver
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}

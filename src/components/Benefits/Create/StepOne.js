@@ -13,9 +13,7 @@ import { DatePicker } from '../../Shared'
 const statusList = ['VIGENTE', 'NO VIGENTE']
 
 const validationSchema = Yup.object().shape({
-  code: Yup.string()
-    .min(5, 'Debe contener al menos 5 caracteres')
-    .required('Ingrese código'),
+  code: Yup.string().required('Ingrese código'),
   name: Yup.string().required('Ingrese nombre del curso'),
   startDate: Yup.date().required('Seleccione fecha de inicio'),
   endDate: Yup.date().required('Seleccione fecha de termino'),
