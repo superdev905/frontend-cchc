@@ -8,18 +8,30 @@ const RestrictionsTab = () => {
     <Box>
       {benefit && (
         <>
-          <RestrictionCard
-            type="BUSINESS"
-            restriction={benefit.businessRestriction}
-          />
-          <RestrictionCard
-            type="GENERAL"
-            restriction={benefit.generalRestriction}
-          />
-          <RestrictionCard
-            type="COURSE"
-            restriction={benefit.courseRestriction}
-          />
+          {benefit.businessRestriction && (
+            <RestrictionCard
+              type="BUSINESS"
+              restriction={benefit.businessRestriction}
+            />
+          )}
+          {benefit.generalRestriction && (
+            <RestrictionCard
+              type="GENERAL"
+              restriction={benefit.generalRestriction}
+            />
+          )}
+          {benefit.courseRestriction && (
+            <RestrictionCard
+              type="COURSE"
+              restriction={benefit.courseRestriction}
+            />
+          )}
+          {benefit.scholarshipRestriction && (
+            <RestrictionCard
+              type="SCHOLARSHIP"
+              restriction={benefit.scholarshipRestriction}
+            />
+          )}
         </>
       )}
     </Box>

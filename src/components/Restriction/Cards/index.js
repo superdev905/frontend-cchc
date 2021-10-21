@@ -1,4 +1,5 @@
-import { Box, Typography } from '@material-ui/core'
+import { Box, IconButton, Typography } from '@material-ui/core'
+import { FiEdit as EditIcon } from 'react-icons/fi'
 import {
   FaUserGraduate,
   FaAward,
@@ -9,52 +10,56 @@ import {
 import Company from './Company'
 import General from './General'
 import Course from './Course'
+import Scholarship from './Scholarship'
+import useStyles from './styles'
 
 const RestrictionCard = ({ type, restriction }) => {
   const types = {
     GENERAL: {
       name: 'General',
       icon: <FaClipboardList />,
-      component: <General restriction={restriction} />
+      component: <General restriction={restriction} />,
+      iconColor: '#BE52F2'
     },
     BUSINESS: {
       name: 'Empresas',
       icon: <FaCity />,
-      component: <Company restriction={restriction} />
+      component: <Company restriction={restriction} />,
+      iconColor: '#00C48C'
     },
     COURSE: {
       name: 'Curso',
       icon: <FaAward />,
-      component: <Course restriction={restriction} />
+      component: <Course restriction={restriction} />,
+      iconColor: '#0084F4'
     },
     HOME: { name: 'Vivienda', icon: <FaHome /> },
-    SCHOLARSHIP: { name: 'Beca', icon: <FaUserGraduate /> }
+    SCHOLARSHIP: {
+      name: 'Beca',
+      icon: <FaUserGraduate />,
+      component: <Scholarship restriction={restriction} />,
+      iconColor: '#FF6474'
+    }
   }
 
+  const classes = useStyles({ iconColor: types[type].iconColor })
+
   return (
-    <Box p={2} border={'1px solid'} borderRadius={'5px'}>
-      <Box display={'flex'} alignItems={'center'}>
-        <Box
-          style={{
-            width: '40px',
-            fontSize: '22px',
-            height: '40px',
-            borderRadius: '50%',
-            backgroundColor: 'blue',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            color: 'white',
-            marginRight: '10px'
-          }}
-        >
-          {types[type].icon}
+    <Box className={classes.root}>
+      <Box display={'flex'} justifyContent={'space-between'}>
+        <Box display={'flex'} alignItems={'center'}>
+          <Box className={classes.iconWrapper}>{types[type].icon}</Box>
+          <Typography className={classes.typeTag}>
+            {types[type].name}
+          </Typography>
         </Box>
-        <Typography>{types[type].name}</Typography>
+        <Box className={classes.actions}>
+          <IconButton>
+            <EditIcon />
+          </IconButton>
+        </Box>
       </Box>
-      <Typography>{type}</Typography>
-      <Typography>{restriction.id}</Typography>
-      {types[type].component}
+      <Box mt={1}>{types[type].component}</Box>
     </Box>
   )
 }

@@ -1,9 +1,16 @@
 import { Grid } from '@material-ui/core'
 import { LabeledRow, Text } from '../../UI'
+import {} from '../../Shared'
 
 const Company = ({ restriction }) => (
   <Grid container>
     <Grid item xs={12} md={6}>
+      <LabeledRow label={'Empresa'}>
+        <Text>{restriction.businessName}</Text>
+      </LabeledRow>
+      <LabeledRow label={'Obra'}>
+        <Text>{restriction.constructionName}</Text>
+      </LabeledRow>
       <LabeledRow label={'Tipo de empresa'}>
         <Text>{restriction.businessType}</Text>
       </LabeledRow>
