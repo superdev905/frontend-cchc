@@ -66,11 +66,11 @@ const General = ({ open, onClose, type, benefit }) => {
     },
     onSubmit: (values) => {
       const data = {
-        ...create.benefit,
-        createdDate: new Date(),
-        description: '',
-        isActive: true,
-        generalRestriction: values
+        ...create,
+        benefit: {
+          ...create.benefit,
+          generalRestriction: values
+        }
       }
       if (create.type === 'CREATE') {
         dispatch(

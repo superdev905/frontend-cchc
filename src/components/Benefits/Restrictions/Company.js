@@ -73,11 +73,11 @@ const Company = ({ open, onClose, type, benefit }) => {
     },
     onSubmit: (values) => {
       const data = {
-        ...create.benefit,
-        createdDate: new Date(),
-        description: '',
-        isActive: true,
-        businessRestriction: values
+        ...create,
+        benefit: {
+          ...create.benefit,
+          businessRestriction: values
+        }
       }
       if (create.type === 'CREATE') {
         dispatch(

@@ -30,8 +30,6 @@ const Benefits = () => {
     })
   }
 
-  console.log(benefit)
-
   const deleteBenefit = () => {
     setDeleting(true)
     dispatch(benefitsActions.deleteBenefit(benefitId))

@@ -26,7 +26,7 @@ const StepTwo = () => {
         dispatch(
           benefitsActions.updateCreate({
             ...create,
-            step: create.step + 1
+            step: create.step + 2
           })
         )
       })

@@ -13,7 +13,7 @@ import usersActions from '../../../state/actions/users'
 import benefitsActions from '../../../state/actions/benefits'
 
 const optionsList = [1, 2, 3]
-const modalities = ['PRESENCIAL', 'E-LEARNING', 'ON LINE']
+const modalities = ['PRESENCIAL', 'ELEARNING', 'ON LINE']
 
 const validationSchema = Yup.object().shape({
   otecId: Yup.string().required(
@@ -61,11 +61,11 @@ const Course = ({ open, onClose, type, benefit }) => {
     },
     onSubmit: (values) => {
       const data = {
-        ...create.benefit,
-        createdDate: new Date(),
-        description: '',
-        isActive: true,
-        courseRestriction: values
+        ...create,
+        benefit: {
+          ...create.benefit,
+          courseRestriction: values
+        }
       }
       if (create.type === 'CREATE') {
         dispatch(

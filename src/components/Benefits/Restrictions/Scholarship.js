@@ -44,11 +44,11 @@ const Scholarship = ({ open, onClose, type, benefit }) => {
     },
     onSubmit: (values) => {
       const data = {
-        ...create.benefit,
-        createdDate: new Date(),
-        description: '',
-        isActive: true,
-        scholarshipRestriction: values
+        ...create,
+        benefit: {
+          ...create.benefit,
+          scholarshipRestriction: values
+        }
       }
       if (create.type === 'CREATE') {
         dispatch(
