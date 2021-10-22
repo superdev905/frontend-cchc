@@ -11,7 +11,7 @@ import { decisionList } from '../../../config'
 import benefitsActions from '../../../state/actions/benefits'
 import scholarshipsActions from '../../../state/actions/scholarships'
 
-const validationSchema = Yup.object().shape({
+const validationSchemaScholarship = Yup.object().shape({
   careerId: Yup.string().required('Seleccione nombre de carrera'),
   averageLastYear: Yup.number()
     .min(1, 'El promedio debe ser mayor o igual a 1')
@@ -30,7 +30,7 @@ const Scholarship = ({ open, onClose, type, benefit }) => {
 
   const formik = useFormik({
     validateOnMount: true,
-    validationSchema,
+    validationSchemaScholarship,
     initialValues: {
       careerId:
         type === 'UPDATE' ? benefit.scholarshipRestriction.careerId : '',
@@ -55,7 +55,7 @@ const Scholarship = ({ open, onClose, type, benefit }) => {
           benefitsActions.updateCreate({
             ...create,
             ...data,
-            step: create.step - 1
+            step: create.step + 1
           })
         )
       }

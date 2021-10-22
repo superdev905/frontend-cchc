@@ -6,20 +6,17 @@ import StepTwo from './StepTwo'
 import StepOne from './StepOne'
 import { Dialog } from '../../Shared'
 import benefitsActions from '../../../state/actions/benefits'
-import Restrictions from '../Restrictions/Restrictions'
 
 function getSteps() {
-  return ['Datos', 'Restricciones', '']
+  return ['Datos', 'Restricciones']
 }
 
 function getStepContent(stepIndex, { onClose }) {
   switch (stepIndex) {
     case 0:
-      return <StepOne onClose={onClose} />
-    case 1:
       return <StepTwo />
-    case 2:
-      return <Restrictions />
+    case 1:
+      return <StepOne onClose={onClose} />
     default:
       return <span>Paso no encontrado</span>
   }

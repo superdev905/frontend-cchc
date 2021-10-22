@@ -26,7 +26,7 @@ const targetList = ['TIPOS DE TRABAJADORES', 'FAMILIA', 'OTRO']
 const businessFieldList = ['TODOS', 'EMPRESAS DE LA CONSTRUCCIÓN']
 const employeeTypes = ['TRABAJADOR', 'PREVENCIONISTA DE RIESGOS', 'OTROS']
 
-const validationSchema = Yup.object().shape({
+const validationSchemaBusiness = Yup.object().shape({
   businessId: Yup.string().required('Seleccione empresa'),
   constructionId: Yup.string().required('Seleccione obra'),
   businessType: Yup.string().required('Seleccione tipo de empresa'),
@@ -49,7 +49,7 @@ const Company = ({ open, onClose, type, benefit }) => {
 
   const formik = useFormik({
     validateOnMount: true,
-    validationSchema,
+    validationSchemaBusiness,
     initialValues: {
       businessId:
         type === 'UPDATE' ? benefit.businessRestriction.businessId : '',
@@ -84,7 +84,7 @@ const Company = ({ open, onClose, type, benefit }) => {
           benefitsActions.updateCreate({
             ...create,
             ...data,
-            step: create.step - 1
+            step: create.step + 1
           })
         )
       }

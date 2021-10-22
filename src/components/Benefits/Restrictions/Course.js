@@ -15,7 +15,7 @@ import benefitsActions from '../../../state/actions/benefits'
 const optionsList = [1, 2, 3]
 const modalities = ['PRESENCIAL', 'ELEARNING', 'ON LINE']
 
-const validationSchema = Yup.object().shape({
+const validationSchemaCourse = Yup.object().shape({
   otecId: Yup.string().required(
     'Seleccione empresa que realiza la capacitación'
   ),
@@ -40,7 +40,7 @@ const Course = ({ open, onClose, type, benefit }) => {
 
   const formik = useFormik({
     validateOnMount: true,
-    validationSchema,
+    validationSchemaCourse,
     initialValues: {
       otecId: type === 'UPDATE' ? benefit.courseRestriction.otecId : '',
       otecName: type === 'UPDATE' ? benefit.courseRestriction.otecName : '',
@@ -72,7 +72,7 @@ const Course = ({ open, onClose, type, benefit }) => {
           benefitsActions.updateCreate({
             ...create,
             ...data,
-            step: create.step - 1
+            step: create.step + 1
           })
         )
       }

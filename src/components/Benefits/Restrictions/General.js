@@ -16,7 +16,7 @@ const previsionList = ['N/A', 'FONASA A', 'TODOS EXCEPTO FONASA A']
 const inscribers = ['TRABAJADOR', 'EMPRESA']
 const fundingList = ['PROYECTO SOCIAL', 'GOBIERNO', 'PROPIA EMPRESA', 'OTRO']
 
-const validationSchema = Yup.object().shape({
+const validationSchemaGeneral = Yup.object().shape({
   nationalityId: Yup.string().required('Seleccione nacionalidad'),
   rshId: Yup.string().required('Seleccione rsh'),
   legalCharge: Yup.string().required('Seleccione carga legal'),
@@ -42,7 +42,7 @@ const General = ({ open, onClose, type, benefit }) => {
 
   const formik = useFormik({
     validateOnMount: true,
-    validationSchema,
+    validationSchemaGeneral,
     initialValues: {
       nationalityId:
         type === 'UPDATE' ? benefit.generalRestriction.nationalityId : '',
@@ -77,7 +77,7 @@ const General = ({ open, onClose, type, benefit }) => {
           benefitsActions.updateCreate({
             ...create,
             ...data,
-            step: create.step - 1
+            step: create.step + 1
           })
         )
       }

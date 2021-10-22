@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { Avatar, Box, Grid, makeStyles } from '@material-ui/core'
+import { Box, Grid, Icon, makeStyles, Typography } from '@material-ui/core'
 import {
   FaUserGraduate,
   FaAward,
@@ -9,13 +10,10 @@ import {
   FaClipboardList
 } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, SubmitButton, Text } from '../../UI'
-import { useSuccess, useToggle } from '../../../hooks'
-import generateColor from '../../../utils/generateColor'
-import General from './General'
-import Scholarship from './Scholarship'
-import Course from './Course'
-import Company from './Company'
+import { Button, SubmitButton } from '../../UI'
+import { Dialog } from '../../Shared'
+import { useSuccess } from '../../../hooks'
+
 import benefitsActions from '../../../state/actions/benefits'
 
 const useStyles = makeStyles(() => ({
@@ -31,6 +29,7 @@ const useStyles = makeStyles(() => ({
 }))
 
 const Restrictions = ({
+  open,
   onClose,
   type,
   data,
@@ -42,12 +41,18 @@ const Restrictions = ({
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
+  const { isMobile } = useSelector((state) => state.ui)
   const { create } = useSelector((state) => state.benefits)
-  const { open: openAddGeneral, toggleOpen: toggleOpenAddGeneral } = useToggle()
-  const { open: openAddScholarship, toggleOpen: toggleOpenAddScholarship } =
-    useToggle()
-  const { open: openAddCouse, toggleOpen: toggleOpenAddCourse } = useToggle()
-  const { open: openAddCompany, toggleOpen: toggleOpenAddCompany } = useToggle()
+  const [step, setStep] = useState(0)
+  const [currentType, setCurrentType] = useState()
+
+  const RestrictionsTypes = [
+    { name: 'General', type: 'GENERAL', icon: <FaClipboardList /> },
+    { name: 'Beca', type: 'SCHOLARSHIP', icon: <FaAward /> },
+    { name: 'Curso', type: 'COURSE', icon: <FaUserGraduate /> },
+    { name: 'Empresa', type: 'BUSINESS', icon: <FaCity /> },
+    { name: 'Vivienda', type: 'HOME', icon: <FaHome /> }
+  ]
 
   const formik = useFormik({
     validateOnMount: true,
@@ -86,100 +91,33 @@ const Restrictions = ({
   }
 
   return (
-    <Box>
+    <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
       <Box>
         <Box p={2}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <Box
-                onClick={toggleOpenAddGeneral}
-                display="flex"
-                alignItems="center"
-                className={classes.Box}
-              >
-                <Avatar
-                  style={{
-                    backgroundColor: generateColor(),
-                    marginRight: '8px'
-                  }}
-                >
-                  <FaClipboardList />
-                </Avatar>
-                <Text>General</Text>
-              </Box>
-            </Grid>
+          {step === 0 && (
+            <>
+              <Grid container spacing={2}>
+                {RestrictionsTypes.map((item, index) => (
+                  <Grid item xs={12} md={6} key={`${index}-restrictionCard`}>
+                    <Box
+                      onClick={() => {
+                        setStep(1)
+                        setCurrentType(item.type)
+                      }}
+                      display="flex"
+                      alignItems="center"
+                      className={classes.Box}
+                    >
+                      <Icon>{item.icon}</Icon>
+                      <Typography>{item.name} </Typography>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
+            </>
+          )}
 
-            <Grid item xs={12} md={6}>
-              <Box
-                display="flex"
-                alignItems="center"
-                className={classes.Box}
-                onClick={toggleOpenAddCompany}
-              >
-                <Avatar
-                  style={{
-                    backgroundColor: generateColor(),
-                    marginRight: '8px'
-                  }}
-                >
-                  <FaCity />
-                </Avatar>
-                <Text>Empresas</Text>
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Box
-                display="flex"
-                alignItems="center"
-                className={classes.Box}
-                onClick={toggleOpenAddScholarship}
-              >
-                <Avatar
-                  style={{
-                    backgroundColor: generateColor(),
-                    marginRight: '8px'
-                  }}
-                >
-                  <FaAward />
-                </Avatar>
-                <Text>Becas</Text>
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Box
-                display="flex"
-                alignItems="center"
-                className={classes.Box}
-                onClick={toggleOpenAddCourse}
-              >
-                <Avatar
-                  style={{
-                    backgroundColor: generateColor(),
-                    marginRight: '8px'
-                  }}
-                >
-                  <FaUserGraduate />
-                </Avatar>
-                <Text>Curso</Text>
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Box display="flex" alignItems="center" className={classes.Box}>
-                <Avatar
-                  style={{
-                    backgroundColor: generateColor(),
-                    marginRight: '8px'
-                  }}
-                >
-                  <FaHome />
-                </Avatar>
-                <Text>Vivienda</Text>
-              </Box>
-            </Grid>
-          </Grid>
+          {step === 1 && currentType}
 
           <Box textAlign="center" marginTop="10px">
             <Button onClick={onClose} variant="outlined">
@@ -198,14 +136,7 @@ const Restrictions = ({
           </Box>
         </Box>
       </Box>
-      <General open={openAddGeneral} onClose={toggleOpenAddGeneral} />
-      <Scholarship
-        open={openAddScholarship}
-        onClose={toggleOpenAddScholarship}
-      />
-      <Course open={openAddCouse} onClose={toggleOpenAddCourse} />
-      <Company open={openAddCompany} onClose={toggleOpenAddCompany} />
-    </Box>
+    </Dialog>
   )
 }
 
