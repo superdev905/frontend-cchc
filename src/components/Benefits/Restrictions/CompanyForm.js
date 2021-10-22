@@ -1,14 +1,14 @@
 import { capitalize } from 'lodash'
 import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
-import { CompanyRow, Dialog } from '../../Shared'
+import { CompanyRow } from '../../Shared'
 import { Button, Select, SubmitButton, TextField } from '../../UI'
 import { useSuccess } from '../../../hooks'
 import companiesActions from '../../../state/actions/companies'
-import benefitsActions from '../../../state/actions/benefits'
 import { decisionList } from '../../../config'
 import { companySchema } from './schemas'
 
@@ -26,11 +26,10 @@ const targetList = ['TIPOS DE TRABAJADORES', 'FAMILIA', 'OTRO']
 const businessFieldList = ['TODOS', 'EMPRESAS DE LA CONSTRUCCIÓN']
 const employeeTypes = ['TRABAJADOR', 'PREVENCIONISTA DE RIESGOS', 'OTROS']
 
-const Company = ({ open, onClose, type, benefit }) => {
+const Company = ({ onCancel, type, data, submitFunction, successMessage }) => {
   const dispatch = useDispatch()
-  const { success } = useSuccess()
-  const { isMobile } = useSelector((state) => state.ui)
-  const { create } = useSelector((state) => state.benefits)
+  const { success, changeSuccess } = useSuccess()
+  const { enqueueSnackbar } = useSnackbar()
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [selectedCons, setSelectedCons] = useState(null)
   const [companies, setCompanies] = useState([])
@@ -39,50 +38,39 @@ const Company = ({ open, onClose, type, benefit }) => {
     validateOnMount: true,
     validationSchema: companySchema,
     initialValues: {
-      businessId:
-        type === 'UPDATE' ? benefit.businessRestriction.businessId : '',
-      businessName:
-        type === 'UPDATE' ? benefit.businessRestriction.businessName : '',
-      constructionId:
-        type === 'UPDATE' ? benefit.businessRestriction.constructionId : '',
-      constructionName:
-        type === 'UPDATE' ? benefit.businessRestriction.constructionName : '',
-      businessType:
-        type === 'UPDATE' ? benefit.businessRestriction.businessType : '',
-      socialService:
-        type === 'UPDATE' ? benefit.businessRestriction.socialService : '',
-      businessField:
-        type === 'UPDATE' ? benefit.businessRestriction.businessField : '',
-      employeeType:
-        type === 'UPDATE' ? benefit.businessRestriction.employeeType : '',
-      coverage: type === 'UPDATE' ? benefit.businessRestriction.coverage : '',
-      target: type === 'UPDATE' ? benefit.businessRestriction.target : '',
-      office: type === 'UPDATE' ? benefit.businessRestriction.office : ''
+      businessId: data?.businessId || '',
+      businessName: data?.businessName || '',
+      constructionId: data?.constructionId || '',
+      constructionName: data?.constructionName || '',
+      businessType: data?.businessType || '',
+      socialService: data?.socialService ? 'SI' : 'NO' || '',
+      businessField: data?.businessField || '',
+      employeeType: data?.employeeType || '',
+      coverage: data?.coverage || '',
+      target: data?.target || '',
+      office: data?.office || ''
     },
     onSubmit: (values) => {
-      const data = {
-        ...create,
-        benefit: {
-          ...create.benefit,
-          businessRestriction: values
-        }
-      }
-      if (create.type === 'CREATE') {
-        dispatch(
-          benefitsActions.updateCreate({
-            ...create,
-            ...data,
-            step: create.step - 1
+      submitFunction({
+        ...values,
+        socialService: values.socialService === 'SI'
+      })
+        .then(() => {
+          formik.setSubmitting(false)
+          changeSuccess(true, () => {
+            enqueueSnackbar(successMessage, { variant: 'success' })
           })
-        )
-      }
+        })
+        .catch((err) => {
+          enqueueSnackbar(err, { variant: 'error' })
+        })
     }
   })
 
   const onCompanySelect = (__, values) => {
     setSelectedCompany(values)
     const idCompany = values ? values.id : ''
-    const nameCompany = values ? values.businessName : ''
+    const nameCompany = values ? values.business_name : ''
 
     formik.setFieldValue('businessId', idCompany)
     formik.setFieldValue('businessName', nameCompany)
@@ -129,23 +117,16 @@ const Company = ({ open, onClose, type, benefit }) => {
   }, [formik.values.businessId, companies])
 
   useEffect(() => {
-    if (open) {
-      dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
-        (list) => {
-          setCompanies(list)
-        }
-      )
-    }
-  }, [open])
+    dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
+      (list) => {
+        setCompanies(list)
+      }
+    )
+  }, [])
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
+    <Box>
       <Box>
-        <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
-          {`${
-            type === 'UPDATE' ? 'Actualizar' : 'Nueva'
-          } restricción por empresa`}
-        </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
@@ -346,7 +327,7 @@ const Company = ({ open, onClose, type, benefit }) => {
           </Grid>
 
           <Box textAlign="center" marginTop="10px">
-            <Button onClick={onClose} variant="outlined">
+            <Button onClick={onCancel} variant="outlined">
               Cancelar
             </Button>
             <SubmitButton
@@ -355,17 +336,13 @@ const Company = ({ open, onClose, type, benefit }) => {
               loading={formik.isSubmitting}
               success={success}
             >
-              {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} restricción`}
+              Actualizar
             </SubmitButton>
           </Box>
         </Box>
       </Box>
-    </Dialog>
+    </Box>
   )
-}
-
-Company.defaultProps = {
-  type: 'CREATE'
 }
 
 export default Company

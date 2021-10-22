@@ -13,7 +13,7 @@ import Course from './Course'
 import Scholarship from './Scholarship'
 import useStyles from './styles'
 
-const RestrictionCard = ({ type, restriction }) => {
+const RestrictionCard = ({ type, restriction, onEdit }) => {
   const types = {
     GENERAL: {
       name: 'General',
@@ -54,7 +54,7 @@ const RestrictionCard = ({ type, restriction }) => {
           </Typography>
         </Box>
         <Box className={classes.actions}>
-          <IconButton>
+          <IconButton onClick={onEdit}>
             <EditIcon />
           </IconButton>
         </Box>

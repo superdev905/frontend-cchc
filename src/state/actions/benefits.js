@@ -81,9 +81,19 @@ const deleteBenefit = (id) => () =>
       })
   })
 
-const deleteBenefits = (id, values) => () =>
+const benefitEndpoints = {
+  BUSINESS: 'business',
+  COURSE: 'course',
+  GENERAL: 'general',
+  SCHOLARSHIP: 'scholarship'
+}
+
+const updateRestriction = (id, type, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.delete(`${config.services.benefit}/benefits/${id}`, values)
+    Axios.put(
+      `${config.services.benefits}/restrictions/${benefitEndpoints[type]}/${id}`,
+      values
+    )
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -97,11 +107,11 @@ const benefitsActions = {
   updateCreate,
   toggleCreateModal,
   createBenefit,
-  deleteBenefits,
   getBenefits,
   getBenefitDetails,
   deleteBenefit,
-  updateBenefit
+  updateBenefit,
+  updateRestriction
 }
 
 export default benefitsActions
