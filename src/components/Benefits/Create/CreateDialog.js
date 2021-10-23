@@ -14,9 +14,9 @@ function getSteps() {
 function getStepContent(stepIndex, { onClose }) {
   switch (stepIndex) {
     case 0:
-      return <StepTwo />
-    case 1:
       return <StepOne onClose={onClose} />
+    case 1:
+      return <StepTwo />
     default:
       return <span>Paso no encontrado</span>
   }

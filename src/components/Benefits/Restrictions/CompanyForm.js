@@ -26,7 +26,14 @@ const targetList = ['TIPOS DE TRABAJADORES', 'FAMILIA', 'OTRO']
 const businessFieldList = ['TODOS', 'EMPRESAS DE LA CONSTRUCCIÓN']
 const employeeTypes = ['TRABAJADOR', 'PREVENCIONISTA DE RIESGOS', 'OTROS']
 
-const Company = ({ onCancel, type, data, submitFunction, successMessage }) => {
+const Company = ({
+  onCancel,
+  type,
+  data,
+  submitFunction,
+  successMessage,
+  submitText = 'Actualizar'
+}) => {
   const dispatch = useDispatch()
   const { success, changeSuccess } = useSuccess()
   const { enqueueSnackbar } = useSnackbar()
@@ -336,7 +343,7 @@ const Company = ({ onCancel, type, data, submitFunction, successMessage }) => {
               loading={formik.isSubmitting}
               success={success}
             >
-              Actualizar
+              {submitText}
             </SubmitButton>
           </Box>
         </Box>

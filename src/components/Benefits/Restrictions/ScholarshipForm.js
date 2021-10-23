@@ -68,7 +68,6 @@ const Scholarship = ({
       formik.setFieldValue('careerName', '')
     }
   }, [formik.values.careerId, careers])
-  console.log(formik.errors)
 
   useEffect(() => {
     dispatch(scholarshipsActions.getCareers())

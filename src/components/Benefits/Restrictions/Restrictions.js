@@ -1,6 +1,4 @@
-import { useState } from 'react'
-import { useFormik } from 'formik'
-import { useSnackbar } from 'notistack'
+import { useEffect, useState } from 'react'
 import { Box, Grid, Icon, makeStyles, Typography } from '@material-ui/core'
 import {
   FaUserGraduate,
@@ -9,11 +7,12 @@ import {
   FaCity,
   FaClipboardList
 } from 'react-icons/fa'
-import { useDispatch, useSelector } from 'react-redux'
-import { Button, SubmitButton } from '../../UI'
+import { useSelector, useDispatch } from 'react-redux'
 import { Dialog } from '../../Shared'
-import { useSuccess } from '../../../hooks'
-
+import Company from './CompanyForm'
+import Course from './CourseForm'
+import General from './GeneralForm'
+import Scholarship from './ScholarshipForm'
 import benefitsActions from '../../../state/actions/benefits'
 
 const useStyles = makeStyles(() => ({
@@ -28,66 +27,79 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const Restrictions = ({
-  open,
-  onClose,
-  type,
-  data,
-  submitFunction,
-  successMessage,
-  successFunction
-}) => {
+const Restrictions = ({ open, onClose, formType, currentStep, type }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const { enqueueSnackbar } = useSnackbar()
-  const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
   const { create } = useSelector((state) => state.benefits)
-  const [step, setStep] = useState(0)
-  const [currentType, setCurrentType] = useState()
+  const [step, setStep] = useState(currentStep || 0)
+  const [currentType, setCurrentType] = useState(formType || '')
 
   const RestrictionsTypes = [
-    { name: 'General', type: 'GENERAL', icon: <FaClipboardList /> },
-    { name: 'Beca', type: 'SCHOLARSHIP', icon: <FaAward /> },
-    { name: 'Curso', type: 'COURSE', icon: <FaUserGraduate /> },
-    { name: 'Empresa', type: 'BUSINESS', icon: <FaCity /> },
-    { name: 'Vivienda', type: 'HOME', icon: <FaHome /> }
+    { name: 'General', type: 'general', icon: <FaClipboardList /> },
+    { name: 'Beca', type: 'scholarship', icon: <FaAward /> },
+    { name: 'Curso', type: 'course', icon: <FaUserGraduate /> },
+    { name: 'Empresa', type: 'business', icon: <FaCity /> },
+    { name: 'Vivienda', type: 'home', icon: <FaHome /> }
   ]
 
-  const formik = useFormik({
-    validateOnMount: true,
-    initialValues: {
-      code: type === 'UPDATE' ? data.code : ''
-    },
-    onSubmit: (values, { resetForm }) => {
-      submitFunction({
-        ...values,
-        createDate: new Date().toISOString()
-      })
-        .then(() => {
-          formik.setSubmitting(false)
-          changeSuccess(true, () => {
-            onClose()
-            enqueueSnackbar(successMessage, {
-              variant: 'success'
-            })
-            resetForm()
-            if (successFunction) {
-              successFunction()
-            }
-          })
-        })
-        .catch((err) => {
-          formik.setSubmitting(false)
-          enqueueSnackbar(err, {
-            variant: 'error'
-          })
-        })
+  const updateBenefit = (benefit, resType, values) => {
+    if (resType === 'business') {
+      return { ...benefit, businessRestriction: values }
     }
-  })
+    return { ...benefit, generalRestriction: values }
+  }
 
-  const handleBack = () => {
-    dispatch(benefitsActions.updateCreate({ ...create, step: create.step - 1 }))
+  const addRestriction = (values) => {
+    dispatch(
+      benefitsActions.updateCreate({
+        ...create,
+        benefit: updateBenefit(create.benefit, currentType, values)
+      })
+    )
+    onClose()
+  }
+
+  useEffect(() => {
+    if (open && type !== 'UPDATE') {
+      setStep(0)
+    }
+  }, [open])
+
+  const forms = {
+    business: (
+      <Company
+        data={null}
+        submitFunction={addRestriction}
+        onCancel={onClose}
+        successMessage="Restricción agregada"
+        submitText="Agregar"
+      />
+    ),
+    course: (
+      <Course
+        data={null}
+        submitFunction={addRestriction}
+        onCancel={onClose}
+        successMessage="Restricción agregada"
+      />
+    ),
+    general: (
+      <General
+        data={null}
+        submitFunction={addRestriction}
+        onCancel={onClose}
+        successMessage="Restricción agregada"
+      />
+    ),
+    scholarship: (
+      <Scholarship
+        data={null}
+        submitFunction={addRestriction}
+        onCancel={onClose}
+        successMessage="Restricción agregada"
+      />
+    )
   }
 
   return (
@@ -117,23 +129,7 @@ const Restrictions = ({
             </>
           )}
 
-          {step === 1 && currentType}
-
-          <Box textAlign="center" marginTop="10px">
-            <Button onClick={onClose} variant="outlined">
-              Cancelar
-            </Button>
-            <Button onClick={handleBack} variant="outlined">
-              Volver
-            </Button>
-            <SubmitButton
-              onClick={formik.handleSubmit}
-              disabled={!formik.isValid || formik.isSubmitting}
-              success={success}
-            >
-              {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} restricción`}
-            </SubmitButton>
-          </Box>
+          {step === 1 && <Box>{currentType && forms[currentType]}</Box>}
         </Box>
       </Box>
     </Dialog>

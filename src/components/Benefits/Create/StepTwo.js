@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { useHistory } from 'react-router-dom'
@@ -8,6 +9,7 @@ import useStyles from '../styles'
 import benefitsActions from '../../../state/actions/benefits'
 import { useToggle } from '../../../hooks'
 import Restrictions from '../Restrictions/Restrictions'
+import RestrictionCard from '../../Restriction/Cards'
 
 const StepTwo = () => {
   const classes = useStyles()
@@ -16,6 +18,9 @@ const StepTwo = () => {
   const { enqueueSnackbar } = useSnackbar()
   const { create } = useSelector((state) => state.benefits)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const [currentRes, setCurrentRes] = useState(null)
+  const [currentType, setCurrentType] = useState('')
 
   const onCreate = () => {
     const data = {
@@ -60,6 +65,12 @@ const StepTwo = () => {
     dispatch(benefitsActions.updateCreate({ ...create, step: create.step - 1 }))
   }
 
+  const onEditClick = (type, values) => {
+    setCurrentRes(values)
+    setCurrentType(type)
+    toggleOpenEdit()
+  }
+
   return (
     <Box className={classes.form}>
       <EmptyState
@@ -67,6 +78,23 @@ const StepTwo = () => {
         actionMessage="Agregar restricción"
         event={toggleOpenAdd}
       />
+      {create.benefit && create.benefit.businessRestriction && (
+        <RestrictionCard
+          type="BUSINESS"
+          restriction={create.benefit.businessRestriction}
+        />
+      )}
+
+      {create.benefit && create.benefit.generalRestriction && (
+        <RestrictionCard
+          type="GENERAL"
+          restriction={create.benefit.generalRestriction}
+          onEdit={() =>
+            onEditClick('GENERAL', create.benefit.generalRestriction)
+          }
+        />
+      )}
+
       <Box className={classes.actions}>
         <Button startIcon={<BackIcon />} variant="outlined" onClick={goBack}>
           Anterior
@@ -82,6 +110,17 @@ const StepTwo = () => {
         onClose={toggleOpenAdd}
         // submitFunction={createDoc}
       />
+
+      {currentRes && (
+        <Restrictions
+          type="UPDATE"
+          currentStep={1}
+          formType={currentType.toLowerCase()}
+          open={openEdit}
+          onClose={toggleOpenEdit}
+          // submitFunction={createDoc}
+        />
+      )}
     </Box>
   )
 }
