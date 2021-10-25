@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import { Box } from '@material-ui/core'
 import RestrictionCard from '../Restriction/Cards'
 import { useToggle } from '../../hooks'
@@ -8,11 +9,14 @@ import benefitsActions from '../../state/actions/benefits'
 
 const RestrictionsTab = () => {
   const dispatch = useDispatch()
+  const { benefitId } = useParams()
   const { benefitDetails: benefit } = useSelector((state) => state.benefits)
   const [currentType, setCurrentType] = useState('')
   const [currentRes, setCurrentRes] = useState(null)
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
-
+  const fetchDetails = () => {
+    dispatch(benefitsActions.getBenefitDetails(benefitId))
+  }
   const updateRestriction = (values) =>
     dispatch(
       benefitsActions.updateRestriction(currentRes.id, currentType, values)
@@ -69,6 +73,7 @@ const RestrictionsTab = () => {
           restriction={currentRes}
           type={currentType}
           submitFunction={updateRestriction}
+          successFunction={fetchDetails}
         />
       )}
     </Box>

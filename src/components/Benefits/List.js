@@ -193,7 +193,11 @@ const BenefitList = () => {
         paginationTotalRows={totalBenefits}
       />
 
-      <CreateDialog open={showCreateModal} onClose={toggleCreateModal} />
+      <CreateDialog
+        open={showCreateModal}
+        onClose={toggleCreateModal}
+        successFunction={fetchBenefits}
+      />
     </Wrapper>
   )
 }

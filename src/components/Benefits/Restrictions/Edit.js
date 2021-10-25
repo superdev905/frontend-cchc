@@ -12,12 +12,16 @@ const RestrictionEdit = ({
   onClose,
   type,
   restriction,
-  submitFunction
+  submitFunction,
+  successFunction
 }) => {
   const { isMobile } = useSelector((state) => state.ui)
 
   const onUpdateSuccess = () => {
     onClose()
+    if (successFunction) {
+      successFunction()
+    }
   }
 
   const components = {

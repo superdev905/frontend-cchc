@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import { useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import { CompanyRow } from '../../Shared'
-import { Button, Select, SubmitButton, TextField } from '../../UI'
+import { Button, InputLabel, Select, SubmitButton, TextField } from '../../UI'
 import { useSuccess } from '../../../hooks'
 import companiesActions from '../../../state/actions/companies'
 import { decisionList } from '../../../config'
@@ -28,7 +28,6 @@ const employeeTypes = ['TRABAJADOR', 'PREVENCIONISTA DE RIESGOS', 'OTROS']
 
 const Company = ({
   onCancel,
-  type,
   data,
   submitFunction,
   successMessage,
@@ -85,6 +84,8 @@ const Company = ({
 
     formik.setFieldValue('businessId', idCompany)
     formik.setFieldValue('businessName', nameCompany)
+    formik.setFieldValue('constructionId', '')
+    formik.setFieldValue('constructionName', '')
     setSelectedCons(null)
   }
 
@@ -95,29 +96,34 @@ const Company = ({
   }
 
   useEffect(() => {
-    if (type === 'UPDATE' && companies.length > 0) {
-      const targetCompany = companies.find(
-        (item) => item.id === formik.values.businessId
-      )
-      setSelectedCompany(targetCompany)
-      const listCons = targetCompany?.constructions
-      setSelectedCons(
-        listCons?.find((item) => item.id === formik.values.constructionId)
-      )
-    }
-  }, [type, companies])
-
-  useEffect(() => {
     const { businessId } = formik.values
     if (businessId && companies.length > 0) {
       const currentBusiness = companies.find(
         (item) => item.id === parseInt(businessId, 10)
       )
+      setSelectedCompany(currentBusiness)
       formik.setFieldValue('businessName', currentBusiness.business_name)
     } else {
       formik.setFieldValue('businessName', '')
     }
   }, [formik.values.businessId, companies])
+
+  useEffect(() => {
+    const { constructionId } = formik.values
+    if (
+      constructionId &&
+      selectedCompany &&
+      selectedCompany.constructions.length > 0
+    ) {
+      const currentConst = selectedCompany.constructions.find(
+        (item) => item.id === parseInt(constructionId, 10)
+      )
+      setSelectedCons(currentConst)
+      formik.setFieldValue('constructionName', currentConst.name)
+    } else {
+      formik.setFieldValue('constructionName', '')
+    }
+  }, [formik.values.constructionId, selectedCompany])
 
   useEffect(() => {
     const { businessId } = formik.values
@@ -140,58 +146,80 @@ const Company = ({
       <Box>
         <Box p={2}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <Autocomplete
-                options={companies}
-                value={selectedCompany || ''}
-                getOptionSelected={(option, value) => option.id === value.id}
-                getOptionLabel={(option) => option.business_name || ''}
-                onChange={onCompanySelect}
-                required
-                renderOption={(option) => (
-                  <CompanyRow.Autocomplete company={option} />
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Selecciona empresa"
-                    placeholder="Nombre de empresa"
+            <Grid item xs={12}>
+              {selectedCompany ? (
+                <Box>
+                  <InputLabel required>Empresa</InputLabel>
+                  <CompanyRow
+                    company={selectedCompany}
+                    onDelete={(e) => onCompanySelect(e, null)}
                   />
-                )}
-              />
+                </Box>
+              ) : (
+                <Autocomplete
+                  options={companies}
+                  value={selectedCompany || ''}
+                  getOptionSelected={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => option.business_name || ''}
+                  onChange={onCompanySelect}
+                  required
+                  renderOption={(option) => (
+                    <CompanyRow.Autocomplete company={option} />
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Selecciona empresa"
+                      placeholder="Nombre de empresa"
+                    />
+                  )}
+                />
+              )}
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <Autocomplete
-                options={
-                  selectedCompany
-                    ? selectedCompany.constructions.filter(
-                        (item) =>
-                          item.status !== 'NO_VIGENTE' &&
-                          item.state !== 'DELETED'
-                      )
-                    : []
-                }
-                value={selectedCons || ''}
-                getOptionSelected={(option, value) => option.id === value.id}
-                getOptionLabel={(option) => option.name || ''}
-                onChange={onConstructionChange}
-                required
-                renderOption={(option) => (
-                  <Box>
-                    <Typography>
-                      <strong>{option.name || ''}</strong>
-                    </Typography>
-                  </Box>
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Selecciona obra"
-                    placeholder="Nombre de obra"
+            <Grid item xs={12}>
+              {selectedCons ? (
+                <Box>
+                  <InputLabel required>Obra</InputLabel>
+                  <CompanyRow
+                    type="CONSTRUCTION"
+                    company={selectedCons}
+                    iconColor={'#BD52F2'}
+                    onDelete={(e) => onConstructionChange(e, null)}
                   />
-                )}
-              />
+                </Box>
+              ) : (
+                <Autocomplete
+                  options={
+                    selectedCompany
+                      ? selectedCompany.constructions.filter(
+                          (item) =>
+                            item.status !== 'NO_VIGENTE' &&
+                            item.state !== 'DELETED'
+                        )
+                      : []
+                  }
+                  value={selectedCons || ''}
+                  getOptionSelected={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => option.name || ''}
+                  onChange={onConstructionChange}
+                  required
+                  renderOption={(option) => (
+                    <CompanyRow.Autocomplete
+                      company={option}
+                      type="CONSTRUCTION"
+                      iconColor={'#BD52F2'}
+                    />
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Selecciona obra"
+                      placeholder="Nombre de obra"
+                    />
+                  )}
+                />
+              )}
             </Grid>
             <Grid item xs={12} md={6}>
               <Select

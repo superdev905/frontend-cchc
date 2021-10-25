@@ -16,13 +16,14 @@ import General from './GeneralForm'
 import Scholarship from './ScholarshipForm'
 import benefitsActions from '../../../state/actions/benefits'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   resCard: {
     cursor: 'pointer',
-    border: '2px solid grey',
+    border: `2px solid ${theme.palette.gray.gray200}`,
     borderRadius: 5,
     '&:hover': {
-      backgroundColor: 'rgba(114, 115, 130, 0.11)'
+      backgroundColor: 'rgba(114, 115, 130, 0.11)',
+      border: `2px solid ${theme.palette.primary.main}`
     }
   },
   resIcon: {
