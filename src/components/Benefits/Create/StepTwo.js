@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
-//  import { useHistory } from 'react-router-dom'
 import { Box, Typography } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { Button, SubmitButton, EmptyState } from '../../UI'
@@ -10,7 +9,7 @@ import benefitsActions from '../../../state/actions/benefits'
 import { useSuccess, useToggle } from '../../../hooks'
 import Restrictions from '../Restrictions/Restrictions'
 import RestrictionCard from '../../Restriction/Cards'
-import { RestrictionEdit } from '..'
+import RestrictionEdit from '../Restrictions/Edit'
 import { ConfirmDelete } from '../../Shared'
 
 const StepTwo = () => {
@@ -32,7 +31,7 @@ const StepTwo = () => {
       ...create.benefit,
       description: '',
       isActive: true,
-      createdDate: new Date()
+      createdDate: new Date().toISOString()
     }
     setLoading(true)
     dispatch(benefitsActions.createBenefit(data))

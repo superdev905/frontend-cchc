@@ -10,7 +10,10 @@ export const benefitSchema = Yup.object().shape({
   usersQuantity: Yup.number('Ingrese número valido')
     .min(1, 'La cantidad minima debe ser 1')
     .required('Ingrese cupos anuales')
-    .integer('Ingrese número valido')
+    .integer('Ingrese número valido'),
+  totalCost: Yup.number('Ingrese número valido')
+    .min(1, 'La cantidad minima debe ser 1')
+    .required('Ingrese costo total')
 })
 
 export const restrictionSchema = {}

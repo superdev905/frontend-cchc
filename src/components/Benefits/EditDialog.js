@@ -26,7 +26,8 @@ const EditDialog = ({ open, onClose, benefit, successFunction }) => {
       name: benefit?.name || '',
       projectName: benefit?.projectName || '',
       usersQuantity: benefit?.usersQuantity || '',
-      isActive: benefit?.isActive ? 'VIGENTE' : 'NO VIGENTE'
+      isActive: benefit?.isActive ? 'VIGENTE' : 'NO VIGENTE',
+      totalCost: benefit?.totalCost || ''
     },
     onSubmit: (values) => {
       dispatch(
