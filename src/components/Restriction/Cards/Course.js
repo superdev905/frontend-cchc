@@ -30,7 +30,11 @@ const Course = ({ restriction }) => (
           <Text>{restriction.occupationName}</Text>
         </LabeledRow>
         <LabeledRow label={'Responsable fundacion'}>
-          <Text>{restriction.assignedTo}</Text>
+          <Text>
+            {restriction.assignedName
+              ? restriction.assignedName
+              : restriction.assignedTo}
+          </Text>
         </LabeledRow>
         <LabeledRow label={'Costo de matricula'}>
           <Text>{formatCurrency(restriction.enrollCost)}</Text>

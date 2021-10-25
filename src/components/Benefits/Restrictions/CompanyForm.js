@@ -32,6 +32,7 @@ const Company = ({
   data,
   submitFunction,
   successMessage,
+  successFunction,
   submitText = 'Actualizar'
 }) => {
   const dispatch = useDispatch()
@@ -66,6 +67,9 @@ const Company = ({
           formik.setSubmitting(false)
           changeSuccess(true, () => {
             enqueueSnackbar(successMessage, { variant: 'success' })
+            if (successFunction) {
+              successFunction()
+            }
           })
         })
         .catch((err) => {

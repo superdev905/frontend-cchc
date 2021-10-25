@@ -4,7 +4,10 @@ import benefitsTypes from '../types/benefits'
 import config from '../../config'
 
 const updateCreate = (form) => (dispatch) =>
-  dispatch({ type: benefitsTypes.BENEFIT_UPDATE_CREATE, payload: form })
+  new Promise((resolve) => {
+    dispatch({ type: benefitsTypes.BENEFIT_UPDATE_CREATE, payload: form })
+    resolve()
+  })
 
 const toggleCreateModal = (value) => (dispatch) =>
   dispatch({

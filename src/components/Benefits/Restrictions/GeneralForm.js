@@ -21,7 +21,8 @@ const General = ({
   data,
   successMessage,
   submitFunction,
-  successFunction
+  successFunction,
+  submitText = 'Actualizar'
 }) => {
   const dispatch = useDispatch()
   const { success, changeSuccess } = useSuccess()
@@ -367,7 +368,7 @@ const General = ({
               loading={formik.isSubmitting}
               success={success}
             >
-              Actualizar
+              {submitText}
             </SubmitButton>
           </Box>
         </Box>

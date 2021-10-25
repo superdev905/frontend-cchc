@@ -1,6 +1,6 @@
 import { Box, Grid } from '@material-ui/core'
 import { Select, TextField } from '../../UI'
-import { DatePicker } from '../../Shared'
+import { CurrencyTextField, DatePicker } from '../../Shared'
 
 const statusList = ['VIGENTE', 'NO VIGENTE']
 
@@ -131,6 +131,21 @@ const BenefitForm = ({ formik, actions }) => {
               helperText={
                 formik.touched.usersQuantity && formik.errors.usersQuantity
               }
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <CurrencyTextField
+              label="Costo de total"
+              required
+              name="totalCost"
+              value={formik.values.totalCost}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.totalCost && Boolean(formik.errors.totalCost)
+              }
+              helperText={formik.touched.totalCost && formik.errors.totalCost}
             />
           </Grid>
         </Grid>

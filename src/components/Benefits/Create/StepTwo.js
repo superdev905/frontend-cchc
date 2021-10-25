@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { useHistory } from 'react-router-dom'
-import { Box } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { Button, SubmitButton, EmptyState } from '../../UI'
 import useStyles from '../styles'
@@ -10,6 +10,7 @@ import benefitsActions from '../../../state/actions/benefits'
 import { useToggle } from '../../../hooks'
 import Restrictions from '../Restrictions/Restrictions'
 import RestrictionCard from '../../Restriction/Cards'
+import { RestrictionEdit } from '..'
 
 const StepTwo = () => {
   const classes = useStyles()
@@ -71,17 +72,58 @@ const StepTwo = () => {
     toggleOpenEdit()
   }
 
+  const updateBenefit = (benefit, resType, values) => {
+    if (resType === 'BUSINESS') {
+      return { ...benefit, businessRestriction: values }
+    }
+    if (resType === 'COURSE') {
+      return { ...benefit, courseRestriction: values }
+    }
+    if (resType === 'SCHOLARSHIP') {
+      return { ...benefit, scholarshipRestriction: values }
+    }
+    return { ...benefit, generalRestriction: values }
+  }
+
+  const updateRestriction = (values) =>
+    dispatch(
+      benefitsActions.updateCreate({
+        ...create,
+        benefit: updateBenefit(create.benefit, currentType, values)
+      })
+    )
+
+  const restrictionAdded = () =>
+    !create.benefit.businessRestriction &&
+    !create.benefit.generalRestriction &&
+    !create.benefit.courseRestriction &&
+    !create.benefit.scholarshipRestriction
+
   return (
     <Box className={classes.form}>
-      <EmptyState
-        message="No se agregaron restricciones"
-        actionMessage="Agregar restricción"
-        event={toggleOpenAdd}
-      />
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography>Restricciones</Typography>
+        {!restrictionAdded() && (
+          <Button size="small" onClick={toggleOpenAdd}>
+            Agregar
+          </Button>
+        )}
+      </Box>
+      {restrictionAdded() && (
+        <EmptyState
+          message="No se agregaron restricciones"
+          actionMessage="Agregar restricción"
+          event={toggleOpenAdd}
+        />
+      )}
+
       {create.benefit && create.benefit.businessRestriction && (
         <RestrictionCard
           type="BUSINESS"
           restriction={create.benefit.businessRestriction}
+          onEdit={() =>
+            onEditClick('BUSINESS', create.benefit.businessRestriction)
+          }
         />
       )}
 
@@ -91,6 +133,24 @@ const StepTwo = () => {
           restriction={create.benefit.generalRestriction}
           onEdit={() =>
             onEditClick('GENERAL', create.benefit.generalRestriction)
+          }
+        />
+      )}
+
+      {create.benefit && create.benefit.courseRestriction && (
+        <RestrictionCard
+          type="COURSE"
+          restriction={create.benefit.courseRestriction}
+          onEdit={() => onEditClick('COURSE', create.benefit.courseRestriction)}
+        />
+      )}
+
+      {create.benefit && create.benefit.scholarshipRestriction && (
+        <RestrictionCard
+          type="SCHOLARSHIP"
+          restriction={create.benefit.scholarshipRestriction}
+          onEdit={() =>
+            onEditClick('SCHOLARSHIP', create.benefit.scholarshipRestriction)
           }
         />
       )}
@@ -105,20 +165,15 @@ const StepTwo = () => {
         </SubmitButton>
       </Box>
 
-      <Restrictions
-        open={openAdd}
-        onClose={toggleOpenAdd}
-        // submitFunction={createDoc}
-      />
+      <Restrictions open={openAdd} onClose={toggleOpenAdd} />
 
-      {currentRes && (
-        <Restrictions
-          type="UPDATE"
-          currentStep={1}
-          formType={currentType.toLowerCase()}
+      {currentRes && openEdit && (
+        <RestrictionEdit
           open={openEdit}
           onClose={toggleOpenEdit}
-          // submitFunction={createDoc}
+          restriction={currentRes}
+          type={currentType}
+          submitFunction={updateRestriction}
         />
       )}
     </Box>

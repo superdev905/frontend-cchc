@@ -15,7 +15,8 @@ const Scholarship = ({
   data,
   submitFunction,
   successMessage,
-  successFunction
+  successFunction,
+  submitText = 'Actualizar'
 }) => {
   const dispatch = useDispatch()
   const { success, changeSuccess } = useSuccess()
@@ -145,9 +146,10 @@ const Scholarship = ({
           <SubmitButton
             onClick={formik.handleSubmit}
             disabled={!formik.isValid || formik.isSubmitting}
+            loading={formik.isSubmitting}
             success={success}
           >
-            Actualizar
+            {submitText}
           </SubmitButton>
         </Box>
       </Box>

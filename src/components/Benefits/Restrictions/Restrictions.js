@@ -47,6 +47,12 @@ const Restrictions = ({ open, onClose, formType, currentStep, type }) => {
     if (resType === 'business') {
       return { ...benefit, businessRestriction: values }
     }
+    if (resType === 'course') {
+      return { ...benefit, courseRestriction: values }
+    }
+    if (resType === 'scholarship') {
+      return { ...benefit, scholarshipRestriction: values }
+    }
     return { ...benefit, generalRestriction: values }
   }
 
@@ -82,6 +88,7 @@ const Restrictions = ({ open, onClose, formType, currentStep, type }) => {
         submitFunction={addRestriction}
         onCancel={onClose}
         successMessage="Restricción agregada"
+        submitText="Agregar"
       />
     ),
     general: (
@@ -90,6 +97,7 @@ const Restrictions = ({ open, onClose, formType, currentStep, type }) => {
         submitFunction={addRestriction}
         onCancel={onClose}
         successMessage="Restricción agregada"
+        submitText="Agregar"
       />
     ),
     scholarship: (
@@ -98,6 +106,7 @@ const Restrictions = ({ open, onClose, formType, currentStep, type }) => {
         submitFunction={addRestriction}
         onCancel={onClose}
         successMessage="Restricción agregada"
+        submitText="Agregar"
       />
     )
   }
