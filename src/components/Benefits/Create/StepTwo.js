@@ -184,7 +184,12 @@ const StepTwo = () => {
           Anterior
         </Button>
 
-        <SubmitButton onClick={onCreate} loading={loading} success={success}>
+        <SubmitButton
+          disabled={restrictionAdded()}
+          onClick={onCreate}
+          loading={loading}
+          success={success}
+        >
           {create.type === 'UPDATE' ? 'Actualizar' : 'Crear'} Beneficio
         </SubmitButton>
       </Box>
