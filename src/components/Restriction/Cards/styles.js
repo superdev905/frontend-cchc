@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 15,
     color: theme.palette.gray.gray700
   },
+  deleteIcon: {
+    color: `${theme.palette.error.main} !important`
+  },
   actions: {
     '& button': {
       padding: 5,

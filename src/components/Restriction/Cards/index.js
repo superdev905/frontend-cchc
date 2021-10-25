@@ -1,5 +1,5 @@
 import { Box, IconButton, Typography } from '@material-ui/core'
-import { FiEdit as EditIcon } from 'react-icons/fi'
+import { FiEdit as EditIcon, FiTrash2 as DeleteIcon } from 'react-icons/fi'
 import {
   FaUserGraduate,
   FaAward,
@@ -13,7 +13,7 @@ import Course from './Course'
 import Scholarship from './Scholarship'
 import useStyles from './styles'
 
-const RestrictionCard = ({ type, restriction, onEdit }) => {
+const RestrictionCard = ({ type, restriction, onEdit, onDelete }) => {
   const types = {
     GENERAL: {
       name: 'General',
@@ -57,6 +57,11 @@ const RestrictionCard = ({ type, restriction, onEdit }) => {
           <IconButton onClick={onEdit}>
             <EditIcon />
           </IconButton>
+          {onDelete && (
+            <IconButton onClick={onDelete} className={classes.deleteIcon}>
+              <DeleteIcon />
+            </IconButton>
+          )}
         </Box>
       </Box>
       <Box mt={1}>{types[type].component}</Box>

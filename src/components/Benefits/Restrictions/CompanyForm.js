@@ -113,7 +113,7 @@ const Company = ({
       const currentBusiness = companies.find(
         (item) => item.id === parseInt(businessId, 10)
       )
-      formik.setFieldValue('businessName', currentBusiness.name)
+      formik.setFieldValue('businessName', currentBusiness.business_name)
     } else {
       formik.setFieldValue('businessName', '')
     }

@@ -2,9 +2,10 @@ import { useSelector } from 'react-redux'
 import { differenceInDays } from 'date-fns'
 import { FaUserFriends as UsersIcon } from 'react-icons/fa'
 import { IoIosTime as TimeIcon } from 'react-icons/io'
+import { RiMoneyDollarCircleFill as MoneyIcon } from 'react-icons/ri'
 import { Avatar, Box, Grid, Typography } from '@material-ui/core'
 import { DataCard, LabeledRow, StatusChip, Text } from '../UI'
-import { formatDate } from '../../formatters'
+import { formatCurrency, formatDate } from '../../formatters'
 import generateColor from '../../utils/generateColor'
 
 const BenefitDetails = ({ loading }) => {
@@ -12,16 +13,16 @@ const BenefitDetails = ({ loading }) => {
   return (
     <Box p={1}>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={7}>
           {benefit && benefit.state === 'DELETED' && (
-            <LabeledRow label="Estado:">
+            <LabeledRow label="Estado:" width={200}>
               <Text loading={loading}>
                 <StatusChip error label="Beneficio eliminado" />
               </Text>
             </LabeledRow>
           )}
 
-          <LabeledRow label="Vigencia:">
+          <LabeledRow label="Vigencia:" width={200}>
             <Text loading={loading}>
               {benefit && (
                 <StatusChip
@@ -37,14 +38,14 @@ const BenefitDetails = ({ loading }) => {
             </Text>
           </LabeledRow>
 
-          <LabeledRow label={'Código'}>
+          <LabeledRow label={'Código'} width={200}>
             <Text loading={loading}>{benefit && benefit.code}</Text>
           </LabeledRow>
-          <LabeledRow label={'Nombre'}>
+          <LabeledRow label={'Nombre'} width={200}>
             <Text loading={loading}>{benefit && benefit.name}</Text>
           </LabeledRow>
 
-          <LabeledRow label={'Fecha de inicio'}>
+          <LabeledRow label={'Fecha de inicio'} width={200}>
             <Text loading={loading}>
               {benefit &&
                 formatDate(benefit.startDate, {
@@ -55,7 +56,7 @@ const BenefitDetails = ({ loading }) => {
                 })}
             </Text>
           </LabeledRow>
-          <LabeledRow label={'Fecha de fin'}>
+          <LabeledRow label={'Fecha de fin'} width={200}>
             <Text loading={loading}>
               {benefit &&
                 formatDate(benefit.endDate, {
@@ -66,7 +67,7 @@ const BenefitDetails = ({ loading }) => {
                 })}
             </Text>
           </LabeledRow>
-          <LabeledRow label={'Creado por: '}>
+          <LabeledRow label={'Creado por: '} width={200}>
             <Text loading={loading}>
               <Box display="flex" alignItems="center">
                 <Avatar
@@ -84,43 +85,57 @@ const BenefitDetails = ({ loading }) => {
               </Box>
             </Text>
           </LabeledRow>
-        </Grid>
-        <Grid item xs={12} md={6}>
           <LabeledRow label={'Nombre de proyecto'} width={200}>
             <Text loading={loading}>{benefit && benefit.projectName}</Text>
           </LabeledRow>
           <LabeledRow label={'Descripción'} width={200}>
             <Text loading={loading}>{benefit && benefit.description}</Text>
           </LabeledRow>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <Box mt={2}>
-                <Typography style={{ fontSize: '15px' }}>
-                  Cantidad de cupos anuales
-                </Typography>
-                <DataCard
-                  icon={<UsersIcon />}
-                  data={benefit && benefit.usersQuantity}
-                />
-              </Box>
+        </Grid>
+        <Grid item xs={12} md={5}>
+          <Box mt={2}>
+            <Grid container spacing={2}>
+              <Grid item xs={6} md={6}>
+                <Box>
+                  <Typography style={{ fontSize: '15px' }}>
+                    Cantidad de cupos anuales
+                  </Typography>
+                  <DataCard
+                    icon={<UsersIcon />}
+                    data={benefit && benefit.usersQuantity}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={6} md={6}>
+                <Box>
+                  <Typography style={{ fontSize: '15px' }}>Duración</Typography>
+                  <DataCard
+                    icon={<TimeIcon />}
+                    data={
+                      benefit &&
+                      `${differenceInDays(
+                        new Date(benefit.endDate),
+                        new Date(benefit.startDate)
+                      )} días`
+                    }
+                    color={'purple'}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={6} md={6}>
+                <Box>
+                  <Typography style={{ fontSize: '15px' }}>
+                    Costo total
+                  </Typography>
+                  <DataCard
+                    icon={<MoneyIcon />}
+                    data={benefit && `${formatCurrency(benefit.totalCost)}`}
+                    color={'red'}
+                  />
+                </Box>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Box mt={2}>
-                <Typography style={{ fontSize: '15px' }}>Duración</Typography>
-                <DataCard
-                  icon={<TimeIcon />}
-                  data={
-                    benefit &&
-                    `${differenceInDays(
-                      new Date(benefit.endDate),
-                      new Date(benefit.startDate)
-                    )} días`
-                  }
-                  color={'purple'}
-                />
-              </Box>
-            </Grid>
-          </Grid>
+          </Box>
         </Grid>
       </Grid>
     </Box>

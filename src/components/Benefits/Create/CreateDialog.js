@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, Stepper, Step, StepLabel, Typography } from '@material-ui/core'
-import { Button } from '../../UI'
+import { Box, Stepper, Step, StepLabel } from '@material-ui/core'
+import { Success } from '../../UI'
 import StepTwo from './StepTwo'
 import StepOne from './StepOne'
 import { Dialog } from '../../Shared'
@@ -84,12 +84,7 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
         <div>
           {create.step === steps.length ? (
             <Box>
-              <Typography align="center">{`Beneficio ${
-                type === 'UPDATE' ? 'actualizado' : 'creado'
-              }  con éxito`}</Typography>
-              <Box display="flex" justifyContent="center">
-                <Button onClick={handleEnd}>Cerrar</Button>
-              </Box>
+              <Success message={'!Beneficio creado!'} event={handleEnd} />
             </Box>
           ) : (
             <>{getStepContent(create.step, { onClose })}</>

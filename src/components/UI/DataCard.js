@@ -36,6 +36,11 @@ const colors = {
     bg: '#E6F6FF',
     light: '#BAE7FE',
     main: '#3A72F1'
+  },
+  red: {
+    bg: '#FEEDEA',
+    light: '#f5cbc7',
+    main: '#d05e57'
   }
 }
 
@@ -59,7 +64,7 @@ CardIcon.defaultProps = {
   color: 'primary'
 }
 CardIcon.propTypes = {
-  color: PropTypes.oneOf(['primary', 'purple'])
+  color: PropTypes.oneOf(['primary', 'purple', 'red'])
 }
 
 export default CardIcon

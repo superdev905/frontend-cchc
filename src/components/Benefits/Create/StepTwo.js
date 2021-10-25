@@ -1,25 +1,29 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
-import { useHistory } from 'react-router-dom'
+//  import { useHistory } from 'react-router-dom'
 import { Box, Typography } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { Button, SubmitButton, EmptyState } from '../../UI'
 import useStyles from '../styles'
 import benefitsActions from '../../../state/actions/benefits'
-import { useToggle } from '../../../hooks'
+import { useSuccess, useToggle } from '../../../hooks'
 import Restrictions from '../Restrictions/Restrictions'
 import RestrictionCard from '../../Restriction/Cards'
 import { RestrictionEdit } from '..'
+import { ConfirmDelete } from '../../Shared'
 
 const StepTwo = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const history = useHistory()
+
   const { enqueueSnackbar } = useSnackbar()
+  const [loading, setLoading] = useState(false)
   const { create } = useSelector((state) => state.benefits)
+  const { success, changeSuccess } = useSuccess()
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const [currentRes, setCurrentRes] = useState(null)
   const [currentType, setCurrentType] = useState('')
 
@@ -30,24 +34,12 @@ const StepTwo = () => {
       isActive: true,
       createdDate: new Date()
     }
-    if (create.type === 'CREATE') {
-      dispatch(benefitsActions.createBenefit(data)).then(() => {
-        dispatch(
-          benefitsActions.updateCreate({
-            ...create,
-            step: create.step + 2
-          })
-        )
-      })
-      history.push('/benefits')
-      enqueueSnackbar('Beneficio creado exitosamente', {
-        autoHideDuration: 1500,
-        variant: 'success'
-      })
-    } else {
-      dispatch(benefitsActions.updateBenefit(create.benefit.id, data)).then(
-        () => {
-          enqueueSnackbar('Beneficio actualizado exitosamente', {
+    setLoading(true)
+    dispatch(benefitsActions.createBenefit(data))
+      .then(() => {
+        setLoading(false)
+        changeSuccess(true, () => {
+          enqueueSnackbar('Beneficio creado exitosamente', {
             autoHideDuration: 1500,
             variant: 'success'
           })
@@ -57,9 +49,14 @@ const StepTwo = () => {
               step: create.step + 1
             })
           )
-        }
-      )
-    }
+        })
+      })
+      .catch((err) => {
+        setLoading(false)
+        enqueueSnackbar(err, {
+          variant: 'error'
+        })
+      })
   }
 
   const goBack = () => {
@@ -70,6 +67,11 @@ const StepTwo = () => {
     setCurrentRes(values)
     setCurrentType(type)
     toggleOpenEdit()
+  }
+  const onDeleteClick = (type, values) => {
+    setCurrentRes(values)
+    setCurrentType(type)
+    toggleOpenDelete()
   }
 
   const updateBenefit = (benefit, resType, values) => {
@@ -92,6 +94,16 @@ const StepTwo = () => {
         benefit: updateBenefit(create.benefit, currentType, values)
       })
     )
+
+  const deleteRestriction = () => {
+    dispatch(
+      benefitsActions.updateCreate({
+        ...create,
+        benefit: updateBenefit(create.benefit, currentType, null)
+      })
+    )
+    toggleOpenDelete()
+  }
 
   const restrictionAdded = () =>
     !create.benefit.businessRestriction &&
@@ -124,6 +136,9 @@ const StepTwo = () => {
           onEdit={() =>
             onEditClick('BUSINESS', create.benefit.businessRestriction)
           }
+          onDelete={() =>
+            onDeleteClick('BUSINESS', create.benefit.businessRestriction)
+          }
         />
       )}
 
@@ -134,6 +149,9 @@ const StepTwo = () => {
           onEdit={() =>
             onEditClick('GENERAL', create.benefit.generalRestriction)
           }
+          onDelete={() =>
+            onDeleteClick('GENERAL', create.benefit.generalRestriction)
+          }
         />
       )}
 
@@ -142,6 +160,9 @@ const StepTwo = () => {
           type="COURSE"
           restriction={create.benefit.courseRestriction}
           onEdit={() => onEditClick('COURSE', create.benefit.courseRestriction)}
+          onDelete={() =>
+            onDeleteClick('COURSE', create.benefit.courseRestriction)
+          }
         />
       )}
 
@@ -152,6 +173,9 @@ const StepTwo = () => {
           onEdit={() =>
             onEditClick('SCHOLARSHIP', create.benefit.scholarshipRestriction)
           }
+          onDelete={() =>
+            onDeleteClick('SCHOLARSHIP', create.benefit.scholarshipRestriction)
+          }
         />
       )}
 
@@ -160,7 +184,7 @@ const StepTwo = () => {
           Anterior
         </Button>
 
-        <SubmitButton onClick={onCreate}>
+        <SubmitButton onClick={onCreate} loading={loading} success={success}>
           {create.type === 'UPDATE' ? 'Actualizar' : 'Crear'} Beneficio
         </SubmitButton>
       </Box>
@@ -174,6 +198,18 @@ const StepTwo = () => {
           restriction={currentRes}
           type={currentType}
           submitFunction={updateRestriction}
+        />
+      )}
+      {currentRes && openDelete && (
+        <ConfirmDelete
+          open={openDelete}
+          onClose={toggleOpenDelete}
+          onConfirm={() => deleteRestriction()}
+          message={
+            <Typography variant="h6">
+              ¿Estás seguro de eliminar esta restricción?
+            </Typography>
+          }
         />
       )}
     </Box>
