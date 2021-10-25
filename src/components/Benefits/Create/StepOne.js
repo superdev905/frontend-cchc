@@ -23,7 +23,8 @@ const StepOne = ({ onClose, data }) => {
       name: create?.benefit?.name || '',
       projectName: create?.benefit?.projectName || '',
       usersQuantity: create?.benefit?.usersQuantity || '',
-      isActive: create?.benefit?.isActive || ''
+      isActive: create?.benefit?.isActive || '',
+      totalCost: create?.benefit?.totalCost || ''
     },
     onSubmit: (values) => {
       dispatch(

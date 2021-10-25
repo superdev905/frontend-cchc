@@ -98,6 +98,24 @@ const updatePassword = (id, values) => () =>
       })
   })
 
+const getFoundationUsers =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.auth
+        }/users/search/foundation?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 export default {
   getUsers,
   createUser,
@@ -105,5 +123,6 @@ export default {
   patchUser,
   getUserDetails,
   updatePassword,
-  getOTECUsers
+  getOTECUsers,
+  getFoundationUsers
 }

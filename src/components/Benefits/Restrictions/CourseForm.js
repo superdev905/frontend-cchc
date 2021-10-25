@@ -12,16 +12,15 @@ import commonActions from '../../../state/actions/common'
 import usersActions from '../../../state/actions/users'
 import { courseSchema } from './schemas'
 
-const optionsList = [1, 2, 3]
 const modalities = ['PRESENCIAL', 'ELEARNING', 'ON LINE']
 
 const Course = ({
   onCancel,
-  benefit,
   data,
   submitFunction,
   successMessage,
-  successFunction
+  successFunction,
+  submitText = 'Actualizar'
 }) => {
   const dispatch = useDispatch()
   const { success, changeSuccess } = useSuccess()
@@ -29,22 +28,24 @@ const Course = ({
   const { otecs, specList } = useSelector((state) => state.common)
   const [selectedOTEC, setSelectedOTEC] = useState(null)
   const [instructorsList, setInstructorList] = useState([])
+  const [foundationUsers, setFoundationUsers] = useState([])
 
   const formik = useFormik({
     validateOnMount: true,
     validationSchema: courseSchema,
     initialValues: {
-      otecId: data.otecId || '',
-      otecName: data.otecName || '',
-      instructorId: data.instructorId || '',
-      instructorName: data.instructorName || '',
-      place: data.place || '',
-      modality: data.modality || '',
-      participants: data.participants || '',
-      courseHours: data.courseHours || '',
-      occupationName: data.occupationName || '',
-      assignedTo: data.assignedTo || '',
-      enrollCost: data.enrollCost || ''
+      otecId: data?.otecId || '',
+      otecName: data?.otecName || '',
+      instructorId: data?.instructorId || '',
+      instructorName: data?.instructorName || '',
+      place: data?.place || '',
+      modality: data?.modality || '',
+      participants: data?.participants || '',
+      courseHours: data?.courseHours || '',
+      occupationName: data?.occupationName || '',
+      assignedTo: data?.assignedTo || '',
+      assignedName: data?.assignedName || '',
+      enrollCost: data?.enrollCost || ''
     },
     onSubmit: (values) => {
       submitFunction(values)
@@ -64,9 +65,9 @@ const Course = ({
   })
 
   useEffect(() => {
-    if (otecs.length > 0) {
+    if (otecs.length > 0 && data) {
       const currentOtec = otecs.find(
-        (item) => item.id === parseInt(benefit.otecId, 10)
+        (item) => item.id === parseInt(data.otecId, 10)
       )
       setSelectedOTEC(currentOtec)
     }
@@ -100,11 +101,29 @@ const Course = ({
   }, [formik.values.instructorId, instructorsList])
 
   useEffect(() => {
+    const { assignedTo } = formik.values
+    if (assignedTo && foundationUsers.length > 0) {
+      const currentUser = foundationUsers.find(
+        (item) => item.id === parseInt(assignedTo, 10)
+      )
+      formik.setFieldValue(
+        'assignedName',
+        `${currentUser.names} ${currentUser.paternal_surname} ${currentUser.maternal_surname}`
+      )
+    } else {
+      formik.setFieldValue('assignedName', '')
+    }
+  }, [formik.values.assignedTo, foundationUsers])
+
+  useEffect(() => {
     formik.resetForm()
     dispatch(commonActions.getAllOTECS())
     dispatch(commonActions.getSpecList())
     dispatch(usersActions.getOTECUsers()).then((result) => {
       setInstructorList(result)
+    })
+    dispatch(usersActions.getFoundationUsers()).then((result) => {
+      setFoundationUsers(result)
     })
   }, [])
 
@@ -112,7 +131,7 @@ const Course = ({
     <Box>
       <Box p={2}>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <InputLabel required>Empresa que capacita</InputLabel>
             {selectedOTEC ? (
               <CompanyRow
@@ -250,7 +269,10 @@ const Course = ({
             >
               <option value="">Seleccione oficio</option>
               {specList.map((item, index) => (
-                <option key={`specialty_id--${index}`} value={`${item.id}`}>
+                <option
+                  key={`specialty_id--${index}`}
+                  value={`${item.description}`}
+                >
                   {`${item.description}`}
                 </option>
               ))}
@@ -270,8 +292,10 @@ const Course = ({
               }
             >
               <option value="">Seleccione responsable</option>
-              {optionsList.map((item) => (
-                <option value={item}>{capitalize(item)}</option>
+              {foundationUsers.map((item) => (
+                <option
+                  value={item.id}
+                >{`${item.names} ${item.paternal_surname} ${item.maternal_surname}`}</option>
               ))}
             </Select>
           </Grid>
@@ -302,7 +326,7 @@ const Course = ({
             loading={formik.isSubmitting}
             success={success}
           >
-            Actualizar
+            {submitText}
           </SubmitButton>
         </Box>
       </Box>

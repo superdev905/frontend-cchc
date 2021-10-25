@@ -21,7 +21,8 @@ const General = ({
   data,
   successMessage,
   submitFunction,
-  successFunction
+  successFunction,
+  submitText = 'Actualizar'
 }) => {
   const dispatch = useDispatch()
   const { success, changeSuccess } = useSuccess()
@@ -32,20 +33,20 @@ const General = ({
     validateOnMount: true,
     validationSchema: generalSchema,
     initialValues: {
-      nationalityId: data.nationalityId || '',
-      nationalityName: data.nationalityName || '',
-      rshId: data.rshId || '',
-      rshName: data.rshName || '',
-      legalCharge: data.legalCharge || '',
-      prevision: data.prevision || '',
-      retired: data.retired || '',
-      belongsToReconocer: data.belongsToReconocer || '',
-      isAdult: data.isAdult || '',
-      gender: data.gender || '',
-      activityType: data.activityType || '',
-      inscriber: data.inscriber || '',
-      funding: data.funding || '',
-      maxSalary: data.maxSalary || ''
+      nationalityId: data?.nationalityId || '',
+      nationalityName: data?.nationalityName || '',
+      rshId: data?.rshId || '',
+      rshName: data?.rshName || '',
+      legalCharge: data?.legalCharge || '',
+      prevision: data?.prevision || '',
+      retired: data?.retired || '',
+      belongsToReconocer: data?.belongsToReconocer || '',
+      isAdult: data?.isAdult || '',
+      gender: data?.gender || '',
+      activityType: data?.activityType || '',
+      inscriber: data?.inscriber || '',
+      funding: data?.funding || '',
+      maxSalary: data?.maxSalary || ''
     },
     onSubmit: (values) => {
       submitFunction(values)
@@ -213,7 +214,7 @@ const General = ({
                 error={formik.touched.retired && Boolean(formik.errors.retired)}
               >
                 <option value="">Seleccione estado de jubilación</option>
-                {decisionList.map((item) => (
+                {decisionList.concat(['NO APLICA']).map((item) => (
                   <option value={item}>
                     {formatText.capitalizeString(item)}
                   </option>
@@ -367,7 +368,7 @@ const General = ({
               loading={formik.isSubmitting}
               success={success}
             >
-              Actualizar
+              {submitText}
             </SubmitButton>
           </Box>
         </Box>
