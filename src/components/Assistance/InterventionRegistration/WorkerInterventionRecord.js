@@ -24,7 +24,8 @@ import commonActions from '../../../state/actions/common'
 import filesActions from '../../../state/actions/files'
 import { AttentionStatus } from '../../../config'
 import { formatDate, formatHours } from '../../../formatters'
-import { useSuccess } from '../../../hooks'
+import { useSuccess, useToggle } from '../../../hooks'
+import BenefitDialog from '../BenefitDialog'
 
 const validationSchema = Yup.object().shape({
   date: Yup.date().required('Seleccione fecha'),
@@ -49,6 +50,7 @@ const attentionPlaces = ['OFICINA', 'TERRENO', 'VIRTUAL']
 const WorkerInterventionRecord = ({
   open,
   onClose,
+  selectedUser,
   type,
   data,
   submitFunction,
@@ -65,6 +67,7 @@ const WorkerInterventionRecord = ({
   const { user } = useSelector((state) => state.auth)
   const [topics, setTopics] = useState([])
   const [attachedFile, setAttachedFile] = useState(null)
+  const { open: openBenefit, toggleOpen: toggleOpenBenefit } = useToggle()
 
   const formik = useFormik({
     validateOnMount: true,
@@ -153,6 +156,18 @@ const WorkerInterventionRecord = ({
     if (shiftName === 'AT.CESANTES') return 'OFICINA'
     return 'TERRENO'
   }
+
+  useEffect(() => {
+    const { management_id } = formik.values
+    if (management_id) {
+      const selected = managementList.find(
+        (item) => item.id === parseInt(management_id, 10)
+      )
+      if (selected.name === 'ENTREGA DE BENEFICIO') {
+        toggleOpenBenefit()
+      }
+    }
+  }, [formik.values.management_id])
 
   useEffect(() => {
     if (type === 'CREATE') {
@@ -516,6 +531,13 @@ const WorkerInterventionRecord = ({
           </Box>
         </Box>
       </Box>
+      {openBenefit && (
+        <BenefitDialog
+          open={openBenefit}
+          onClose={toggleOpenBenefit}
+          employee={selectedUser}
+        />
+      )}
     </Dialog>
   )
 }

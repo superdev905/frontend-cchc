@@ -16,7 +16,7 @@ import { useToggle } from '../../hooks'
 import searchWithRut from '../../formatters/searchWithRut'
 import JobsDialog from './JobsDialog'
 
-const ContactList = () => {
+const List = () => {
   const dispatch = useDispatch()
   const { idVisit } = useParams()
   const history = useHistory()
@@ -28,6 +28,7 @@ const ContactList = () => {
   const { open, toggleOpen } = useToggle()
   const [searchResult, setSearchResult] = useState([])
   const [attendedList, setAttendedList] = useState([])
+
   const { visit, attendedEmployeeList } = useSelector(
     (state) => state.assistance
   )
@@ -217,9 +218,10 @@ const ContactList = () => {
           data={searchResult}
         />
       </Box>
-      {visit && open && (
+      {visit && selectedUser && open && (
         <WorkerInterventionRecord
           open={open}
+          selectedUser={selectedUser}
           visitShift={visit.shift.name}
           onClose={toggleOpen}
           submitFunction={createAttention}
@@ -240,4 +242,4 @@ const ContactList = () => {
   )
 }
 
-export default ContactList
+export default List

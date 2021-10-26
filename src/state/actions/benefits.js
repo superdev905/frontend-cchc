@@ -106,6 +106,18 @@ const updateRestriction = (id, type, values) => () =>
       })
   })
 
+const getBenefitsForEmployee = (idEmployee) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.benefits}/benefits/employee/${idEmployee}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const benefitsActions = {
   updateCreate,
   toggleCreateModal,
@@ -114,7 +126,8 @@ const benefitsActions = {
   getBenefitDetails,
   deleteBenefit,
   updateBenefit,
-  updateRestriction
+  updateRestriction,
+  getBenefitsForEmployee
 }
 
 export default benefitsActions
