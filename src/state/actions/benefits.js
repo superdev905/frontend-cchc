@@ -106,6 +106,64 @@ const updateRestriction = (id, type, values) => () =>
       })
   })
 
+const createActivity = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.benefits}/activities`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getActivities =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.benefits}/activities?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          console.log(data)
+          dispatch({ type: benefitsTypes.GET_ACTIVITIES, payload: data.items })
+          dispatch({
+            type: benefitsTypes.SET_TOTAL_ACTIVITIES,
+            payload: data.total
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const updateActivity = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.benefits}/activities/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const deleteActivity = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`${config.services.benefits}/activities/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const benefitsActions = {
   updateCreate,
   toggleCreateModal,
@@ -114,7 +172,11 @@ const benefitsActions = {
   getBenefitDetails,
   deleteBenefit,
   updateBenefit,
-  updateRestriction
+  updateRestriction,
+  createActivity,
+  getActivities,
+  updateActivity,
+  deleteActivity
 }
 
 export default benefitsActions
