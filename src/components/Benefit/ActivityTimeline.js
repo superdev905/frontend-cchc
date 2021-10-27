@@ -72,6 +72,12 @@ const ActivityTimeLine = () => {
                 </Typography>
                 <Typography>{item.description}</Typography>
                 <Typography>Trabajador: {item.employeeName}</Typography>
+                <Typography>Cupos anuales: {item.annualAmount} </Typography>
+                <Typography>
+                  Costo del beneficio: {item.benefitCost}{' '}
+                </Typography>
+                <Typography>Financiamento: {item.founding} </Typography>
+
                 <Box>
                   <Typography className={classes.date} align="right">
                     {`${formatDate(item.createdDate, {
