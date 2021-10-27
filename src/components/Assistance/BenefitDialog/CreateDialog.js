@@ -4,7 +4,7 @@ import { Box, Stepper, Step, StepLabel } from '@material-ui/core'
 import { Success } from '../../UI'
 import { Dialog } from '../../Shared'
 import benefitsActions from '../../../state/actions/benefits'
-import BenefitDialog from './BenefitDialog'
+import BenefitDialog from '.'
 import CreateActivity from './CreateActivity'
 
 function getSteps() {

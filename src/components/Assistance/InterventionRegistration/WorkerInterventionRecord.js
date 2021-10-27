@@ -3,6 +3,7 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
+import { FiTrash2 as DeleteIcon } from 'react-icons/fi'
 import {
   Box,
   Grid,
@@ -18,14 +19,18 @@ import {
   SubmitButton,
   InputLabel,
   TextArea,
-  LabeledRow
+  LabeledRow,
+  EmptyState
 } from '../../UI'
 import commonActions from '../../../state/actions/common'
 import filesActions from '../../../state/actions/files'
 import { AttentionStatus } from '../../../config'
 import { formatDate, formatHours } from '../../../formatters'
 import { useSuccess, useToggle } from '../../../hooks'
-import CreateDialog from '../BenefitDialog/CreateDialog'
+import BenefitDialog from '../BenefitDialog'
+import { ActivityCard, BenefitCard } from '../../Benefits'
+import benefitsActions from '../../../state/actions/benefits'
+import useStyles from './styles'
 
 const validationSchema = Yup.object().shape({
   date: Yup.date().required('Seleccione fecha'),
@@ -50,7 +55,7 @@ const attentionPlaces = ['OFICINA', 'TERRENO', 'VIRTUAL']
 const WorkerInterventionRecord = ({
   open,
   onClose,
-  selectedUser,
+  employee,
   type,
   data,
   submitFunction,
@@ -61,13 +66,32 @@ const WorkerInterventionRecord = ({
   visitShift
 }) => {
   const dispatch = useDispatch()
+  const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { areas, managementList } = useSelector((state) => state.common)
   const { user } = useSelector((state) => state.auth)
   const [topics, setTopics] = useState([])
   const [attachedFile, setAttachedFile] = useState(null)
+  const [selectedManagement, setSelectedManagement] = useState('')
+  const [activityDetails, setActivityDetails] = useState({
+    benefit: null,
+    activity: null
+  })
   const { open: openBenefit, toggleOpen: toggleOpenBenefit } = useToggle()
+
+  const handleActivityCreate = (benefit, activity, assistanceId) => {
+    dispatch(
+      benefitsActions.createActivity({
+        ...activity,
+        benefitId: benefit.id,
+        createdDate: new Date().toISOString(),
+        assistanceId,
+        employeeId: employee.id,
+        employeeName: `${employee.names} ${employee.paternal_surname} ${employee.maternal_surname}`
+      })
+    )
+  }
 
   const formik = useFormik({
     validateOnMount: true,
@@ -125,6 +149,13 @@ const WorkerInterventionRecord = ({
           if (successFunction) {
             successFunction(result)
           }
+          if (selectedManagement === 'ENTREGA DE BENEFICIO') {
+            handleActivityCreate(
+              activityDetails.benefit,
+              activityDetails.activity,
+              result.id
+            )
+          }
         })
       })
     }
@@ -157,6 +188,13 @@ const WorkerInterventionRecord = ({
     return 'TERRENO'
   }
 
+  const getActivityValidation = () => {
+    if (selectedManagement === 'ENTREGA DE BENEFICIO') {
+      return !activityDetails.benefit && !activityDetails.activity
+    }
+    return false
+  }
+
   useEffect(() => {
     const { management_id } = formik.values
     if (management_id) {
@@ -166,6 +204,9 @@ const WorkerInterventionRecord = ({
       if (selected.name === 'ENTREGA DE BENEFICIO') {
         toggleOpenBenefit()
       }
+      setSelectedManagement(selected.name)
+    } else {
+      setSelectedManagement('')
     }
   }, [formik.values.management_id])
 
@@ -374,6 +415,47 @@ const WorkerInterventionRecord = ({
                 ))}
               </Select>
             </Grid>
+            {selectedManagement === 'ENTREGA DE BENEFICIO' && (
+              <Grid item xs={12}>
+                <Box className={classes.benefitBox} p={2}>
+                  <Box
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
+                  >
+                    <Typography style={{ marginBottom: 15 }}>
+                      <strong>Detalles de beneficio</strong>
+                    </Typography>
+                    {activityDetails.benefit && activityDetails.activity && (
+                      <Button
+                        startIcon={<DeleteIcon />}
+                        size="small"
+                        danger
+                        onClick={() =>
+                          setActivityDetails({ benefit: null, activity: null })
+                        }
+                      >
+                        Eliminar
+                      </Button>
+                    )}
+                  </Box>
+                  {activityDetails.benefit && activityDetails.activity ? (
+                    <>
+                      <BenefitCard benefit={activityDetails.benefit} selected />
+                      <ActivityCard activity={activityDetails.activity} />
+                    </>
+                  ) : (
+                    <Box>
+                      <EmptyState
+                        message="Seleccione beneficio y actividad"
+                        event={toggleOpenBenefit}
+                        actionMessage="Ver beneficios"
+                      ></EmptyState>
+                    </Box>
+                  )}
+                </Box>
+              </Grid>
+            )}
             <Grid item xs={12}>
               <InputLabel required>Informe Empresa</InputLabel>
               <Box>
@@ -522,7 +604,11 @@ const WorkerInterventionRecord = ({
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
-              disabled={!formik.isValid || formik.isSubmitting}
+              disabled={
+                !formik.isValid ||
+                formik.isSubmitting ||
+                getActivityValidation()
+              }
               loading={formik.isSubmitting}
               success={success}
             >
@@ -531,11 +617,15 @@ const WorkerInterventionRecord = ({
           </Box>
         </Box>
       </Box>
+
       {openBenefit && (
-        <CreateDialog
+        <BenefitDialog
           open={openBenefit}
           onClose={toggleOpenBenefit}
-          employee={selectedUser}
+          employee={employee}
+          onSave={(benefit, activity) =>
+            setActivityDetails({ benefit, activity })
+          }
         />
       )}
     </Dialog>
