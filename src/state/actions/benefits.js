@@ -139,6 +139,19 @@ const getActivities =
         })
     })
 
+const getActivityDetails = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.benefits}/activities/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: benefitsTypes.GET_ACTIVITY_DETAILS, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const updateActivity = (id, values) => () =>
   new Promise((resolve, reject) => {
     Axios.put(`${config.services.benefits}/activities/${id}`, values)
@@ -186,6 +199,7 @@ const benefitsActions = {
   updateRestriction,
   createActivity,
   getActivities,
+  getActivityDetails,
   updateActivity,
   deleteActivity,
   getBenefitsForEmployee
