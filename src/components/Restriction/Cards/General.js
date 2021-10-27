@@ -18,7 +18,7 @@ const General = ({ restriction }) => (
         <LabeledRow label={'Prevision'}>
           <Text>{restriction.prevision}</Text>
         </LabeledRow>
-        <LabeledRow label={'Mayo de edad'}>
+        <LabeledRow label={'Mayor de edad'}>
           <Text>{restriction.isAdult}</Text>
         </LabeledRow>
         <LabeledRow label={'Pertenece a Reconocer'}>
