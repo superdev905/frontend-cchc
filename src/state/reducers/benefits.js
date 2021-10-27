@@ -5,9 +5,11 @@ const initialState = {
     step: 0
   },
   benefits: [],
+  activities: [],
   showCreateModal: false,
   benefitDetails: null,
-  total: 0
+  total: 0,
+  totalActivities: 0
 }
 
 const benefitsReducers = (state = initialState, { type, payload }) => {
@@ -22,6 +24,10 @@ const benefitsReducers = (state = initialState, { type, payload }) => {
       return { ...state, total: payload }
     case benefitsTypes.GET_BENEFIT_DETAILS:
       return { ...state, benefitDetails: payload }
+    case benefitsTypes.GET_ACTIVITIES:
+      return { ...state, activities: payload }
+    case benefitsTypes.SET_TOTAL_ACTIVITIES:
+      return { ...state, totalActivities: payload }
     default:
       return state
   }

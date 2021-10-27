@@ -1,25 +1,26 @@
 import * as Yup from 'yup'
-import { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { useSelector } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { DatePicker, Dialog } from '../Shared'
+import { CurrencyTextField, DatePicker, Dialog } from '../Shared'
 import { Button, Select, SubmitButton, TextArea, TextField } from '../UI'
 import { useSuccess } from '../../hooks'
 
-const options = [1, 2, 3]
+const options = ['opcion1', 'opcioon2']
+const statusList = ['VIGENTE', 'NO VIGENTE']
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Ingrese nombre del curso'),
-  founding: Yup.number().required('Seleccione financiamiento'),
-  annualQuotas: Yup.string().required('Ingrese cupos anuales'),
+  founding: Yup.string().required('Seleccione financiamiento'),
+  annualAmount: Yup.string().required('Ingrese cupos anuales'),
   benefitCost: Yup.string().required('Ingrese costo del beneficio'),
   startDate: Yup.string().required('Ingrese fecha de inicio'),
   endDate: Yup.string().required('Ingrese fecha de termino'),
-  status: Yup.number().required('Seleccione estado'),
-  reuseAmount: Yup.string().required('Ingrese cantidad de reutilización'),
-  executionSchedule: Yup.string().required('Ingrese programacion de ejecución'),
+  isActive: Yup.string().required('Seleccione estado'),
+  reuseQuantity: Yup.string().required('Ingrese cantidad de reutilización'),
+  executeSchedule: Yup.number().required('Ingrese programacion de ejecución'),
+  temporality: Yup.number().required('Ingrese temporalidad'),
   description: Yup.string().required('Ingrese descripción')
 })
 
@@ -42,13 +43,14 @@ const CreateActivity = ({
     initialValues: {
       name: type === 'UPDATE' ? data.name : '',
       founding: type === 'UPDATE' ? data.founding : '',
-      annualQuotas: type === 'UPDATE' ? data.annualQuotas : '',
+      annualAmount: type === 'UPDATE' ? data.annualAmount : '',
       benefitCost: type === 'UPDATE' ? data.benefitCost : '',
-      startDate: type === 'UPDATE' ? data.startDate : '',
-      endDate: type === 'UPDATE' ? data.endDate : '',
-      status: type === 'UPDATE' ? data.status : '',
-      reuseAmount: type === 'UPDATE' ? data.reuseAmount : '',
-      executionSchedule: type === 'UPDATE' ? data.executionSchedule : '',
+      startDate: type === 'UPDATE' ? data.startDate : null,
+      endDate: type === 'UPDATE' ? data.endDate : null,
+      isActive: type === 'UPDATE' ? data.isActive : '',
+      reuseQuantity: type === 'UPDATE' ? data.reuseQuantity : '',
+      executeSchedule: type === 'UPDATE' ? data.executeSchedule : '',
+      temporality: type === 'UPDATE' ? data.temporality : '',
       description: type === 'UPDATE' ? data.description : ''
     },
     onSubmit: (values, { resetForm }) => {
@@ -86,7 +88,7 @@ const CreateActivity = ({
         </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={9}>
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Nombre"
                 required
@@ -99,7 +101,7 @@ const CreateActivity = ({
               />
             </Grid>
 
-            <Grid item xs={12} md={12}>
+            <Grid item xs={12} md={6}>
               <Select
                 label="Financiamiento"
                 required
@@ -114,9 +116,7 @@ const CreateActivity = ({
               >
                 <option value="">Seleccione financiamiento</option>
                 {options.map((item) => (
-                  <option
-                    value={item.id}
-                  >{`${item.names} ${item.paternal_surname} ${item.maternal_surname}`}</option>
+                  <option value={item}>{item}</option>
                 ))}
               </Select>
             </Grid>
@@ -124,23 +124,24 @@ const CreateActivity = ({
             <Grid item xs={12} md={6}>
               <TextField
                 label="Cupos Anuales"
-                name="annualQuotas"
+                name="annualAmount"
                 required
-                value={formik.values.annualQuotas}
+                type="number"
+                value={formik.values.annualAmount}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.annualQuotas &&
-                  Boolean(formik.errors.annualQuotas)
+                  formik.touched.annualAmount &&
+                  Boolean(formik.errors.annualAmount)
                 }
                 helperText={
-                  formik.touched.annualQuotas && formik.errors.annualQuotas
+                  formik.touched.annualAmount && formik.errors.annualAmount
                 }
               />
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <TextField
+              <CurrencyTextField
                 label="Costo del beneficio"
                 name="benefitCost"
                 required
@@ -190,22 +191,22 @@ const CreateActivity = ({
               />
             </Grid>
 
-            <Grid item xs={12} md={12}>
+            <Grid item xs={12} md={6}>
               <Select
                 label="Estado"
                 required
-                name="status"
+                name="isActive"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.status}
-                helperText={formik.touched.status && formik.errors.status}
-                error={formik.touched.status && Boolean(formik.errors.status)}
+                value={formik.values.isActive}
+                helperText={formik.touched.isActive && formik.errors.isActive}
+                error={
+                  formik.touched.isActive && Boolean(formik.errors.isActive)
+                }
               >
                 <option value="">Seleccione estado</option>
-                {options.map((item) => (
-                  <option
-                    value={item.id}
-                  >{`${item.names} ${item.paternal_surname} ${item.maternal_surname}`}</option>
+                {statusList.map((item) => (
+                  <option value={item}>{item}</option>
                 ))}
               </Select>
             </Grid>
@@ -213,35 +214,54 @@ const CreateActivity = ({
             <Grid item xs={12} md={6}>
               <TextField
                 label="Cantidad de reutilización"
-                name="reuseAmount"
+                name="reuseQuantity"
                 required
-                value={formik.values.reuseAmount}
+                type="number"
+                value={formik.values.reuseQuantity}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.reuseAmount &&
-                  Boolean(formik.errors.reuseAmount)
+                  formik.touched.reuseQuantity &&
+                  Boolean(formik.errors.reuseQuantity)
                 }
                 helperText={
-                  formik.touched.reuseAmount && formik.errors.reuseAmount
+                  formik.touched.reuseQuantity && formik.errors.reuseQuantity
                 }
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 label="Programación de ejecución"
-                name="executionSchedule"
+                name="executeSchedule"
                 required
-                value={formik.values.executionSchedule}
+                value={formik.values.executeSchedule}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.executionSchedule &&
-                  Boolean(formik.errors.executionSchedule)
+                  formik.touched.executeSchedule &&
+                  Boolean(formik.errors.executeSchedule)
                 }
                 helperText={
-                  formik.touched.executionSchedule &&
-                  formik.errors.executionSchedule
+                  formik.touched.executeSchedule &&
+                  formik.errors.executeSchedule
+                }
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Temporalidad"
+                name="temporality"
+                required
+                type="number"
+                value={formik.values.temporality}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.temporality &&
+                  Boolean(formik.errors.temporality)
+                }
+                helperText={
+                  formik.touched.temporality && formik.errors.temporality
                 }
               />
             </Grid>
