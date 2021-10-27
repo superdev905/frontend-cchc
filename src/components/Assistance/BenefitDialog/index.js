@@ -6,6 +6,7 @@ import { Dialog } from '../../Shared'
 import useStyles from './styles'
 import { BenefitCard } from '../../Benefits'
 import ActivityForm from './ActivityForm'
+import { EmptyState } from '../../UI'
 
 const BenefitDialog = ({ open, onClose, employee, onSave }) => {
   const dispatch = useDispatch()
@@ -35,7 +36,14 @@ const BenefitDialog = ({ open, onClose, employee, onSave }) => {
         <Typography align="center" className={classes.title}>
           Asignar beneficio a trabajador
         </Typography>
-        <Typography>{`Beneficios disponibles para: ${employee?.names}`}</Typography>
+        <Box mb={2}>
+          <Typography className={classes.heading}>
+            Beneficios disponibles para:
+          </Typography>
+          <Typography>{`Nombres: ${employee?.names} ${employee?.paternal_surname} ${employee?.maternal_surname}`}</Typography>
+          <Typography>{`Run: ${employee?.run}`}</Typography>
+        </Box>
+
         {selectedBenefit ? (
           <BenefitCard
             benefit={selectedBenefit}
@@ -51,13 +59,17 @@ const BenefitDialog = ({ open, onClose, employee, onSave }) => {
               </Box>
             ) : (
               <>
-                {benefitsList.map((item) => (
-                  <BenefitCard
-                    onClick={() => setSelectedBenefit(item)}
-                    key={`benefit-card-${item.id}`}
-                    benefit={item}
-                  />
-                ))}
+                {benefitsList.length === 0 ? (
+                  <EmptyState message="Este trabajador no tiene beneficios disponibles" />
+                ) : (
+                  benefitsList.map((item) => (
+                    <BenefitCard
+                      onClick={() => setSelectedBenefit(item)}
+                      key={`benefit-card-${item.id}`}
+                      benefit={item}
+                    />
+                  ))
+                )}
               </>
             )}
           </>
@@ -65,7 +77,7 @@ const BenefitDialog = ({ open, onClose, employee, onSave }) => {
         <Box mt={3}>
           {selectedBenefit && (
             <Box>
-              <Typography style={{ marginBottom: 10 }}>
+              <Typography className={classes.heading}>
                 Detalles de actividad
               </Typography>
               <ActivityForm

@@ -13,7 +13,7 @@ const BenefitDetails = ({ loading }) => {
   return (
     <Box p={1}>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={7}>
+        <Grid item xs={12} lg={7}>
           {benefit && benefit.state === 'DELETED' && (
             <LabeledRow label="Estado:" width={200}>
               <Text loading={loading}>
@@ -92,7 +92,7 @@ const BenefitDetails = ({ loading }) => {
             <Text loading={loading}>{benefit && benefit.description}</Text>
           </LabeledRow>
         </Grid>
-        <Grid item xs={12} md={5}>
+        <Grid item xs={12} lg={5}>
           <Box mt={2}>
             <Grid container spacing={2}>
               <Grid item xs={6} md={6}>

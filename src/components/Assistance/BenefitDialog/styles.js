@@ -5,6 +5,10 @@ const useStyles = makeStyles(() => ({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20
+  },
+  heading: {
+    fontWeight: 'bold',
+    marginBottom: 10
   }
 }))
 
