@@ -221,7 +221,7 @@ const List = () => {
       {visit && selectedUser && open && (
         <WorkerInterventionRecord
           open={open}
-          selectedUser={selectedUser}
+          employee={selectedUser}
           visitShift={visit.shift.name}
           onClose={toggleOpen}
           submitFunction={createAttention}

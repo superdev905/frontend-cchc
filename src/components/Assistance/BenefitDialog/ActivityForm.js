@@ -1,12 +1,12 @@
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import { useSnackbar } from 'notistack'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid } from '@material-ui/core'
 import { CurrencyTextField, DatePicker } from '../../Shared'
 import { Button, Select, SubmitButton, TextArea, TextField } from '../../UI'
 import { useSuccess } from '../../../hooks'
 
-const options = ['opcion1', 'opcioon2']
+const options = ['PROYECTO SOCIAL', 'GOBIERNO', 'PROPIA EMPRESA', 'OTRO']
+
 const statusList = ['VIGENTE', 'NO VIGENTE']
 
 const validationSchema = Yup.object().shape({
@@ -23,16 +23,8 @@ const validationSchema = Yup.object().shape({
   description: Yup.string().required('Ingrese descripción')
 })
 
-const CreateActivity = ({
-  onClose,
-  type,
-  data,
-  submitFunction,
-  successMessage,
-  successFunction
-}) => {
-  const { enqueueSnackbar } = useSnackbar()
-  const { success, changeSuccess } = useSuccess()
+const CreateActivity = ({ onClose, type, data, submitFunction }) => {
+  const { success } = useSuccess()
 
   const formik = useFormik({
     validateOnMount: true,
@@ -53,38 +45,18 @@ const CreateActivity = ({
     onSubmit: (values, { resetForm }) => {
       submitFunction({
         ...values,
+        isActive: values.isActive === 'VIGENTE',
         createDate: new Date().toISOString()
       })
-        .then(() => {
-          formik.setSubmitting(false)
-          changeSuccess(true, () => {
-            onClose()
-            enqueueSnackbar(successMessage, {
-              variant: 'success'
-            })
-            resetForm()
-            if (successFunction) {
-              successFunction()
-            }
-          })
-        })
-        .catch((err) => {
-          formik.setSubmitting(false)
-          enqueueSnackbar(err, {
-            variant: 'error'
-          })
-        })
+      resetForm()
     }
   })
 
   return (
     <Box>
-      <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
-        {`${type === 'UPDATE' ? 'Actualizar' : 'Nueva'} Actividad`}
-      </Typography>
-      <Box p={2}>
+      <Box>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <TextField
               label="Nombre"
               required
@@ -223,6 +195,7 @@ const CreateActivity = ({
           <Grid item xs={12} md={6}>
             <TextField
               label="Programación de ejecución"
+              placeholder={'3 meses'}
               name="executeSchedule"
               required
               value={formik.values.executeSchedule}
