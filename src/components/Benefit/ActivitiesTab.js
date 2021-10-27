@@ -5,6 +5,7 @@ import { useToggle } from '../../hooks'
 import { Button } from '../UI'
 import CreateActivity from '../Benefits/CreateActivity'
 import benefitsActions from '../../state/actions/benefits'
+import ActivityTimeLine from './ActivityTimeline'
 
 const ActivitiesTab = () => {
   const dispatch = useDispatch()
@@ -25,6 +26,7 @@ const ActivitiesTab = () => {
     <Box>
       <Box>
         <Button onClick={toggleOpenAdd}>Agregar</Button>
+        <ActivityTimeLine />
       </Box>
       {openAdd && (
         <CreateActivity
