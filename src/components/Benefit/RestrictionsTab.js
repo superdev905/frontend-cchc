@@ -27,7 +27,6 @@ const RestrictionsTab = () => {
     setCurrentRes(item)
     toggleOpenEdit()
   }
-  console.log(benefit)
 
   return (
     <Box>

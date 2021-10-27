@@ -127,7 +127,6 @@ const getActivities =
       )
         .then((response) => {
           const { data } = response
-          console.log(data)
           dispatch({ type: benefitsTypes.GET_ACTIVITIES, payload: data.items })
           dispatch({
             type: benefitsTypes.SET_TOTAL_ACTIVITIES,

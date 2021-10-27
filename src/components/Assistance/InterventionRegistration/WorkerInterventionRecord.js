@@ -25,7 +25,7 @@ import filesActions from '../../../state/actions/files'
 import { AttentionStatus } from '../../../config'
 import { formatDate, formatHours } from '../../../formatters'
 import { useSuccess, useToggle } from '../../../hooks'
-import BenefitDialog from '../BenefitDialog'
+import CreateDialog from '../BenefitDialog/CreateDialog'
 
 const validationSchema = Yup.object().shape({
   date: Yup.date().required('Seleccione fecha'),
@@ -532,7 +532,7 @@ const WorkerInterventionRecord = ({
         </Box>
       </Box>
       {openBenefit && (
-        <BenefitDialog
+        <CreateDialog
           open={openBenefit}
           onClose={toggleOpenBenefit}
           employee={selectedUser}
