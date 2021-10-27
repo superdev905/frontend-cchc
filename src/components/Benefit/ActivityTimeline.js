@@ -1,20 +1,27 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { Box, Typography, makeStyles } from '@material-ui/core'
+import { Typography, makeStyles } from '@material-ui/core'
 import {
   Timeline,
   TimelineItem,
   TimelineSeparator,
   TimelineConnector,
   TimelineContent,
-  TimelineDot
+  TimelineDot,
+  TimelineOppositeContent
 } from '@material-ui/lab'
+import { FaAward, FaLock, FaRegCalendarCheck } from 'react-icons/fa'
 import { formatDate } from '../../formatters'
 import benefitsActions from '../../state/actions/benefits'
 
 const useStyles = makeStyles(() => ({
   root: {
+    '&::before': {
+      display: 'none'
+    }
+  },
+  item: {
     backgroundColor: '#F6F6F6',
     borderRadius: 5,
     marginBottom: 20
@@ -31,7 +38,6 @@ const ActivityTimeLine = () => {
   const fetchActivities = () => {
     dispatch(benefitsActions.getActivities(benefitId)).then((result) => {
       setActivities(result.items)
-      console.log(result.items)
     })
   }
 
@@ -40,36 +46,77 @@ const ActivityTimeLine = () => {
   }, [benefit])
 
   return (
-    <Timeline>
-      {activities.map((item, index) => (
+    <Timeline position="alternate" className={classes.root}>
+      {activities.map((item) => (
         <>
-          <TimelineItem className={classes.root}>
-            {item.id}
-            {item.createdBy}
+          <TimelineItem className={classes.item}>
+            <TimelineOppositeContent
+              sx={{ m: 'auto 0' }}
+              align="right"
+              variant="body2"
+              color="text.secondary"
+            >
+              {`${formatDate(item.endDate)}`}
+            </TimelineOppositeContent>
             <TimelineSeparator>
-              <TimelineDot color={item.isActive ? 'primary' : 'secondary'} />
-              {index < activities.length - 1 && <TimelineConnector />}
+              <TimelineConnector />
+              <TimelineDot color="primary">
+                <FaLock />
+              </TimelineDot>
+              <TimelineConnector />
             </TimelineSeparator>
-
-            <TimelineContent>
-              <Box>
-                <Typography style={{ fontWeight: 'bold' }}>
-                  Cupos actualizados
-                </Typography>
-                <Box p={1}>
-                  <Typography> {item.annualAmount}</Typography>
-                  <Typography> </Typography>
-                </Box>
-              </Box>
-              <Box>
-                <Typography style={{ fontWeight: 'bold' }}>
-                  Beneficio creado
-                </Typography>
-                <Box p={1}>
-                  <Typography> {`${formatDate(item.createdDate)}`}</Typography>
-                  <Typography> </Typography>
-                </Box>
-              </Box>
+            <TimelineContent sx={{ py: '12px', px: 2 }}>
+              <Typography variant="h6" component="span">
+                Fin del termino cumplido
+              </Typography>
+              <Typography>
+                Beneficio bloqueado ya no se puede seguir postulando
+              </Typography>
+            </TimelineContent>
+          </TimelineItem>
+          <TimelineItem className={classes.item}>
+            <TimelineOppositeContent
+              sx={{ m: 'auto 0' }}
+              variant="body2"
+              color="text.secondary"
+            >
+              {item.annualAmount}
+            </TimelineOppositeContent>
+            <TimelineSeparator>
+              <TimelineConnector />
+              <TimelineDot color="primary">
+                <FaAward />
+              </TimelineDot>
+              <TimelineConnector />
+            </TimelineSeparator>
+            <TimelineContent sx={{ py: '12px', px: 2 }}>
+              <Typography variant="h6" component="span">
+                Cupos actualizados
+              </Typography>
+              <Typography>Se inscribio un nuevo trabajdor al curso</Typography>
+              <Typography>Trabajador: {item.employeeName} </Typography>
+            </TimelineContent>
+          </TimelineItem>
+          <TimelineItem className={classes.item}>
+            <TimelineOppositeContent
+              sx={{ m: 'auto 0' }}
+              align="right"
+              variant="body2"
+              color="text.secondary"
+            >
+              {`${formatDate(item.startDate)}`}
+            </TimelineOppositeContent>
+            <TimelineSeparator>
+              <TimelineConnector />
+              <TimelineDot color="primary">
+                <FaRegCalendarCheck />
+              </TimelineDot>
+              <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
+            </TimelineSeparator>
+            <TimelineContent sx={{ py: '12px', px: 2 }}>
+              <Typography variant="h6" component="span">
+                Beneficio Creado
+              </Typography>
             </TimelineContent>
           </TimelineItem>
         </>
