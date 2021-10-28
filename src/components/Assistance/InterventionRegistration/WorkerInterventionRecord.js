@@ -494,7 +494,7 @@ const WorkerInterventionRecord = ({
               <Grid item xs={12} md={10}>
                 <TextArea
                   rowsMin={4}
-                  label="Comentarios"
+                  label="Comentarios de informe"
                   name="company_report_observation"
                   value={formik.values.company_report_observation}
                   onChange={formik.handleChange}
