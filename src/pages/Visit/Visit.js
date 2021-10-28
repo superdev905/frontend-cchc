@@ -40,7 +40,7 @@ const Visit = () => {
         <IconButton onClick={goBack}>
           <BackIcon />
         </IconButton>
-        <PageHeading>Visita {idVisit}</PageHeading>
+        <PageHeading>Visita{idVisit}</PageHeading>
       </Box>
       <VisitDetails fetching={loading} fetchDetails={getDetails} />
 
