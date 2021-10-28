@@ -44,11 +44,11 @@ const Visit = () => {
       </Box>
       <VisitDetails fetching={loading} fetchDetails={getDetails} />
 
+      <ContactList />
       <AttendedEmployees />
       <AttendEmployees />
       <ConstructionAttend />
       <VisitStatistics />
-      <ContactList />
     </Box>
   )
 }

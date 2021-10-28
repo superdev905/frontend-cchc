@@ -77,7 +77,8 @@ const EmployeeModal = ({
       job_id: type !== 'CREATE' ? data.job_id : '',
       rsh: type !== 'CREATE' ? data.rsh : '',
       rsh_percentage_id: type !== 'CREATE' ? data.rsh_percentage_id : '',
-      legal_charge: type !== 'CREATE' ? data.legal_charge : ''
+      legal_charge: type !== 'CREATE' ? data.legal_charge : '',
+      phone: type !== 'CREATE' ? data.phone : ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction(values)
@@ -463,6 +464,23 @@ const EmployeeModal = ({
                   </option>
                 ))}
               </Select>
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={4}>
+              <TextField
+                type="number"
+                label="Numero de contacto"
+                name="phone"
+                value={formik.values.phone}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.phone && Boolean(formik.errors.phone)}
+                helperText={formik.touched.phone && formik.errors.phone}
+                inputProps={{
+                  maxLength: 9
+                }}
+                inputProps={{ readOnly: type === 'VIEW' }}
+              />
             </Grid>
           </Grid>
           <Box textAlign="center" marginTop="10px">
