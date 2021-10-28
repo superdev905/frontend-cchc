@@ -8,7 +8,8 @@ import {
   SpecializationHistory,
   EmployeeJobs,
   EmployeeFamiliarGroup,
-  Situation
+  Situation,
+  EmployeeVisits
 } from '../components/Employee'
 
 const Login = lazy(() => import('../pages/Login'))
@@ -135,6 +136,24 @@ const companyRoutes = [
           <Layout>
             <Employee>
               <EmployeeJobs />
+            </Employee>
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: `/${rootName}/:idEmployee/attentions`,
+    key: 'EMPLOYEE-ATTENTIONS',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <Employee>
+              <EmployeeVisits />
             </Employee>
           </Layout>
         )}

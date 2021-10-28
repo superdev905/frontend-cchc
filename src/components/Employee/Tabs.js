@@ -9,6 +9,7 @@ const EmployeeTabs = ({ children }) => {
   const { idEmployee } = useParams()
 
   const getValue = () => {
+    if (location.pathname.includes('attentions')) return 6
     if (location.pathname.includes('jobs-history')) return 5
     if (location.pathname.includes('specialties')) return 4
     if (location.pathname.includes('situation')) return 3
@@ -21,6 +22,7 @@ const EmployeeTabs = ({ children }) => {
   const [tab] = useState(getValue())
 
   const getRoute = (value) => {
+    if (value === 6) return 'attentions'
     if (value === 5) return 'jobs-history'
     if (value === 4) return 'specialties'
     if (value === 3) return 'situation'
@@ -45,7 +47,8 @@ const EmployeeTabs = ({ children }) => {
             'Grupo Familiar',
             'Situación previsional y habitacional',
             'Especialidades',
-            'Trabajos'
+            'Trabajos',
+            'Atenciones'
           ]}
         >
           {children}
