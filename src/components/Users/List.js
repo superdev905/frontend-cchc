@@ -103,7 +103,7 @@ const List = () => {
     setTableData(
       usersList.map((item) => ({
         ...item,
-        lastName: `${item.paternal_surname} ${item.maternal_surname}`
+        lastName: `${item.paternal_surname} ${item?.maternal_surname}`
       }))
     )
   }, [usersList])

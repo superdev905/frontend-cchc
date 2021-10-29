@@ -44,7 +44,9 @@ const Details = ({ loading }) => {
                 <Text loading={loading}>{employee?.paternal_surname}</Text>
               </LabeledRow>
               <LabeledRow label={'Apellido materno'}>
-                <Text loading={loading}>{employee?.maternal_surname}</Text>
+                <Text loading={loading}>
+                  {employee?.maternal_surname || `---`}
+                </Text>
               </LabeledRow>
               <LabeledRow label={'Sexo'}>
                 <Text loading={loading}>{employee?.gender}</Text>
@@ -99,6 +101,9 @@ const Details = ({ loading }) => {
                 <Text loading={loading}>
                   {employee?.rsh_percentage || `---`}
                 </Text>
+              </LabeledRow>
+              <LabeledRow label={'Estado RSH'}>
+                <Text loading={loading}>{employee?.rsh_status}</Text>
               </LabeledRow>
             </Grid>
             <Grid item xs={12} md={6}>

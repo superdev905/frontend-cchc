@@ -35,7 +35,7 @@ const AttendedEmployee = () => {
         <Text>
           <PageHeading>
             {employee &&
-              `${employee.names} ${employee.paternal_surname} ${employee.maternal_surname} - Visita: ${idVisit}`}
+              `${employee.names} ${employee.paternal_surname} ${employee?.maternal_surname} - Visita: ${idVisit}`}
           </PageHeading>
         </Text>
       </Box>

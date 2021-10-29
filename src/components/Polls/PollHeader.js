@@ -38,7 +38,7 @@ const PollHeader = () => {
       ...values,
       state: 'ACTIVE',
       created_by: user.id,
-      author: `${user.names} ${user.paternal_surname} ${user.maternal_surname}`
+      author: `${user.names} ${user.paternal_surname} ${user?.maternal_surname}`
     }
     return dispatch(pollActions.createPoll(data))
   }

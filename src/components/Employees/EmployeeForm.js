@@ -18,6 +18,8 @@ import { rutValidation } from '../../validations'
 import commonActions from '../../state/actions/common'
 import { decisionList } from '../../config'
 
+const statusList = ['REALIZADO', 'EN TRAMITE']
+
 const useStyles = makeStyles(() => ({
   heading: {
     fontSize: 18,
@@ -40,7 +42,7 @@ const validationSchema = Yup.object().shape({
     .test('validRUN', 'Ingrese run válido', (v) => rutValidation(v)),
   names: Yup.string().required('Ingrese nombres'),
   paternal_surname: Yup.string().required('Ingrese nombres'),
-  maternal_surname: Yup.string().required('Ingrese nombres'),
+  maternal_surname: Yup.string(),
   gender: Yup.string().required('Seleccione sexo'),
   born_date: Yup.date().required('Seleccione fecha de nacimiento'),
   scholarship_id: Yup.number().required('Seleccione escolaridad'),
@@ -98,7 +100,8 @@ const EmployeeModal = ({
       account_type: type === 'UPDATE' ? data.account_type : '',
       account_number: type === 'UPDATE' ? data.account_number : '',
       rsh: type === 'UPDATE' ? data.rsh : '',
-      rsh_percentage: type === 'UPDATE' ? data.rsh_percentage : ''
+      rsh_percentage: type === 'UPDATE' ? data.rsh_percentage : '',
+      rsh_status: type === 'UPDATE' ? data.rsh_status : ''
     },
     onSubmit: (values) => {
       submitFunction(values).then((result) => {
@@ -194,7 +197,6 @@ const EmployeeModal = ({
                 <TextField
                   label="Apellido materno"
                   name="maternal_surname"
-                  required
                   value={formik.values.maternal_surname}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -471,6 +473,35 @@ const EmployeeModal = ({
                       value={item.description}
                     >
                       {item.description}
+                    </option>
+                  ))}
+                </Select>
+              </Grid>
+
+              <Grid item xs={12} md={6} lg={4}>
+                <Select
+                  label="RSH"
+                  name="rsh_status"
+                  value={formik.values.rsh_status}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.rsh_status &&
+                    Boolean(formik.errors.rsh_status)
+                  }
+                  helperText={
+                    formik.touched.rsh_status && formik.errors.rsh_status
+                  }
+                  readOnly={type === 'VIEW'}
+                  InputProps={{
+                    classes: {
+                      disabled: classes.disabled
+                    }
+                  }}
+                >
+                  <option value="">Seleccione estado</option>
+                  {statusList.map((item, i) => (
+                    <option key={`rsh_status-item-${i}-${item}`} value={item}>
+                      {item}
                     </option>
                   ))}
                 </Select>

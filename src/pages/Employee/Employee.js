@@ -78,7 +78,7 @@ const Employee = ({ children }) => {
           <Text>
             <PageHeading>
               {employee &&
-                `${employee.names} ${employee.paternal_surname} ${employee.maternal_surname}`}
+                `${employee.names} ${employee.paternal_surname} ${employee?.maternal_surname}`}
             </PageHeading>
           </Text>
         </Box>
@@ -103,7 +103,7 @@ const Employee = ({ children }) => {
           message={
             <Typography variant="h6">
               ¿Estas seguro de a eliminar:{' '}
-              <strong>{`${employee.names} ${employee.paternal_surname} ${employee.maternal_surname}`}</strong>
+              <strong>{`${employee.names} ${employee.paternal_surname} ${employee?.maternal_surname}`}</strong>
               ?
             </Typography>
           }
@@ -122,7 +122,7 @@ const Employee = ({ children }) => {
             <Box>
               <Typography variant="h6">
                 ¿Estás seguro de restaurar a:{' '}
-                <strong>{`${employee.names} ${employee.paternal_surname} ${employee.maternal_surname}`}</strong>
+                <strong>{`${employee.names} ${employee.paternal_surname} ${employee?.maternal_surname}`}</strong>
                 ?
               </Typography>
               <Box marginTop="10px">

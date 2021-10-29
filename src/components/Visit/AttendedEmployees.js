@@ -88,7 +88,7 @@ const List = () => {
         setSearchResult(
           result.map((item) => ({
             ...item,
-            fullName: `${item.names} ${item.paternal_surname} ${item.maternal_surname}`
+            fullName: `${item.names} ${item.paternal_surname} ${item?.maternal_surname}`
           }))
         )
       })

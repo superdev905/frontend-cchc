@@ -216,7 +216,7 @@ const StepOne = ({ onClose, data }) => {
     if (selectedEmployee) {
       formik.setFieldValue(
         'employeeNames',
-        `${selectedEmployee.names} ${selectedEmployee.paternal_surname} ${selectedEmployee.maternal_surname}`
+        `${selectedEmployee.names} ${selectedEmployee.paternal_surname} ${selectedEmployee?.maternal_surname}`
       )
       formik.setFieldValue('employeeRut', selectedEmployee.run)
       formik.setFieldValue('employeeId', selectedEmployee.id)
@@ -258,7 +258,7 @@ const StepOne = ({ onClose, data }) => {
     if (selectedBeneficiary) {
       formik.setFieldValue(
         'beneficiaryNames',
-        `${selectedBeneficiary.names} ${selectedBeneficiary.paternal_surname} ${selectedBeneficiary.maternal_surname}`
+        `${selectedBeneficiary.names} ${selectedBeneficiary.paternal_surname} ${selectedBeneficiary?.maternal_surname}`
       )
       formik.setFieldValue('beneficiaryRut', selectedBeneficiary.run)
       formik.setFieldValue('beneficiaryId', selectedBeneficiary.id)

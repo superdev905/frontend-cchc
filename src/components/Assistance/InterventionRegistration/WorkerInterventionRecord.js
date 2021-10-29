@@ -93,6 +93,8 @@ const WorkerInterventionRecord = ({
       management_id: type === 'UPDATE' ? data.management_id : '',
       status: type === 'UPDATE' ? data.status : '',
       company_report: type === 'UPDATE' ? data.company_report : '',
+      company_report_observation:
+        type === 'UPDATE' ? data.company_report_observation : '',
       is_social_case: type === 'UPDATE' ? data.is_social_case : '',
       case_id: type === 'UPDATE' ? data.case_id : '',
       task_id: type === 'UPDATE' ? data.task_id : '',
@@ -438,7 +440,7 @@ const WorkerInterventionRecord = ({
                 </Box>
               </Grid>
             )}
-            <Grid item xs={12}>
+            <Grid item xs={12} md={2}>
               <InputLabel required>Informe Empresa</InputLabel>
               <Box>
                 <FormControlLabel
@@ -469,6 +471,28 @@ const WorkerInterventionRecord = ({
                 />
               </Box>
             </Grid>
+
+            {formik.values.company_report === 'SI' && (
+              <Grid item xs={12} md={10}>
+                <TextArea
+                  rowsMin={4}
+                  label="Comentarios de informe"
+                  name="company_report_observation"
+                  value={formik.values.company_report_observation}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={
+                    formik.touched.company_report_observation &&
+                    Boolean(formik.errors.company_report_observation)
+                  }
+                  helperText={
+                    formik.touched.company_report_observation &&
+                    formik.errors.company_report_observation
+                  }
+                  maxLength={400}
+                />
+              </Grid>
+            )}
 
             <Grid container spacing={2} item xs={12} md={12} lg={12}>
               <Grid item xs={12} md={3} lg={2}>
