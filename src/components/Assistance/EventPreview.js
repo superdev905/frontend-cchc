@@ -51,6 +51,8 @@ const EventPreview = ({
     anchorEl: anchorElOptions
   } = useMenu()
 
+  console.log(event)
+
   return (
     <Menu
       classes={{ paper: classes.root }}
@@ -144,6 +146,7 @@ const EventPreview = ({
         onClose={handleClose}
         anchorEl={anchorElOptions}
         onEdit={onEdit}
+        disableEdit={!event.is_active}
         onDelete={onDelete}
         customOptions={[
           {
