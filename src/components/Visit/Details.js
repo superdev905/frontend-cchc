@@ -12,6 +12,8 @@ import { formatDate, formatHours } from '../../formatters'
 import { useMenu, useSuccess, useToggle } from '../../hooks'
 import ReportModal from './Report/ReportModal'
 import { ConfirmDelete, FileVisor } from '../Shared'
+import constructionsActions from '../../state/actions/constructions'
+import MapModal from './MapModal'
 
 const useStyles = makeStyles(() => ({
   Cancel: {
@@ -34,13 +36,14 @@ const Details = ({ fetching, fetchDetails }) => {
   const [loading, setLoading] = useState(false)
   const [currentDate] = useState(new Date())
   const [shiftDetails, setShiftDetails] = useState(null)
+  const [consDetails, setConsDetails] = useState(null)
   const [userDetails, setUserDetails] = useState(null)
   const { open: openReport, toggleOpen: toggleOpenReport } = useToggle()
   const { open: openViewReport, toggleOpen: toggleOpenViewReport } = useToggle()
 
   const createReport = (values) => {
     const data = {
-      user: `${user.names} ${user.paternal_surname} ${user.maternal_surname}`,
+      user: `${user.names} ${user.paternal_surname} ${user?.maternal_surname}`,
       user_email: user.email,
       user_phone: '---',
       date: `${formatDate(new Date(), { weekday: 'long' })} ${formatDate(
@@ -55,6 +58,7 @@ const Details = ({ fetching, fetchDetails }) => {
   const { open: openCancel, toggleOpen: toggleOpenCancel } = useToggle()
   const { open: openFinish, toggleOpen: toggleOpenFinish } = useToggle()
   const { open: openStart, toggleOpen: toggleOpenStart } = useToggle()
+  const { open: openView, toggleOpen: toggleOpenView } = useToggle()
 
   const { success, changeSuccess } = useSuccess()
   const [filters] = useState({
@@ -149,6 +153,12 @@ const Details = ({ fetching, fetchDetails }) => {
           setUserDetails(result)
         }
       )
+      dispatch(
+        constructionsActions.getConstruction(visit.construction_id)
+      ).then((result) => {
+        setConsDetails(result)
+        setLoading(false)
+      })
     }
   }, [visit])
 
@@ -160,25 +170,11 @@ const Details = ({ fetching, fetchDetails }) => {
     <Wrapper>
       <Box p={1} display="flex" justifyContent="flex-end">
         <Button
-          danger
-          onClick={toggleOpenCancel}
-          disabled={Boolean(visit?.status === 'CANCELADA')}
-          disabled={Boolean(visit?.status === 'TERMINADA')}
-        >
-          Cancelar
-        </Button>
-        <Button
           onClick={toggleOpenStart}
           disabled={Boolean(visit?.status === 'CANCELADA')}
           disabled={Boolean(visit?.status === 'TERMINADA')}
         >
           Iniciar visita
-        </Button>
-        <Button
-          onClick={toggleOpenFinish}
-          disabled={Boolean(visit?.status !== 'INICIADA')}
-        >
-          Completar visita
         </Button>
         {visit && visit.report_key ? (
           <Button onClick={toggleOpenViewReport}>Ver reporte</Button>
@@ -190,6 +186,21 @@ const Details = ({ fetching, fetchDetails }) => {
             Informar
           </Button>
         )}
+        <Button
+          onClick={toggleOpenFinish}
+          disabled={Boolean(visit?.status !== 'INICIADA')}
+        >
+          Completar visita
+        </Button>
+        <Button
+          danger
+          onClick={toggleOpenCancel}
+          disabled={Boolean(visit?.status === 'CANCELADA')}
+          disabled={Boolean(visit?.status === 'TERMINADA')}
+        >
+          Cancelar
+        </Button>
+
         {visit && openViewReport && (
           <FileVisor
             open={openViewReport}
@@ -203,7 +214,7 @@ const Details = ({ fetching, fetchDetails }) => {
         <Typography
           style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}
         >
-          Detalles de visita
+          {`Detalles de ${visit?.type_id === 1 ? ' Visita' : ' Tarea'}`}
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
@@ -252,7 +263,11 @@ const Details = ({ fetching, fetchDetails }) => {
                   : ''}
               </Text>
             </LabeledRow>
+            <LabeledRow label="Dirección:">
+              <Text loading={loading || fetching}>{consDetails?.address} </Text>
+            </LabeledRow>
           </Grid>
+          <Button onClick={toggleOpenView}>Ver Ubicación</Button>
         </Grid>
       </Box>
       {visit && openReport && (
@@ -325,6 +340,10 @@ const Details = ({ fetching, fetchDetails }) => {
             </span>
           }
         />
+      )}
+
+      {visit && openView && (
+        <MapModal open={openView} onClose={toggleOpenView} />
       )}
     </Wrapper>
   )

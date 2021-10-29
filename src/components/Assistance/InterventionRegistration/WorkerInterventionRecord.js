@@ -507,6 +507,7 @@ const WorkerInterventionRecord = ({
                     formik.touched.company_report_observation &&
                     formik.errors.company_report_observation
                   }
+                  maxLength={400}
                 />
               </Grid>
             )}

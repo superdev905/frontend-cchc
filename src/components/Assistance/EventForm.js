@@ -345,59 +345,64 @@ const EventForm = ({
             </Select>
           </Grid>
 
-          <Grid item xs={12}>
-            <Autocomplete
-              options={companies}
-              value={selectedCompany || ''}
-              getOptionSelected={(option, value) => option.id === value.id}
-              getOptionLabel={(option) => option.business_name || ''}
-              onChange={onCompanySelect}
-              disabled={formik.values.type_description === 'TAREA'}
-              required={isVisit}
-              renderOption={(option) => (
-                <CompanyRow.Autocomplete company={option} />
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Selecciona empresa"
-                  placeholder="Nombre de empresa"
+          {formik.values.type_description === 'VISITA' && (
+            <>
+              <Grid item xs={12}>
+                <Autocomplete
+                  options={companies}
+                  value={selectedCompany || ''}
+                  getOptionSelected={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => option.business_name || ''}
+                  onChange={onCompanySelect}
+                  disabled={formik.values.type_description === 'TAREA'}
+                  required={isVisit}
+                  renderOption={(option) => (
+                    <CompanyRow.Autocomplete company={option} />
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Selecciona empresa"
+                      placeholder="Nombre de empresa"
+                    />
+                  )}
                 />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Autocomplete
-              options={
-                selectedCompany
-                  ? selectedCompany.constructions.filter(
-                      (item) =>
-                        item.status !== 'NO_VIGENTE' && item.state !== 'DELETED'
-                    )
-                  : []
-              }
-              value={selectedCons || ''}
-              getOptionSelected={(option, value) => option.id === value.id}
-              getOptionLabel={(option) => option.name || ''}
-              onChange={onConstructionChange}
-              disabled={formik.values.type_description === 'TAREA'}
-              required={isVisit}
-              renderOption={(option) => (
-                <Box>
-                  <Typography>
-                    <strong>{option.name || ''}</strong>
-                  </Typography>
-                </Box>
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Selecciona obra"
-                  placeholder="Nombre de obra"
+              </Grid>
+              <Grid item xs={12}>
+                <Autocomplete
+                  options={
+                    selectedCompany
+                      ? selectedCompany.constructions.filter(
+                          (item) =>
+                            item.status !== 'NO_VIGENTE' &&
+                            item.state !== 'DELETED'
+                        )
+                      : []
+                  }
+                  value={selectedCons || ''}
+                  getOptionSelected={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => option.name || ''}
+                  onChange={onConstructionChange}
+                  disabled={formik.values.type_description === 'TAREA'}
+                  required={isVisit}
+                  renderOption={(option) => (
+                    <Box>
+                      <Typography>
+                        <strong>{option.name || ''}</strong>
+                      </Typography>
+                    </Box>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Selecciona obra"
+                      placeholder="Nombre de obra"
+                    />
+                  )}
                 />
-              )}
-            />
-          </Grid>
+              </Grid>
+            </>
+          )}
 
           <Grid item xs={12}>
             <TextArea
