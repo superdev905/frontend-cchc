@@ -8,23 +8,13 @@ import {
   Grid,
   Typography,
   FormControlLabel,
-  Radio,
-  Avatar
+  Radio
 } from '@material-ui/core'
 import { Dialog, FilePicker } from '../../Shared'
-import {
-  Button,
-  Select,
-  SubmitButton,
-  InputLabel,
-  TextArea,
-  LabeledRow,
-  EmptyState
-} from '../../UI'
+import { Button, Select, SubmitButton, InputLabel, TextArea } from '../../UI'
 import commonActions from '../../../state/actions/common'
 import filesActions from '../../../state/actions/files'
 import { AttentionStatus } from '../../../config'
-import { formatDate, formatHours } from '../../../formatters'
 import { useSuccess, useToggle } from '../../../hooks'
 import BenefitDialog from '../BenefitDialog'
 import { ActivityCard, BenefitCard } from '../../Benefits'
@@ -218,43 +208,8 @@ const WorkerInterventionRecord = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
       <Box>
-        <Typography variant="h6" align="center">
-          {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Asistencia`}
-        </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <Box>
-                <LabeledRow label="Fecha:">
-                  {formatDate(formik.values.date)}
-                </LabeledRow>
-                <LabeledRow label="Hora:">
-                  {formatHours(formik.values.date)}
-                </LabeledRow>
-                <LabeledRow label="Origen Sistema:">
-                  {formik.values.source_system}
-                </LabeledRow>
-                <LabeledRow label="Origen Empresa:">
-                  {formik.values.source_business}
-                </LabeledRow>
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Box>
-                <LabeledRow label="Empresa:">
-                  {company.business_name}
-                </LabeledRow>
-                <LabeledRow label="Obra:">{construction.name}</LabeledRow>
-                <LabeledRow label="Profesional:">
-                  <Box display="flex" alignItems="center">
-                    <Avatar>{user ? user.names.charAt(0) : ''}</Avatar>
-                    <Typography
-                      style={{ marginLeft: '10px' }}
-                    >{`${user?.names} ${user?.paternal_surname}`}</Typography>
-                  </Box>
-                </LabeledRow>
-              </Box>
-            </Grid>
             <Grid item xs={12}>
               <Typography>
                 <strong>Complete los siguientes campos</strong>
