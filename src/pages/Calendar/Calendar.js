@@ -12,7 +12,11 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import assistanceActions from '../../state/actions/assistance'
 import { Wrapper } from '../../components/UI'
 import { useMenu, useSuccess, useToggle } from '../../hooks'
-import { EventForm, EventPreview } from '../../components/Assistance'
+import {
+  EventExportDialog,
+  EventForm,
+  EventPreview
+} from '../../components/Assistance'
 import { ConfirmDelete } from '../../components/Shared'
 import useStyles from './styles'
 import './custom.css'
@@ -46,6 +50,7 @@ const EventsCalendar = () => {
   const { open: openCancel, toggleOpen: toggleOpenCancel } = useToggle()
   const { open: openFinish, toggleOpen: toggleOpenFinish } = useToggle()
   const { open: openStart, toggleOpen: toggleOpenStart } = useToggle()
+  const { open: openExport, toggleOpen: toggleOpenExport } = useToggle()
   const { success, changeSuccess } = useSuccess()
 
   const fetchEvents = (query) => {
@@ -238,16 +243,24 @@ const EventsCalendar = () => {
             height="700px"
             now={calendarDate}
             plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+            customButtons={{
+              export: {
+                text: 'Exportar',
+                click: () => {
+                  toggleOpenExport()
+                }
+              }
+            }}
             headerToolbar={{
               left: 'prev,today,next',
               center: 'title',
-              right: 'timeGridDay,timeGridWeek,dayGridMonth'
+              right: 'timeGridDay,timeGridWeek,dayGridMonth,export'
             }}
             buttonText={{
-              today: 'HOY',
-              month: 'MES',
-              week: 'SEMANA',
-              day: 'DIA'
+              today: 'Hoy',
+              month: 'Mes',
+              week: 'Semana',
+              day: 'Día'
             }}
             locale="es"
             displayEventTime={true}
@@ -411,6 +424,13 @@ const EventsCalendar = () => {
               <strong>{` ${currentEvent.title}`}</strong>?
             </span>
           }
+        />
+      )}
+      {openExport && (
+        <EventExportDialog
+          range={rangeDate}
+          open={openExport}
+          onClose={toggleOpenExport}
         />
       )}
     </div>

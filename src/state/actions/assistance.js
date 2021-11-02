@@ -1,3 +1,4 @@
+import { saveAs } from 'file-saver'
 import queryString from 'query-string'
 import Axios from '../../Axios'
 import assistanceTypes from '../types/assistance'
@@ -281,6 +282,24 @@ const getAttention =
         })
     })
 
+const exportVisits = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.assistance}/visits/export`, values, {
+      responseType: 'arraybuffer'
+    })
+      .then((response) => {
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+
+        saveAs(blob, `Visitas-${new Date().getTime()}`)
+        resolve(response.data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 export default {
   toggleModal,
   getCalendarEvents,
@@ -300,5 +319,6 @@ export default {
   getPersonalInterventionDetails,
   getAttention,
   getVisitStatistics,
-  createVisitReport
+  createVisitReport,
+  exportVisits
 }
