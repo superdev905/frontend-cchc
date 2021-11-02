@@ -13,7 +13,7 @@ import { useMenu, useSuccess, useToggle } from '../../hooks'
 import ReportModal from './Report/ReportModal'
 import { ConfirmDelete, FileVisor } from '../Shared'
 import constructionsActions from '../../state/actions/constructions'
-import MapModal from './MapModal'
+import MapModal from '../Shared/MapModal'
 
 const useStyles = makeStyles(() => ({
   Cancel: {
@@ -163,6 +163,17 @@ const Details = ({ fetching, fetchDetails }) => {
   }, [visit])
 
   useEffect(() => {
+    if (openView) {
+      dispatch(
+        constructionsActions.getConstruction(visit.construction_id)
+      ).then((result) => {
+        setConsDetails(result)
+        setLoading(false)
+      })
+    }
+  }, [openView])
+
+  useEffect(() => {
     fetchEvents(filters)
   }, [filters])
 
@@ -267,7 +278,9 @@ const Details = ({ fetching, fetchDetails }) => {
               <Text loading={loading || fetching}>{consDetails?.address} </Text>
             </LabeledRow>
           </Grid>
-          <Button onClick={toggleOpenView}>Ver Ubicación</Button>
+          <Box p={1} display="flex" justifyContent="flex-end">
+            <Button onClick={toggleOpenView}>Ver Ubicación</Button>
+          </Box>
         </Grid>
       </Box>
       {visit && openReport && (
