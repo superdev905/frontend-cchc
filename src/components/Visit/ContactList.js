@@ -56,14 +56,14 @@ const ContactList = () => {
       })
   }
 
-  const onEditContact = (values) =>
+  const onEditContact = (values) => {
     dispatch(
       constructionsActions.updateContact(currentContact.id, {
         ...values,
-        state: currentContact.state,
         construction_id: parseInt(currentContact.id, 10)
       })
     )
+  }
 
   const deleteContact = (id) => {
     dispatch(constructionsActions.patchContact(id, { state: 'DELETED' }))
