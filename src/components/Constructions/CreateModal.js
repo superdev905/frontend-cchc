@@ -8,12 +8,15 @@ import { Box, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import commonActions from '../../state/actions/common'
 import companiesActions from '../../state/actions/companies'
+import pollActions from '../../state/actions/poll'
 import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
 import { DatePicker, Map, AddressAutoComplete, Dialog } from '../Shared'
 import { SantiagoDefaultLocation as location } from '../../config'
 import { useSuccess, useToggle } from '../../hooks'
 import FacturationModal from '../Companies/Create/ParentBusiness'
 import { buildTreeData, searchFromTree } from '../../utils/buildTreeData'
+import { PollsModule } from '../Polls'
+import { isPollListAnswered } from '../../validations'
 
 const businessSchema = Yup.object({
   business_selected_id: Yup.number().required('Seleccione empresa')
@@ -53,7 +56,9 @@ const ConstructionModal = ({
   const [companyBill, setCompanyBill] = useState(null)
   const { success, changeSuccess } = useSuccess()
   const { open: openFact, toggleOpen: toggleOpenFact } = useToggle()
-  const { isMobile } = useSelector((state) => state.ui)
+  const { isMobile, module: currentModule } = useSelector((state) => state.ui)
+  const { moduleResponse } = useSelector((state) => state.poll)
+
   const {
     regions,
     constructionTypologies: typologies,
@@ -95,7 +100,18 @@ const ConstructionModal = ({
         data.business_id = parseInt(values.business_selected_id, 10)
       }
       submitFunction(data)
-        .then(() => {
+        .then((result) => {
+          if (type === 'CREATE' && moduleResponse.pollStatus.length > 0) {
+            moduleResponse.pollStatus.forEach((item) => {
+              dispatch(
+                pollActions.updateResponse(item.responseId, {
+                  source_module: currentModule,
+                  related_data: `${values.name}`,
+                  related_data_id: result.id
+                })
+              )
+            })
+          }
           formik.setSubmitting(false)
           changeSuccess(true)
           if (successFunction) {
@@ -149,6 +165,11 @@ const ConstructionModal = ({
       searchFromTree(item, item, parseInt(mainId, 10))
     )
     setTreeData(treeList.filter((item) => item))
+  }
+
+  const getPollValidation = () => {
+    if (type === 'UPDATE') return false
+    return !isPollListAnswered(moduleResponse)
   }
 
   useEffect(() => {
@@ -439,13 +460,17 @@ const ConstructionModal = ({
                 </Grid>
               </Grid>
             </Grid>
+            {type === 'CREATE' && <PollsModule />}
+
             <Box textAlign="center" marginTop="15px">
               <Button variant="outlined" onClick={onClose}>
                 Cancelar
               </Button>
               <SubmitButton
                 loading={formik.isSubmitting}
-                disabled={!formik.isValid || formik.isSubmitting}
+                disabled={
+                  !formik.isValid || formik.isSubmitting || getPollValidation()
+                }
                 onClick={formik.handleSubmit}
                 success={success}
               >

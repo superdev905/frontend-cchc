@@ -13,6 +13,7 @@ import filesActions from '../../../state/actions/files'
 import { FilePostulation, FileVisor } from '../../Shared'
 import { scholarshipConfig } from '../../../config'
 import { formatText } from '../../../formatters'
+import { PollsModule } from '../../Polls'
 
 const StepTwo = () => {
   const classes = useStyles()
@@ -195,6 +196,7 @@ const StepTwo = () => {
           ))}
         </Grid>
       </Box>
+      <PollsModule />
       <Box className={classes.actions}>
         <Button startIcon={<BackIcon />} variant="outlined" onClick={goBack}>
           Anterior

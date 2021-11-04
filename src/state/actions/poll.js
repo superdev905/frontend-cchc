@@ -4,6 +4,9 @@ import Axios from '../../Axios'
 import pollTypes from '../types/poll'
 import config from '../../config'
 
+const updateModuleStatus = (values) => (dispatch) =>
+  dispatch({ type: pollTypes.UPDATE_MODULE_POLL, payload: values })
+
 const getPolls =
   (query = {}) =>
   (dispatch) =>
@@ -218,7 +221,20 @@ const exportData = (value) => () =>
 const toggleModal = (value) => (dispatch) =>
   dispatch({ type: pollTypes.POLL_AVAILABLE_TOGGLE, payload: !value })
 
+const updateResponse = (responseId, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.poll}/responses/${responseId}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
 export default {
+  updateModuleStatus,
   getPolls,
   createPoll,
   updatePoll,
@@ -234,5 +250,6 @@ export default {
   answerPoll,
   getPollAnswers,
   exportData,
-  toggleModal
+  toggleModal,
+  updateResponse
 }

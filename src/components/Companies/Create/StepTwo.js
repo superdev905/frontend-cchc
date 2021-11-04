@@ -13,6 +13,7 @@ import useStyles from './styles'
 import { businessTypes, decisionList } from '../../../config'
 import ParentBusiness from './ParentBusiness'
 import { buildTreeData } from '../../../utils/buildTreeData'
+import { PollsModule } from '../../Polls'
 
 const validationSchema = Yup.object({
   type: Yup.string().required('Seleccione tipo'),
@@ -250,6 +251,7 @@ const StepOne = () => {
           />
         </Grid>
       </Box>
+      <PollsModule />
       <Box className={classes.actions}>
         <Button startIcon={<BackIcon />} variant="outlined" onClick={goBack}>
           Anterior

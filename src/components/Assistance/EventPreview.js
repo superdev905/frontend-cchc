@@ -51,8 +51,6 @@ const EventPreview = ({
     anchorEl: anchorElOptions
   } = useMenu()
 
-  console.log(event)
-
   return (
     <Menu
       classes={{ paper: classes.root }}

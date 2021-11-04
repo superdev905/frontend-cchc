@@ -60,7 +60,7 @@ const createConstruction = (values) => () =>
     Axios.post('/constructions', values)
       .then((response) => {
         const { data } = response
-        resolve(data.data)
+        resolve(data)
       })
       .catch((err) => {
         reject(err.response.data)

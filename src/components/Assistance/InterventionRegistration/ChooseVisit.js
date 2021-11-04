@@ -1,3 +1,3 @@
-const ChooseVisit = (props) => <div>Selecciona una visita</div>
+const ChooseVisit = () => <Box>Selecciona un visita</Box>
 
 export default ChooseVisit

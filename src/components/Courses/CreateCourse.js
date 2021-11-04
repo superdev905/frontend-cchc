@@ -17,6 +17,7 @@ import {
 import { useSuccess } from '../../hooks'
 import commonActions from '../../state/actions/common'
 import usersActions from '../../state/actions/users'
+import { PollsModule } from '../Polls'
 
 const validationSchema = Yup.object().shape({
   code: Yup.string()
@@ -233,7 +234,7 @@ const CreateCourse = ({
               />
             </Grid>
           </Grid>
-
+          <PollsModule />
           <Box textAlign="center" marginTop="10px">
             <Button onClick={onClose} variant="outlined">
               Cancelar

@@ -17,6 +17,7 @@ import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
 import { rutValidation } from '../../validations'
 import commonActions from '../../state/actions/common'
 import { decisionList } from '../../config'
+import { PollsModule } from '../Polls'
 
 const statusList = ['REALIZADO', 'EN TRAMITE']
 
@@ -576,6 +577,9 @@ const EmployeeModal = ({
                 </Box>
               </Grid>
             </Grid>
+          </Box>
+          <Box>
+            <PollsModule />
           </Box>
           <Box textAlign="center" marginTop="10px">
             <Button onClick={onClose} variant="outlined">

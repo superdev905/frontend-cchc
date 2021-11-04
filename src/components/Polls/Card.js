@@ -56,8 +56,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const PollCard = ({ loader, poll, onClick, showAnswers }) => {
-  const classes = useStyles({ completed: poll?.is_answered })
+const PollCard = ({ loader, poll, onClick, showAnswers, isAnswered }) => {
+  const classes = useStyles({ completed: isAnswered })
   const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
 
@@ -75,7 +75,14 @@ const PollCard = ({ loader, poll, onClick, showAnswers }) => {
   }
   return (
     <Box className={classes.root}>
-      <Box className={classes.paper} onClick={handleOnClick}>
+      <Box
+        className={classes.paper}
+        onClick={() => {
+          if (!isAnswered) {
+            handleOnClick()
+          }
+        }}
+      >
         {loader ? (
           <>
             <Grid container>
