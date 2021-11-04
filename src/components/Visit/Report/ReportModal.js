@@ -1,23 +1,40 @@
 import * as Yup from 'yup'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { Box, Grid, Typography } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 import { Dialog } from '../../Shared'
-import { SubmitButton, TextArea, Button } from '../../UI'
+import { SubmitButton, TextArea, Button, TextField } from '../../UI'
 import { useSuccess } from '../../../hooks'
+import constructionsActions from '../../../state/actions/constructions'
 
 const validationSchema = Yup.object().shape({
   observations: Yup.string().required('Ingrese observacion'),
   relevant: Yup.string().required('Ingrese observacion')
 })
 
-const ReportModal = ({ open, onClose, submitFunction, successFunction }) => {
+const ReportModal = ({
+  open,
+  onClose,
+  type,
+  data,
+  submitFunction,
+  successFunction
+}) => {
+  const dispatch = useDispatch()
+  const { visit } = useSelector((state) => state.assistance)
+  const { contacts } = useSelector((state) => state.constructions)
   const { success, changeSuccess } = useSuccess()
+
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      observations: '',
-      relevant: ''
+      observations: type === 'UPDATE' ? data.observations : '',
+      relevant: type === 'UPDATE' ? data.relevant : '',
+      recipient:
+        type === 'UPDATE' ? data.recipient.map((item) => item.full_name) : []
     },
     onSubmit: (values) => {
       submitFunction(values).then(() => {
@@ -31,6 +48,16 @@ const ReportModal = ({ open, onClose, submitFunction, successFunction }) => {
       })
     }
   })
+
+  const fetchContacts = () => {
+    dispatch(constructionsActions.getContacts(visit.construction_id))
+  }
+
+  useEffect(() => {
+    if (open) {
+      fetchContacts()
+    }
+  }, [open])
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -50,6 +77,32 @@ const ReportModal = ({ open, onClose, submitFunction, successFunction }) => {
             helperText={formik.touched.relevant && formik.errors.relevant}
           />
         </Grid>
+
+        <Grid item xs={12}>
+          <Autocomplete
+            multiple
+            id="recipient"
+            options={contacts}
+            defaultValue={formik.values.recipient}
+            onChange={(__, e) => {
+              formik.setFieldValue('recipient', e)
+            }}
+            getOptionLabel={(option) => option.full_name || ''}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Destinatarios"
+                required
+                placeholder="Seleccione contactos"
+                error={
+                  formik.touched.recipient && Boolean(formik.errors.recipient)
+                }
+                helperText={formik.touched.recipient && formik.errors.recipient}
+              />
+            )}
+          />
+        </Grid>
+
         <Grid item xs={12}>
           <TextArea
             label="Observaciones"
