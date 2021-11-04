@@ -40,15 +40,17 @@ const Details = ({ fetching, fetchDetails }) => {
   const [userDetails, setUserDetails] = useState(null)
   const { open: openReport, toggleOpen: toggleOpenReport } = useToggle()
   const { open: openViewReport, toggleOpen: toggleOpenViewReport } = useToggle()
+  const { open: openEditReport, toggleOpen: toggleOpenEditReport } = useToggle()
 
   const createReport = (values) => {
     const data = {
-      user: `${user.names} ${user.paternal_surname} ${user?.maternal_surname}`,
+      user_name: `${user.names} ${user.paternal_surname} ${user?.maternal_surname}`,
       user_email: user.email,
       user_phone: '---',
       date: `${formatDate(new Date(), { weekday: 'long' })} ${formatDate(
         new Date()
       )} a las ${formatHours(new Date())}`,
+      contacts: [{ contact_id: '', contact_names: '', contact_email: '' }],
       ...values
     }
     return dispatch(assistanceActions.createVisitReport(visit.id, data))
@@ -177,6 +179,17 @@ const Details = ({ fetching, fetchDetails }) => {
     fetchEvents(filters)
   }, [filters])
 
+  const updateReport = (values) =>
+    dispatch(
+      assistanceActions.updateVisitReport(visit.id, {
+        ...visit.report,
+        ...values,
+        date: `${formatDate(new Date(), { weekday: 'long' })} ${formatDate(
+          new Date()
+        )} a las ${formatHours(new Date())}`
+      })
+    )
+
   return (
     <Wrapper>
       <Box p={1} display="flex" justifyContent="flex-end">
@@ -187,13 +200,18 @@ const Details = ({ fetching, fetchDetails }) => {
         >
           Iniciar visita
         </Button>
-        {visit && visit.report_key ? (
-          <Button onClick={toggleOpenViewReport}>Ver reporte</Button>
+        {visit && visit.report ? (
+          <Box>
+            <Button
+              disabled={visit?.status === 'TERMINADA'}
+              onClick={toggleOpenEditReport}
+            >
+              Actualizar reporte
+            </Button>
+            <Button onClick={toggleOpenViewReport}>Ver documento</Button>
+          </Box>
         ) : (
-          <Button
-            disabled={Boolean(visit?.report_key)}
-            onClick={toggleOpenReport}
-          >
+          <Button disabled={Boolean(visit?.report)} onClick={toggleOpenReport}>
             Informar
           </Button>
         )}
@@ -216,8 +234,20 @@ const Details = ({ fetching, fetchDetails }) => {
           <FileVisor
             open={openViewReport}
             onClose={toggleOpenViewReport}
-            src={visit.report_url}
-            filename={visit.report_key}
+            src={visit.report.report_url}
+            filename={visit.report.report_key}
+          />
+        )}
+
+        {visit?.report && openEditReport && (
+          <ReportModal
+            type="UPDATE"
+            open={openEditReport}
+            onClose={toggleOpenEditReport}
+            data={visit.report}
+            submitFunction={updateReport}
+            successFunction={fetchDetails}
+            successMessage={'Reporte actualizado'}
           />
         )}
       </Box>
@@ -276,11 +306,11 @@ const Details = ({ fetching, fetchDetails }) => {
             </LabeledRow>
             <LabeledRow label="Dirección:">
               <Text loading={loading || fetching}>{consDetails?.address} </Text>
+              <Button size="small" onClick={toggleOpenView}>
+                Ver Ubicación
+              </Button>
             </LabeledRow>
           </Grid>
-          <Box p={1} display="flex" justifyContent="flex-end">
-            <Button onClick={toggleOpenView}>Ver Ubicación</Button>
-          </Box>
         </Grid>
       </Box>
       {visit && openReport && (
@@ -355,7 +385,7 @@ const Details = ({ fetching, fetchDetails }) => {
         />
       )}
 
-      {visit && openView && (
+      {visit?.construction && openView && (
         <MapModal open={openView} onClose={toggleOpenView} />
       )}
     </Wrapper>
