@@ -39,7 +39,7 @@ const getCalendarEvents =
     })
 
 const getEvents =
-  (query = {}) =>
+  (query = {}, handleDispatch = true) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
       Axios.get(
@@ -47,14 +47,16 @@ const getEvents =
       )
         .then((response) => {
           const { data } = response
-          dispatch({
-            type: assistanceTypes.GET_EVENTS_LIST,
-            payload: data.items
-          })
-          dispatch({
-            type: assistanceTypes.SET_EVENTS_TOTALS,
-            payload: data.total
-          })
+          if (handleDispatch) {
+            dispatch({
+              type: assistanceTypes.GET_EVENTS_LIST,
+              payload: data.items
+            })
+            dispatch({
+              type: assistanceTypes.SET_EVENTS_TOTALS,
+              payload: data.total
+            })
+          }
           resolve(data)
         })
         .catch((err) => {
