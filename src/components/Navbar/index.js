@@ -16,14 +16,12 @@ import {
   Toolbar
 } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
-import AlertIcon from '@material-ui/icons/Announcement'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { useTheme } from '@material-ui/core/styles'
 import authActions from '../../state/actions/auth'
 import useStyles from './styles'
 import useMenu from '../../hooks/useMenu'
 import LeftDrawer from './LeftDrawer'
-import Announcements from '../Widgets/Announcements'
 
 const ResponsiveDrawer = ({ ...props }) => {
   const { window } = props
@@ -34,12 +32,6 @@ const ResponsiveDrawer = ({ ...props }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { user } = useSelector((state) => state.auth)
   const { open, anchorEl, handleClose, handleOpen } = useMenu()
-  const {
-    open: openAlert,
-    anchorEl: anchorElAlert,
-    handleClose: handleCloseAlert,
-    handleOpen: handleOpenAlert
-  } = useMenu()
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -84,9 +76,6 @@ const ResponsiveDrawer = ({ ...props }) => {
             width="100%"
             alignItems="center"
           >
-            <IconButton onClick={handleOpenAlert}>
-              <AlertIcon color="primary" />
-            </IconButton>
             {user &&
               (user.profilePicture !== '' ? (
                 <Avatar src={user.profilePicture}></Avatar>
@@ -124,11 +113,6 @@ const ResponsiveDrawer = ({ ...props }) => {
               Cerrar sesión
             </MenuItem>
           </Menu>
-          <Announcements
-            open={openAlert}
-            anchorEl={anchorElAlert}
-            handleClose={handleCloseAlert}
-          />
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="options">

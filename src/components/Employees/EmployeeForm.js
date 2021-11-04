@@ -14,8 +14,9 @@ import {
 } from '@material-ui/core'
 import { DatePicker, Dialog } from '../Shared'
 import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
-import { rutValidation } from '../../validations'
+import { isPollListAnswered, rutValidation } from '../../validations'
 import commonActions from '../../state/actions/common'
+import pollActions from '../../state/actions/poll'
 import { decisionList } from '../../config'
 import { PollsModule } from '../Polls'
 
@@ -77,6 +78,9 @@ const EmployeeModal = ({
   const { enqueueSnackbar } = useSnackbar()
   const { maritalStatus, nationalities, scholarshipList, banks, rshList } =
     useSelector((state) => state.common)
+  const { moduleResponse } = useSelector((state) => state.poll)
+  const { module: currentModule } = useSelector((state) => state.ui)
+
   const formik = useFormik({
     validateOnMount: true,
     validationSchema: hasDisability
@@ -115,9 +119,25 @@ const EmployeeModal = ({
         if (successFunction) {
           successFunction(result)
         }
+        if (type === 'CREATE') {
+          moduleResponse.pollStatus.forEach((item) => {
+            dispatch(
+              pollActions.updateResponse(item.responseId, {
+                source_module: currentModule,
+                related_data: `${values.names} ${values.paternal_surname}`,
+                related_data_id: result.id
+              })
+            )
+          })
+        }
       })
     }
   })
+
+  const getPollValidation = () => {
+    if (type === 'UPDATE') return false
+    return !isPollListAnswered(moduleResponse)
+  }
 
   useEffect(() => {
     if (formik.values.disability === 'NO') {
@@ -578,16 +598,16 @@ const EmployeeModal = ({
               </Grid>
             </Grid>
           </Box>
-          <Box>
-            <PollsModule />
-          </Box>
+          <Box>{type === 'CREATE' && <PollsModule />}</Box>
           <Box textAlign="center" marginTop="10px">
             <Button onClick={onClose} variant="outlined">
               Cancelar
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
-              disabled={!formik.isValid}
+              disabled={
+                !formik.isValid || formik.isSubmitting || getPollValidation()
+              }
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} trabajador`}
             </SubmitButton>

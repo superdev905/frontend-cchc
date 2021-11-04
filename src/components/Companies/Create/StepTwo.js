@@ -7,13 +7,14 @@ import { Box, Grid, Typography } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { useToggle, useSuccess } from '../../../hooks'
 import companiesActions from '../../../state/actions/companies'
+import pollActions from '../../../state/actions/poll'
 import { Button, Select, SubmitButton, TextField } from '../../UI'
-import useStyles from './styles'
-
+import { isPollListAnswered } from '../../../validations'
 import { businessTypes, decisionList } from '../../../config'
 import ParentBusiness from './ParentBusiness'
 import { buildTreeData } from '../../../utils/buildTreeData'
 import { PollsModule } from '../../Polls'
+import useStyles from './styles'
 
 const validationSchema = Yup.object({
   type: Yup.string().required('Seleccione tipo'),
@@ -28,7 +29,8 @@ const StepOne = () => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
-
+  const { moduleResponse } = useSelector((state) => state.poll)
+  const { module: currentModule } = useSelector((state) => state.ui)
   const { create } = useSelector((state) => state.companies)
   const [mainCompanies, setMainCompanies] = useState([])
   const [listCompanies, setListCompanies] = useState([])
@@ -73,7 +75,16 @@ const StepOne = () => {
       }
       if (create.type === 'CREATE') {
         dispatch(companiesActions.createCompany(data))
-          .then(() => {
+          .then((result) => {
+            moduleResponse.pollStatus.forEach((item) => {
+              dispatch(
+                pollActions.updateResponse(item.responseId, {
+                  source_module: currentModule,
+                  related_data: `${values.business_name}`,
+                  related_data_id: result.id
+                })
+              )
+            })
             formik.setSubmitting(false)
             changeSuccess(true)
             dispatch(
@@ -120,6 +131,11 @@ const StepOne = () => {
       }
     }
   })
+
+  const getPollValidation = () => {
+    if (create.type === 'UPDATE') return false
+    return !isPollListAnswered(moduleResponse)
+  }
 
   useEffect(() => {
     if (formik.values.parent_business_id && listCompanies.length > 0) {
@@ -251,7 +267,7 @@ const StepOne = () => {
           />
         </Grid>
       </Box>
-      <PollsModule />
+      {create.type === 'CREATE' && <PollsModule />}
       <Box className={classes.actions}>
         <Button startIcon={<BackIcon />} variant="outlined" onClick={goBack}>
           Anterior
@@ -260,7 +276,9 @@ const StepOne = () => {
           loading={formik.isSubmitting}
           onClick={formik.handleSubmit}
           success={success}
-          disabled={!formik.isValid || formik.isSubmitting}
+          disabled={
+            !formik.isValid || formik.isSubmitting || getPollValidation()
+          }
         >
           {create.type === 'UPDATE' ? 'Actualizar' : 'Crear'} empresa
         </SubmitButton>
