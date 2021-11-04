@@ -88,7 +88,7 @@ const ModuleDot = () => {
               <StatusChip success label="Respuesta registrada" />
             ) : (
               <Button size={'small'} onClick={toggleOpen}>
-                Responser
+                Responder
               </Button>
             )}
           </Box>
