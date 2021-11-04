@@ -1,5 +1,6 @@
 import * as Yup from 'yup'
 import { useEffect } from 'react'
+import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { Box, Grid, Typography } from '@material-ui/core'
@@ -23,6 +24,8 @@ const ReportModal = ({
   successFunction
 }) => {
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
+
   const { visit } = useSelector((state) => state.assistance)
   const { contacts } = useSelector((state) => state.constructions)
   const { success, changeSuccess } = useSuccess()
@@ -33,21 +36,47 @@ const ReportModal = ({
     initialValues: {
       observations: type === 'UPDATE' ? data.observations : '',
       relevant: type === 'UPDATE' ? data.relevant : '',
-      recipient:
-        type === 'UPDATE' ? data.recipient.map((item) => item.full_name) : []
+      contacts: type === 'UPDATE' ? [] : []
     },
     onSubmit: (values) => {
-      submitFunction(values).then(() => {
-        formik.setSubmitting(false)
-        changeSuccess(true, () => {
-          onClose()
-          if (successFunction) {
-            successFunction()
-          }
+      const formData = { ...values }
+      formData.contacts = formData.contacts.map((item) => ({
+        contact_id: item.id,
+        contact_names: item.full_name,
+        contact_email: item.email
+      }))
+      submitFunction(formData)
+        .then(() => {
+          formik.setSubmitting(false)
+          changeSuccess(true, () => {
+            onClose()
+            if (successFunction) {
+              successFunction()
+            }
+          })
         })
-      })
+        .catch((err) => {
+          enqueueSnackbar(err, { variant: 'error' })
+        })
     }
   })
+
+  useEffect(() => {
+    if (type === 'UPDATE' && contacts.length > 0) {
+      const newContact = []
+      data.contacts.forEach((item) => {
+        const currentContact = contacts.find(
+          (contact) => contact.id === item.contact_id
+        )
+        newContact.push(currentContact)
+      })
+      formik.setFieldValue('contacts', newContact)
+    }
+  }, [type, contacts])
+
+  const onContactSelect = (__, values) => {
+    formik.setFieldValue('contacts', values)
+  }
 
   const fetchContacts = () => {
     dispatch(constructionsActions.getContacts(visit.construction_id))
@@ -81,12 +110,10 @@ const ReportModal = ({
         <Grid item xs={12}>
           <Autocomplete
             multiple
-            id="recipient"
+            id="contacts"
             options={contacts}
-            defaultValue={formik.values.recipient}
-            onChange={(__, e) => {
-              formik.setFieldValue('recipient', e)
-            }}
+            value={formik.values.contacts}
+            onChange={onContactSelect}
             getOptionLabel={(option) => option.full_name || ''}
             renderInput={(params) => (
               <TextField
@@ -95,9 +122,9 @@ const ReportModal = ({
                 required
                 placeholder="Seleccione contactos"
                 error={
-                  formik.touched.recipient && Boolean(formik.errors.recipient)
+                  formik.touched.contacts && Boolean(formik.errors.contacts)
                 }
-                helperText={formik.touched.recipient && formik.errors.recipient}
+                helperText={formik.touched.contacts && formik.errors.contacts}
               />
             )}
           />
@@ -125,13 +152,13 @@ const ReportModal = ({
           Cancelar
         </Button>
         <SubmitButton
-          onClick={formik.handleSubmit}
           loading={formik.isSubmitting}
-          disabled={!formik.isValid || formik.isSubmitting}
+          onClick={formik.handleSubmit}
+          disabled={!formik.isValid}
           success={success}
-        >
-          Crear reporte
-        </SubmitButton>
+        >{`${
+          type === 'UPDATE' ? 'Actualizar' : 'Agregar'
+        } Reporte`}</SubmitButton>
       </Box>
     </Dialog>
   )

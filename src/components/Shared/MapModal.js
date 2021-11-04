@@ -1,14 +1,8 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  Box,
-  Grid,
-  Typography,
-  makeStyles,
-  IconButton
-} from '@material-ui/core'
+import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
 import { FiEdit as EditIcon } from 'react-icons/fi'
-import { LabeledRow, Text, Wrapper } from '../UI'
+import { Button, LabeledRow, Text, Wrapper } from '../UI'
 import { Dialog, Map } from '.'
 import { useSuccess, useToggle } from '../../hooks'
 import ConstructionModal from '../Constructions/CreateModal'
@@ -21,7 +15,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const MapModal = ({ loading, open, onClose, longitude, latitude }) => {
+const MapModal = ({ loading, open, onClose }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { isMobile } = useSelector((state) => state.ui)
@@ -56,21 +50,26 @@ const MapModal = ({ loading, open, onClose, longitude, latitude }) => {
   }, [open])
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="lg"
+      fullWidth
+      fullScreen={isMobile}
+    >
       <Wrapper>
-        <Box
-          display="flex"
-          justifyContent="flex-end"
-          className={classes.actions}
-        >
-          <IconButton color="primary" onClick={toggleOpenEdit}>
-            <EditIcon />
-          </IconButton>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography className={classes.heading}>
+            {' '}
+            Dirección de obra{' '}
+          </Typography>
+          <Button endIcon={<EditIcon />} onClick={toggleOpenEdit}>
+            Editar obra
+          </Button>
         </Box>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Box>
-              <Typography className={classes.heading}>Ubicación</Typography>
               <Box>
                 <LabeledRow label="Dirección">
                   <Text loading={loading}>{construction?.address}</Text>
@@ -86,8 +85,9 @@ const MapModal = ({ loading, open, onClose, longitude, latitude }) => {
               </Box>
               {construction && (
                 <Map
-                  longitude={longitude}
-                  latitude={latitude}
+                  height={400}
+                  longitude={parseFloat(construction.longitude)}
+                  latitude={parseFloat(construction.latitude)}
                   markers={[
                     {
                       address: construction.address,
