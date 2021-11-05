@@ -114,7 +114,7 @@ const Details = ({ loading }) => {
                   marginTop: '10px'
                 }}
               >
-                Información adicional
+                Información de discapacidad
               </Typography>
 
               <LabeledRow width={200} label={'Discapacidad'}>
@@ -123,6 +123,24 @@ const Details = ({ loading }) => {
               <LabeledRow width={200} label={'Credencial discapacidad'}>
                 <Text loading={loading}>{employee?.credential_disability}</Text>
               </LabeledRow>
+              <LabeledRow width={200} label={'Tipo de discapacidad'}>
+                <Text loading={loading}>{employee?.disability_type}</Text>
+              </LabeledRow>
+              <LabeledRow width={200} label={'Discapacidad %'}>
+                <Text loading={loading}>{employee?.disability_percentage}</Text>
+              </LabeledRow>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography
+                style={{
+                  fontSize: '17px',
+                  fontWeight: 'bold',
+                  marginTop: '10px'
+                }}
+              >
+                Información adicional
+              </Typography>
+
               <LabeledRow width={200} label={'Vivo'}>
                 <Text loading={loading}>{employee?.alive}</Text>
               </LabeledRow>

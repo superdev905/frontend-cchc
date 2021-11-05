@@ -21,6 +21,12 @@ import { decisionList } from '../../config'
 import { PollsModule } from '../Polls'
 
 const statusList = ['REALIZADO', 'EN TRAMITE']
+const disabilityType = [
+  'DISCAPACIDAD FISICA O MOTORA',
+  'DISCAPACIDAD SENSORIAL',
+  'DISCAPACIDAD INTELECTUAL',
+  'DISCAPACIDAD PSÍQUICA'
+]
 
 const useStyles = makeStyles(() => ({
   heading: {
@@ -35,7 +41,11 @@ const useStyles = makeStyles(() => ({
 }))
 
 const disabilitySchema = Yup.object().shape({
-  credential_disability: Yup.string().required('Seleccione opción')
+  credential_disability: Yup.string().required('Seleccione opción'),
+  disability_type: Yup.string().required('Seleccione tipo'),
+  disability_percentage: Yup.string().required(
+    'Seleccione porcentaje de discapacidad'
+  )
 })
 
 const validationSchema = Yup.object().shape({
@@ -98,6 +108,9 @@ const EmployeeModal = ({
       disability: type === 'UPDATE' ? data.disability : '',
       credential_disability:
         type === 'UPDATE' ? data.credential_disability : '',
+      disability_type: type === 'UPDATE' ? data.disability_type : '',
+      disability_percentage:
+        type === 'UPDATE' ? data.disability_percentage : '',
       recognize: type === 'UPDATE' ? data.recognize : '',
       nationality_id: type === 'UPDATE' ? data.nationality_id : '',
       alive: type === 'UPDATE' ? data.alive : '',
@@ -344,7 +357,7 @@ const EmployeeModal = ({
 
             <Typography className={classes.heading}>Discapacidad </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={6} lg={4}>
+              <Grid item xs={12} md={6} lg={2}>
                 <Select
                   label="Discapacidad"
                   name="disability"
@@ -367,10 +380,10 @@ const EmployeeModal = ({
                   ))}
                 </Select>
               </Grid>
-              <Grid item xs={12} md={6} lg={4}>
+              <Grid item xs={12} md={6} lg={2}>
                 <Select
                   required={hasDisability}
-                  label="Crendencial de discapacidad"
+                  label="Credencial"
                   name="credential_disability"
                   value={formik.values.credential_disability}
                   onChange={formik.handleChange}
@@ -391,6 +404,51 @@ const EmployeeModal = ({
                     </option>
                   ))}
                 </Select>
+              </Grid>
+
+              <Grid item xs={12} md={6} lg={4}>
+                <Select
+                  required={hasDisability}
+                  label="Tipo de discapacidad"
+                  name="disability_type"
+                  value={formik.values.disability_type}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.disability_type &&
+                    Boolean(formik.errors.disability_type)
+                  }
+                  helperText={
+                    formik.touched.disability_type &&
+                    formik.errors.disability_type
+                  }
+                  disabled={formik.values.disability === 'NO'}
+                >
+                  <option value="">Seleccione tipo</option>
+                  {disabilityType.map((item, i) => (
+                    <option key={`credential-${i}-${item}`} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </Select>
+              </Grid>
+
+              <Grid item xs={12} md={6} lg={4}>
+                <TextField
+                  label="Discapacidad %"
+                  name="disability_percentage"
+                  required
+                  value={formik.values.disability_percentage}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={
+                    formik.touched.disability_percentage &&
+                    Boolean(formik.errors.disability_percentage)
+                  }
+                  helperText={
+                    formik.touched.disability_percentage &&
+                    formik.errors.disability_percentage
+                  }
+                />
               </Grid>
             </Grid>
             <Typography className={classes.heading}>
