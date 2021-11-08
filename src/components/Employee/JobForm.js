@@ -126,8 +126,6 @@ const HousingForm = ({
     }
   }, [formik.values.business_id, companies])
 
-  console.log(formik.errors)
-
   useEffect(() => {
     if (open) {
       dispatch(companiesActions.getAvailableCompanies()).then((list) => {

@@ -8,7 +8,7 @@ import { Autocomplete } from '@material-ui/lab'
 import { DatePicker, Dialog } from '../Shared'
 import { Button, Select, SubmitButton, TextArea, TextField } from '../UI'
 import { useSuccess } from '../../hooks'
-import { moduleConfig, statusList } from '../../config'
+import { decisionList, moduleConfig, statusList } from '../../config'
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required('Ingrese título de encuesta'),
@@ -162,6 +162,29 @@ const PollCreate = ({
                 {statusList.map((item, index) => (
                   <option key={`status--${index}`} value={`${item.key}`}>
                     {item.name}
+                  </option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Select
+                label="Obligatorio"
+                name="is_mandatory"
+                required
+                onChange={formik.handleChange}
+                value={formik.values.is_mandatory}
+                error={
+                  formik.touched.is_mandatory &&
+                  Boolean(formik.errors.is_mandatory)
+                }
+                helperText={
+                  formik.touched.is_mandatory && formik.errors.is_mandatory
+                }
+              >
+                <option value="">Seleccione una opción</option>
+                {decisionList.map((item, index) => (
+                  <option key={`is_mandatory--${index}`} value={`${item.key}`}>
+                    {item}
                   </option>
                 ))}
               </Select>

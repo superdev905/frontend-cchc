@@ -123,6 +123,9 @@ const EventForm = ({
       const current = shiftList.find(
         (item) => item.id === parseInt(formik.values.shift_id, 10)
       )
+      formik.setFieldValue('shift_id', current.id)
+      formik.setFieldValue('shift_name', current.name)
+
       const currentStartTime = current.start_time.split(':')
       const currentEndTime = current.end_time.split(':')
       const startHour = currentStartTime[0]

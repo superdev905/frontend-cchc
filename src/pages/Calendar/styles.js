@@ -34,6 +34,18 @@ const useStyles = makeStyles((theme) => ({
   red: {
     backgroundColor: '#FFEBF6',
     border: `3px solid #ED61B0`
+  },
+  brown: {
+    backgroundColor: '#cc7722',
+    border: `3px solid #704241`
+  },
+  grey: {
+    backgroundColor: '#8c92ac',
+    border: `3px solid #536878`
+  },
+  orange: {
+    backgroundColor: '#ff9933',
+    border: `3px solid #ff4f00`
   }
 }))
 

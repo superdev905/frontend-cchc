@@ -67,6 +67,9 @@ const Details = () => {
                 <LabeledRow label="Beneficio Pyme">
                   <Text>{company?.benefit_pyme}</Text>
                 </LabeledRow>
+                <LabeledRow label="Comentarios">
+                  <Text>{company?.comments}</Text>
+                </LabeledRow>
                 {mainCompany && (
                   <LabeledRow label="Empresa madre">
                     <Text>

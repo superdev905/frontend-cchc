@@ -165,8 +165,6 @@ const EmployeeModal = ({
     return !isPollListAnswered(moduleResponse)
   }
 
-  console.log(formik.errors)
-
   useEffect(() => {
     if (formik.values.disability === 'NO') {
       formik.setFieldValue('credential_disability', '')
