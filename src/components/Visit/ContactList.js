@@ -13,12 +13,15 @@ const ContactList = () => {
   const { enqueueSnackbar } = useSnackbar()
   const { visit } = useSelector((state) => state.assistance)
   const [currentContact, setCurrentContact] = useState(null)
+  const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [contactList, setContactList] = useState([])
   const { success, changeSuccess } = useSuccess()
   const { open, toggleOpen } = useToggle()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+
+  console.log(loading)
 
   useEffect(() => {
     if (visit)
@@ -32,7 +35,14 @@ const ContactList = () => {
   }, [visit])
 
   const fetchContacts = () => {
+    setLoading(true)
     dispatch(constructionsActions.getContacts(visit.construction_id))
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }
 
   const onCreateContact = (values) => {
@@ -43,16 +53,17 @@ const ContactList = () => {
       })
     )
       .then(() => {
+        setLoading(false)
         changeSuccess(true)
         toggleOpen()
         fetchContacts()
-        enqueueSnackbar('Contacto agregado correctamente', {
+        enqueueSnackbar('Contaco creado correctamente', {
           autoHideDuration: 1500,
           variant: 'success'
         })
       })
       .catch(() => {
-        changeSuccess(false)
+        setLoading(false)
       })
   }
 

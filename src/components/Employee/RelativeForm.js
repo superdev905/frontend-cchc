@@ -6,10 +6,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
 import { DatePicker, Dialog } from '../Shared'
 import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
-import { rutValidation } from '../../validations'
+import { rutValidation, phoneValidator } from '../../validations'
 import commonActions from '../../state/actions/common'
 import { decisionList, genderList } from '../../config'
 import { useSuccess } from '../../hooks'
+
+const statusList = ['REALIZADO', 'EN TRAMITE']
 
 const useStyles = makeStyles(() => ({
   disabled: {
@@ -35,7 +37,10 @@ const validationSchema = Yup.object().shape({
   relationship_id: Yup.number().required('Seleccione parentesco'),
   legal_charge: Yup.string().required('Seleccion opcion de carga legal'),
   rsh: Yup.string('Seleccione opción'),
-  rsh_percentage_id: Yup.number()
+  rsh_percentage_id: Yup.number(),
+  phone: Yup.string().test('Check phone', 'Ingrese télefono válido', (v) =>
+    phoneValidator(v)
+  )
 })
 
 const EmployeeModal = ({
@@ -77,6 +82,7 @@ const EmployeeModal = ({
       job_id: type !== 'CREATE' ? data.job_id : '',
       rsh: type !== 'CREATE' ? data.rsh : '',
       rsh_percentage_id: type !== 'CREATE' ? data.rsh_percentage_id : '',
+      rsh_status: type !== 'CREATE' ? data.rsh_status : '',
       legal_charge: type !== 'CREATE' ? data.legal_charge : '',
       phone: type !== 'CREATE' ? data.phone : ''
     },
@@ -461,6 +467,34 @@ const EmployeeModal = ({
                     value={item.id}
                   >
                     {item.description}
+                  </option>
+                ))}
+              </Select>
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={4}>
+              <Select
+                label="Estado RSH"
+                name="rsh_status"
+                value={formik.values.rsh_status}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.rsh_status && Boolean(formik.errors.rsh_status)
+                }
+                helperText={
+                  formik.touched.rsh_status && formik.errors.rsh_status
+                }
+                readOnly={type === 'VIEW'}
+                InputProps={{
+                  classes: {
+                    disabled: classes.disabled
+                  }
+                }}
+              >
+                <option value="">Seleccione estado</option>
+                {statusList.map((item, i) => (
+                  <option key={`rsh_status-item-${i}-${item}`} value={item}>
+                    {item}
                   </option>
                 ))}
               </Select>

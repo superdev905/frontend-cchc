@@ -64,7 +64,7 @@ const validationSchema = Yup.object().shape({
   recognize: Yup.string().required('Seleccione opción'),
   nationality_id: Yup.number().required('Seleccione nacionalidad'),
   alive: Yup.string().required('Seleccione opción'),
-  bank_id: Yup.number('Seleccione banco'),
+  //  bank_id: Yup.number('Seleccione banco'),
   account_type: Yup.string('Seleccione tipo de cuenta'),
   account_number: Yup.string('Seleccione número de cuenta'),
   rsh: Yup.string('Seleccione opción'),
@@ -122,7 +122,11 @@ const EmployeeModal = ({
       rsh_status: type === 'UPDATE' ? data.rsh_status : ''
     },
     onSubmit: (values) => {
-      submitFunction(values).then((result) => {
+      const submitData = { ...values }
+      if (submitData.bank_id === '') {
+        delete submitData.bank_id
+      }
+      submitFunction(submitData).then((result) => {
         formik.setSubmitting(false)
         enqueueSnackbar(successMessage, {
           variant: 'success',
@@ -155,6 +159,9 @@ const EmployeeModal = ({
   useEffect(() => {
     if (formik.values.disability === 'NO') {
       formik.setFieldValue('credential_disability', '')
+      formik.setFieldValue('disability_type', '')
+      formik.setFieldValue('disability_percentage', '')
+
       setHasDisability(false)
     } else {
       setHasDisability(true)
@@ -448,6 +455,7 @@ const EmployeeModal = ({
                     formik.touched.disability_percentage &&
                     formik.errors.disability_percentage
                   }
+                  disabled={formik.values.disability === 'NO'}
                 />
               </Grid>
             </Grid>
@@ -559,7 +567,7 @@ const EmployeeModal = ({
 
               <Grid item xs={12} md={6} lg={4}>
                 <Select
-                  label="RSH"
+                  label="Estado RSH"
                   name="rsh_status"
                   value={formik.values.rsh_status}
                   onChange={formik.handleChange}
