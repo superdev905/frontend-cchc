@@ -10,7 +10,7 @@ import {
 import assistanceAction from '../../state/actions/assistance'
 import { areaConfig } from '../../config'
 import { DataTable } from '../Shared'
-import { ActionsTable, Button, TextField, Wrapper } from '../UI'
+import { ActionsTable, Button, Locked, TextField, Wrapper } from '../UI'
 import AssistanceDialog from '../Assistance/Dialog'
 import { useToggle } from '../../hooks'
 import searchWithRut from '../../formatters/searchWithRut'
@@ -107,6 +107,7 @@ const List = () => {
           Trabajadores atendidos
         </Typography>
       </Box>
+
       <DataTable
         bordered
         emptyMessage="No hay trabajadores atendidos"
@@ -149,75 +150,85 @@ const List = () => {
         ]}
         data={attendedList}
       />
-      <Box marginTop="20px" p={1}>
-        <Typography style={{ marginBottom: '20px' }}>
-          Agregar nuevo trabajador
-        </Typography>
-        <Grid spacing={2}>
-          <Grid item xs={12} md={4}>
-            <TextField
-              label="Buscar trabajador"
-              placeholder="Rut"
-              value={searchUser}
-              onChange={(e) => {
-                setSearchUser(searchWithRut(e.target.value))
-              }}
-            />
+      {visit && visit.is_active ? (
+        <Box marginTop="20px" p={1}>
+          <Typography style={{ marginBottom: '20px' }}>
+            Agregar nuevo trabajador
+          </Typography>
+          <Grid spacing={2}>
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Buscar trabajador"
+                placeholder="Rut"
+                value={searchUser}
+                onChange={(e) => {
+                  setSearchUser(searchWithRut(e.target.value))
+                }}
+              />
+            </Grid>
           </Grid>
-        </Grid>
 
-        <DataTable
-          bordered
-          progressPending={searching}
-          emptyMessage="No se encontraron trabajadores"
-          columns={[
-            {
-              name: 'Run',
-              selector: (row) => row.run,
-              sortable: true
-            },
-            {
-              name: 'Nombres y Apellidos',
-              selector: (row) => row.fullName,
-              sortable: true
-            },
-            {
-              name: 'N',
-              selector: (row) => row.tag
-            },
-            {
-              name: '',
-              right: true,
-              cell: (row) => (
-                <Box>
-                  <Button
-                    size="small"
-                    startIcon={<EditIcon />}
-                    disabled={row.is_old}
-                    onClick={() => {
-                      toggleOpenJobs()
-                      setSelectedUser(row)
-                    }}
-                  >
-                    Registrar
-                  </Button>
-                  <Button
-                    size="small"
-                    startIcon={<AddIcon />}
-                    onClick={() => {
-                      toggleOpen()
-                      setSelectedUser(row)
-                    }}
-                  >
-                    Atender
-                  </Button>
-                </Box>
-              )
-            }
-          ]}
-          data={searchResult}
-        />
-      </Box>
+          <DataTable
+            bordered
+            progressPending={searching}
+            emptyMessage="No se encontraron trabajadores"
+            columns={[
+              {
+                name: 'Run',
+                selector: (row) => row.run,
+                sortable: true
+              },
+              {
+                name: 'Nombres y Apellidos',
+                selector: (row) => row.fullName,
+                sortable: true
+              },
+              {
+                name: 'N',
+                selector: (row) => row.tag
+              },
+              {
+                name: '',
+                right: true,
+                cell: (row) => (
+                  <Box>
+                    <Button
+                      size="small"
+                      startIcon={<EditIcon />}
+                      disabled={row.is_old}
+                      onClick={() => {
+                        toggleOpenJobs()
+                        setSelectedUser(row)
+                      }}
+                    >
+                      Registrar
+                    </Button>
+                    <Button
+                      size="small"
+                      startIcon={<AddIcon />}
+                      onClick={() => {
+                        toggleOpen()
+                        setSelectedUser(row)
+                      }}
+                    >
+                      Atender
+                    </Button>
+                  </Box>
+                )
+              }
+            ]}
+            data={searchResult}
+          />
+        </Box>
+      ) : (
+        <Box mt={2}>
+          <Locked
+            title={'Visita bloqueda'}
+            message={'No se puede agregan mas atenciones'}
+          />
+        </Box>
+      )}
+
       {visit && selectedUser && open && (
         <AssistanceDialog
           open={open}
