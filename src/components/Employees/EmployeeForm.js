@@ -109,7 +109,11 @@ const EmployeeModal = ({
       rsh_status: type === 'UPDATE' ? data.rsh_status : ''
     },
     onSubmit: (values) => {
-      submitFunction(values).then((result) => {
+      const submitData = { ...values }
+      if (submitData.rsh_status === '') {
+        delete submitData.rsh_status
+      }
+      submitFunction(submitData).then((result) => {
         formik.setSubmitting(false)
         enqueueSnackbar(successMessage, {
           variant: 'success',
