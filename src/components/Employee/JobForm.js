@@ -39,6 +39,8 @@ const HousingForm = ({
 
   const formik = useFormik({
     validateOnMount: true,
+    validateOnBlur: true,
+    validateOnChange: true,
     validationSchema,
     initialValues: {
       admission_date: type === 'UPDATE' ? data.admission_date : '',
@@ -123,6 +125,8 @@ const HousingForm = ({
       setConstructions([])
     }
   }, [formik.values.business_id, companies])
+
+  console.log(formik.errors)
 
   useEffect(() => {
     if (open) {
@@ -302,6 +306,7 @@ const HousingForm = ({
                 label="Ingreso"
                 name="salary"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.salary}
                 required
                 error={formik.touched.salary && Boolean(formik.errors.salary)}
