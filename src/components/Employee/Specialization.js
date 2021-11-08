@@ -171,13 +171,15 @@ const PensionSituation = () => {
             />
           </Box>
         </Box>
-        <SpecForm
-          successMessage="Especialización creada"
-          open={openAdd}
-          onClose={toggleOpenAdd}
-          submitFunction={createEvent}
-          successFunction={fetchData}
-        />
+        {openAdd && (
+          <SpecForm
+            successMessage="Especialización creada"
+            open={openAdd}
+            onClose={toggleOpenAdd}
+            submitFunction={createEvent}
+            successFunction={fetchData}
+          />
+        )}
         {current && openEdit && (
           <SpecForm
             type="UPDATE"
