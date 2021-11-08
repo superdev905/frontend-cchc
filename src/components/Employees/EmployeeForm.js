@@ -126,6 +126,9 @@ const EmployeeModal = ({
       if (submitData.bank_id === '') {
         delete submitData.bank_id
       }
+      if (submitData.rsh_status === '') {
+        delete submitData.rsh_status
+      }
       submitFunction(submitData).then((result) => {
         formik.setSubmitting(false)
         enqueueSnackbar(successMessage, {
