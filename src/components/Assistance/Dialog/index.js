@@ -45,7 +45,8 @@ const WorkerInterventionRecord = ({
   successFunction,
   company,
   construction,
-  visitShift
+  visitShift,
+  sourceSystem
 }) => {
   const dispatch = useDispatch()
   const classes = useStyles()
@@ -80,7 +81,7 @@ const WorkerInterventionRecord = ({
     validationSchema,
     initialValues: {
       date: type === 'UPDATE' ? data.date : '',
-      source_system: type === 'UPDATE' ? data.source_system : 'VISITAS',
+      source_system: type === 'UPDATE' ? data.source_system : sourceSystem,
       source_business:
         type === 'UPDATE' ? data.source_business : 'FUNDACIÓN CHCC',
       attention_place: type === 'UPDATE' ? data.attention_place : '',
@@ -197,7 +198,10 @@ const WorkerInterventionRecord = ({
   useEffect(() => {
     if (type === 'CREATE') {
       formik.setFieldValue('date', new Date())
-      formik.setFieldValue('attention_place', setAttentionPlace(visitShift))
+      formik.setFieldValue(
+        'attention_place',
+        visitShift ? setAttentionPlace(visitShift) : ''
+      )
     }
   }, [type, visitShift])
 
@@ -243,10 +247,14 @@ const WorkerInterventionRecord = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <Box>
-                <LabeledRow label="Empresa:">
-                  {company.business_name}
-                </LabeledRow>
-                <LabeledRow label="Obra:">{construction.name}</LabeledRow>
+                {company.business_name && (
+                  <LabeledRow label="Empresa:">
+                    {company.business_name}
+                  </LabeledRow>
+                )}
+                {construction.name && (
+                  <LabeledRow label="Obra:">{construction.name}</LabeledRow>
+                )}
                 <LabeledRow label="Profesional:">
                   <Box display="flex" alignItems="center">
                     <Avatar>{user ? user.names.charAt(0) : ''}</Avatar>
@@ -639,7 +647,8 @@ const WorkerInterventionRecord = ({
 }
 
 WorkerInterventionRecord.defaultProps = {
-  type: 'CREATE'
+  type: 'CREATE',
+  sourceSystem: 'VISITAS'
 }
 
 export default WorkerInterventionRecord

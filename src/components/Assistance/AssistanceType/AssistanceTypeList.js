@@ -8,7 +8,7 @@ import { useToggle, useSuccess } from '../../../hooks'
 
 import AssistanceType from './AssistanceType'
 import assistanceActions from '../../../state/actions/assistance'
-import WorkerInterventionRecord from '../InterventionRegistration/WorkerInterventionRecord'
+import AssistanceDialog from '../Dialog'
 
 const AssistanceTypeList = () => {
   const dispatch = useDispatch()
@@ -177,7 +177,7 @@ const AssistanceTypeList = () => {
           />
         )}
 
-        <WorkerInterventionRecord
+        <AssistanceDialog
           open={openRegistration}
           onClose={toggleOpenRegistration}
           submitFunction={createIntervention}

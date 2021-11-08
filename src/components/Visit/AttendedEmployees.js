@@ -11,7 +11,7 @@ import assistanceAction from '../../state/actions/assistance'
 import { areaConfig } from '../../config'
 import { DataTable } from '../Shared'
 import { ActionsTable, Button, TextField, Wrapper } from '../UI'
-import WorkerInterventionRecord from '../Assistance/InterventionRegistration/WorkerInterventionRecord'
+import AssistanceDialog from '../Assistance/Dialog'
 import { useToggle } from '../../hooks'
 import searchWithRut from '../../formatters/searchWithRut'
 import JobsDialog from './JobsDialog'
@@ -219,7 +219,7 @@ const List = () => {
         />
       </Box>
       {visit && selectedUser && open && (
-        <WorkerInterventionRecord
+        <AssistanceDialog
           open={open}
           employee={selectedUser}
           visitShift={visit.shift.name}

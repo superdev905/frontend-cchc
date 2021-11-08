@@ -9,8 +9,8 @@ import { ActionsTable, Button, Wrapper } from '../UI'
 import { DataTable, FileVisor } from '../Shared'
 import { formatDate } from '../../formatters'
 import { useToggle } from '../../hooks'
-import AssistanceDialog from '../Assistance/InterventionRegistration/WorkerInterventionRecord'
-import VisitDialog from './VisitDialog'
+import AssistanceDialog from '../Assistance/Dialog'
+// import VisitDialog from './VisitDialog'
 
 const AttentionDetails = () => {
   const dispatch = useDispatch()
@@ -19,7 +19,6 @@ const AttentionDetails = () => {
   const { employee } = useSelector((state) => state.employees)
   const { open: showVisor, toggleOpen: toggleShowVisor } = useToggle()
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
-  const [selectedVisit, setSelectedVisit] = useState(null)
   const [currentData, setCurrentData] = useState(null)
   const [loading, setLoading] = useState(false)
 
@@ -41,14 +40,10 @@ const AttentionDetails = () => {
     dispatch(
       assistanceActions.createAssistance({
         ...values,
-        business_id: selectedVisit.business_id,
-        construction_id: selectedVisit.construction_id,
-        construction_name: selectedVisit.construction_name,
         employee_id: employee.id,
         employee_name: employee.names,
         employee_lastname: `${employee.paternal_surname}`,
-        employee_rut: employee.run,
-        visit_id: selectedVisit.id
+        employee_rut: employee.run
       })
     )
 
@@ -70,7 +65,6 @@ const AttentionDetails = () => {
             </Typography>
             <Button
               onClick={() => {
-                setSelectedVisit(null)
                 toggleOpenAdd()
               }}
               startIcon={<AddIcon />}
@@ -90,7 +84,12 @@ const AttentionDetails = () => {
               },
               {
                 name: 'Nombre de Obra',
-                selector: (row) => row.construction_name
+                selector: (row) => row?.construction_name || 'Sin obra'
+              },
+              {
+                name: 'Sistema de origen',
+                selector: (row) => row.source_system,
+                hide: 'md'
               },
               {
                 name: 'Area',
@@ -138,22 +137,17 @@ const AttentionDetails = () => {
             onClose={toggleShowVisor}
           />
         )}
+
         {openAdd && (
-          <VisitDialog
-            onClose={toggleOpenAdd}
-            open={openAdd}
-            onSelected={setSelectedVisit}
-          />
-        )}
-        {openAdd && selectedVisit && (
           <AssistanceDialog
+            sourceSystem={'OFICINA'}
             onClose={toggleOpenAdd}
             open={openAdd}
             employee={employee}
-            visitShift={selectedVisit.shift.name}
+            visitShift={''}
             submitFunction={createAttention}
-            company={{ business_name: selectedVisit.business_name }}
-            construction={{ name: selectedVisit.construction_name }}
+            company={{ business_name: '' }}
+            construction={{ name: '' }}
             successFunction={fetchList}
             successMessage="Atención creada con éxito"
           />
