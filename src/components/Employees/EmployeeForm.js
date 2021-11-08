@@ -129,28 +129,34 @@ const EmployeeModal = ({
       if (submitData.rsh_status === '') {
         delete submitData.rsh_status
       }
-      submitFunction(submitData).then((result) => {
-        formik.setSubmitting(false)
-        enqueueSnackbar(successMessage, {
-          variant: 'success',
-          autoHideDuration: 1500
-        })
-        onClose()
-        if (successFunction) {
-          successFunction(result)
-        }
-        if (type === 'CREATE') {
-          moduleResponse.pollStatus.forEach((item) => {
-            dispatch(
-              pollActions.updateResponse(item.responseId, {
-                source_module: currentModule,
-                related_data: `${values.names} ${values.paternal_surname}`,
-                related_data_id: result.id
-              })
-            )
+      submitFunction(submitData)
+        .then((result) => {
+          formik.setSubmitting(false)
+          enqueueSnackbar(successMessage, {
+            variant: 'success',
+            autoHideDuration: 1500
           })
-        }
-      })
+          onClose()
+          if (successFunction) {
+            successFunction(result)
+          }
+          if (type === 'CREATE') {
+            moduleResponse.pollStatus.forEach((item) => {
+              dispatch(
+                pollActions.updateResponse(item.responseId, {
+                  source_module: currentModule,
+                  related_data: `${values.names} ${values.paternal_surname}`,
+                  related_data_id: result.id
+                })
+              )
+            })
+          }
+        })
+        .catch((err) => {
+          enqueueSnackbar(err, {
+            variant: 'error'
+          })
+        })
     }
   })
 
@@ -477,7 +483,7 @@ const EmployeeModal = ({
                   }
                   helperText={formik.touched.bank_id && formik.errors.bank_id}
                 >
-                  <option value="">Seleccione Banco</option>
+                  <option value="">Sin banco</option>
                   {banks.map((item, i) => (
                     <option key={`gender-${i}-${item}`} value={item.id}>
                       {item.description}
@@ -499,7 +505,7 @@ const EmployeeModal = ({
                     formik.touched.account_type && formik.errors.account_type
                   }
                 >
-                  <option value="">Seleccione tipo de cuenta</option>
+                  <option value="">Sin tipo de cuenta</option>
                   {['CUENTA CORRIENTE', 'AHORRO', 'VISTA'].map((item, i) => (
                     <option key={`account-type-${i}-${item}`} value={item}>
                       {item}

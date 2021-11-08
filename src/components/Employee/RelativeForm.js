@@ -26,8 +26,8 @@ const validationSchema = Yup.object().shape({
     return rutValidation(v)
   }),
   names: Yup.string().required('Ingrese nombres'),
-  paternal_surname: Yup.string().required('Ingrese nombres'),
-  maternal_surname: Yup.string().required('Ingrese nombres'),
+  paternal_surname: Yup.string().required('Ingrese apellido'),
+  maternal_surname: Yup.string('Ingrese apellido'),
   gender: Yup.string().required('Seleccione sexo'),
   born_date: Yup.date().required('Seleccione fecha de nacimiento'),
   scholarship_id: Yup.number().required('Seleccione escolaridad'),
@@ -186,7 +186,6 @@ const EmployeeModal = ({
               <TextField
                 label="Apellido materno"
                 name="maternal_surname"
-                required
                 value={formik.values.maternal_surname}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -502,7 +501,6 @@ const EmployeeModal = ({
 
             <Grid item xs={12} md={6} lg={4}>
               <TextField
-                type="number"
                 label="Numero de contacto"
                 name="phone"
                 value={formik.values.phone}
@@ -513,7 +511,7 @@ const EmployeeModal = ({
                 inputProps={{
                   maxLength: 9
                 }}
-                inputProps={{ readOnly: type === 'VIEW' }}
+                inputProps={{ readOnly: type === 'VIEW', maxLength: 9 }}
               />
             </Grid>
           </Grid>

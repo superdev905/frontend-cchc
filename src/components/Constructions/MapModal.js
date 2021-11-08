@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
 import { FiEdit as EditIcon } from 'react-icons/fi'
 import { Button, LabeledRow, Text, Wrapper } from '../UI'
-import { Dialog, Map } from '.'
+import { Dialog, Map } from '../Shared'
 import { useSuccess, useToggle } from '../../hooks'
-import ConstructionModal from '../Constructions/CreateModal'
 import constructionsActions from '../../state/actions/constructions'
+import AddressUpdate from './AddressUpdate'
 
 const useStyles = makeStyles(() => ({
   heading: {
@@ -15,33 +15,28 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const MapModal = ({ loading, open, onClose }) => {
+const MapModal = ({ loading, open, onClose, successFunction }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { isMobile } = useSelector((state) => state.ui)
   const { construction } = useSelector((state) => state.constructions)
-  const { success, changeSuccess } = useSuccess()
+  const { success } = useSuccess()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
 
   const fetchConstructions = () => {
+    if (successFunction) {
+      successFunction()
+    }
     dispatch(constructionsActions.getConstruction(construction.id))
   }
 
   const updateConstruction = (values) =>
     dispatch(
       constructionsActions.updateConstruction(construction.id, {
-        ...values,
-        typology_id: values.typology_id || null,
-        business_id: construction.business_id
+        ...construction,
+        ...values
       })
     )
-      .then(() => {
-        changeSuccess(true)
-        fetchConstructions()
-      })
-      .catch(() => {
-        changeSuccess(false)
-      })
 
   useEffect(() => {
     if (open) {
@@ -103,8 +98,7 @@ const MapModal = ({ loading, open, onClose }) => {
       </Wrapper>
 
       {construction && openEdit && (
-        <ConstructionModal
-          type="UPDATE"
+        <AddressUpdate
           open={openEdit}
           onClose={toggleOpenEdit}
           construction={construction}

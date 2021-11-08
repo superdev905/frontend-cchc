@@ -13,7 +13,7 @@ import { useMenu, useSuccess, useToggle } from '../../hooks'
 import ReportModal from './Report/ReportModal'
 import { ConfirmDelete, FileVisor } from '../Shared'
 import constructionsActions from '../../state/actions/constructions'
-import MapModal from '../Shared/MapModal'
+import MapModal from '../Constructions/MapModal'
 
 const useStyles = makeStyles(() => ({
   Cancel: {
@@ -386,7 +386,11 @@ const Details = ({ fetching, fetchDetails }) => {
       )}
 
       {visit?.construction && openView && (
-        <MapModal open={openView} onClose={toggleOpenView} />
+        <MapModal
+          open={openView}
+          onClose={toggleOpenView}
+          successFunction={fetchDetails}
+        />
       )}
     </Wrapper>
   )

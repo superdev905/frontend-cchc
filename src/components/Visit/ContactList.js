@@ -21,60 +21,41 @@ const ContactList = () => {
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
 
-  console.log(loading)
-
-  useEffect(() => {
-    if (visit)
-      dispatch(
-        constructionsActions.getContacts(visit.construction_id, false)
-      ).then((list) => {
+  const fetchContacts = () => {
+    setLoading(true)
+    dispatch(constructionsActions.getContacts(visit.construction_id, false))
+      .then((list) => {
+        setLoading(false)
         setContactList(
           list.map((item) => ({ ...item, charge: item.charge_name }))
         )
-      })
-  }, [visit])
-
-  const fetchContacts = () => {
-    setLoading(true)
-    dispatch(constructionsActions.getContacts(visit.construction_id))
-      .then(() => {
-        setLoading(false)
       })
       .catch(() => {
         setLoading(false)
       })
   }
 
-  const onCreateContact = (values) => {
+  useEffect(() => {
+    if (visit) {
+      fetchContacts()
+    }
+  }, [visit])
+
+  const onCreateContact = (values) =>
     dispatch(
       constructionsActions.createContact({
         ...values,
         construction_id: parseInt(visit.construction_id, 10)
       })
     )
-      .then(() => {
-        setLoading(false)
-        changeSuccess(true)
-        toggleOpen()
-        fetchContacts()
-        enqueueSnackbar('Contaco creado correctamente', {
-          autoHideDuration: 1500,
-          variant: 'success'
-        })
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
 
-  const onEditContact = (values) => {
+  const onEditContact = (values) =>
     dispatch(
       constructionsActions.updateContact(currentContact.id, {
         ...values,
-        construction_id: parseInt(currentContact.id, 10)
+        construction_id: parseInt(currentContact.construction_id, 10)
       })
     )
-  }
 
   const deleteContact = (id) => {
     dispatch(constructionsActions.patchContact(id, { state: 'DELETED' }))
@@ -144,6 +125,8 @@ const ContactList = () => {
             )
           }
         ]}
+        emptyMessage="Aún no hay contactos"
+        progressPending={loading}
         data={contactList}
       />
 
