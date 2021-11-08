@@ -9,6 +9,7 @@ const CompanyTabs = ({ children }) => {
   const { idCompany } = useParams()
 
   const getValue = () => {
+    if (location.pathname.includes('employees')) return 4
     if (location.pathname.includes('constructions')) return 3
     if (location.pathname.includes('contacts')) return 2
     if (location.pathname.includes('divisions')) return 1
@@ -19,6 +20,7 @@ const CompanyTabs = ({ children }) => {
   const [tab] = useState(getValue())
 
   const getRoute = (value) => {
+    if (value === 4) return 'employees'
     if (value === 3) return 'constructions'
     if (value === 2) return 'contacts'
     if (value === 1) return 'divisions'
@@ -35,7 +37,13 @@ const CompanyTabs = ({ children }) => {
         <Tabs
           value={tab}
           onChange={handleTabChange}
-          tabs={['Detalles', 'Divisiones', 'Contactos', 'Obras']}
+          tabs={[
+            'Detalles',
+            'Divisiones',
+            'Contactos',
+            'Obras',
+            'Trabajadores atendidos'
+          ]}
         >
           {children}
         </Tabs>

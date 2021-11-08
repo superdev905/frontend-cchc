@@ -314,6 +314,24 @@ const exportVisits = (values) => () =>
       })
   })
 
+const getAttendedEmployeeByBusiness =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.assistance
+        }/assistance/business?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 export default {
   toggleModal,
   getCalendarEvents,
@@ -335,5 +353,6 @@ export default {
   getVisitStatistics,
   createVisitReport,
   exportVisits,
-  updateVisitReport
+  updateVisitReport,
+  getAttendedEmployeeByBusiness
 }
