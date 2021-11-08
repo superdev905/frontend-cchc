@@ -8,7 +8,6 @@ import commonActions from '../../state/actions/common'
 import { Button, Select, SubmitButton } from '../UI'
 import { Map, AddressAutoComplete, Dialog } from '../Shared'
 import { useSuccess } from '../../hooks'
-import { PollsModule } from '../Polls'
 
 const validationSchema = Yup.object({
   address: Yup.string().required('Ingrese dirección'),
@@ -22,7 +21,6 @@ const AddressUpdate = ({
   open,
   selectClient,
   onClose,
-  type,
   construction,
   submitFunction,
   successFunction,
@@ -196,7 +194,6 @@ const AddressUpdate = ({
                 </Grid>
               </Grid>
             </Grid>
-            {type === 'CREATE' && <PollsModule />}
 
             <Box textAlign="center" marginTop="15px">
               <Button variant="outlined" onClick={onClose}>
@@ -218,7 +215,6 @@ const AddressUpdate = ({
   )
 }
 AddressUpdate.defaultProps = {
-  type: 'CREATE',
   selectClient: false,
   successMessage: 'Obra actualizada exitosamente'
 }

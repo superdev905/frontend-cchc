@@ -54,18 +54,18 @@ const MapModal = ({ loading, open, onClose, successFunction }) => {
     >
       <Wrapper>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography className={classes.heading}>
-            {' '}
-            Dirección de obra{' '}
-          </Typography>
+          <Typography className={classes.heading}>Obra</Typography>
           <Button endIcon={<EditIcon />} onClick={toggleOpenEdit}>
-            Editar obra
+            Actualizar dirección
           </Button>
         </Box>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Box>
               <Box>
+                <LabeledRow label="Nombre">
+                  <Text loading={loading}>{construction?.name}</Text>
+                </LabeledRow>
                 <LabeledRow label="Dirección">
                   <Text loading={loading}>{construction?.address}</Text>
                 </LabeledRow>
