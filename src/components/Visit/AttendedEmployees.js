@@ -8,6 +8,8 @@ import {
   ArrowForward as ArrowIcon
 } from '@material-ui/icons'
 import assistanceAction from '../../state/actions/assistance'
+import employeesActions from '../../state/actions/employees'
+import uiActions from '../../state/actions/ui'
 import { areaConfig } from '../../config'
 import { DataTable } from '../Shared'
 import { ActionsTable, Button, Locked, TextField, Wrapper } from '../UI'
@@ -15,13 +17,17 @@ import AssistanceDialog from '../Assistance/Dialog'
 import { useToggle } from '../../hooks'
 import searchWithRut from '../../formatters/searchWithRut'
 import JobsDialog from './JobsDialog'
+import { EmployeeForm } from '../Employees'
 
 const List = () => {
   const dispatch = useDispatch()
   const { idVisit } = useParams()
   const history = useHistory()
   const { pathname } = useLocation()
+  const { user } = useSelector((state) => state.auth)
   const { open: openJobs, toggleOpen: toggleOpenJobs } = useToggle()
+  const { open: openEmployeeForm, toggleOpen: toggleOpenJEmployeeForm } =
+    useToggle()
   const [searchUser, setSearchUser] = useState('')
   const [searching, setSearching] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
@@ -36,6 +42,11 @@ const List = () => {
   const fetchAttendedList = () => {
     dispatch(assistanceAction.getAssistanceList({ visit_id: idVisit }))
   }
+
+  const onCreateEmployee = (values) =>
+    dispatch(
+      employeesActions.createEmployee({ ...values, created_by: user.id })
+    )
 
   const drawAreasColumns = (list) =>
     list.map((item) => ({
@@ -155,7 +166,7 @@ const List = () => {
           <Typography style={{ marginBottom: '20px' }}>
             Agregar nuevo trabajador
           </Typography>
-          <Grid spacing={2}>
+          <Grid container spacing={2}>
             <Grid item xs={12} md={4}>
               <TextField
                 label="Buscar trabajador"
@@ -165,6 +176,18 @@ const List = () => {
                   setSearchUser(searchWithRut(e.target.value))
                 }}
               />
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <Box display={'flex'} justifyContent={'flex-end'}>
+                <Button
+                  onClick={() => {
+                    dispatch(uiActions.setCurrentModule('EMPRESAS'))
+                    toggleOpenJEmployeeForm()
+                  }}
+                >
+                  Agregar trabajador
+                </Button>
+              </Box>
             </Grid>
           </Grid>
 
@@ -218,6 +241,17 @@ const List = () => {
               }
             ]}
             data={searchResult}
+          />
+
+          <EmployeeForm
+            open={openEmployeeForm}
+            type={'CREATE'}
+            onClose={toggleOpenJEmployeeForm}
+            submitFunction={onCreateEmployee}
+            successMessage={'Trabajador creado'}
+            successFunction={() => {
+              dispatch(uiActions.setCurrentModule('VISITAS'))
+            }}
           />
         </Box>
       ) : (
