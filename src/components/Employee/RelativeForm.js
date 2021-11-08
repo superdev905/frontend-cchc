@@ -29,7 +29,7 @@ const validationSchema = Yup.object().shape({
   paternal_surname: Yup.string().required('Ingrese apellido'),
   maternal_surname: Yup.string('Ingrese apellido'),
   gender: Yup.string().required('Seleccione sexo'),
-  born_date: Yup.date().required('Seleccione fecha de nacimiento'),
+  born_date: Yup.date().required('Seleccione fecha de nacimiento').nullable(),
   scholarship_id: Yup.number().required('Seleccione escolaridad'),
   marital_status_id: Yup.number().required('Seleccione estado civil'),
   job_id: Yup.number().required('Seleccione ocupación/actividad'),
@@ -68,6 +68,8 @@ const EmployeeModal = ({
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
+    validateOnChange: true,
+    validateOnBlur: true,
     initialValues: {
       run: type !== 'CREATE' ? data.run : '',
       names: type !== 'CREATE' ? data.names : '',
@@ -210,9 +212,17 @@ const EmployeeModal = ({
                   formik.setFieldValue('born_date', date)
                 }}
                 error={
-                  formik.touched.born_date && Boolean(formik.errors.born_date)
+                  (formik.values.names ||
+                    formik.values.paternal_surname ||
+                    formik.values.touched) &&
+                  Boolean(formik.errors.born_date)
                 }
-                helperText={formik.touched.born_date && formik.errors.born_date}
+                helperText={
+                  (formik.values.names ||
+                    formik.values.paternal_surname ||
+                    formik.values.touched) &&
+                  formik.errors.born_date
+                }
               />
             </Grid>
 

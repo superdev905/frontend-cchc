@@ -309,8 +309,14 @@ const HousingForm = ({
                 onBlur={formik.handleBlur}
                 value={formik.values.salary}
                 required
-                error={formik.touched.salary && Boolean(formik.errors.salary)}
-                helperText={formik.touched.salary && formik.errors.salary}
+                error={
+                  (formik.values.admission_date || formik.touched.salary) &&
+                  Boolean(formik.errors.salary)
+                }
+                helperText={
+                  (formik.values.admission_date || formik.touched.salary) &&
+                  formik.errors.salary
+                }
               />
             </Grid>
           </Grid>
