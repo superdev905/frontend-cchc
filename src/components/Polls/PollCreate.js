@@ -43,10 +43,14 @@ const PollCreate = ({
       end_date: type === 'UPDATE' ? data.end_date : '',
       modules:
         type === 'UPDATE' ? data.modules.map((item) => item.module_name) : [],
-      status: type === 'UPDATE' ? data.status : ''
+      status: type === 'UPDATE' ? data.status : '',
+      is_mandatory: type === 'UPDATE' ? data.is_mandatory : ''
     },
     onSubmit: (values, { resetForm }) => {
-      submitFunction(values)
+      submitFunction({
+        ...values,
+        is_mandatory: values.is_mandatory === 'SI'
+      })
         .then((result) => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, {
@@ -182,8 +186,8 @@ const PollCreate = ({
                 }
               >
                 <option value="">Seleccione una opción</option>
-                {decisionList.map((item, index) => (
-                  <option key={`is_mandatory--${index}`} value={`${item.key}`}>
+                {decisionList.map((item, i) => (
+                  <option key={`social-option-${i}`} value={item}>
                     {item}
                   </option>
                 ))}

@@ -10,9 +10,16 @@ const ConfirmDelete = ({
   message,
   onConfirm,
   success,
-  loading
+  loading,
+  maxWidth,
+  fullWidth
 }) => (
-  <Dialog open={open} onClose={onClose}>
+  <Dialog
+    open={open}
+    onClose={onClose}
+    maxWidth={maxWidth}
+    fullWidth={fullWidth}
+  >
     <DialogContent>
       <Box p={2}>
         <Typography variant="h6" align="center">
@@ -38,7 +45,9 @@ const ConfirmDelete = ({
 
 ConfirmDelete.defaultProps = {
   event: 'DELETE',
-  confirmText: 'Eliminar'
+  confirmText: 'Eliminar',
+  fullWidth: false,
+  maxWidth: 'md'
 }
 
 ConfirmDelete.propTypes = {
@@ -49,6 +58,8 @@ ConfirmDelete.propTypes = {
     PropTypes.arrayOf(PropTypes.element),
     PropTypes.element
   ]),
+  maxWidth: PropTypes.oneOf(['lg', 'md', 'xs', 'xl', 'sm']),
+  fullWidth: PropTypes.bool,
   onConfirm: PropTypes.func
 }
 
