@@ -578,6 +578,7 @@ const EmployeeModal = ({
                 <Select
                   label="Estado RSH"
                   name="rsh_status"
+                  disabled={formik.values.rsh === 'NO'}
                   value={formik.values.rsh_status}
                   onChange={formik.handleChange}
                   error={

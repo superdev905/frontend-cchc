@@ -493,6 +493,7 @@ const EmployeeModal = ({
                 helperText={
                   formik.touched.rsh_status && formik.errors.rsh_status
                 }
+                disabled={formik.values.rsh === 'NO' && type === 'VIEW'}
                 readOnly={type === 'VIEW'}
                 InputProps={{
                   classes: {
