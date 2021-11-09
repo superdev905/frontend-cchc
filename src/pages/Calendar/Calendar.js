@@ -223,10 +223,10 @@ const EventsCalendar = () => {
       setCurrentSlot(e)
     } else {
       enqueueSnackbar(
-        'No puedes visitas o tareas programar para fechas pasadas',
+        'No puedes programar visitas o tareas  para fechas pasadas',
         {
           variant: 'info',
-          autoHideDuration: 1000,
+          autoHideDuration: 3000,
           preventDuplicate: false
         }
       )
