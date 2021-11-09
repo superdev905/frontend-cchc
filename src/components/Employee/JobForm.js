@@ -3,7 +3,7 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
+import { Box, Grid, Typography } from '@material-ui/core'
 import { CurrencyTextField, DatePicker, Dialog } from '../Shared'
 import { Button, Select, SubmitButton } from '../UI'
 import companiesActions from '../../state/actions/companies'
@@ -24,12 +24,6 @@ const validationSchema = Yup.object().shape({
   specialty_detail_id: Yup.string()
 })
 
-const useStyles = makeStyles(() => ({
-  disabledSelect: {
-    '& .Mui-disabled': { color: 'rgba(0,0,0,1)' }
-  }
-}))
-
 const HousingForm = ({
   open,
   onClose,
@@ -41,7 +35,6 @@ const HousingForm = ({
   specialty_id,
   specialty_detail_id
 }) => {
-  const classes = useStyles()
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
@@ -254,9 +247,7 @@ const HousingForm = ({
                 name="specialty_id"
                 onChange={formik.handleChange}
                 value={formik.values.specialty_id}
-                className={classes.disabledSelect}
                 required
-                disabled
                 error={
                   formik.touched.specialty_id &&
                   Boolean(formik.errors.specialty_id)
@@ -278,8 +269,6 @@ const HousingForm = ({
                 label="Detalle de Especialidad"
                 required
                 name="specialty_detail_id"
-                className={classes.disabledSelect}
-                disabled
                 onChange={formik.handleChange}
                 value={formik.values.specialty_detail_id}
                 required
