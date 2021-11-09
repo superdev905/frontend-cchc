@@ -17,9 +17,7 @@ const AttendedEmployees = () => {
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const onViewClick = (item) => {
-    console.log(item)
-  }
+  const onViewClick = () => {}
 
   useEffect(() => {
     setLoading(true)

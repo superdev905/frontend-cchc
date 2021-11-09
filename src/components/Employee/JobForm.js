@@ -3,11 +3,12 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { CurrencyTextField, DatePicker, Dialog } from '../Shared'
 import { Button, Select, SubmitButton } from '../UI'
 import companiesActions from '../../state/actions/companies'
 import { useSuccess } from '../../hooks'
+import commonActions from '../../state/actions/common'
 
 const validationSchema = Yup.object().shape({
   admission_date: Yup.date().required('Seleccione fecha de ingreso'),
@@ -17,8 +18,17 @@ const validationSchema = Yup.object().shape({
   contract_type: Yup.string().required('Seleccione obra'),
   leave_date: Yup.date().nullable(),
   leave_motive: Yup.string().nullable(),
-  salary: Yup.number().required('Ingrese sueldo')
+  salary: Yup.number().required('Ingrese sueldo'),
+  specialty_id: Yup.number().required('Seleccione especialidad'),
+  specialty_name: Yup.string(),
+  specialty_detail_id: Yup.string()
 })
+
+const useStyles = makeStyles(() => ({
+  disabledSelect: {
+    '& .Mui-disabled': { color: 'rgba(0,0,0,1)' }
+  }
+}))
 
 const HousingForm = ({
   open,
@@ -27,15 +37,19 @@ const HousingForm = ({
   data,
   submitFunction,
   successMessage,
-  successFunction
+  successFunction,
+  specialty_id,
+  specialty_detail_id
 }) => {
+  const classes = useStyles()
   const dispatch = useDispatch()
-
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const [companies, setCompanies] = useState([])
   const [constructions, setConstructions] = useState([])
   const { isMobile } = useSelector((state) => state.ui)
+  const [subSpec, setSubSpec] = useState([])
+  const { specList } = useSelector((state) => state.common)
 
   const formik = useFormik({
     validateOnMount: true,
@@ -52,7 +66,9 @@ const HousingForm = ({
       contract_type: type === 'UPDATE' ? data.contract_type : '',
       leave_date: type === 'UPDATE' ? data.leave_date : '',
       leave_motive: type === 'UPDATE' ? data.leave_motive : '',
-      salary: type === 'UPDATE' ? data.salary : ''
+      salary: type === 'UPDATE' ? data.salary : '',
+      specialty_id: type === 'UPDATE' ? data.specialty_id : '',
+      specialty_detail_id: type === 'UPDATE' ? data.specialty_detail_id : ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction(values)
@@ -127,7 +143,27 @@ const HousingForm = ({
   }, [formik.values.business_id, companies])
 
   useEffect(() => {
+    if (formik.values.specialty_id && specList.length > 0) {
+      setSubSpec(
+        specList.find(
+          (item) => item.id === parseInt(formik.values.specialty_id, 10)
+        ).sub_specialties || []
+      )
+    } else {
+      setSubSpec([])
+    }
+  }, [formik.values.specialty_id, specList])
+
+  useEffect(() => {
+    if (specialty_id && specialty_detail_id) {
+      formik.setFieldValue('specialty_id', specialty_id)
+      formik.setFieldValue('specialty_detail_id', specialty_detail_id)
+    }
+  }, [specialty_id, specialty_detail_id])
+
+  useEffect(() => {
     if (open) {
+      dispatch(commonActions.getSpecList())
       dispatch(companiesActions.getAvailableCompanies()).then((list) => {
         setCompanies(list)
       })
@@ -209,6 +245,62 @@ const HousingForm = ({
                       {`${item.name}`}
                     </option>
                   ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Select
+                label="Especialidad"
+                required
+                name="specialty_id"
+                onChange={formik.handleChange}
+                value={formik.values.specialty_id}
+                className={classes.disabledSelect}
+                required
+                disabled
+                error={
+                  formik.touched.specialty_id &&
+                  Boolean(formik.errors.specialty_id)
+                }
+                helperText={
+                  formik.touched.specialty_id && formik.errors.specialty_id
+                }
+              >
+                <option value="">Seleccione una opción</option>
+                {specList.map((item, index) => (
+                  <option key={`specialty_id--${index}`} value={`${item.id}`}>
+                    {`${item.description}`}
+                  </option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Select
+                label="Detalle de Especialidad"
+                required
+                name="specialty_detail_id"
+                className={classes.disabledSelect}
+                disabled
+                onChange={formik.handleChange}
+                value={formik.values.specialty_detail_id}
+                required
+                error={
+                  formik.touched.specialty_detail_id &&
+                  Boolean(formik.errors.specialty_detail_id)
+                }
+                helperText={
+                  formik.touched.specialty_detail_id &&
+                  formik.errors.specialty_detail_id
+                }
+              >
+                <option value="">Seleccione una opción</option>
+                {subSpec.map((item, index) => (
+                  <option
+                    key={`specialty_detail--${index}`}
+                    value={`${item.id}`}
+                  >
+                    {`${item.description}`}
+                  </option>
+                ))}
               </Select>
             </Grid>
             <Grid item xs={12} md={6}>

@@ -313,6 +313,26 @@ const exportVisits = (values) => () =>
         reject(err)
       })
   })
+const exportEmployeesToAttend = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.assistance}/visits/${id}/attended-employees/export`,
+      {
+        responseType: 'arraybuffer'
+      }
+    )
+      .then((response) => {
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+
+        saveAs(blob, `Trabajadores-por-atender`)
+        resolve(response.data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 
 const getAttendedEmployeeByBusiness =
   (query = {}) =>
@@ -354,5 +374,6 @@ export default {
   createVisitReport,
   exportVisits,
   updateVisitReport,
+  exportEmployeesToAttend,
   getAttendedEmployeeByBusiness
 }

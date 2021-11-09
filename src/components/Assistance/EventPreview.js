@@ -87,11 +87,9 @@ const EventPreview = ({
             <LabeledRow label="Empresa:" width={80}>
               {event.business_name}
             </LabeledRow>
-
             <LabeledRow label="Obra:" width={80}>
               {event.construction_name}
             </LabeledRow>
-
             <LabeledRow label="Estado:" width={80}>
               <StatusChip
                 label={`${event.status.charAt(0).toUpperCase()}${event.status
@@ -101,50 +99,56 @@ const EventPreview = ({
                 error={event.status === 'CANCELADA'}
               />
             </LabeledRow>
+            <LabeledRow label="Responsable:" width={120}>
+              {`${event.assigned.names} ${event.assigned.paternal_surname}`}
+            </LabeledRow>
           </Box>
         </Box>
         <Divider />
-        <Box display="flex" justifyContent="flex-end">
-          <Button
-            size="small"
-            variant="outlined"
-            disabled={event.status === 'CANCELADA'}
-            onClick={onCancel}
-          >
-            Cancelar
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            disabled={event.status === 'CANCELADA'}
-            onClick={onReschedule}
-          >
-            Reprogramar
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            disabled={event.status === 'TERMINADA'}
-            onClick={onStart}
-          >
-            Iniciar
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            disabled={event.status === 'TERMINADA'}
-            onClick={onFinished}
-          >
-            Completar
-          </Button>
-        </Box>
+        {event.is_owner && (
+          <Box display="flex" justifyContent="flex-end">
+            <Button
+              size="small"
+              variant="outlined"
+              disabled={event.status === 'CANCELADA'}
+              onClick={onCancel}
+            >
+              Cancelar
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              disabled={event.status === 'CANCELADA'}
+              onClick={onReschedule}
+            >
+              Reprogramar
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              disabled={event.status === 'TERMINADA'}
+              onClick={onStart}
+            >
+              Iniciar
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              disabled={event.status === 'TERMINADA'}
+              onClick={onFinished}
+            >
+              Completar
+            </Button>
+          </Box>
+        )}
       </Box>
       <OptionsMenu
         open={openOptions}
         onClose={handleClose}
         anchorEl={anchorElOptions}
         onEdit={onEdit}
-        disableEdit={!event.is_active}
+        disableEdit={!event.is_active || !event.is_owner}
+        disableDelete={!event.is_owner}
         onDelete={onDelete}
         customOptions={[
           {

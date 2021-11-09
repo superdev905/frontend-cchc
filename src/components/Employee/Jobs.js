@@ -18,6 +18,7 @@ const HistoryJobs = ({ employeeId }) => {
   const [currentEmployeeId] = useState(idEmployee || employeeId)
   const [current, setCurrent] = useState(null)
   const { user } = useSelector((state) => state.auth)
+  const { employee } = useSelector((state) => state.employees)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
@@ -153,13 +154,17 @@ const HistoryJobs = ({ employeeId }) => {
             pagination
           />
         </Box>
-        <JobForm
-          successMessage="Especialización creado"
-          open={openAdd}
-          onClose={toggleOpenAdd}
-          submitFunction={createEvent}
-          successFunction={fetchData}
-        />
+        {openAdd && (
+          <JobForm
+            successMessage="Especialización creado"
+            open={openAdd}
+            onClose={toggleOpenAdd}
+            submitFunction={createEvent}
+            successFunction={fetchData}
+            specialty_id={employee?.specialty?.specialty_id || ''}
+            specialty_detail_id={employee?.specialty?.specialty_detail_id || ''}
+          />
+        )}
         {current && openEdit && (
           <JobForm
             type="UPDATE"

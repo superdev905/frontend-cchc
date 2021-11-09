@@ -1,4 +1,5 @@
 import React from 'react'
+import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import { Box, TextField, InputLabel, makeStyles } from '@material-ui/core'
 
@@ -25,6 +26,7 @@ const CustomSelect = ({
   native,
   disabled,
   readOnly,
+  className,
   ...props
 }) => {
   const classes = useStyles({ readOnly })
@@ -34,7 +36,7 @@ const CustomSelect = ({
         {label}
       </InputLabel>
       <TextField
-        className={classes.input}
+        className={clsx(classes.input, className)}
         variant="outlined"
         fullWidth
         margin="dense"
