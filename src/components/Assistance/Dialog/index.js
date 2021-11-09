@@ -638,22 +638,23 @@ const WorkerInterventionRecord = ({
       {formik.values && openConfirm && (
         <ConfirmDelete
           event="CREATE"
-          maxWidth="xs"
+          maxWidth="md"
           fullWidth
           open={openConfirm}
           onClose={toggleOpenConfirm}
           success={success}
-          confirmText="Crear Atención"
+          confirmText="Guardar"
           message={
-            <span>
+            <Box textAlign="left">
               <Typography
                 style={{
                   fontSize: '18px',
-                  textAlign: 'left',
-                  marginBottom: 25
+                  textAlign: 'center',
+                  marginBottom: 25,
+                  fontWeight: 'bold'
                 }}
               >
-                SE GUARDARÁ LA ATENCIÓN:
+                ¿Estás seguro de guardar esta atención?
               </Typography>
               <LabeledRow label="Lugar de atención:">
                 {formik.values.attention_place}
@@ -670,7 +671,7 @@ const WorkerInterventionRecord = ({
               <LabeledRow label="Caso social:">
                 {formik.values.is_social_case}
               </LabeledRow>
-            </span>
+            </Box>
           }
           onConfirm={() => {
             formik.handleSubmit()

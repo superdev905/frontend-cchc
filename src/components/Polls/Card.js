@@ -146,6 +146,16 @@ const PollCard = ({ loader, poll, onClick, showAnswers, isAnswered }) => {
                     <CalendarIcon className={classes.calendarIcon} />
                     Fecha de fin: {formatDate(poll.end_date)}
                   </Typography>
+                  {poll?.is_mandatory === true && (
+                    <Typography className={classes.center}>
+                      Obligatorio: Si
+                    </Typography>
+                  )}
+                  {poll?.is_mandatory === false && (
+                    <Typography className={classes.center}>
+                      Obligatorio: No
+                    </Typography>
+                  )}
                 </Box>
                 <Box marginTop="10px">
                   <StatusChip

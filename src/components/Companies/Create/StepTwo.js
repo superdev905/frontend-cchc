@@ -259,7 +259,7 @@ const StepOne = () => {
           </Grid>
 
           <Can
-            availableTo={['SOCIAL_ASSISTANCE']}
+            availableTo={['SOCIAL_ASSISTANCE', 'ADMIN']}
             yes={() => (
               <Grid item xs={12}>
                 <TextArea

@@ -195,8 +195,11 @@ const Details = ({ fetching, fetchDetails }) => {
       <Box p={1} display="flex" justifyContent="flex-end">
         <Button
           onClick={toggleOpenStart}
-          disabled={Boolean(visit?.status === 'CANCELADA')}
-          disabled={Boolean(visit?.status === 'TERMINADA')}
+          disabled={
+            visit?.status === 'CANCELADA' ||
+            visit?.status === 'TERMINADA' ||
+            visit?.status === 'INICIADA'
+          }
         >
           Iniciar visita
         </Button>

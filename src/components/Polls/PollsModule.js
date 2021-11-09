@@ -51,7 +51,8 @@ const ModuleDot = () => {
   useEffect(() => {
     const pollStatus = modulePollList.map((item) => ({
       id: item.id,
-      isAnswered: false
+      isAnswered: false,
+      isMandatory: item.is_mandatory
     }))
     dispatch(
       pollActions.updateModuleStatus({

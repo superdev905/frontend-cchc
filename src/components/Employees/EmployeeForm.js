@@ -373,7 +373,7 @@ const EmployeeModal = ({
 
             <Typography className={classes.heading}>Discapacidad </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={6} lg={2}>
+              <Grid item xs={12} md={4}>
                 <Select
                   label="Discapacidad"
                   name="disability"
@@ -396,7 +396,7 @@ const EmployeeModal = ({
                   ))}
                 </Select>
               </Grid>
-              <Grid item xs={12} md={6} lg={2}>
+              <Grid item xs={12} md={4}>
                 <Select
                   required={hasDisability}
                   label="Credencial"
@@ -422,7 +422,7 @@ const EmployeeModal = ({
                 </Select>
               </Grid>
 
-              <Grid item xs={12} md={6} lg={4}>
+              <Grid item xs={12} md={4}>
                 <Select
                   required={hasDisability}
                   label="Tipo de discapacidad"
@@ -448,7 +448,7 @@ const EmployeeModal = ({
                 </Select>
               </Grid>
 
-              <Grid item xs={12} md={6} lg={4}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   label="Discapacidad %"
                   name="disability_percentage"

@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { Dialog, Map } from '../Shared'
-import { Button, Select, SubmitButton, TextField } from '../UI'
+import { Button, InputLabel, Select, SubmitButton, TextField } from '../UI'
 import commonActions from '../../state/actions/common'
 import AddressAutocomplete from '../Shared/AddressAutoComplete'
 import { phoneValidator } from '../../validations'
@@ -376,6 +376,11 @@ const EmployeeModal = ({
                       maxLength: 9
                     }}
                   />
+                </Grid>
+                <Grid item xs={12}>
+                  <InputLabel>
+                    Debes escribir al menos un número de contacto
+                  </InputLabel>
                 </Grid>
                 <Grid item xs={12} md={12}>
                   <Alert severity="info">

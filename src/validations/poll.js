@@ -2,7 +2,9 @@ const isPollListAnswered = (moduleResponse) => {
   if (!moduleResponse.isRequired) return true
 
   return (
-    moduleResponse.pollStatus.filter((item) => !item.isAnswered).length === 0
+    moduleResponse.pollStatus.filter(
+      (item) => !item.isAnswered && item.isMandatory
+    ).length === 0
   )
 }
 
