@@ -25,6 +25,7 @@ const OptionsMenu = ({
   onEdit,
   onDelete,
   disableEdit,
+  disableDelete,
   customOptions
 }) => {
   const classes = useStyles()
@@ -64,6 +65,7 @@ const OptionsMenu = ({
       {onDelete && (
         <MenuItem
           className={clsx(classes.itemRoot, classes.deleteRoot)}
+          disabled={disableDelete}
           onClick={() => {
             onClose()
             onDelete()
@@ -81,7 +83,8 @@ const OptionsMenu = ({
 
 OptionsMenu.defaultProps = {
   customOptions: [],
-  disableEdit: false
+  disableEdit: false,
+  disableDelete: false
 }
 
 export default OptionsMenu
