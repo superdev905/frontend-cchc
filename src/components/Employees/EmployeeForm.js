@@ -639,38 +639,27 @@ const EmployeeModal = ({
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} md={6} lg={4}>
-                <InputLabel className={classes.label} required>
-                  Pertenece a Reconocer
-                </InputLabel>
-                <Box>
-                  <FormControlLabel
-                    value="end"
-                    control={
-                      <Radio
-                        color="primary"
-                        checked={formik.values.recognize === 'SI'}
-                        onChange={() => {
-                          formik.setFieldValue('recognize', 'SI')
-                        }}
-                      />
-                    }
-                    label="SI"
-                  />
-                  <FormControlLabel
-                    value="end"
-                    control={
-                      <Radio
-                        color="primary"
-                        checked={formik.values.recognize === 'NO'}
-                        onChange={() => {
-                          formik.setFieldValue('recognize', 'NO')
-                        }}
-                      />
-                    }
-                    label="NO"
-                  />
-                </Box>
+              <Grid item xs={12} md={4}>
+                <Select
+                  label="Pertenece a Reconocer"
+                  name="recognize"
+                  onChange={formik.handleChange}
+                  value={formik.values.recognize}
+                  required
+                  error={
+                    formik.touched.recognize && Boolean(formik.errors.recognize)
+                  }
+                  helperText={
+                    formik.touched.recognize && formik.errors.recognize
+                  }
+                >
+                  <option value="">Seleccione una opción</option>
+                  {decisionList.map((item, index) => (
+                    <option key={`region--${index}`} value={`${item}`}>
+                      {item}
+                    </option>
+                  ))}
+                </Select>
               </Grid>
             </Grid>
           </Box>

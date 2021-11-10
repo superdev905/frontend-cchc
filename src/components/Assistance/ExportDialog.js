@@ -36,6 +36,7 @@ const ExportDialog = ({ open, onClose, range }) => {
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <DatePicker
+              disabledFuture={false}
               label={'Fecha de inicio'}
               value={exportData.startDate}
               onChange={(targetDate) =>
@@ -45,6 +46,7 @@ const ExportDialog = ({ open, onClose, range }) => {
           </Grid>
           <Grid item xs={12} md={6}>
             <DatePicker
+              disabledFuture={false}
               label={'Fecha de fin'}
               value={new Date()}
               minDate={exportData.endDate}
