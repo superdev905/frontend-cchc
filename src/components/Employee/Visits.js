@@ -118,7 +118,7 @@ const AttentionDetails = () => {
                           setCurrentData(row)
                           toggleShowVisor()
                         },
-                        disabled: row.attached_url === ''
+                        disabled: !row.attachment
                       }
                     ]}
                   />
@@ -133,7 +133,8 @@ const AttentionDetails = () => {
         {currentData && showVisor && (
           <FileVisor
             open={showVisor}
-            src={currentData.attached_url}
+            src={currentData.attachment.file_url}
+            filename={currentData.attachment.file_name}
             onClose={toggleShowVisor}
           />
         )}

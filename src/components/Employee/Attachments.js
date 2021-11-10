@@ -6,43 +6,67 @@ import { useToggle } from '../../hooks'
 import employees from '../../state/actions/employees'
 import files from '../../state/actions/files'
 import { FileThumbnail, FileVisor } from '../Shared'
-import { Wrapper } from '../UI'
+import { EmptyState, Wrapper } from '../UI'
 
 const Attachments = () => {
   const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
   const [attachments, setAttachments] = useState([])
   const [currentFile, setCurrentFile] = useState(null)
   const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
   const { idEmployee } = useParams()
   useEffect(() => {
-    dispatch(employees.getAttachments(idEmployee)).then((result) =>
+    setLoading(true)
+    dispatch(employees.getAttachments(idEmployee)).then((result) => {
+      setLoading(false)
       setAttachments(result)
-    )
+    })
   }, [])
   return (
     <Wrapper>
-      <Box mb={1}>
+      <Box mb={2}>
         <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
           Archivos adjuntos
         </Typography>
       </Box>
       <Grid container spacing={2}>
-        {attachments.map((item) => (
-          <Grid item xs={12} md={6} item={`file-thumbnail-${item.id}`}>
-            <FileThumbnail
-              fileName={item.fileName}
-              date={item.uploadDate}
-              fileSize={item.fileSize}
-              onView={() => {
-                setCurrentFile(item)
-                toggleOpenVisor()
-              }}
-              onDownload={() => {
-                dispatch(files.downloadFile(item.fileUrl, item.fileName))
-              }}
-            />
-          </Grid>
-        ))}
+        {loading ? (
+          <>
+            <Grid item xs={12} md={6}>
+              <FileThumbnail.Loader />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <FileThumbnail.Loader />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <FileThumbnail.Loader />
+            </Grid>
+          </>
+        ) : (
+          <>
+            {attachments.length === 0 ? (
+              <EmptyState message="Este trabajador no tiene archivos adjuntos" />
+            ) : (
+              attachments.map((item) => (
+                <Grid item xs={12} md={6} item={`file-thumbnail-${item.id}`}>
+                  <FileThumbnail
+                    fileName={item.fileName}
+                    date={item.uploadDate}
+                    fileSize={item.fileSize}
+                    label={item.module}
+                    onView={() => {
+                      setCurrentFile(item)
+                      toggleOpenVisor()
+                    }}
+                    onDownload={() => {
+                      dispatch(files.downloadFile(item.fileUrl, item.fileName))
+                    }}
+                  />
+                </Grid>
+              ))
+            )}
+          </>
+        )}
       </Grid>
       {currentFile && openVisor && (
         <FileVisor
