@@ -53,6 +53,9 @@ const HousingForm = ({
     type === 'UPDATE' ? data.is_certificated === 'SI' : false
   )
   const [subSpec, setSubSpec] = useState([])
+  const [certificationFile, setCertificationFile] = useState(
+    type === 'UPDATE' ? data.certification_file : null
+  )
   const { isMobile } = useSelector((state) => state.ui)
   const { specList, entities } = useSelector((state) => state.common)
 
@@ -74,15 +77,24 @@ const HousingForm = ({
     onSubmit: async (values, { resetForm }) => {
       formik.setSubmitting(true)
       let resultUpload = null
+      let certification_file = null
       if (uploadFile) {
         const formData = new FormData()
         formData.append('file', uploadFile, uploadFile.name)
         resultUpload = await dispatch(filesAction.uploadFileToStorage(formData))
+        certification_file = {
+          fileKey: resultUpload.file_key,
+          fileUrl: resultUpload.file_url,
+          fileSize: resultUpload.file_size,
+          fileName: resultUpload.file_name,
+          uploadDate: resultUpload.upload_date,
+          sourceSystem: 'TRABAJADORES'
+        }
       }
 
       submitFunction({
         ...values,
-        certification_url: resultUpload ? resultUpload.file_url : '',
+        certification_file,
         file_key: resultUpload ? resultUpload.file_key : '',
         certifying_entity_id: values.certifying_entity_id || null
       })
@@ -295,15 +307,15 @@ const HousingForm = ({
               <InputLabel style={{ fontSize: '15px', marginBottom: '10px' }}>
                 Certificado
               </InputLabel>
-              {formik.values.certification_url && type === 'UPDATE' ? (
+              {certificationFile && type === 'UPDATE' ? (
                 <Box>
                   <FileThumbnail
-                    fileName={formik.values.certification_url}
+                    fileName={certificationFile.file_name}
                     onView={() => {
                       toggleOpenVisor()
                     }}
                     onDelete={() => {
-                      formik.setFieldValue('certification_url', '')
+                      setCertificationFile(null)
                     }}
                   />
                 </Box>
@@ -339,11 +351,12 @@ const HousingForm = ({
             </SubmitButton>
           </Box>
         </Box>
-        {type === 'UPDATE' && formik.values.certification_url && openVisor && (
+        {type === 'UPDATE' && certificationFile && openVisor && (
           <FileVisor
             open={openVisor}
             onClose={toggleOpenVisor}
-            src={formik.values.certification_url}
+            src={certificationFile.file_url}
+            filename={certificationFile.file_name}
           />
         )}
       </Box>

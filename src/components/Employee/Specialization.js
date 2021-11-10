@@ -50,6 +50,9 @@ const PensionSituation = () => {
     if (!values.certifying_entity_id) {
       delete values.certifying_entity_id
     }
+    if (values.certification_file) {
+      values.certification_file.dataId = idEmployee
+    }
     return dispatch(
       employeesActions.createSpecialization({
         ...values,
@@ -65,6 +68,9 @@ const PensionSituation = () => {
     }
     if (!values.certifying_entity_id) {
       delete values.certifying_entity_id
+    }
+    if (values.certification_file) {
+      values.certification_file.dataId = idEmployee
     }
     return dispatch(
       employeesActions.updateSpecialization(current.id, {
@@ -154,7 +160,7 @@ const PensionSituation = () => {
                       }}
                       moreOptions={[
                         {
-                          disabled: !row.certification_url,
+                          disabled: !row.certification_file,
                           icon: <AttachFileIcon />,
                           onClick: () => {
                             toggleOpenVisor()
@@ -207,8 +213,8 @@ const PensionSituation = () => {
           <FileVisor
             open={openVisor}
             onClose={toggleOpenVisor}
-            src={current.certification_url}
-            key={current.file_key}
+            src={current.certification_file.file_url}
+            filename={current.certification_file.file_name}
           />
         )}
       </Wrapper>
