@@ -11,7 +11,7 @@ import {
   Radio,
   Avatar
 } from '@material-ui/core'
-import { Dialog, FilePicker } from '../../Shared'
+import { ConfirmDelete, Dialog, FilePicker } from '../../Shared'
 import {
   Button,
   Select,
@@ -62,6 +62,7 @@ const WorkerInterventionRecord = ({
     activity: null
   })
   const { open: openBenefit, toggleOpen: toggleOpenBenefit } = useToggle()
+  const { open: openConfirm, toggleOpen: toggleOpenConfirm } = useToggle()
 
   const handleActivityCreate = (benefit, activity, assistanceId) => {
     dispatch(
@@ -165,6 +166,7 @@ const WorkerInterventionRecord = ({
       case 'topic': {
         const topic = topics.find((item) => item.id === parseInt(value, 10))
         formik.setFieldValue('topic_id', topic.id)
+        formik.setFieldValue('topic_name', topic.name)
         break
       }
       default:
@@ -621,8 +623,9 @@ const WorkerInterventionRecord = ({
             <Button onClick={onClose} variant="outlined">
               Cancelar
             </Button>
+
             <SubmitButton
-              onClick={formik.handleSubmit}
+              onClick={toggleOpenConfirm}
               disabled={
                 !formik.isValid ||
                 formik.isSubmitting ||
@@ -636,6 +639,50 @@ const WorkerInterventionRecord = ({
           </Box>
         </Box>
       </Box>
+
+      {formik.values && openConfirm && (
+        <ConfirmDelete
+          event="CREATE"
+          maxWidth="md"
+          fullWidth
+          open={openConfirm}
+          onClose={toggleOpenConfirm}
+          success={success}
+          confirmText="Guardar"
+          message={
+            <Box textAlign="left">
+              <Typography
+                style={{
+                  fontSize: '18px',
+                  textAlign: 'center',
+                  marginBottom: 25,
+                  fontWeight: 'bold'
+                }}
+              >
+                ¿Estás seguro de guardar esta atención?
+              </Typography>
+              <LabeledRow label="Lugar de atención:">
+                {formik.values.attention_place}
+              </LabeledRow>
+              <LabeledRow label="Metodo de contacto:">
+                {formik.values.contact_method}
+              </LabeledRow>
+              <LabeledRow label="Area:">{formik.values.area_name}</LabeledRow>
+              <LabeledRow label="Tema:">{formik.values.topic_name}</LabeledRow>
+              <LabeledRow label="Estado:">{formik.values.status}</LabeledRow>
+              <LabeledRow label="Informe empresa:">
+                {formik.values.company_report}
+              </LabeledRow>
+              <LabeledRow label="Caso social:">
+                {formik.values.is_social_case}
+              </LabeledRow>
+            </Box>
+          }
+          onConfirm={() => {
+            formik.handleSubmit()
+          }}
+        />
+      )}
 
       {openBenefit && (
         <BenefitDialog

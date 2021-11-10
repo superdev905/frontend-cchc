@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Chip, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import { Dialog } from '../../Shared'
 import { SubmitButton, TextArea, Button, TextField } from '../../UI'
@@ -110,11 +110,34 @@ const ReportModal = ({
         <Grid item xs={12}>
           <Autocomplete
             multiple
+            filterSelectedOptions
             id="contacts"
             options={contacts}
             value={formik.values.contacts}
             onChange={onContactSelect}
             getOptionLabel={(option) => option.full_name || ''}
+            renderOption={(values) => (
+              <Box>
+                <Typography style={{ fontSize: 18, fontWeight: 'bold' }}>
+                  {' '}
+                  {`Nombre:  ${values.full_name}`}
+                </Typography>
+                <Typography
+                  style={{ fontSize: 15, textTransform: 'capitalize' }}
+                >
+                  Cargo: {values.charge_name}{' '}
+                </Typography>
+              </Box>
+            )}
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => (
+                <Chip
+                  variant="outlined"
+                  label={`${option.full_name}-${option.charge_name}`}
+                  {...getTagProps({ index })}
+                />
+              ))
+            }
             renderInput={(params) => (
               <TextField
                 {...params}

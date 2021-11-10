@@ -8,13 +8,14 @@ import { ArrowBack as BackIcon } from '@material-ui/icons'
 import { useToggle, useSuccess } from '../../../hooks'
 import companiesActions from '../../../state/actions/companies'
 import pollActions from '../../../state/actions/poll'
-import { Button, Select, SubmitButton, TextField } from '../../UI'
+import { Button, Select, SubmitButton, TextArea, TextField } from '../../UI'
 import { isPollListAnswered } from '../../../validations'
 import { businessTypes, decisionList } from '../../../config'
 import ParentBusiness from './ParentBusiness'
 import { buildTreeData } from '../../../utils/buildTreeData'
 import { PollsModule } from '../../Polls'
 import useStyles from './styles'
+import Can from '../../Can'
 
 const validationSchema = Yup.object({
   type: Yup.string().required('Seleccione tipo'),
@@ -46,6 +47,7 @@ const StepOne = () => {
       benefit_pyme: create?.company?.benefit_pyme || '',
       social_service: create?.company?.social_service || '',
       social: '',
+      comments: create?.company?.comments || '',
       parent_business_id: create?.company?.parent_business_id || null
     },
     onSubmit: (values) => {
@@ -255,6 +257,43 @@ const StepOne = () => {
               ))}
             </Select>
           </Grid>
+
+          <Can
+            availableTo={['SOCIAL_ASSISTANCE', 'ADMIN']}
+            yes={() => (
+              <Grid item xs={12}>
+                <TextArea
+                  name="comments"
+                  label="Comentarios"
+                  value={formik.values.comments}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={
+                    formik.touched.comments && Boolean(formik.errors.comments)
+                  }
+                  helperText={formik.touched.comments && formik.errors.comments}
+                  maxLength={800}
+                />
+              </Grid>
+            )}
+            no={() => (
+              <Grid item xs={12}>
+                <TextArea
+                  name="comments"
+                  label="Comentarios"
+                  value={formik.values.comments}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={
+                    formik.touched.comments && Boolean(formik.errors.comments)
+                  }
+                  helperText={formik.touched.comments && formik.errors.comments}
+                  maxLength={800}
+                  disabled={create.type === 'UPDATE'}
+                />
+              </Grid>
+            )}
+          />
 
           <ParentBusiness
             open={open}

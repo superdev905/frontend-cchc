@@ -63,7 +63,7 @@ const List = () => {
         toggleOpenDelete()
         changeSuccess(false, () => {
           fetchBenefits()
-          enqueueSnackbar('Beneficio elimindo', { variant: 'success' })
+          enqueueSnackbar('Beneficio eliminado', { variant: 'success' })
         })
       })
       .catch((err) => {

@@ -276,6 +276,7 @@ const List = () => {
           successMessage="Atención creada con éxito"
         />
       )}
+
       {selectedUser && openJobs && (
         <JobsDialog
           open={openJobs}

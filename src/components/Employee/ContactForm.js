@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { Dialog, Map } from '../Shared'
-import { Button, Select, SubmitButton, TextField } from '../UI'
+import { Button, InputLabel, Select, SubmitButton, TextField } from '../UI'
 import commonActions from '../../state/actions/common'
 import AddressAutocomplete from '../Shared/AddressAutoComplete'
 import { phoneValidator } from '../../validations'
@@ -161,6 +161,15 @@ const EmployeeModal = ({
         : new Date(addMonths(new Date(), 1))
     )
   }, [open, type, data])
+
+  useEffect(() => {
+    if (formik.touched.email) {
+      enqueueSnackbar('Debes ingresar al menos un numero de contacto', {
+        autoHideDuration: 3500,
+        variant: 'info'
+      })
+    }
+  }, [formik.touched.email])
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullScreen={isMobile}>
       <Box>
@@ -271,19 +280,6 @@ const EmployeeModal = ({
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <TextField
-                    label="Correo"
-                    required
-                    name="email"
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <TextField
                     label="Departamento"
                     name="department"
                     value={formik.values.department}
@@ -296,6 +292,18 @@ const EmployeeModal = ({
                     helperText={
                       formik.touched.department && formik.errors.department
                     }
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    label="Correo"
+                    required
+                    name="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.email && Boolean(formik.errors.email)}
+                    helperText={formik.touched.email && formik.errors.email}
                   />
                 </Grid>
               </Grid>
@@ -368,6 +376,11 @@ const EmployeeModal = ({
                       maxLength: 9
                     }}
                   />
+                </Grid>
+                <Grid item xs={12}>
+                  <InputLabel>
+                    Debes escribir al menos un número de contacto
+                  </InputLabel>
                 </Grid>
                 <Grid item xs={12} md={12}>
                   <Alert severity="info">

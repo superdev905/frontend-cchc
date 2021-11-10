@@ -50,6 +50,14 @@ const PollDetails = ({ fetching }) => {
                   ))}
               </Text>
             </LabeledRow>
+            <LabeledRow label="Obligatorio:">
+              {poll?.is_mandatory === true && (
+                <Text loading={fetching}> SI </Text>
+              )}
+              {poll?.is_mandatory === false && (
+                <Text loading={fetching}> NO </Text>
+              )}
+            </LabeledRow>
           </Grid>
         </Grid>
       </Box>

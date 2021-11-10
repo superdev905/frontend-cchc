@@ -166,6 +166,7 @@ const EventsCalendar = () => {
     setCalendarDate(targetDate)
   }
 
+  /*
   const getBgColor = (eventStatus) => {
     if (eventStatus === 'PROGRAMADA' || eventStatus === 'REPROGRAMADA')
       return '#aed5ff'
@@ -173,6 +174,7 @@ const EventsCalendar = () => {
     if (eventStatus === 'INICIADA' || eventStatus === 'PAUSA') return '#f6e68f'
     return '#FFEBF6'
   }
+
   const getCardClass = (eventStatus) => {
     if (eventStatus === 'PROGRAMADA' || eventStatus === 'REPROGRAMADA')
       return classes.blue
@@ -181,16 +183,36 @@ const EventsCalendar = () => {
       return classes.yellow
     return classes.red
   }
+ */
+
+  const getBgColorShift = (shiftName) => {
+    if (shiftName === 'MANAÑA') return '#f6e68f'
+    if (shiftName === 'TARDE') return '#81d88d'
+    if (shiftName === 'COMPLETA') return '#aed5ff'
+
+    if (shiftName === 'COVID') return '#8c92ac'
+    if (shiftName === 'AT.CESANTES') return '#b87333'
+    return '#ff3800'
+  }
+
+  const getCardClass = (shiftName) => {
+    if (shiftName === 'MANAÑA') return classes.yellow
+    if (shiftName === 'TARDE') return classes.green
+    if (shiftName === 'COMPLETA') return classes.blue
+    if (shiftName === 'COVID') return classes.grey
+    if (shiftName === 'AT.CESANTES') return classes.brown
+    return classes.orange
+  }
 
   const renderCard = ({ event }) => {
-    const { status, start_date, end_date } = event.extendedProps
+    const { shift_name, start_date, end_date } = event.extendedProps
     return (
-      <Box className={clsx(classes.eventCard, getCardClass(status))}>
+      <Box className={clsx(classes.eventCard, getCardClass(shift_name))}>
         <Typography className={classes.hours}>
           {`${formatHours(start_date)}-${formatHours(end_date)}`}
         </Typography>
         <Typography className={classes.title}>{event.title}</Typography>
-        <Typography className={classes.status}>{status}</Typography>
+        <Typography className={classes.status}>{shift_name}</Typography>
       </Box>
     )
   }
@@ -201,10 +223,10 @@ const EventsCalendar = () => {
       setCurrentSlot(e)
     } else {
       enqueueSnackbar(
-        'No puedes visitas o tareas programar para fechas pasadas',
+        'No puedes programar visitas o tareas  para fechas pasadas',
         {
           variant: 'info',
-          autoHideDuration: 1000,
+          autoHideDuration: 3000,
           preventDuplicate: false
         }
       )
@@ -219,7 +241,7 @@ const EventsCalendar = () => {
         date: new Date(item.date),
         start: new Date(item.start_date),
         end: new Date(item.end_date),
-        backgroundColor: getBgColor(item.status)
+        backgroundColor: getBgColorShift(item.status)
       }))
     )
   }, [calendarEvents])
