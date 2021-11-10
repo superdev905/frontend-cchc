@@ -121,7 +121,9 @@ const ExtraPaymentsList = () => {
                     toggleOpenDelete()
                   }}
                   onDownload={() => {
-                    dispatch(files.downloadFile(item.file.fileUrl))
+                    dispatch(
+                      files.downloadFile(item.file.fileUrl, item.file.fileName)
+                    )
                   }}
                 />
               ))
