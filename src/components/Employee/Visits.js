@@ -10,7 +10,7 @@ import { DataTable, FileVisor } from '../Shared'
 import { formatDate } from '../../formatters'
 import { useToggle } from '../../hooks'
 import AssistanceDialog from '../Assistance/Dialog'
-// import VisitDialog from './VisitDialog'
+import AssistanceDetailsModal from '../Assistance/AssistanceDetailsModal'
 
 const AttentionDetails = () => {
   const dispatch = useDispatch()
@@ -19,6 +19,7 @@ const AttentionDetails = () => {
   const { employee } = useSelector((state) => state.employees)
   const { open: showVisor, toggleOpen: toggleShowVisor } = useToggle()
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openView, toggleOpen: toggleOpenView } = useToggle()
   const [currentData, setCurrentData] = useState(null)
   const [loading, setLoading] = useState(false)
 
@@ -111,6 +112,11 @@ const AttentionDetails = () => {
                 right: true,
                 cell: (row) => (
                   <ActionsTable
+                    {...row}
+                    onView={() => {
+                      setCurrentData(row)
+                      toggleOpenView()
+                    }}
                     moreOptions={[
                       {
                         icon: <AttachFileIcon />,
@@ -129,6 +135,14 @@ const AttentionDetails = () => {
             pagination
           />
         </Box>
+
+        {currentData && openView && (
+          <AssistanceDetailsModal
+            open={openView}
+            onClose={toggleOpenView}
+            data={currentData}
+          />
+        )}
 
         {currentData && showVisor && (
           <FileVisor
