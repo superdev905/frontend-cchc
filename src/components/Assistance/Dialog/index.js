@@ -106,21 +106,26 @@ const WorkerInterventionRecord = ({
     },
     onSubmit: async (values) => {
       let resultUpload = null
+      let attachment = null
       if (attachedFile) {
         const formData = new FormData()
         formData.append('file', attachedFile, attachedFile.name)
         resultUpload = await dispatch(
           filesActions.uploadFileToStorage(formData)
         )
+        attachment = {
+          fileKey: resultUpload.file_key,
+          fileUrl: resultUpload.file_url,
+          fileSize: resultUpload.file_size,
+          fileName: resultUpload.file_name,
+          uploadDate: resultUpload.upload_date,
+          sourceSystem: 'TRABAJADORES',
+          dataId: employee.id
+        }
       }
       submitFunction({
         ...values,
-        attached_key: resultUpload
-          ? resultUpload.file_key
-          : values.attached_key,
-        attached_url: resultUpload
-          ? resultUpload.file_url
-          : values.attached_url,
+        attachment,
         assigned_id: user.id,
         created_by: user.id
       }).then((result) => {

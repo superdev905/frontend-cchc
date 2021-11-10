@@ -103,7 +103,7 @@ const AttentionDetails = () => {
         {currentData && showVisor && (
           <FileVisor
             open={showVisor}
-            src={currentData.attached_url}
+            src={currentData.attachment.file_url}
             onClose={toggleShowVisor}
           />
         )}
