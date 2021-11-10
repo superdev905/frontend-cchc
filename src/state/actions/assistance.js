@@ -317,6 +317,7 @@ const exportEmployeesToAttend = (id) => () =>
   new Promise((resolve, reject) => {
     Axios.post(
       `${config.services.assistance}/visits/${id}/attended-employees/export`,
+      null,
       {
         responseType: 'arraybuffer'
       }
