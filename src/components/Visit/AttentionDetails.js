@@ -88,7 +88,7 @@ const AttentionDetails = () => {
                           setCurrentData(row)
                           toggleShowVisor()
                         },
-                        disabled: row.attached_url === ''
+                        disabled: !row.attachment
                       }
                     ]}
                   />
