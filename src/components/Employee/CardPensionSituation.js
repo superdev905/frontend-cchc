@@ -41,8 +41,12 @@ const CardSituation = ({ data, onEdit, onDelete }) => {
           </Box>
           <Box p={2}>
             <Typography>AFP/ISP: {data.afp_isp.description}</Typography>
+
             <Typography>
               ISAPRE/FONASA: {data.isapre_fonasa.description}
+            </Typography>
+            <Typography>
+              Nombre ISP / Tramo Fonasa: {data.isapre_fonasa_name}
             </Typography>
             <Box marginBottom="10px">
               <StatusChip label={`Pensionado: ${data.is_pensioner}`} />

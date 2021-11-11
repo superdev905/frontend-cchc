@@ -10,6 +10,7 @@ import { rutValidation, phoneValidator } from '../../validations'
 import commonActions from '../../state/actions/common'
 import { decisionList, genderList } from '../../config'
 import { useSuccess } from '../../hooks'
+import { formatText } from '../../formatters'
 
 const statusList = ['REALIZADO', 'EN TRAMITE']
 
@@ -86,6 +87,7 @@ const EmployeeModal = ({
       rsh_percentage_id: type !== 'CREATE' ? data.rsh_percentage_id : '',
       rsh_status: type !== 'CREATE' ? data.rsh_status : '',
       legal_charge: type !== 'CREATE' ? data.legal_charge : '',
+      belongs_to_reconocer: type !== 'CREATE' ? data.belongs_to_reconocer : '',
       phone: type !== 'CREATE' ? data.phone : ''
     },
     onSubmit: (values, { resetForm }) => {
@@ -505,6 +507,37 @@ const EmployeeModal = ({
                 {statusList.map((item, i) => (
                   <option key={`rsh_status-item-${i}-${item}`} value={item}>
                     {item}
+                  </option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Select
+                label="Pertenece a reconocer"
+                required
+                name="belongs_to_reconocer"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.belongs_to_reconocer}
+                helperText={
+                  formik.touched.belongs_to_reconocer &&
+                  formik.errors.belongs_to_reconocer
+                }
+                error={
+                  formik.touched.belongs_to_reconocer &&
+                  Boolean(formik.errors.belongs_to_reconocer)
+                }
+                readOnly={type === 'VIEW'}
+                InputProps={{
+                  classes: {
+                    disabled: classes.disabled
+                  }
+                }}
+              >
+                <option value="">Seleccione opcion</option>
+                {decisionList.map((item) => (
+                  <option value={item}>
+                    {formatText.capitalizeString(item)}
                   </option>
                 ))}
               </Select>
