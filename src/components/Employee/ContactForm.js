@@ -21,6 +21,8 @@ import { useSuccess } from '../../hooks'
 import { SantiagoDefaultLocation } from '../../config'
 import { formatDate } from '../../formatters'
 
+const phoneOwner = ['FAMILIAR', 'VECINO', 'RECADO', 'OTRO']
+
 const validationSchema = Yup.object().shape({
   address: Yup.string().required('Ingrese dirección'),
   region_id: Yup.number().required('Seleccione region'),
@@ -87,6 +89,7 @@ const EmployeeModal = ({
       longitude: type === 'UPDATE' ? data.longitude : '',
       latitude: type === 'UPDATE' ? data.latitude : '',
       email: type === 'UPDATE' ? data.email : '',
+      phone_owner: type === 'UPDATE' ? data.phone_owner : '',
       mobile_phone: type === 'UPDATE' ? data.mobile_phone : '',
       other_phone: type === 'UPDATE' ? data.other_phone : '',
       landline_phone: type === 'UPDATE' ? data.landline_phone : '',
@@ -319,6 +322,26 @@ const EmployeeModal = ({
                 </Typography>
               </Box>
               <Grid container spacing={1}>
+                <Grid item xs={12} md={6}>
+                  <Select
+                    label="A quien pertenece"
+                    name="phone_owner"
+                    value={formik.values.phone_owner}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.phone_owner &&
+                      Boolean(formik.errors.phone_owner)
+                    }
+                    helperText={
+                      formik.touched.phone_owner && formik.errors.phone_owner
+                    }
+                  >
+                    <option value="">Seleccione estado</option>
+                    {phoneOwner.map((item) => (
+                      <option value={item}>{item}</option>
+                    ))}
+                  </Select>
+                </Grid>
                 <Grid item xs={12} md={6}>
                   <TextField
                     label="Telefóno móvil"
