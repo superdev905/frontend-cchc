@@ -184,6 +184,17 @@ const EmployeeModal = ({
   }, [formik.values.rsh])
 
   useEffect(() => {
+    const format = formik.values.run
+    const newFormat = format.replace(/\./g, '').replace(/-/g, '').slice(0, -1)
+    if (
+      formik.values.bank_id === '1' &&
+      formik.values.account_type === 'VISTA'
+    ) {
+      formik.setFieldValue('account_number', newFormat)
+    }
+  }, [formik.values.bank_id, formik.values.account_type])
+
+  useEffect(() => {
     dispatch(commonActions.getMaritalStatuses())
     dispatch(commonActions.getNationalities())
     dispatch(commonActions.getScholarship())

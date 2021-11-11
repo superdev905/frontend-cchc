@@ -40,6 +40,7 @@ const ContactList = () => {
         </SubmitButton>
       </Box>
       <DataTable
+        background
         emptyMessage="No hay trabajadores por atender"
         columns={[
           {

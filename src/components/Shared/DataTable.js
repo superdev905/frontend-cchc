@@ -32,6 +32,26 @@ const customStyles = {
   }
 }
 
+const backgroundStyles = {
+  table: {
+    style: { width: '100%' }
+  },
+  headCells: {
+    style: {
+      width: '100%',
+      fontSize: '14px',
+      color: '#334D6E',
+      backgroundColor: '#f0f8ff',
+      fontWeight: 'bold'
+    }
+  },
+  rows: {
+    style: {
+      fontSize: '15px'
+    }
+  }
+}
+
 const borderedStyles = {
   table: {
     style: {
@@ -79,12 +99,15 @@ const CustomDataTable = ({
   styles,
   emptyMessage,
   bordered,
+  background,
   ...props
 }) => {
   const classes = useStyles()
 
   const getStyles = () => {
     if (bordered) return borderedStyles
+    if (background) return backgroundStyles
+
     return customStyles
   }
 
@@ -119,7 +142,8 @@ CustomDataTable.defaultProps = {
   pagination: false,
   loaderRows: 5,
   emptyMessage: 'No hay datos por mostrar',
-  bordered: false
+  bordered: false,
+  background: false
 }
 
 CustomDataTable.propTypes = {
