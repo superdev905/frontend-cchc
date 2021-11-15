@@ -32,6 +32,11 @@ const VisitDetails = ({ fetching }) => {
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
+            {visit && (
+              <LabeledRow label="Título:">
+                <Text loading={fetching}>{visit?.title}</Text>
+              </LabeledRow>
+            )}
             <LabeledRow label="Título:">
               <Text loading={fetching}>{visit?.title}</Text>
             </LabeledRow>

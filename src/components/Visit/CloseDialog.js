@@ -4,6 +4,7 @@ import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Avatar, Box, Grid, Typography } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 import assistanceActions from '../../state/actions/assistance'
 import { useSuccess, useToggle } from '../../hooks'
 import { ConfirmDelete, Dialog } from '../Shared'
@@ -71,7 +72,7 @@ const DetailsDialog = ({ open, onClose, visitId, successFunction }) => {
             variant="h6"
             style={{ fontWeight: 'bold' }}
           >
-            {`Visita ${visitId}`}
+            {`Cierre: Visita ${visitId}`}
           </Typography>
         </Box>
         <Box>
@@ -128,6 +129,12 @@ const DetailsDialog = ({ open, onClose, visitId, successFunction }) => {
                   ¿Estas seguro de cerrar esta visita:
                   <strong>{` Visita ${visitId}`}</strong>?
                 </Typography>
+                <Box mt={2}>
+                  <Alert severity="error">
+                    Al confirmar el cierre de la visita, ya no se podrá seguir
+                    atendiendo a los trabajadores
+                  </Alert>
+                </Box>
               </Box>
             }
             onConfirm={closeVisit}

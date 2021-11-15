@@ -113,6 +113,18 @@ const updateVisitReport = (idVisit, values) => () =>
       })
   })
 
+const getReportItems = () => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.assistance}/visits-report-items`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const updateEvent = (id, values) => () =>
   new Promise((resolve, reject) => {
     Axios.put(`${config.services.assistance}/visits/${id}`, values)
@@ -417,6 +429,7 @@ export default {
   createVisitReport,
   exportVisits,
   updateVisitReport,
+  getReportItems,
   exportEmployeesToAttend,
   getAttendedEmployeeByBusiness
 }
