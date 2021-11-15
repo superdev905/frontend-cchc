@@ -56,7 +56,9 @@ const ExportDialog = ({ open, onClose, range }) => {
         </Grid>
       </Box>
       <Box textAlign={'center'} mt={4}>
-        <Button variant={'outlined'}>Cancelar</Button>
+        <Button onClick={onClose} variant={'outlined'}>
+          Cancelar
+        </Button>
         <SubmitButton loading={loading} onClick={onExport}>
           Exportar
         </SubmitButton>

@@ -17,8 +17,6 @@ const AttendedEmployees = () => {
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const onViewClick = () => {}
-
   useEffect(() => {
     setLoading(true)
     dispatch(
@@ -86,9 +84,7 @@ const AttendedEmployees = () => {
               {
                 name: '',
                 right: true,
-                cell: (row) => (
-                  <ActionsTable {...row} onView={() => onViewClick(row)} />
-                )
+                cell: (row) => <ActionsTable {...row} />
               }
             ]}
             data={tableData}

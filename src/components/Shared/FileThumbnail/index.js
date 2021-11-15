@@ -8,6 +8,7 @@ import { RiEdit2Fill } from 'react-icons/ri'
 import { formatDate } from '../../../formatters'
 import PDFIcon from './pdf.png'
 import PictureIcon from './picture.png'
+import Loader from './Loader'
 
 const useStyles = makeStyles((theme) => ({
   center: {
@@ -23,6 +24,13 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     width: 35
   },
+  label: {
+    fontSize: 12,
+    color: theme.palette.primary.main,
+    fontWeight: 'bold',
+    opacity: 0.9,
+    textTransform: 'uppercase'
+  },
   paper: ({ bgWhite }) => ({
     backgroundColor: bgWhite ? theme.palette.common.white : '#f5f6f8',
     display: 'flex',
@@ -34,6 +42,7 @@ const PDFCard = ({
   fileName,
   date,
   fileSize,
+  label,
   onDelete,
   onView,
   onDownload,
@@ -60,6 +69,9 @@ const PDFCard = ({
             className={classes.icon}
           />
           <Box marginLeft="10px">
+            {label && (
+              <Typography className={classes.label}>{label}</Typography>
+            )}
             <Typography className={classes.fileName}>
               {getFileName(fileName)}
             </Typography>
@@ -101,5 +113,7 @@ const PDFCard = ({
 PDFCard.defaultProps = {
   bgWhite: false
 }
+
+PDFCard.Loader = Loader
 
 export default PDFCard

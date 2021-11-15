@@ -1,9 +1,9 @@
 import Axios from 'axios'
 import config from '../../config'
 
-const downloadFile = (fileUrl) => () =>
+const downloadFile = (fileUrl, originalFileName) => () =>
   new Promise((resolve, reject) => {
-    const fileName = fileUrl.split('/').pop()
+    const fileName = originalFileName || fileUrl.split('/').pop()
     const instance = Axios.create()
     delete instance.defaults.headers.common.Authorization
     Axios.get(fileUrl, {

@@ -13,7 +13,14 @@ import {
   Typography
 } from '@material-ui/core'
 import { DatePicker, Dialog } from '../Shared'
-import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
+import {
+  Button,
+  RutTextField,
+  Select,
+  SubmitButton,
+  TextArea,
+  TextField
+} from '../UI'
 import { isPollListAnswered, rutValidation } from '../../validations'
 import commonActions from '../../state/actions/common'
 import pollActions from '../../state/actions/poll'
@@ -68,7 +75,8 @@ const validationSchema = Yup.object().shape({
   account_type: Yup.string('Seleccione tipo de cuenta'),
   account_number: Yup.string('Seleccione número de cuenta'),
   rsh: Yup.string('Seleccione opción'),
-  rsh_percentage: Yup.string('Seleccione opción')
+  rsh_percentage: Yup.string('Seleccione opción'),
+  comments: Yup.string('Ingrese comentarios')
 })
 
 const EmployeeModal = ({
@@ -119,7 +127,8 @@ const EmployeeModal = ({
       account_number: type === 'UPDATE' ? data.account_number : '',
       rsh: type === 'UPDATE' ? data.rsh : '',
       rsh_percentage: type === 'UPDATE' ? data.rsh_percentage : '',
-      rsh_status: type === 'UPDATE' ? data.rsh_status : ''
+      rsh_status: type === 'UPDATE' ? data.rsh_status : '',
+      comments: type === 'UPDATE' ? data.comments : ''
     },
     onSubmit: (values) => {
       const submitData = { ...values }
@@ -206,7 +215,7 @@ const EmployeeModal = ({
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
       <Box>
         <Typography variant="h6" align="center">
-          {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} trabajador`}
+          {`${type === 'UPDATE' ? 'Actualizar' : 'Nuevo'} trabajador`}
         </Typography>
         <Box p={2}>
           <Box>
@@ -670,6 +679,21 @@ const EmployeeModal = ({
                     </option>
                   ))}
                 </Select>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextArea
+                  label="Comentarios"
+                  name="comments"
+                  value={formik.values.comments}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.comments && Boolean(formik.errors.comments)
+                  }
+                  helperText={formik.touched.comments && formik.errors.comments}
+                  maxLength={800}
+                />
               </Grid>
             </Grid>
           </Box>

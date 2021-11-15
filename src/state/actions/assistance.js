@@ -137,6 +137,34 @@ const patchEvent = (idEvent, values) => () =>
       })
   })
 
+const requestVisitClose = (idVisit) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.assistance}/visits/${idVisit}/request-close`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getVisitsToClose = (query) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${
+        config.services.assistance
+      }/visits/request-close?${queryString.stringify(query)}`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const deleteEvent = (idEvent) => () =>
   new Promise((resolve, reject) => {
     Axios.delete(`${config.services.assistance}/visits/${idEvent}`)
@@ -317,6 +345,7 @@ const exportEmployeesToAttend = (id) => () =>
   new Promise((resolve, reject) => {
     Axios.post(
       `${config.services.assistance}/visits/${id}/attended-employees/export`,
+      null,
       {
         responseType: 'arraybuffer'
       }
@@ -359,6 +388,8 @@ export default {
   updateEvent,
   deleteEvent,
   patchEvent,
+  requestVisitClose,
+  getVisitsToClose,
   getEvents,
   getEventDetails,
   createConstructionAttention,

@@ -1,13 +1,22 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import employeesActions from '../../state/actions/employees'
-import { Button, LabeledRow, Text, Wrapper } from '../UI'
 import { formatDate } from '../../formatters'
 import { useToggle } from '../../hooks'
+import { Button, LabeledRow, Text, Wrapper } from '../UI'
 import { EmployeeForm } from '../Employees'
+
+const useStyles = makeStyles(() => ({
+  heading: {
+    fontSize: '17px',
+    fontWeight: 'bold',
+    marginTop: '10px'
+  }
+}))
 
 const Details = ({ loading }) => {
   const dispatch = useDispatch()
+  const classes = useStyles()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { employee } = useSelector((state) => state.employees)
 
@@ -76,13 +85,7 @@ const Details = ({ loading }) => {
 
           <Grid container>
             <Grid item xs={12} md={6}>
-              <Typography
-                style={{
-                  fontSize: '17px',
-                  fontWeight: 'bold',
-                  marginTop: '10px'
-                }}
-              >
+              <Typography className={classes.heading}>
                 Información económica
               </Typography>
               <LabeledRow label={'Nombre de banco'}>
@@ -107,13 +110,7 @@ const Details = ({ loading }) => {
               </LabeledRow>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Typography
-                style={{
-                  fontSize: '17px',
-                  fontWeight: 'bold',
-                  marginTop: '10px'
-                }}
-              >
+              <Typography className={classes.heading}>
                 Información de discapacidad
               </Typography>
 
@@ -131,13 +128,7 @@ const Details = ({ loading }) => {
               </LabeledRow>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Typography
-                style={{
-                  fontSize: '17px',
-                  fontWeight: 'bold',
-                  marginTop: '10px'
-                }}
-              >
+              <Typography className={classes.heading}>
                 Información adicional
               </Typography>
 
@@ -148,6 +139,20 @@ const Details = ({ loading }) => {
                 <Text loading={loading}>{employee?.recognize}</Text>
               </LabeledRow>
             </Grid>
+            {employee?.comments && (
+              <Grid item xs={12}>
+                <Typography
+                  style={{
+                    fontSize: '17px',
+                    fontWeight: 'bold',
+                    marginTop: '10px'
+                  }}
+                >
+                  Comentarios
+                </Typography>
+                <Text loading={loading}>{employee?.comments}</Text>
+              </Grid>
+            )}
           </Grid>
         </Box>
       </Wrapper>

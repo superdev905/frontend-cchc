@@ -9,7 +9,8 @@ import {
   EmployeeJobs,
   EmployeeFamiliarGroup,
   Situation,
-  EmployeeVisits
+  EmployeeVisits,
+  EmployeeAttachments
 } from '../components/Employee'
 
 const Login = lazy(() => import('../pages/Login'))
@@ -154,6 +155,24 @@ const companyRoutes = [
           <Layout>
             <Employee>
               <EmployeeVisits />
+            </Employee>
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: `/${rootName}/:idEmployee/attachments`,
+    key: 'EMPLOYEE-ATTACHMENTS',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <Employee>
+              <EmployeeAttachments />
             </Employee>
           </Layout>
         )}

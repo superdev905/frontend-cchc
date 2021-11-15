@@ -141,7 +141,7 @@ const AttentionView = ({ fetching }) => {
           <FileVisor
             open={openVisor}
             onClose={toggleOpenVisor}
-            src={current.attached_url}
+            src={current.attachment.file_url}
           />
         )}
       </Wrapper>

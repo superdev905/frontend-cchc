@@ -222,7 +222,7 @@ const PostulationDetails = ({ loading }) => {
                     setCurrentFile(item)
                   }}
                   onDownload={() => {
-                    dispatch(files.downloadFile(item.fileUrl))
+                    dispatch(files.downloadFile(item.fileUrl, item.fileName))
                   }}
                 />
               </Box>
