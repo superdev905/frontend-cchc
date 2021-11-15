@@ -435,7 +435,6 @@ const EmployeeModal = ({
 
               <Grid item xs={12} md={4}>
                 <Select
-                  required={hasDisability}
                   label="Tipo de discapacidad"
                   name="disability_type"
                   value={formik.values.disability_type}

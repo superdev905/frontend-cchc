@@ -119,6 +119,7 @@ const EmployeeModal = ({
   useEffect(() => {
     if (formik.values.rsh === 'NO') {
       formik.setFieldValue('rsh_percentage_id', '')
+      formik.setFieldValue('rsh_status', '')
     }
   }, [formik.values.rsh])
 
@@ -494,11 +495,11 @@ const EmployeeModal = ({
                 helperText={
                   formik.touched.rsh_status && formik.errors.rsh_status
                 }
+                readOnly={type === 'VIEW' || formik.values.rsh === 'NO'}
                 disabled={formik.values.rsh === 'NO' && type === 'VIEW'}
-                readOnly={type === 'VIEW'}
                 InputProps={{
                   classes: {
-                    disabled: classes.disabled
+                    disabled: type === 'VIEW' ? classes.disabled : ''
                   }
                 }}
               >
