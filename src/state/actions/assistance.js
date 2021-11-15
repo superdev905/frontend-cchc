@@ -164,6 +164,17 @@ const getVisitsToClose = (query) => () =>
         reject(err.response.data.detail)
       })
   })
+const closeVisit = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.assistance}/visits/${id}/close`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 const deleteEvent = (idEvent) => () =>
   new Promise((resolve, reject) => {
@@ -390,6 +401,7 @@ export default {
   patchEvent,
   requestVisitClose,
   getVisitsToClose,
+  closeVisit,
   getEvents,
   getEventDetails,
   createConstructionAttention,

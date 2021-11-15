@@ -12,7 +12,7 @@ import { useMenu, useToggle } from '../../hooks'
 import { ActionsTable, Button, SearchInput, Wrapper } from '../UI'
 import { DataTable, OptionsMenu } from '../Shared'
 import VisitStatusChip from './VisitStatusChip'
-import { VisitDetailsDialog } from '../Visit'
+import { VisitCloseDialog } from '../Visit'
 
 const List = () => {
   const dispatch = useDispatch()
@@ -178,10 +178,11 @@ const List = () => {
           />
         )}
         {openDetails && currentVisit && (
-          <VisitDetailsDialog
+          <VisitCloseDialog
             visitId={currentVisit.id}
             open={openDetails}
             onClose={toggleOpenDetails}
+            successFunction={fetchList}
           />
         )}
       </Box>
