@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 import { endOfWeek } from 'date-fns'
 import startOfWeek from 'date-fns/startOfWeek'
 import commonActions from '../../state/actions/common'
@@ -9,7 +10,7 @@ import assistanceActions from '../../state/actions/assistance'
 import usersActions from '../../state/actions/users'
 import { LabeledRow, StatusChip, Text, Wrapper, Button } from '../UI'
 import { formatDate, formatHours } from '../../formatters'
-import { useMenu, useSuccess, useToggle } from '../../hooks'
+import { useSuccess, useToggle } from '../../hooks'
 import ReportModal from './Report/ReportModal'
 import { ConfirmDelete, FileVisor } from '../Shared'
 import constructionsActions from '../../state/actions/constructions'
@@ -56,11 +57,11 @@ const Details = ({ fetching, fetchDetails }) => {
     return dispatch(assistanceActions.createVisitReport(visit.id, data))
   }
 
-  const { handleClose } = useMenu()
   const { open: openCancel, toggleOpen: toggleOpenCancel } = useToggle()
   const { open: openFinish, toggleOpen: toggleOpenFinish } = useToggle()
   const { open: openStart, toggleOpen: toggleOpenStart } = useToggle()
   const { open: openView, toggleOpen: toggleOpenView } = useToggle()
+  const { open: openVisitClose, toggleOpen: toggleOpenVisitClose } = useToggle()
 
   const { success, changeSuccess } = useSuccess()
   const [filters] = useState({
@@ -91,7 +92,7 @@ const Details = ({ fetching, fetchDetails }) => {
         fetchEvents(filters)
         changeSuccess(true, () => {
           enqueueSnackbar('Evento cancelado', { variant: 'success' })
-          handleClose()
+
           toggleOpenCancel()
           fetchDetails()
         })
@@ -110,7 +111,7 @@ const Details = ({ fetching, fetchDetails }) => {
         fetchEvents(filters)
         changeSuccess(true, () => {
           enqueueSnackbar('Evento terminado', { variant: 'success' })
-          handleClose()
+
           toggleOpenFinish()
           fetchDetails()
         })
@@ -131,8 +132,29 @@ const Details = ({ fetching, fetchDetails }) => {
           enqueueSnackbar('Evento actualizado a iniciado', {
             variant: 'success'
           })
-          handleClose()
+
           toggleOpenStart()
+          fetchDetails()
+        })
+      })
+      .catch((err) => {
+        setLoading(false)
+        enqueueSnackbar(err, { variant: 'error' })
+      })
+  }
+
+  const onRequestVisitClose = () => {
+    setLoading(true)
+    dispatch(assistanceActions.requestVisitClose(visit.id))
+      .then(() => {
+        setLoading(false)
+        fetchEvents(filters)
+        changeSuccess(true, () => {
+          enqueueSnackbar('Solicitud exitosa', {
+            variant: 'success'
+          })
+
+          toggleOpenVisitClose()
           fetchDetails()
         })
       })
@@ -225,10 +247,17 @@ const Details = ({ fetching, fetchDetails }) => {
           Completar visita
         </Button>
         <Button
+          onClick={toggleOpenVisitClose}
+          disabled={visit?.status === 'CANCELADA' || visit?.is_close_pending}
+        >
+          Solicitar cierre
+        </Button>
+        <Button
           danger
           onClick={toggleOpenCancel}
-          disabled={Boolean(visit?.status === 'CANCELADA')}
-          disabled={Boolean(visit?.status === 'TERMINADA')}
+          disabled={
+            visit?.status === 'CANCELADA' || visit?.status === 'TERMINADA'
+          }
         >
           Cancelar
         </Button>
@@ -384,6 +413,32 @@ const Details = ({ fetching, fetchDetails }) => {
                 <Text className={classes.Start}>INICIAR</Text>
               </Box>
             </span>
+          }
+        />
+      )}
+      {visit && openVisitClose && (
+        <ConfirmDelete
+          maxWidth="md"
+          event="CLOSE-VISIT"
+          confirmText="Solicitar"
+          open={openVisitClose}
+          success={success}
+          onClose={toggleOpenVisitClose}
+          loading={loading}
+          onConfirm={() => onRequestVisitClose()}
+          message={
+            <Box>
+              <Typography variant="h6">
+                ¿Estás seguro de solicitar el cierre para este visita:
+                <strong>{` ${visit.title}`}</strong>?
+              </Typography>
+              <Box mt={2}>
+                <Alert severity="warning">
+                  Se solicitará el cierre de la visita, al ser aprobada ya no se
+                  podrá atender a los trabajadores
+                </Alert>
+              </Box>
+            </Box>
           }
         />
       )}

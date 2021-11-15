@@ -1,64 +1,61 @@
 import { useEffect, useState } from 'react'
-import { startOfWeek, subDays } from 'date-fns'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid } from '@material-ui/core'
+import {
+  FiMoreVertical as MoreIcon,
+  FiCheckSquare as CheckIcon
+} from 'react-icons/fi'
 import assistanceActions from '../../state/actions/assistance'
-import { Button, SearchInput, Wrapper } from '../UI'
-import { DataTable } from '../Shared'
 import { formatDate, formatHours } from '../../formatters'
+import { useMenu, useToggle } from '../../hooks'
+import { ActionsTable, Button, SearchInput, Wrapper } from '../UI'
+import { DataTable, OptionsMenu } from '../Shared'
 import VisitStatusChip from './VisitStatusChip'
+import { VisitDetailsDialog } from '../Visit'
 
-const EventList = () => {
+const List = () => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const [currentDate] = useState(new Date())
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
   const { user } = useSelector((state) => state.auth)
+  const [totalPages, setTotalPages] = useState(0)
+  const [currentVisit, setCurrentVisit] = useState(null)
   const [filters, setFilters] = useState({
     page: 1,
     size: 30,
-    status: 'PROGRAMADA',
     search: '',
-    user_id: user?.id,
-    start_date: new Date(subDays(startOfWeek(currentDate), 1)).toISOString()
+    user_id: user?.id
   })
-  const { listEvents, totalEvents: totalPages } = useSelector(
-    (state) => state.assistance
-  )
+  const { open, anchorEl, handleClose, handleOpen } = useMenu()
+  const { open: openDetails, toggleOpen: toggleOpenDetails } = useToggle()
 
   const launchCalendar = () => {
     history.push('/calendar')
-  }
-  const launchVisitsToClose = () => {
-    history.push('/visits-close')
   }
 
   const fetchList = () => {
     setLoading(true)
     dispatch(
-      assistanceActions.getEvents({ ...filters, search: filters.search.trim() })
-    ).then(() => {
+      assistanceActions.getVisitsToClose({
+        ...filters,
+        search: filters.search.trim()
+      })
+    ).then((result) => {
+      setTableData(
+        result.items.map((item) => ({
+          ...item,
+          dateEvent: formatDate(item.date, {}),
+          startHour: `${formatHours(item.start_date)} - ${formatHours(
+            item.end_date
+          )}`
+        }))
+      )
+      setTotalPages(result.total)
       setLoading(false)
     })
   }
-
-  const onRowClick = (row) => {
-    history.push(`/visit/${row.id}`)
-  }
-
-  useEffect(() => {
-    setTableData(
-      listEvents.map((item) => ({
-        ...item,
-        dateEvent: formatDate(item.date, {}),
-        startHour: `${formatHours(item.start_date)} - ${formatHours(
-          item.end_date
-        )}`
-      }))
-    )
-  }, [listEvents])
 
   useEffect(() => {
     fetchList()
@@ -80,10 +77,8 @@ const EventList = () => {
             </Grid>
             <Grid item xs={12} md={7}>
               <Box display="flex" justifyContent="flex-end">
-                <Button onClick={launchVisitsToClose}>
-                  Visitas por cerrar
-                </Button>
-                <Button onClick={launchCalendar}>Revisar calendario</Button>
+                <Button onClick={launchCalendar}>Visitas por cerrar</Button>
+                <Button onClick={launchCalendar}>Ver calendario</Button>
               </Box>
             </Grid>
           </Grid>
@@ -96,8 +91,6 @@ const EventList = () => {
             }
             data={tableData}
             progressPending={loading}
-            highlightOnHover
-            pointerOnHover
             columns={[
               {
                 name: 'Fecha',
@@ -129,11 +122,27 @@ const EventList = () => {
                 name: 'Obra',
                 selector: (row) => row.construction_name,
                 hide: 'md'
+              },
+              {
+                name: '',
+                right: true,
+                selector: (row) => (
+                  <ActionsTable
+                    moreOptions={[
+                      {
+                        icon: <MoreIcon color="black" />,
+                        onClick: (e) => {
+                          handleOpen(e)
+                          setCurrentVisit(row)
+                        }
+                      }
+                    ]}
+                  />
+                )
               }
             ]}
             pagination
             paginationServer={true}
-            onRowClicked={onRowClick}
             paginationRowsPerPageOptions={[30, 40]}
             paginationPerPage={filters.size}
             onChangeRowsPerPage={(limit) => {
@@ -145,9 +154,39 @@ const EventList = () => {
             paginationTotalRows={totalPages}
           />
         </Wrapper>
+
+        {open && (
+          <OptionsMenu
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            customOptions={[
+              {
+                icon: CheckIcon,
+                label: 'Aprobar cierre',
+                onClick: () => {
+                  handleClose()
+                  toggleOpenDetails()
+                }
+              },
+              {
+                icon: MoreIcon,
+                label: 'Ver en página completa',
+                onClick: () => {}
+              }
+            ]}
+          />
+        )}
+        {openDetails && currentVisit && (
+          <VisitDetailsDialog
+            visitId={currentVisit.id}
+            open={openDetails}
+            onClose={toggleOpenDetails}
+          />
+        )}
       </Box>
     </Box>
   )
 }
 
-export default EventList
+export default List

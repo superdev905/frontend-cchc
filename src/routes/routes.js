@@ -15,6 +15,7 @@ const Constructions = lazy(() => import('../pages/Constructions'))
 const Users = lazy(() => import('../pages/Users'))
 const Calendar = lazy(() => import('../pages/Calendar'))
 const Visits = lazy(() => import('../pages/Visits'))
+const VisitsToClose = lazy(() => import('../pages/Visits/VisitsToClose'))
 const Visit = lazy(() => import('../pages/Visit'))
 const AssistanceType = lazy(() => import('../pages/Visits/AssistanceType'))
 const Assistance = lazy(() => import('../pages/Assistance'))
@@ -150,6 +151,22 @@ const routes = [
         yes={() => (
           <Layout>
             <Visits />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/visits-close',
+    key: 'VISITS-TO-CLOSE',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <VisitsToClose />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}
