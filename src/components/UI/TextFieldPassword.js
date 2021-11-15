@@ -52,7 +52,7 @@ const CustomTextField = ({
         error={error}
         onChange={onChange}
         onBlur={onBlur}
-        value={value?.toUpperCase()}
+        value={value}
         InputLabelProps={{
           shrink: false
         }}

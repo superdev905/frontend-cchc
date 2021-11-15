@@ -53,7 +53,7 @@ const TextArea = ({
         rowsMin={rowsMin}
         onChange={onChange}
         onBlur={onBlur}
-        value={value}
+        value={value?.toUpperCase()}
         {...props}
       />
       {error && <FormHelperText error={error}>{helperText}</FormHelperText>}

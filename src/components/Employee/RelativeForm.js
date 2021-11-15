@@ -10,7 +10,6 @@ import { rutValidation, phoneValidator } from '../../validations'
 import commonActions from '../../state/actions/common'
 import { decisionList, genderList } from '../../config'
 import { useSuccess } from '../../hooks'
-import { formatText } from '../../formatters'
 
 const statusList = ['REALIZADO', 'EN TRAMITE']
 
@@ -511,7 +510,7 @@ const EmployeeModal = ({
                 ))}
               </Select>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={4}>
               <Select
                 label="Pertenece a reconocer"
                 required
@@ -536,9 +535,7 @@ const EmployeeModal = ({
               >
                 <option value="">Seleccione opcion</option>
                 {decisionList.map((item) => (
-                  <option value={item}>
-                    {formatText.capitalizeString(item)}
-                  </option>
+                  <option value={item}>{item}</option>
                 ))}
               </Select>
             </Grid>

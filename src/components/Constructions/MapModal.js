@@ -27,7 +27,7 @@ const MapModal = ({ loading, open, onClose, successFunction }) => {
     if (successFunction) {
       successFunction()
     }
-    dispatch(constructionsActions.getConstruction(construction.id))
+    dispatch(constructionsActions.getConstruction(construction?.id))
   }
 
   const updateConstruction = (values) =>
