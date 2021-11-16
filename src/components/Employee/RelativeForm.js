@@ -86,6 +86,7 @@ const EmployeeModal = ({
       rsh_percentage_id: type !== 'CREATE' ? data.rsh_percentage_id : '',
       rsh_status: type !== 'CREATE' ? data.rsh_status : '',
       legal_charge: type !== 'CREATE' ? data.legal_charge : '',
+      belongs_to_reconocer: type !== 'CREATE' ? data.belongs_to_reconocer : '',
       phone: type !== 'CREATE' ? data.phone : ''
     },
     onSubmit: (values, { resetForm }) => {
@@ -118,6 +119,7 @@ const EmployeeModal = ({
   useEffect(() => {
     if (formik.values.rsh === 'NO') {
       formik.setFieldValue('rsh_percentage_id', '')
+      formik.setFieldValue('rsh_status', '')
     }
   }, [formik.values.rsh])
 
@@ -132,6 +134,16 @@ const EmployeeModal = ({
       dispatch(commonActions.getActivities())
     }
   }, [open])
+
+  useEffect(() => {
+    if (formik.isSubmitting && !formik.isValid) {
+      enqueueSnackbar('Completa los campos requeridos', {
+        autoHideDuration: 2000,
+        variant: 'info'
+      })
+    }
+  }, [!formik.isValid, formik.isSubmitting])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullScreen={isMobile}>
       <Box>
@@ -493,11 +505,11 @@ const EmployeeModal = ({
                 helperText={
                   formik.touched.rsh_status && formik.errors.rsh_status
                 }
+                readOnly={type === 'VIEW' || formik.values.rsh === 'NO'}
                 disabled={formik.values.rsh === 'NO' && type === 'VIEW'}
-                readOnly={type === 'VIEW'}
                 InputProps={{
                   classes: {
-                    disabled: classes.disabled
+                    disabled: type === 'VIEW' ? classes.disabled : ''
                   }
                 }}
               >
@@ -506,6 +518,35 @@ const EmployeeModal = ({
                   <option key={`rsh_status-item-${i}-${item}`} value={item}>
                     {item}
                   </option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Select
+                label="Pertenece a reconocer"
+                required
+                name="belongs_to_reconocer"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.belongs_to_reconocer}
+                helperText={
+                  formik.touched.belongs_to_reconocer &&
+                  formik.errors.belongs_to_reconocer
+                }
+                error={
+                  formik.touched.belongs_to_reconocer &&
+                  Boolean(formik.errors.belongs_to_reconocer)
+                }
+                readOnly={type === 'VIEW'}
+                InputProps={{
+                  classes: {
+                    disabled: classes.disabled
+                  }
+                }}
+              >
+                <option value="">Seleccione opcion</option>
+                {decisionList.map((item) => (
+                  <option value={item}>{item}</option>
                 ))}
               </Select>
             </Grid>
@@ -536,7 +577,6 @@ const EmployeeModal = ({
                 </Button>
                 <SubmitButton
                   onClick={formik.handleSubmit}
-                  disabled={!formik.isValid}
                   success={success}
                   loading={formik.isSubmitting}
                 >

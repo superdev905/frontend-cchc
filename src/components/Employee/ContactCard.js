@@ -86,6 +86,9 @@ const ContactCard = ({ contact, loading, onEdit, onDelete, index }) => {
                 <LabeledRow label="Correo">
                   <Text loading={loading}>{contact?.email}</Text>
                 </LabeledRow>
+                <LabeledRow label="Dueño de contacto">
+                  <Text loading={loading}>{contact?.phone_owner}</Text>
+                </LabeledRow>
                 <LabeledRow label="Telefóno móvil">
                   <Text loading={loading}>{contact?.mobile_phone}</Text>
                 </LabeledRow>

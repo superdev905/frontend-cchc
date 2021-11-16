@@ -112,6 +112,7 @@ const AttendModalList = () => {
             )}
           </Box>
           <DataTable
+            background
             progressPending={loading}
             emptyMessage="No hay atenciones en esta obra"
             columns={[

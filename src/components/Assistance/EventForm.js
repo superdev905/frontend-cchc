@@ -233,6 +233,15 @@ const EventForm = ({
     }
   }, [formik.values.type_description, isVisit])
 
+  useEffect(() => {
+    if (formik.isSubmitting && !formik.isValid) {
+      enqueueSnackbar('Completa los campos requeridos', {
+        autoHideDuration: 1500,
+        variant: 'info'
+      })
+    }
+  }, [!formik.isValid, formik.isSubmitting])
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <Box>
@@ -431,11 +440,7 @@ const EventForm = ({
           <SubmitButton
             loading={formik.isSubmitting}
             onClick={formik.handleSubmit}
-            disabled={
-              !formik.isValid ||
-              formik.isSubmitting ||
-              !getIsVisit(formik.values)
-            }
+            disabled={formik.isSubmitting || !getIsVisit(formik.values)}
             success={success}
           >
             {`${type === 'CREATE' ? 'Crear' : 'Actualizar'} evento`}

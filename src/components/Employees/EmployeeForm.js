@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
   Box,
   FormControlLabel,
+  FormHelperText,
   Grid,
   InputLabel,
   makeStyles,
@@ -63,7 +64,7 @@ const validationSchema = Yup.object().shape({
   paternal_surname: Yup.string().required('Ingrese nombres'),
   maternal_surname: Yup.string(),
   gender: Yup.string().required('Seleccione sexo'),
-  born_date: Yup.date().required('Seleccione fecha de nacimiento'),
+  born_date: Yup.date().required('Seleccione fecha de nacimiento').nullable(),
   scholarship_id: Yup.number().required('Seleccione escolaridad'),
   marital_status_id: Yup.number().required('Seleccione estado civil'),
   disability: Yup.string().required('Seleccione opción'),
@@ -193,12 +194,32 @@ const EmployeeModal = ({
   }, [formik.values.rsh])
 
   useEffect(() => {
+    const format = formik.values.run
+    const newFormat = format.replace(/\./g, '').replace(/-/g, '').slice(0, -1)
+    if (
+      formik.values.bank_id === '1' &&
+      formik.values.account_type === 'VISTA'
+    ) {
+      formik.setFieldValue('account_number', newFormat)
+    }
+  }, [formik.values.bank_id, formik.values.account_type])
+
+  useEffect(() => {
     dispatch(commonActions.getMaritalStatuses())
     dispatch(commonActions.getNationalities())
     dispatch(commonActions.getScholarship())
     dispatch(commonActions.getBanks())
     dispatch(commonActions.getRSH())
   }, [])
+
+  useEffect(() => {
+    if (formik.isSubmitting && !formik.isValid) {
+      enqueueSnackbar('Completa los campos requeridos', {
+        autoHideDuration: 2000,
+        variant: 'info'
+      })
+    }
+  }, [!formik.isValid, formik.isSubmitting])
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
@@ -433,7 +454,6 @@ const EmployeeModal = ({
 
               <Grid item xs={12} md={4}>
                 <Select
-                  required={hasDisability}
                   label="Tipo de discapacidad"
                   name="disability_type"
                   value={formik.values.disability_type}
@@ -647,6 +667,11 @@ const EmployeeModal = ({
                     label="NO"
                   />
                 </Box>
+                {formik.errors.alive && (
+                  <FormHelperText error>
+                    {formik.touched.alive && formik.errors.alive}
+                  </FormHelperText>
+                )}
               </Grid>
               <Grid item xs={12} md={4}>
                 <Select
@@ -694,9 +719,7 @@ const EmployeeModal = ({
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
-              disabled={
-                !formik.isValid || formik.isSubmitting || getPollValidation()
-              }
+              disabled={formik.isSubmitting || getPollValidation()}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} trabajador`}
             </SubmitButton>
