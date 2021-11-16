@@ -1,14 +1,25 @@
 import * as Yup from 'yup'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
-import { Box, Chip, Grid, Typography } from '@material-ui/core'
+import { Box, Chip, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import { Dialog } from '../../Shared'
-import { SubmitButton, TextArea, Button, TextField } from '../../UI'
+import { SubmitButton, TextArea, Button, TextField, InputLabel } from '../../UI'
 import { useSuccess } from '../../../hooks'
 import constructionsActions from '../../../state/actions/constructions'
+import assistanceActions from '../../../state/actions/assistance'
+import { isValidNumber } from '../../../validations'
+
+const useStyles = makeStyles((theme) => ({
+  itemWrapper: {
+    border: `1px solid ${theme.palette.gray.gray500}`,
+    borderRadius: 5,
+    marginBottom: 8,
+    padding: '5px 8px'
+  }
+}))
 
 const validationSchema = Yup.object().shape({
   observations: Yup.string().required('Ingrese observacion'),
@@ -24,8 +35,10 @@ const ReportModal = ({
   successFunction
 }) => {
   const dispatch = useDispatch()
+  const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
-
+  const [reportItems, setReportItems] = useState([])
+  const { isMobile } = useSelector((state) => state.ui)
   const { visit } = useSelector((state) => state.assistance)
   const { contacts } = useSelector((state) => state.constructions)
   const { success, changeSuccess } = useSuccess()
@@ -44,6 +57,11 @@ const ReportModal = ({
         contact_id: item.id,
         contact_names: item.full_name,
         contact_email: item.email
+      }))
+      formData.items = reportItems.map((item) => ({
+        item_id: item.itemId,
+        item_name: item.itemName,
+        value: item.value
       }))
       submitFunction(formData)
         .then(() => {
@@ -82,14 +100,44 @@ const ReportModal = ({
     dispatch(constructionsActions.getContacts(visit.construction_id))
   }
 
+  const handleChangeItem = (e, id) => {
+    setReportItems(
+      reportItems.map((item) =>
+        item.itemId === id
+          ? {
+              ...item,
+              value: isValidNumber(e.target.value)
+            }
+          : item
+      )
+    )
+  }
+
+  const getItemsValidation = () =>
+    reportItems.filter((item) => !item.value).length > 0
+
   useEffect(() => {
     if (open) {
       fetchContacts()
+      dispatch(assistanceActions.getReportItems())
+        .then((items) => {
+          setReportItems(
+            items.map((item) => ({
+              itemId: item.id,
+              itemName: item.name,
+              isComplete: false,
+              value: ''
+            }))
+          )
+        })
+        .catch(() => {
+          setReportItems([])
+        })
     }
   }, [open])
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} fullScreen={isMobile}>
       <Typography align="center" style={{ marginBottom: '15px' }} variant="h6">
         Generar reporte
       </Typography>
@@ -169,6 +217,34 @@ const ReportModal = ({
             }
           />
         </Grid>
+        <Grid item xs={12}>
+          <Box>
+            <InputLabel required>Items</InputLabel>
+          </Box>
+          <Box>
+            <Grid container>
+              {reportItems.map((item, index) => (
+                <Grid key={`report-item-${index}`} item xs={12}>
+                  <Box className={classes.itemWrapper}>
+                    <Grid container alignItems="center">
+                      <Grid item xs={10}>
+                        <Typography>{item.itemName}</Typography>
+                      </Grid>
+                      <Grid item xs={2}>
+                        <TextField
+                          type="number"
+                          value={item.value}
+                          onChange={(e) => handleChangeItem(e, item.itemId)}
+                          error={item.value === 0 || Boolean(!item.value)}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        </Grid>
       </Grid>
       <Box textAlign="center" marginTop="15px">
         <Button onClick={onClose} variant="outlined">
@@ -177,7 +253,7 @@ const ReportModal = ({
         <SubmitButton
           loading={formik.isSubmitting}
           onClick={formik.handleSubmit}
-          disabled={!formik.isValid}
+          disabled={!formik.isValid || getItemsValidation()}
           success={success}
         >{`${
           type === 'UPDATE' ? 'Actualizar' : 'Agregar'

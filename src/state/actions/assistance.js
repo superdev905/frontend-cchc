@@ -113,6 +113,18 @@ const updateVisitReport = (idVisit, values) => () =>
       })
   })
 
+const getReportItems = () => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.assistance}/visits-report-items`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const updateEvent = (id, values) => () =>
   new Promise((resolve, reject) => {
     Axios.put(`${config.services.assistance}/visits/${id}`, values)
@@ -128,6 +140,21 @@ const updateEvent = (id, values) => () =>
 const patchEvent = (idEvent, values) => () =>
   new Promise((resolve, reject) => {
     Axios.patch(`${config.services.assistance}/visits/${idEvent}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const setWorkersQuantity = (idVisit, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.assistance}/visits/${idVisit}/workers`,
+      values
+    )
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -156,6 +183,17 @@ const getVisitsToClose = (query) => () =>
         config.services.assistance
       }/visits/request-close?${queryString.stringify(query)}`
     )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+const closeVisit = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.assistance}/visits/${id}/close`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -388,8 +426,10 @@ export default {
   updateEvent,
   deleteEvent,
   patchEvent,
+  setWorkersQuantity,
   requestVisitClose,
   getVisitsToClose,
+  closeVisit,
   getEvents,
   getEventDetails,
   createConstructionAttention,
@@ -405,6 +445,7 @@ export default {
   createVisitReport,
   exportVisits,
   updateVisitReport,
+  getReportItems,
   exportEmployeesToAttend,
   getAttendedEmployeeByBusiness
 }

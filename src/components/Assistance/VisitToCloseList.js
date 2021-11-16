@@ -12,7 +12,7 @@ import { useMenu, useToggle } from '../../hooks'
 import { ActionsTable, Button, SearchInput, Wrapper } from '../UI'
 import { DataTable, OptionsMenu } from '../Shared'
 import VisitStatusChip from './VisitStatusChip'
-import { VisitDetailsDialog } from '../Visit'
+import { VisitCloseDialog } from '../Visit'
 
 const List = () => {
   const dispatch = useDispatch()
@@ -29,10 +29,10 @@ const List = () => {
     user_id: user?.id
   })
   const { open, anchorEl, handleClose, handleOpen } = useMenu()
-  const { open: openDetails, toggleOpen: toggleOpenDetails } = useToggle()
+  const { open: openVisitClose, toggleOpen: toggleOpenVisitClose } = useToggle()
 
-  const launchCalendar = () => {
-    history.push('/calendar')
+  const redirectToVisits = () => {
+    history.push('/visits')
   }
 
   const fetchList = () => {
@@ -77,8 +77,7 @@ const List = () => {
             </Grid>
             <Grid item xs={12} md={7}>
               <Box display="flex" justifyContent="flex-end">
-                <Button onClick={launchCalendar}>Visitas por cerrar</Button>
-                <Button onClick={launchCalendar}>Ver calendario</Button>
+                <Button onClick={redirectToVisits}>Ver visitas</Button>
               </Box>
             </Grid>
           </Grid>
@@ -87,7 +86,7 @@ const List = () => {
             emptyMessage={
               filters.search
                 ? `No se encontraron resultados para: ${filters.search}`
-                : 'No hay visitas registradas'
+                : 'No hay visitas por cerrar'
             }
             data={tableData}
             progressPending={loading}
@@ -142,6 +141,12 @@ const List = () => {
               }
             ]}
             pagination
+            highlightOnHover
+            pointerOnHover
+            onRowClicked={(row) => {
+              setCurrentVisit(row)
+              toggleOpenVisitClose()
+            }}
             paginationServer={true}
             paginationRowsPerPageOptions={[30, 40]}
             paginationPerPage={filters.size}
@@ -155,7 +160,7 @@ const List = () => {
           />
         </Wrapper>
 
-        {open && (
+        {open && currentVisit && (
           <OptionsMenu
             open={open}
             anchorEl={anchorEl}
@@ -166,22 +171,25 @@ const List = () => {
                 label: 'Aprobar cierre',
                 onClick: () => {
                   handleClose()
-                  toggleOpenDetails()
+                  toggleOpenVisitClose()
                 }
               },
               {
                 icon: MoreIcon,
-                label: 'Ver en página completa',
-                onClick: () => {}
+                label: 'Ver detalles de visita',
+                onClick: () => {
+                  history.push(`/visit/${currentVisit.id}`)
+                }
               }
             ]}
           />
         )}
-        {openDetails && currentVisit && (
-          <VisitDetailsDialog
+        {openVisitClose && currentVisit && (
+          <VisitCloseDialog
             visitId={currentVisit.id}
-            open={openDetails}
-            onClose={toggleOpenDetails}
+            open={openVisitClose}
+            onClose={toggleOpenVisitClose}
+            successFunction={fetchList}
           />
         )}
       </Box>

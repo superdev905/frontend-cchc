@@ -22,7 +22,7 @@ const AttendModalList = () => {
   const { success, changeSuccess } = useSuccess()
   const { idVisit } = useParams()
 
-  const { assistanceConstructionList, showModal } = useSelector(
+  const { assistanceConstructionList, showModal, visit } = useSelector(
     (state) => state.assistance
   )
   const { user } = useSelector((state) => state.auth)
@@ -105,9 +105,11 @@ const AttendModalList = () => {
             <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>
               Atenciones en obra
             </Typography>
-            <Button startIcon={<AddIcon />} onClick={addButtonClick}>
-              Agregar
-            </Button>
+            {visit && !visit.is_close && (
+              <Button startIcon={<AddIcon />} onClick={addButtonClick}>
+                Agregar
+              </Button>
+            )}
           </Box>
           <DataTable
             background

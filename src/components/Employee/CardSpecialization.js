@@ -25,7 +25,6 @@ const useStyles = makeStyles(() => ({
 }))
 
 const CardSpec = ({ data, onEdit, onDelete }) => {
-  console.log(data)
   const classes = useStyles()
   const { open, anchorEl, handleOpen, handleClose } = useMenu()
   return (
