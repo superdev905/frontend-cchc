@@ -110,7 +110,7 @@ const MapModal = ({
           construction={construction}
           submitFunction={updateConstruction}
           successMessage="Obra actualizada exitosamente"
-          successFunction={fetchConstructions}
+          successFunction={fetchConstruction}
           success={success}
         />
       )}
