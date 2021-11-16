@@ -9,11 +9,10 @@ import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { endOfWeek } from 'date-fns'
 import startOfWeek from 'date-fns/startOfWeek'
-import commonActions from '../../state/actions/common'
 import assistanceActions from '../../state/actions/assistance'
-import { LabeledRow, StatusChip, Text, Wrapper, Button, DataCard } from '../UI'
 import { formatDate, formatHours } from '../../formatters'
 import { useSuccess, useToggle } from '../../hooks'
+import { LabeledRow, StatusChip, Text, Wrapper, Button, DataCard } from '../UI'
 import ReportModal from './Report/ReportModal'
 import { ConfirmDelete, FileVisor } from '../Shared'
 import MapModal from '../Constructions/MapModal'
@@ -44,7 +43,6 @@ const Details = ({ fetching, fetchDetails }) => {
   const { visit } = useSelector((state) => state.assistance)
   const [loading, setLoading] = useState(false)
   const [currentDate] = useState(new Date())
-  const [shiftDetails, setShiftDetails] = useState(null)
   const { open: openReport, toggleOpen: toggleOpenReport } = useToggle()
   const { open: openViewReport, toggleOpen: toggleOpenViewReport } = useToggle()
   const { open: openEditReport, toggleOpen: toggleOpenEditReport } = useToggle()
@@ -176,16 +174,6 @@ const Details = ({ fetching, fetchDetails }) => {
     dispatch(assistanceActions.setWorkersQuantity(visit.id, values))
 
   useEffect(() => {
-    if (visit) {
-      setLoading(true)
-      dispatch(commonActions.getShiftDetails(visit.shift_id)).then((result) => {
-        setShiftDetails(result)
-        setLoading(false)
-      })
-    }
-  }, [visit])
-
-  useEffect(() => {
     fetchEvents(filters)
   }, [filters])
 
@@ -293,7 +281,7 @@ const Details = ({ fetching, fetchDetails }) => {
               </Text>
             </LabeledRow>
             <LabeledRow label="Jornada:">
-              <Text loading={loading || fetching}>{shiftDetails?.name} </Text>
+              <Text loading={loading || fetching}>{visit?.shift?.name} </Text>
             </LabeledRow>
             <LabeledRow label="Estado:">
               <Text loaderWidth="80%" loading={fetching}>

@@ -44,7 +44,8 @@ const PollCreate = ({
       modules:
         type === 'UPDATE' ? data.modules.map((item) => item.module_name) : [],
       status: type === 'UPDATE' ? data.status : '',
-      is_mandatory: type === 'UPDATE' ? data.is_mandatory : ''
+      is_mandatory:
+        type === 'UPDATE' ? `${data.is_mandatory ? 'SI' : 'NO'}` : ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction({
@@ -187,7 +188,7 @@ const PollCreate = ({
               >
                 <option value="">Seleccione una opción</option>
                 {decisionList.map((item, i) => (
-                  <option key={`social-option-${i}`} value={item}>
+                  <option key={`mandatory-option-${i}`} value={item}>
                     {item}
                   </option>
                 ))}
