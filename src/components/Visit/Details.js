@@ -11,13 +11,11 @@ import { endOfWeek } from 'date-fns'
 import startOfWeek from 'date-fns/startOfWeek'
 import commonActions from '../../state/actions/common'
 import assistanceActions from '../../state/actions/assistance'
-import usersActions from '../../state/actions/users'
 import { LabeledRow, StatusChip, Text, Wrapper, Button, DataCard } from '../UI'
 import { formatDate, formatHours } from '../../formatters'
 import { useSuccess, useToggle } from '../../hooks'
 import ReportModal from './Report/ReportModal'
 import { ConfirmDelete, FileVisor } from '../Shared'
-import constructionsActions from '../../state/actions/constructions'
 import MapModal from '../Constructions/MapModal'
 import WorkerDialog from './WorkerDialog'
 
@@ -47,8 +45,6 @@ const Details = ({ fetching, fetchDetails }) => {
   const [loading, setLoading] = useState(false)
   const [currentDate] = useState(new Date())
   const [shiftDetails, setShiftDetails] = useState(null)
-  const [consDetails, setConsDetails] = useState(null)
-  const [userDetails, setUserDetails] = useState(null)
   const { open: openReport, toggleOpen: toggleOpenReport } = useToggle()
   const { open: openViewReport, toggleOpen: toggleOpenViewReport } = useToggle()
   const { open: openEditReport, toggleOpen: toggleOpenEditReport } = useToggle()
@@ -186,31 +182,8 @@ const Details = ({ fetching, fetchDetails }) => {
         setShiftDetails(result)
         setLoading(false)
       })
-      dispatch(usersActions.getUserDetails(visit.assigned_id)).then(
-        (result) => {
-          setLoading(false)
-          setUserDetails(result)
-        }
-      )
-      dispatch(
-        constructionsActions.getConstruction(visit.construction_id)
-      ).then((result) => {
-        setConsDetails(result)
-        setLoading(false)
-      })
     }
   }, [visit])
-
-  useEffect(() => {
-    if (openView) {
-      dispatch(
-        constructionsActions.getConstruction(visit.construction_id)
-      ).then((result) => {
-        setConsDetails(result)
-        setLoading(false)
-      })
-    }
-  }, [openView])
 
   useEffect(() => {
     fetchEvents(filters)
@@ -358,13 +331,13 @@ const Details = ({ fetching, fetchDetails }) => {
             </LabeledRow>{' '}
             <LabeledRow label="Profesional:">
               <Text loading={loading || fetching}>
-                {userDetails
-                  ? `${userDetails?.names} ${userDetails?.paternal_surname} ${userDetails?.maternal_surname}`
-                  : ''}
+                {`${visit?.assigned?.names} ${visit?.assigned?.paternal_surname} ${visit?.assigned?.maternal_surname}`}
               </Text>
             </LabeledRow>
             <LabeledRow label="Dirección:">
-              <Text loading={loading || fetching}>{consDetails?.address} </Text>
+              <Text loading={loading || fetching}>
+                {visit?.construction?.address}{' '}
+              </Text>
               <Button size="small" onClick={toggleOpenView}>
                 Ver Ubicación
               </Button>
