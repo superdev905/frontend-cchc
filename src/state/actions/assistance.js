@@ -149,6 +149,21 @@ const patchEvent = (idEvent, values) => () =>
       })
   })
 
+const setWorkersQuantity = (idVisit, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.assistance}/visits/${idVisit}/workers`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const requestVisitClose = (idVisit) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.assistance}/visits/${idVisit}/request-close`)
@@ -411,6 +426,7 @@ export default {
   updateEvent,
   deleteEvent,
   patchEvent,
+  setWorkersQuantity,
   requestVisitClose,
   getVisitsToClose,
   closeVisit,
