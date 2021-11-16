@@ -121,14 +121,30 @@ const ReportModal = ({
       fetchContacts()
       dispatch(assistanceActions.getReportItems())
         .then((items) => {
-          setReportItems(
-            items.map((item) => ({
-              itemId: item.id,
-              itemName: item.name,
-              isComplete: false,
-              value: ''
-            }))
-          )
+          if (type === 'UPDATE') {
+            const list = []
+            data.items.forEach((reportItem) => {
+              const currentItem = items.find(
+                (value) => value.id === reportItem.item_id
+              )
+              list.push({
+                itemId: currentItem.id,
+                itemName: currentItem.name,
+                isComplete: false,
+                value: reportItem.value
+              })
+            })
+            setReportItems(list)
+          } else {
+            setReportItems(
+              items.map((item) => ({
+                itemId: item.id,
+                itemName: item.name,
+                isComplete: false,
+                value: ''
+              }))
+            )
+          }
         })
         .catch(() => {
           setReportItems([])

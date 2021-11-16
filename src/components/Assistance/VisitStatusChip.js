@@ -33,7 +33,7 @@ const VisitStatusChip = ({ visit }) => {
 
   return (
     <Box className={clsx(classes.root, getStatusClassName(visit.status))}>
-      {`${visit.status.charAt(0)}${visit.status.slice(1).toLowerCase()}`}
+      {`${visit?.status.charAt(0)}${visit?.status.slice(1).toLowerCase()}`}
     </Box>
   )
 }

@@ -196,7 +196,8 @@ const Details = ({ fetching, fetchDetails }) => {
           disabled={
             visit?.status === 'CANCELADA' ||
             visit?.status === 'TERMINADA' ||
-            visit?.status === 'INICIADA'
+            visit?.status === 'INICIADA' ||
+            visit?.is_close
           }
         >
           Iniciar visita
@@ -204,7 +205,7 @@ const Details = ({ fetching, fetchDetails }) => {
         {visit && visit.report ? (
           <Box>
             <Button
-              disabled={visit?.status === 'TERMINADA'}
+              disabled={visit?.status === 'TERMINADA' || visit?.is_close}
               onClick={toggleOpenEditReport}
             >
               Actualizar reporte
@@ -212,19 +213,27 @@ const Details = ({ fetching, fetchDetails }) => {
             <Button onClick={toggleOpenViewReport}>Ver documento</Button>
           </Box>
         ) : (
-          <Button disabled={Boolean(visit?.report)} onClick={toggleOpenReport}>
+          <Button
+            disabled={Boolean(visit?.report) || visit?.is_close}
+            onClick={toggleOpenReport}
+          >
             Informar
           </Button>
         )}
         <Button
           onClick={toggleOpenFinish}
-          disabled={Boolean(visit?.status !== 'INICIADA')}
+          disabled={Boolean(visit?.status !== 'INICIADA') || visit?.is_close}
         >
           Completar visita
         </Button>
         <Button
           onClick={toggleOpenVisitClose}
-          disabled={visit?.status === 'CANCELADA' || visit?.is_close_pending}
+          disabled={
+            visit?.status === 'CANCELADA' ||
+            visit?.is_close_pending ||
+            visit?.is_close ||
+            visit?.is_close_pending
+          }
         >
           Solicitar cierre
         </Button>
@@ -232,7 +241,9 @@ const Details = ({ fetching, fetchDetails }) => {
           danger
           onClick={toggleOpenCancel}
           disabled={
-            visit?.status === 'CANCELADA' || visit?.status === 'TERMINADA'
+            visit?.status === 'CANCELADA' ||
+            visit?.status === 'TERMINADA' ||
+            visit?.is_close
           }
         >
           Cancelar
@@ -266,6 +277,13 @@ const Details = ({ fetching, fetchDetails }) => {
           {`Detalles de ${visit?.type_id === 1 ? ' Visita' : ' Tarea'}`}
         </Typography>
         <Grid container spacing={2}>
+          {visit?.is_close && (
+            <Grid item xs={12}>
+              <Box>
+                <Alert severity="error">Esta visita fue cerrada</Alert>
+              </Box>
+            </Grid>
+          )}
           <Grid item xs={12} md={6}>
             <LabeledRow label="Título:">
               <Text loading={fetching}>{visit?.title}</Text>
@@ -350,7 +368,11 @@ const Details = ({ fetching, fetchDetails }) => {
               >
                 Trabajadores
               </Typography>
-              <Button size="small" onClick={toggleOpenWorkerDialog}>
+              <Button
+                size="small"
+                disabled={visit?.is_close}
+                onClick={toggleOpenWorkerDialog}
+              >
                 Actualizar
               </Button>
             </Box>
@@ -483,6 +505,7 @@ const Details = ({ fetching, fetchDetails }) => {
           open={openView}
           onClose={toggleOpenView}
           successFunction={fetchDetails}
+          constructionId={visit?.construction_id}
         />
       )}
     </Wrapper>

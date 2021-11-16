@@ -41,14 +41,13 @@ const backgroundStyles = {
       width: '100%',
       fontSize: '14px',
       color: '#334D6E',
-      backgroundColor: '#E5F6FF',
+      backgroundColor: '#F7FAFC',
       fontWeight: 'bold'
     }
   },
   rows: {
     style: {
-      fontSize: '15px',
-      backgroundColor: '#E2E8F0'
+      fontSize: '15px'
     }
   }
 }
@@ -67,6 +66,7 @@ const borderedStyles = {
       width: '100%',
       fontSize: '14px',
       color: '#334D6E',
+      backgroundColor: '#EDF2F7',
       fontWeight: 'bold',
       '&:not(:last-of-type)': {
         borderRightStyle: 'solid',
@@ -86,8 +86,7 @@ const borderedStyles = {
   },
   rows: {
     style: {
-      fontSize: '15px',
-      backgroundColor: '#E2E8F0'
+      fontSize: '15px'
     }
   }
 }
