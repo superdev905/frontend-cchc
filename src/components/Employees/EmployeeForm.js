@@ -50,10 +50,8 @@ const useStyles = makeStyles(() => ({
 
 const disabilitySchema = Yup.object().shape({
   credential_disability: Yup.string().required('Seleccione opción'),
-  disability_type: Yup.string().required('Seleccione tipo'),
-  disability_percentage: Yup.string().required(
-    'Seleccione porcentaje de discapacidad'
-  )
+  disability_type: Yup.string(),
+  disability_percentage: Yup.string()
 })
 
 const validationSchema = Yup.object().shape({
@@ -481,7 +479,6 @@ const EmployeeModal = ({
                 <TextField
                   label="Discapacidad %"
                   name="disability_percentage"
-                  required
                   value={formik.values.disability_percentage}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}

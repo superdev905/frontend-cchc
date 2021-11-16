@@ -7,6 +7,8 @@ import { ActionsTable, Wrapper } from '../UI'
 import { DataTable } from '../Shared'
 import useStyles from './styles'
 import { formatDate } from '../../formatters'
+import { useToggle } from '../../hooks'
+import { AssistanceDetailsModal } from '../Assistance'
 
 const AttendedEmployees = () => {
   const classes = useStyles()
@@ -15,7 +17,9 @@ const AttendedEmployees = () => {
   const [totalItems, setTotalItems] = useState(0)
   const [filters, setFilters] = useState({ page: 1, size: 30 })
   const [tableData, setTableData] = useState([])
+  const [assistanceId, setAssistanceId] = useState('')
   const [loading, setLoading] = useState(false)
+  const { open, toggleOpen } = useToggle()
 
   useEffect(() => {
     setLoading(true)
@@ -84,7 +88,15 @@ const AttendedEmployees = () => {
               {
                 name: '',
                 right: true,
-                cell: (row) => <ActionsTable {...row} />
+                cell: (row) => (
+                  <ActionsTable
+                    {...row}
+                    onView={() => {
+                      setAssistanceId(row.id)
+                      toggleOpen()
+                    }}
+                  />
+                )
               }
             ]}
             data={tableData}
@@ -101,6 +113,13 @@ const AttendedEmployees = () => {
             paginationTotalRows={totalItems}
           />
         </Box>
+        {open && assistanceId && (
+          <AssistanceDetailsModal
+            open={open}
+            onClose={toggleOpen}
+            assistanceId={assistanceId}
+          />
+        )}
       </Wrapper>
     </Box>
   )
