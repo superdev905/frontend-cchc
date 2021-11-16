@@ -307,7 +307,7 @@ const StepOne = ({ onClose, data }) => {
               required
               onChange={formik.handleChange}
             >
-              <option value="">Seleccione tipo de beca</option>
+              <option value="">SELECCIONE BECA</option>
               {scholarshipType.map((item) => (
                 <option value={item.id}>{item.name}</option>
               ))}
@@ -494,7 +494,7 @@ const StepOne = ({ onClose, data }) => {
                     required
                     onChange={formik.handleChange}
                   >
-                    <option value="">Seleccione carrera</option>
+                    <option value="">SELECCIONE CARRERA</option>
                     {careers.map((item) => (
                       <option value={item.id}>{item.name}</option>
                     ))}

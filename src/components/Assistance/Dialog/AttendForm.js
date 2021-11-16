@@ -107,7 +107,7 @@ const WorkerInterventionRecord = ({ employee, type, visitShift, formik }) => {
                 formik.touched.attention_place && formik.errors.attention_place
               }
             >
-              <option value="">Seleccione Lugar</option>
+              <option value="">SELECCIONE LUGAR </option>
               {attentionPlaces.map((item, i) => (
                 <option key={`plce-${i}-${item}`} value={item}>
                   {item}
@@ -131,7 +131,7 @@ const WorkerInterventionRecord = ({ employee, type, visitShift, formik }) => {
                 formik.touched.contact_method && formik.errors.contact_method
               }
             >
-              <option value="">Seleccione opción</option>
+              <option value="">SELECCIONE OPCIÓN </option>
               {[
                 'PRESENCIAL',
                 'TELEFÓNICO',
@@ -198,7 +198,7 @@ const WorkerInterventionRecord = ({ employee, type, visitShift, formik }) => {
                 formik.touched.management_id && formik.errors.management_id
               }
             >
-              <option value="">Seleccione gestion</option>
+              <option value="">SELECCIONE GESTIÓN</option>
               {managementList.map((item, i) => (
                 <option key={`management-${i}-${item.id}`} value={item.id}>
                   {item.name}
@@ -217,7 +217,7 @@ const WorkerInterventionRecord = ({ employee, type, visitShift, formik }) => {
               error={formik.touched.status && Boolean(formik.errors.status)}
               helperText={formik.touched.status && formik.errors.status}
             >
-              <option value="">Seleccione estado</option>
+              <option value="">SELECCIONE ESTADO</option>
               {AttentionStatus.map((item, i) => (
                 <option key={`status-${i}-${item}`} value={`${item.name}`}>
                   {`${item.short}: ${item.name}`}
@@ -341,7 +341,7 @@ const WorkerInterventionRecord = ({ employee, type, visitShift, formik }) => {
                 error={formik.touched.case_id && Boolean(formik.errors.case_id)}
                 helperText={formik.touched.case_id && formik.errors.case_id}
               >
-                <option value="">Seleccione caso</option>
+                <option value="">SELECCIONE CASO </option>
                 {[
                   { index: 1, name: 'CASO 1' },
                   { index: 2, name: 'CASO 2' }
@@ -363,7 +363,7 @@ const WorkerInterventionRecord = ({ employee, type, visitShift, formik }) => {
                 error={formik.touched.task_id && Boolean(formik.errors.task_id)}
                 helperText={formik.touched.task_id && formik.errors.task_id}
               >
-                <option value="">Seleccione plan de intervención</option>
+                <option value="">SELECCIONE PLAN DE INTERVENCIÓN</option>
                 {[
                   { index: 1, name: 'Plan de Intervención 1' },
                   { index: 2, name: 'Plan de Intervención 2' }

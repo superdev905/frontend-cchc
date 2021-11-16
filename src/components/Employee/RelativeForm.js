@@ -254,7 +254,7 @@ const EmployeeModal = ({
                   }
                 }}
               >
-                <option value="">Seleccione estado civil</option>
+                <option value="">SELECCIONE GENERO</option>
                 {genderList.map((item, i) => (
                   <option key={`gender-${i}-${item.key}`} value={item.key}>
                     {item.name}
@@ -284,7 +284,7 @@ const EmployeeModal = ({
                   }
                 }}
               >
-                <option value="">Seleccione estado civil</option>
+                <option value="">SELECCIONE ESTADO CIVIL</option>
                 {maritalStatus.map((item, i) => (
                   <option
                     key={`marital-status-${i}-${item.id}`}
@@ -316,7 +316,7 @@ const EmployeeModal = ({
                   }
                 }}
               >
-                <option value="">Seleccione escolaridad</option>
+                <option value="">SELECCIONE ESCOLARIDAD</option>
                 {scholarshipList.map((item, i) => (
                   <option key={`scholarship-${i}-${item.id}`} value={item.id}>
                     {item.description}
@@ -345,7 +345,7 @@ const EmployeeModal = ({
                   }
                 }}
               >
-                <option value="">Seleccione nacionalidad</option>
+                <option value="">SELECCIONE NACIONALIDAD</option>
                 {nationalities.map((item, i) => (
                   <option key={`natinality-${i}-${item.id}`} value={item.id}>
                     {item.description}
@@ -375,7 +375,7 @@ const EmployeeModal = ({
                   }
                 }}
               >
-                <option value="">Seleccione parentesco</option>
+                <option value="">SELECCIONE PARENTESCO</option>
                 {relationshipList.map((item, i) => (
                   <option key={`relationship-${i}-${item.id}`} value={item.id}>
                     {item.description}
@@ -399,7 +399,7 @@ const EmployeeModal = ({
                   }
                 }}
               >
-                <option value="">Seleccione opción</option>
+                <option value="">SELECCIONE OCUPACIÓN </option>
                 {activities.map((item, i) => (
                   <option key={`relationship-${i}-${item.id}`} value={item.id}>
                     {item.description}
@@ -428,7 +428,7 @@ const EmployeeModal = ({
                   }
                 }}
               >
-                <option value="">Seleccione opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {decisionList.map((item, i) => (
                   <option key={`alive-${i}-${item}`} value={item}>
                     {item}
@@ -451,7 +451,7 @@ const EmployeeModal = ({
                   }
                 }}
               >
-                <option value="">Seleccione rsh</option>
+                <option value="">SELECCIONE RSH</option>
                 {decisionList.map((item, i) => (
                   <option key={`rsh-item-${i}-${item}`} value={item}>
                     {item}
@@ -481,7 +481,7 @@ const EmployeeModal = ({
                   }
                 }}
               >
-                <option value="">Sin RSH %</option>
+                <option value="">SIN RSH %</option>
                 {rshList.map((item, i) => (
                   <option
                     key={`rsh-percentage-item-${i}-${item.id}`}
@@ -513,7 +513,7 @@ const EmployeeModal = ({
                   }
                 }}
               >
-                <option value="">Seleccione estado</option>
+                <option value="">SELECCIONE ESTADO</option>
                 {statusList.map((item, i) => (
                   <option key={`rsh_status-item-${i}-${item}`} value={item}>
                     {item}
@@ -544,7 +544,7 @@ const EmployeeModal = ({
                   }
                 }}
               >
-                <option value="">Seleccione opcion</option>
+                <option value="">SELECCIONE OPCION</option>
                 {decisionList.map((item) => (
                   <option value={item}>{item}</option>
                 ))}

@@ -163,7 +163,7 @@ const PollCreate = ({
                 error={formik.touched.status && Boolean(formik.errors.status)}
                 helperText={formik.touched.status && formik.errors.status}
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {statusList.map((item, index) => (
                   <option key={`status--${index}`} value={`${item.key}`}>
                     {item.name}
@@ -186,7 +186,7 @@ const PollCreate = ({
                   formik.touched.is_mandatory && formik.errors.is_mandatory
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {decisionList.map((item, i) => (
                   <option key={`mandatory-option-${i}`} value={item}>
                     {item}

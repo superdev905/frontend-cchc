@@ -306,7 +306,7 @@ const ConstructionModal = ({
                   Boolean(formik.errors.typology_id)
                 }
               >
-                <option value="">Sin tipología</option>
+                <option value="">SIN TIPOLOGÍA</option>
                 {typologies.map((item, index) => (
                   <option key={`region--${index}`} value={`${item.id}`}>
                     {item.name}
@@ -330,7 +330,7 @@ const ConstructionModal = ({
                   Boolean(formik.errors.economic_sector_id)
                 }
               >
-                <option value="">Seleccione sector</option>
+                <option value="">SELECCIONE SECTOR</option>
                 {sectors.map((item, index) => (
                   <option key={`region--${index}`} value={`${item.id}`}>
                     {item.name}
@@ -348,7 +348,7 @@ const ConstructionModal = ({
                 helperText={formik.touched.status && formik.errors.status}
                 error={formik.touched.status && Boolean(formik.errors.status)}
               >
-                <option value="">Seleccione estado</option>
+                <option value="">SELECCIONE ESTADO </option>
                 {[
                   { key: 'VIGENTE', name: 'VIGENTE' },
                   { key: 'NO_VIGENTE', name: 'NO VIGENTE' }

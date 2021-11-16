@@ -322,7 +322,7 @@ const WorkerInterventionRecord = ({
                   formik.errors.attention_place
                 }
               >
-                <option value="">Seleccione Lugar</option>
+                <option value="">SELECCIONE LUGAR</option>
                 {attentionPlaces.map((item, i) => (
                   <option key={`plce-${i}-${item}`} value={item}>
                     {item}
@@ -346,7 +346,7 @@ const WorkerInterventionRecord = ({
                   formik.touched.contact_method && formik.errors.contact_method
                 }
               >
-                <option value="">Seleccione opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {[
                   'PRESENCIAL',
                   'TELEFÓNICO',
@@ -370,7 +370,7 @@ const WorkerInterventionRecord = ({
                 error={formik.touched.area_id && Boolean(formik.errors.area_id)}
                 helperText={formik.touched.area_id && formik.errors.area_id}
               >
-                <option value={`INVALID`}>Seleccione area</option>
+                <option value={`INVALID`}>SELECCIONE ÁREA </option>
                 {areas.map((item, index) => (
                   <option key={`area--${index}`} value={`${item.id}`}>
                     {item.name}
@@ -391,7 +391,7 @@ const WorkerInterventionRecord = ({
                 }
                 helperText={formik.touched.topic_id && formik.errors.topic_id}
               >
-                <option value={`INVALID`}>Seleccione tema</option>
+                <option value={`INVALID`}>SELECCIONE TEMA</option>
                 {topics.map((item, index) => (
                   <option key={`area--${index}`} value={`${item.id}`}>
                     {item.name}
@@ -415,7 +415,7 @@ const WorkerInterventionRecord = ({
                   formik.touched.management_id && formik.errors.management_id
                 }
               >
-                <option value="">Seleccione gestion</option>
+                <option value="">SELECCIONE GESTIÓN </option>
                 {managementList.map((item, i) => (
                   <option key={`management-${i}-${item.id}`} value={item.id}>
                     {item.name}
@@ -434,7 +434,7 @@ const WorkerInterventionRecord = ({
                 error={formik.touched.status && Boolean(formik.errors.status)}
                 helperText={formik.touched.status && formik.errors.status}
               >
-                <option value="">Seleccione estado</option>
+                <option value="">SELECCIONE ESTADO</option>
                 {AttentionStatus.map((item, i) => (
                   <option key={`status-${i}-${item}`} value={`${item.name}`}>
                     {`${item.short}: ${item.name}`}
@@ -582,7 +582,7 @@ const WorkerInterventionRecord = ({
                   }
                   helperText={formik.touched.case_id && formik.errors.case_id}
                 >
-                  <option value="">Seleccione caso</option>
+                  <option value="">SELECCIONE CASO</option>
                   {[
                     { index: 1, name: 'CASO 1' },
                     { index: 2, name: 'CASO 2' }
@@ -606,7 +606,7 @@ const WorkerInterventionRecord = ({
                   }
                   helperText={formik.touched.task_id && formik.errors.task_id}
                 >
-                  <option value="">Seleccione plan de intervención</option>
+                  <option value="">SELECCIONE PLAN DE INTERVRNCIÓN</option>
                   {[
                     { index: 1, name: 'Plan de Intervención 1' },
                     { index: 2, name: 'Plan de Intervención 2' }

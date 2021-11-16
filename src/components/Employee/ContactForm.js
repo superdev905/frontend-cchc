@@ -226,7 +226,7 @@ const EmployeeModal = ({
                       formik.touched.region_id && formik.errors.region_id
                     }
                   >
-                    <option value="">Seleccione una región</option>
+                    <option value="">SELECCIONE REGIÓN </option>
                     {regions.map((item, index) => (
                       <option key={`region--${index}`} value={`${item.id}`}>
                         {`${item.name}`}
@@ -249,7 +249,7 @@ const EmployeeModal = ({
                       formik.touched.commune_id && formik.errors.commune_id
                     }
                   >
-                    <option value="">Seleccione una comuna</option>
+                    <option value="">SELECCIONE UNA COMUNA</option>
                     {communes.map((item, index) => (
                       <option key={`region--${index}`} value={`${item.id}`}>
                         {item.name}
@@ -349,7 +349,7 @@ const EmployeeModal = ({
                       formik.touched.phone_owner && formik.errors.phone_owner
                     }
                   >
-                    <option value="">Seleccione estado</option>
+                    <option value="">SELECCIONE ESTADO</option>
                     {phoneOwner.map((item) => (
                       <option value={item}>{item}</option>
                     ))}

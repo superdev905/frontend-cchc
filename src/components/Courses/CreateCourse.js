@@ -208,7 +208,7 @@ const CreateCourse = ({
                   Boolean(formik.errors.instructorId)
                 }
               >
-                <option value="">Seleccione relator</option>
+                <option value="">SELECCIONE RELATOR </option>
                 {instructorsList.map((item) => (
                   <option
                     value={item.id}

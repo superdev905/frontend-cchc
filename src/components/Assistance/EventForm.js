@@ -286,7 +286,7 @@ const EventForm = ({
               error={formik.touched.shift_id && Boolean(formik.errors.shift_id)}
               helperText={formik.touched.shift_id && formik.errors.shift_id}
             >
-              <option value="">Seleccione jornada </option>
+              <option value="">SELECCIONE JORNADA </option>
               {shiftList.map((item) => (
                 <option key={`shift-type-${item.id}`} value={item.id}>
                   {item.name}
@@ -348,7 +348,7 @@ const EventForm = ({
               error={formik.touched.type_id && Boolean(formik.errors.type_id)}
               helperText={formik.touched.type_id && formik.errors.type_id}
             >
-              <option value="">Seleccione tipo </option>
+              <option value="">SELECCIONE TIPO</option>
               {eventTypes.map((item) => (
                 <option value={item.id} key={`event-type-${item.id}`}>
                   {item.description}
