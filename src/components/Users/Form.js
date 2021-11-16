@@ -230,7 +230,7 @@ const Form = ({
                 error={formik.touched.role_id && Boolean(formik.errors.role_id)}
                 inputProps={{ readOnly }}
               >
-                <option value="">Sin rol</option>
+                <option value="">SIN ROL</option>
                 {roles.map((item) => (
                   <option value={item.id}>{item.name}</option>
                 ))}
@@ -251,7 +251,7 @@ const Form = ({
                 }
                 inputProps={{ readOnly }}
               >
-                <option value="">Sin cargo</option>
+                <option value="">SIN CARGO</option>
                 {charges.map((item) => (
                   <option value={item.id}>{item.name}</option>
                 ))}

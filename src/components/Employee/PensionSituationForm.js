@@ -113,7 +113,7 @@ const PensionSituation = ({
                   formik.errors.isapre_fonasa_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {IsapreFonasaList.map((item, index) => (
                   <option key={`region--${index}`} value={`${item.id}`}>
                     {`${item.description}`}
@@ -152,7 +152,7 @@ const PensionSituation = ({
                   formik.touched.afp_isp_id && formik.errors.afp_isp_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {AfpIspList.map((item, index) => (
                   <option key={`region--${index}`} value={`${item.id}`}>
                     {item.description}
@@ -175,7 +175,7 @@ const PensionSituation = ({
                   formik.touched.is_pensioner && formik.errors.is_pensioner
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {decisionList.map((item, index) => (
                   <option key={`region--${index}`} value={`${item}`}>
                     {item}
@@ -199,7 +199,7 @@ const PensionSituation = ({
                   formik.errors.belongs_to_recognize
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {decisionList.map((item, index) => (
                   <option key={`region--${index}`} value={`${item}`}>
                     {item}

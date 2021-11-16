@@ -49,7 +49,7 @@ const useStyles = makeStyles(() => ({
 }))
 
 const disabilitySchema = Yup.object().shape({
-  credential_disability: Yup.string().required('Seleccione opción'),
+  credential_disability: Yup.string().required('SELECCIONE OPCIÓN'),
   disability_type: Yup.string().required('Seleccione tipo'),
   disability_percentage: Yup.string().required(
     'Seleccione porcentaje de discapacidad'
@@ -67,16 +67,16 @@ const validationSchema = Yup.object().shape({
   born_date: Yup.date().required('Seleccione fecha de nacimiento').nullable(),
   scholarship_id: Yup.number().required('Seleccione escolaridad'),
   marital_status_id: Yup.number().required('Seleccione estado civil'),
-  disability: Yup.string().required('Seleccione opción'),
+  disability: Yup.string().required('SELECCIONE OPCIÓN'),
   credential_disability: Yup.string(),
-  recognize: Yup.string().required('Seleccione opción'),
+  recognize: Yup.string().required('SELECCIONE OPCIÓN'),
   nationality_id: Yup.number().required('Seleccione nacionalidad'),
-  alive: Yup.string().required('Seleccione opción'),
+  alive: Yup.string().required('SELECCIONE OPCIÓN'),
   //  bank_id: Yup.number('Seleccione banco'),
   account_type: Yup.string('Seleccione tipo de cuenta'),
   account_number: Yup.string('Seleccione número de cuenta'),
-  rsh: Yup.string('Seleccione opción'),
-  rsh_percentage: Yup.string('Seleccione opción'),
+  rsh: Yup.string('SELECCIONE OPCIÓN'),
+  rsh_percentage: Yup.string('SELECCIONE OPCIÓN'),
   comments: Yup.string('Ingrese comentarios')
 })
 
@@ -316,7 +316,7 @@ const EmployeeModal = ({
                   error={formik.touched.gender && Boolean(formik.errors.gender)}
                   helperText={formik.touched.gender && formik.errors.gender}
                 >
-                  <option value="">Seleccione sexo</option>
+                  <option value="">SELECCIONE GENERO </option>
                   {['MASCULINO', 'FEMENINO', 'INDETERMINADO'].map((item, i) => (
                     <option key={`gender-${i}-${item}`} value={item}>
                       {item}
@@ -340,7 +340,7 @@ const EmployeeModal = ({
                     formik.errors.scholarship_id
                   }
                 >
-                  <option value="">Seleccione escolaridad</option>
+                  <option value="">SELECCIONE ESCOLARIDAD</option>
                   {scholarshipList.map((item, i) => (
                     <option key={`scholarship-${i}-${item.id}`} value={item.id}>
                       {item.description}
@@ -364,7 +364,7 @@ const EmployeeModal = ({
                     formik.errors.marital_status_id
                   }
                 >
-                  <option value="">Seleccione estado civil</option>
+                  <option value="">SELECCIONE ESTADO CIVIL</option>
                   {maritalStatus.map((item, i) => (
                     <option
                       key={`marital-status-${i}-${item.id}`}
@@ -391,7 +391,7 @@ const EmployeeModal = ({
                     formik.errors.nationality_id
                   }
                 >
-                  <option value="">Seleccione nacionalidad</option>
+                  <option value="">SELECCIONE NACIONALIDAD </option>
                   {nationalities.map((item, i) => (
                     <option key={`natinality-${i}-${item.id}`} value={item.id}>
                       {item.description}
@@ -418,7 +418,7 @@ const EmployeeModal = ({
                     formik.touched.disability && formik.errors.disability
                   }
                 >
-                  <option value="">Seleccione opción</option>
+                  <option value="">SELECCIONE OPCIÓN</option>
                   {decisionList.map((item, i) => (
                     <option key={`gender-${i}-${item}`} value={item}>
                       {item}
@@ -443,7 +443,7 @@ const EmployeeModal = ({
                   }
                   disabled={formik.values.disability === 'NO'}
                 >
-                  <option value="">Seleccione opción</option>
+                  <option value="">SELECCIONE OPCIÓN</option>
                   {decisionList.map((item, i) => (
                     <option key={`credential-${i}-${item}`} value={item}>
                       {item}
@@ -468,7 +468,7 @@ const EmployeeModal = ({
                   }
                   disabled={formik.values.disability === 'NO'}
                 >
-                  <option value="">Seleccione tipo</option>
+                  <option value="">SELECCIONE TIPO</option>
                   {disabilityType.map((item, i) => (
                     <option key={`credential-${i}-${item}`} value={item}>
                       {item}
@@ -512,7 +512,7 @@ const EmployeeModal = ({
                   }
                   helperText={formik.touched.bank_id && formik.errors.bank_id}
                 >
-                  <option value="">Sin banco</option>
+                  <option value="">SIN BANCO</option>
                   {banks.map((item, i) => (
                     <option key={`gender-${i}-${item}`} value={item.id}>
                       {item.description}
@@ -534,7 +534,7 @@ const EmployeeModal = ({
                     formik.touched.account_type && formik.errors.account_type
                   }
                 >
-                  <option value="">Sin tipo de cuenta</option>
+                  <option value="">SIN TIPO DE CUENTA</option>
                   {['CUENTA CORRIENTE', 'AHORRO', 'VISTA'].map((item, i) => (
                     <option key={`account-type-${i}-${item}`} value={item}>
                       {item}
@@ -567,7 +567,7 @@ const EmployeeModal = ({
                   error={formik.touched.rsh && Boolean(formik.errors.rsh)}
                   helperText={formik.touched.rsh && formik.errors.rsh}
                 >
-                  <option value="">Seleccione opción</option>
+                  <option value="">SELECCIONE OPCIÓN</option>
                   {decisionList.map((item, i) => (
                     <option key={`rsh-item-${i}-${item.id}`} value={item}>
                       {item}
@@ -591,7 +591,7 @@ const EmployeeModal = ({
                     formik.errors.rsh_percentage
                   }
                 >
-                  <option value="">Seleccione opción </option>
+                  <option value="">SELECCIONE OPCIÓN </option>
                   {rshList.map((item, i) => (
                     <option
                       key={`rsh-item-${i}-${item.id}`}
@@ -624,7 +624,7 @@ const EmployeeModal = ({
                     }
                   }}
                 >
-                  <option value="">Seleccione estado</option>
+                  <option value="">SELECCIONE ESTADO</option>
                   {statusList.map((item, i) => (
                     <option key={`rsh_status-item-${i}-${item}`} value={item}>
                       {item}
@@ -687,7 +687,7 @@ const EmployeeModal = ({
                     formik.touched.recognize && formik.errors.recognize
                   }
                 >
-                  <option value="">Seleccione una opción</option>
+                  <option value="">SELECCIONE OPCIÓN</option>
                   {decisionList.map((item, index) => (
                     <option key={`region--${index}`} value={`${item}`}>
                       {item}

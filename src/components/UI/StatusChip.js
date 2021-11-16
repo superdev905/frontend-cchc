@@ -19,11 +19,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const StatusChip = ({ label, success, error }) => {
+const StatusChip = ({ label, success, error, icon }) => {
   const classes = useStyles({ success })
   return (
     <Chip
       label={label}
+      icon={icon}
       className={clsx(
         classes.root,
         error && classes.error,
@@ -35,6 +36,7 @@ const StatusChip = ({ label, success, error }) => {
 
 StatusChip.propTypes = {
   label: PropTypes.string,
+  icon: PropTypes.object,
   error: PropTypes.bool,
   success: PropTypes.bool
 }

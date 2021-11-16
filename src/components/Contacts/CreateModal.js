@@ -192,7 +192,7 @@ const ContactModal = ({
                 }
                 required
               >
-                <option value="">Seleccione cargo</option>
+                <option value="">SELECCIONE CARGO</option>
                 {charges.map((item) => (
                   <option value={item.id}>{item.name}</option>
                 ))}

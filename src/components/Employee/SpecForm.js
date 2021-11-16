@@ -174,7 +174,7 @@ const HousingForm = ({
                   formik.touched.specialty_id && formik.errors.specialty_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {specList.map((item, index) => (
                   <option key={`specialty_id--${index}`} value={`${item.id}`}>
                     {`${item.description}`}
@@ -199,7 +199,7 @@ const HousingForm = ({
                   formik.errors.specialty_detail_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {subSpec.map((item, index) => (
                   <option
                     key={`specialty_detail--${index}`}
@@ -226,7 +226,7 @@ const HousingForm = ({
                   formik.touched.is_self_taught && formik.errors.is_self_taught
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {decisionList.map((item, index) => (
                   <option key={`is_self_taught-${index}`} value={`${item}`}>
                     {`${item}`}
@@ -250,7 +250,7 @@ const HousingForm = ({
                   formik.errors.is_certificated
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {decisionList.map((item, index) => (
                   <option key={`is_certificated-${index}`} value={`${item}`}>
                     {`${item}`}
@@ -275,7 +275,7 @@ const HousingForm = ({
                 }
                 disabled={formik.values.is_certificated !== 'SI'}
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {entities.map((item, index) => (
                   <option key={`entity--${index}`} value={`${item.id}`}>
                     {item.description}

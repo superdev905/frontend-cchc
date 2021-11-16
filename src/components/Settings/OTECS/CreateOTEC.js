@@ -195,7 +195,7 @@ const CreateOTEC = ({
                       formik.touched.regionId && formik.errors.regionId
                     }
                   >
-                    <option value="">Seleccione una región</option>
+                    <option value="">SELECCIONE REGIÓN </option>
                     {regions.map((item, index) => (
                       <option key={`region--${index}`} value={`${item.id}`}>
                         {`${item.name}`}
@@ -218,7 +218,7 @@ const CreateOTEC = ({
                       formik.touched.communeId && formik.errors.communeId
                     }
                   >
-                    <option value="">Seleccione una comuna</option>
+                    <option value="">SELECCIONE COMUNA</option>
                     {communes.map((item, index) => (
                       <option key={`region--${index}`} value={`${item.id}`}>
                         {item.name}
