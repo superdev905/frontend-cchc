@@ -247,6 +247,15 @@ const WorkerInterventionRecord = ({
     }
   }, [open])
 
+  useEffect(() => {
+    if (formik.isSubmitting && !formik.isValid) {
+      enqueueSnackbar('Completa los campos requeridos', {
+        autoHideDuration: 2000,
+        variant: 'info'
+      })
+    }
+  }, [!formik.isValid, formik.isSubmitting])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
       <Box>
@@ -683,11 +692,7 @@ const WorkerInterventionRecord = ({
 
             <SubmitButton
               onClick={toggleOpenConfirm}
-              disabled={
-                !formik.isValid ||
-                formik.isSubmitting ||
-                getActivityValidation()
-              }
+              disabled={formik.isSubmitting || getActivityValidation()}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Registro`}
             </SubmitButton>

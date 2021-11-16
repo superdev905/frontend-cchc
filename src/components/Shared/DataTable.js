@@ -41,13 +41,14 @@ const backgroundStyles = {
       width: '100%',
       fontSize: '14px',
       color: '#334D6E',
-      backgroundColor: '#f0f8ff',
+      backgroundColor: '#E5F6FF',
       fontWeight: 'bold'
     }
   },
   rows: {
     style: {
-      fontSize: '15px'
+      fontSize: '15px',
+      backgroundColor: '#E2E8F0'
     }
   }
 }
@@ -85,7 +86,8 @@ const borderedStyles = {
   },
   rows: {
     style: {
-      fontSize: '15px'
+      fontSize: '15px',
+      backgroundColor: '#E2E8F0'
     }
   }
 }

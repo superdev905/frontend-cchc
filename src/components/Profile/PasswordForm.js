@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { useSuccess } from '../../hooks'
-import { SubmitButton, TextField } from '../UI'
+import { SubmitButton, TextFieldPassword } from '../UI'
 import userActions from '../../state/actions/users'
 
 const useStyles = makeStyles(() => ({
@@ -88,7 +88,7 @@ const PasswordForm = () => {
       )}
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <TextField
+          <TextFieldPassword
             required
             gray
             type="password"
@@ -104,7 +104,7 @@ const PasswordForm = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
+          <TextFieldPassword
             required
             gray
             type="password"
@@ -120,7 +120,7 @@ const PasswordForm = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
+          <TextFieldPassword
             required
             gray
             type="password"

@@ -43,6 +43,15 @@ const TextArea = ({
   ...props
 }) => {
   const classes = useStyles({ fullWidth, error })
+
+  const handleOnChange = (event) => {
+    if (onChange) {
+      const currentEvent = { ...event }
+      currentEvent.target.value = currentEvent.target.value.toUpperCase()
+      onChange(currentEvent)
+    }
+  }
+
   return (
     <Box>
       <InputLabel className={classes.label} required={required}>
@@ -51,9 +60,9 @@ const TextArea = ({
       <TextareaAutosize
         className={classes.textarea}
         rowsMin={rowsMin}
-        onChange={onChange}
+        onChange={handleOnChange}
         onBlur={onBlur}
-        value={value?.toUpperCase()}
+        value={value}
         {...props}
       />
       {error && <FormHelperText error={error}>{helperText}</FormHelperText>}

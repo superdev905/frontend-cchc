@@ -31,6 +31,8 @@ const validationSchema = Yup.object().shape({
   number: Yup.string().required('Ingrese número'),
   block: Yup.string(),
   department: Yup.string(),
+  phone_owner: Yup.string(),
+
   email: Yup.string().email('Ingrese correo válido').required('Ingreso correo'),
 
   mobile_phone: Yup.string().test(
@@ -173,6 +175,16 @@ const EmployeeModal = ({
       })
     }
   }, [formik.touched.email])
+
+  useEffect(() => {
+    if (formik.isSubmitting && !formik.isValid) {
+      enqueueSnackbar('Completa los campos requeridos', {
+        autoHideDuration: 2000,
+        variant: 'info'
+      })
+    }
+  }, [!formik.isValid, formik.isSubmitting])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullScreen={isMobile}>
       <Box>
@@ -326,6 +338,7 @@ const EmployeeModal = ({
                   <Select
                     label="A quien pertenece"
                     name="phone_owner"
+                    required={formik.values.other_phone !== ''}
                     value={formik.values.phone_owner}
                     onChange={formik.handleChange}
                     error={
@@ -468,9 +481,7 @@ const EmployeeModal = ({
             <SubmitButton
               onClick={formik.handleSubmit}
               disabled={
-                !formik.isValid ||
-                formik.isSubmitting ||
-                !getValidValidation(formik.values)
+                formik.isSubmitting || !getValidValidation(formik.values)
               }
               loading={formik.isSubmitting}
               success={success}

@@ -36,6 +36,15 @@ const CustomTextField = ({
   ...props
 }) => {
   const classes = useStyles({ gray, error })
+
+  const handleOnChange = (event) => {
+    if (onChange) {
+      const currentEvent = { ...event }
+      currentEvent.target.value = currentEvent.target.value.toUpperCase()
+      onChange(currentEvent)
+    }
+  }
+
   return (
     <Box>
       <InputLabel htmlFor={id} className={classes.label} required={required}>
@@ -50,9 +59,9 @@ const CustomTextField = ({
         placeholder={placeholder}
         helperText={helperText}
         error={error}
-        onChange={onChange}
+        onChange={handleOnChange}
         onBlur={onBlur}
-        value={value?.toUpperCase()}
+        value={value}
         InputLabelProps={{
           shrink: false
         }}

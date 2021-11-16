@@ -121,6 +121,7 @@ const List = () => {
 
       <DataTable
         bordered
+        background
         emptyMessage="No hay trabajadores atendidos"
         columns={[
           {

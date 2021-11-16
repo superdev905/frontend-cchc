@@ -133,6 +133,15 @@ const ContactModal = ({
     }
   }, [open])
 
+  useEffect(() => {
+    if (formik.isSubmitting && !formik.isValid) {
+      enqueueSnackbar('Completa los campos requeridos', {
+        autoHideDuration: 2000,
+        variant: 'info'
+      })
+    }
+  }, [!formik.isValid, formik.isSubmitting])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullScreen={isMobile}>
       <Box className={classes.form} p={2}>
@@ -252,11 +261,7 @@ const ContactModal = ({
             onClick={formik.handleSubmit}
             success={success}
             loading={formik.isSubmitting}
-            disabled={
-              !formik.isValid ||
-              formik.isSubmitting ||
-              !getValidValidation(formik.values)
-            }
+            disabled={formik.isSubmitting || !getValidValidation(formik.values)}
           >
             {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} contacto`}
           </SubmitButton>
