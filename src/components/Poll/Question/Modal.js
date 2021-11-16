@@ -209,7 +209,7 @@ const QuestionModal = ({
                   formik.errors.question_type_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {questionTypesList.map((item, index) => (
                   <option key={`question_type_id--${index}`} value={item.id}>
                     {item.display_name}

@@ -44,7 +44,8 @@ const PollCreate = ({
       modules:
         type === 'UPDATE' ? data.modules.map((item) => item.module_name) : [],
       status: type === 'UPDATE' ? data.status : '',
-      is_mandatory: type === 'UPDATE' ? data.is_mandatory : ''
+      is_mandatory:
+        type === 'UPDATE' ? `${data.is_mandatory ? 'SI' : 'NO'}` : ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction({
@@ -162,7 +163,7 @@ const PollCreate = ({
                 error={formik.touched.status && Boolean(formik.errors.status)}
                 helperText={formik.touched.status && formik.errors.status}
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {statusList.map((item, index) => (
                   <option key={`status--${index}`} value={`${item.key}`}>
                     {item.name}
@@ -185,9 +186,9 @@ const PollCreate = ({
                   formik.touched.is_mandatory && formik.errors.is_mandatory
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {decisionList.map((item, i) => (
-                  <option key={`social-option-${i}`} value={item}>
+                  <option key={`mandatory-option-${i}`} value={item}>
                     {item}
                   </option>
                 ))}

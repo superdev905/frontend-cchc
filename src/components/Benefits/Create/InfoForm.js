@@ -102,7 +102,7 @@ const BenefitForm = ({ formik, actions }) => {
               helperText={formik.touched.isActive && formik.errors.isActive}
               error={formik.touched.isActive && Boolean(formik.errors.isActive)}
             >
-              <option value="">Seleccione estado</option>
+              <option value="">SELECCIONE ESTADO</option>
               {statusList.map((item) => (
                 <option value={item}>{item}</option>
               ))}

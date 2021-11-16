@@ -152,7 +152,7 @@ const DivisionModal = ({ open, onClose, division, type, ...props }) => {
                   formik.touched.is_partner && Boolean(formik.errors.is_partner)
                 }
               >
-                <option value="">Seleccione opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {decisionList.map((item, i) => (
                   <option key={`option-${i}`} value={item}>
                     {item}

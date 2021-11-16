@@ -134,7 +134,7 @@ const AddressAutocomplete = ({
     <Autocomplete
       id="google-map-demo"
       getOptionLabel={(option) =>
-        typeof option === 'string' ? option : option.description
+        typeof option === 'string' ? option : option.description.toUpperCase()
       }
       filterOptions={(x) => x}
       options={options}

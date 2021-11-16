@@ -114,7 +114,7 @@ const CreateActivity = ({
                   formik.touched.founding && Boolean(formik.errors.founding)
                 }
               >
-                <option value="">Seleccione financiamiento</option>
+                <option value="">SELECCIONE FINANCIAMIENTO</option>
                 {options.map((item) => (
                   <option value={item}>{item}</option>
                 ))}
@@ -204,7 +204,7 @@ const CreateActivity = ({
                   formik.touched.isActive && Boolean(formik.errors.isActive)
                 }
               >
-                <option value="">Seleccione estado</option>
+                <option value="">SELECCIONE ESTADO</option>
                 {statusList.map((item) => (
                   <option value={item}>{item}</option>
                 ))}

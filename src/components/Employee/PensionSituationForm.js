@@ -5,7 +5,7 @@ import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Dialog, CurrencyTextField } from '../Shared'
-import { Button, Select, SubmitButton } from '../UI'
+import { Button, Select, SubmitButton, TextField } from '../UI'
 import commonActions from '../../state/actions/common'
 import { useSuccess } from '../../hooks'
 import { decisionList } from '../../config'
@@ -39,6 +39,7 @@ const PensionSituation = ({
     validationSchema,
     initialValues: {
       isapre_fonasa_id: type === 'UPDATE' ? data.isapre_fonasa_id : '',
+      isapre_fonasa_name: type === 'UPDATE' ? data.isapre_fonasa_name : '',
       afp_isp_id: type === 'UPDATE' ? data.afp_isp_id : '',
       is_pensioner: type === 'UPDATE' ? data.is_pensioner : '',
       belongs_to_recognize: type === 'UPDATE' ? data.belongs_to_recognize : '',
@@ -112,13 +113,30 @@ const PensionSituation = ({
                   formik.errors.isapre_fonasa_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {IsapreFonasaList.map((item, index) => (
                   <option key={`region--${index}`} value={`${item.id}`}>
                     {`${item.description}`}
                   </option>
                 ))}
               </Select>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Nombre isapre / Tramo fonasa"
+                name="isapre_fonasa_name"
+                value={formik.values.isapre_fonasa_name}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.isapre_fonasa_name &&
+                  Boolean(formik.errors.isapre_fonasa_name)
+                }
+                helperText={
+                  formik.touched.isapre_fonasa_name &&
+                  formik.errors.isapre_fonasa_name
+                }
+              />
             </Grid>
             <Grid item xs={12} md={6}>
               <Select
@@ -134,7 +152,7 @@ const PensionSituation = ({
                   formik.touched.afp_isp_id && formik.errors.afp_isp_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {AfpIspList.map((item, index) => (
                   <option key={`region--${index}`} value={`${item.id}`}>
                     {item.description}
@@ -157,7 +175,7 @@ const PensionSituation = ({
                   formik.touched.is_pensioner && formik.errors.is_pensioner
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {decisionList.map((item, index) => (
                   <option key={`region--${index}`} value={`${item}`}>
                     {item}
@@ -181,7 +199,7 @@ const PensionSituation = ({
                   formik.errors.belongs_to_recognize
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {decisionList.map((item, index) => (
                   <option key={`region--${index}`} value={`${item}`}>
                     {item}

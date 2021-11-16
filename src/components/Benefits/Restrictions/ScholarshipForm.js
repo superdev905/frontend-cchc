@@ -117,7 +117,7 @@ const Scholarship = ({
               required
               onChange={formik.handleChange}
             >
-              <option value="">Seleccione carrera</option>
+              <option value="">SELECCIONE CARRERA</option>
               {careers.map((item) => (
                 <option value={item.id}>{item.name}</option>
               ))}
@@ -131,7 +131,7 @@ const Scholarship = ({
               required
               onChange={formik.handleChange}
             >
-              <option value="">Seleccione seguimiento</option>
+              <option value="">SELECCIONE SEGUIMIENTO</option>
               {decisionList.map((item) => (
                 <option value={item}>{capitalize(item)}</option>
               ))}

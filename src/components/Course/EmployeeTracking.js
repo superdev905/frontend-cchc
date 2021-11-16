@@ -201,7 +201,7 @@ const EmployeeTracking = ({
                 formik.touched.billedTarget && formik.errors.billedTarget
               }
             >
-              <option value="">Seleccione opción</option>
+              <option value="">SELECCIONE OPCIÓN</option>
               {billedList.map((item) => (
                 <option value={item}>{capitalize(item)}</option>
               ))}

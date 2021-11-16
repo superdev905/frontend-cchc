@@ -103,7 +103,7 @@ const HousingForm = ({
                   formik.touched.type_home_id && formik.errors.type_home_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {typesHomeList.map((item, index) => (
                   <option key={`type-home--${index}`} value={`${item.id}`}>
                     {`${item.description}`}
@@ -127,7 +127,7 @@ const HousingForm = ({
                   formik.errors.property_home_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {propertyHomeList.map((item, index) => (
                   <option key={`property-home--${index}`} value={`${item.id}`}>
                     {item.description}
@@ -151,7 +151,7 @@ const HousingForm = ({
                   formik.errors.type_subsidy_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {subsidyList.map((item, index) => (
                   <option key={`subsidy--${index}`} value={`${item.id}`}>
                     {item.description}

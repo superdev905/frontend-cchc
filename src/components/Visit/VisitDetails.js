@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { useSelector, useDispatch } from 'react-redux'
 import usersActions from '../../state/actions/users'
 import { LabeledRow, StatusChip, Text, Wrapper } from '../UI'
 import { formatDate, formatHours } from '../../formatters'
 
+const useStyles = makeStyles(() => ({
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10
+  }
+}))
+
 const VisitDetails = ({ fetching }) => {
   const dispatch = useDispatch()
+  const classes = useStyles()
   const { visit } = useSelector((state) => state.assistance)
   const [loading, setLoading] = useState(false)
   const [userDetails, setUserDetails] = useState(null)
@@ -25,13 +34,14 @@ const VisitDetails = ({ fetching }) => {
   return (
     <Wrapper>
       <Box p={1}>
-        <Typography
-          style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}
-        >
-          Detalles de visita
-        </Typography>
+        <Typography className={classes.title}>Detalles de visita</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
+            {visit && (
+              <LabeledRow label="Título:">
+                <Text loading={fetching}>{visit?.title}</Text>
+              </LabeledRow>
+            )}
             <LabeledRow label="Título:">
               <Text loading={fetching}>{visit?.title}</Text>
             </LabeledRow>
@@ -79,6 +89,11 @@ const VisitDetails = ({ fetching }) => {
             </LabeledRow>
           </Grid>
         </Grid>
+      </Box>
+      <Box>
+        <Typography className={classes.title}>
+          Cantidad de trabajadores
+        </Typography>
       </Box>
     </Wrapper>
   )

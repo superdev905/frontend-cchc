@@ -1,5 +1,6 @@
 export { default as ContactList } from './ContactList'
 export { default as VisitDetails } from './Details'
+export { default as VisitCloseDialog } from './CloseDialog'
 export { default as AttendedEmployees } from './AttendedEmployees'
 export { default as AttendEmployees } from './AttendEmployees'
 export { default as VisitStatistics } from './VisitStatistics'

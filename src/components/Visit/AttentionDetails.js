@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import AttachFileIcon from '@material-ui/icons/AttachFile'
 import { Box, Typography } from '@material-ui/core'
 import assistanceActions from '../../state/actions/assistance'
 import { ActionsTable, Wrapper } from '../UI'
-import { DataTable, FileVisor } from '../Shared'
+import { DataTable } from '../Shared'
 import { formatDate } from '../../formatters'
 import { useToggle } from '../../hooks'
+import { AssistanceDetailsModal } from '../Assistance'
 
 const AttentionDetails = () => {
   const dispatch = useDispatch()
   const { idVisit, idEmployee } = useParams()
   const [list, setList] = useState([])
-  const { open: showVisor, toggleOpen: toggleShowVisor } = useToggle()
+  const { open: openDetails, toggleOpen: toggleOpenDetails } = useToggle()
   const [currentData, setCurrentData] = useState(null)
   const [loading, setLoading] = useState(false)
 
@@ -81,16 +81,10 @@ const AttentionDetails = () => {
                 right: true,
                 cell: (row) => (
                   <ActionsTable
-                    moreOptions={[
-                      {
-                        icon: <AttachFileIcon />,
-                        onClick: () => {
-                          setCurrentData(row)
-                          toggleShowVisor()
-                        },
-                        disabled: !row.attachment
-                      }
-                    ]}
+                    onView={() => {
+                      setCurrentData(row)
+                      toggleOpenDetails()
+                    }}
                   />
                 )
               }
@@ -100,11 +94,11 @@ const AttentionDetails = () => {
           />
         </Box>
 
-        {currentData && showVisor && (
-          <FileVisor
-            open={showVisor}
-            src={currentData.attachment.file_url}
-            onClose={toggleShowVisor}
+        {currentData && openDetails && (
+          <AssistanceDetailsModal
+            open={openDetails}
+            assistanceId={currentData.id}
+            onClose={toggleOpenDetails}
           />
         )}
       </Wrapper>

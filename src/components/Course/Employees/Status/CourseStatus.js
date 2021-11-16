@@ -100,7 +100,7 @@ const CourseStatus = ({
                   formik.touched.courseStatus && formik.errors.courseStatus
                 }
               >
-                <option value="">Seleccione estado del curso</option>
+                <option value="">SELECCIONE ESTADO DE CURSO</option>
                 {statusCourseList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
@@ -121,7 +121,7 @@ const CourseStatus = ({
                   formik.touched.studentStatus && formik.errors.studentStatus
                 }
               >
-                <option value="">Seleccione estado del estudiante</option>
+                <option value="">SELECCINE ESTADO DE ESTUDIANTE</option>
                 {statusStudentList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}

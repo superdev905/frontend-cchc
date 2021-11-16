@@ -21,6 +21,8 @@ import { useSuccess } from '../../hooks'
 import { SantiagoDefaultLocation } from '../../config'
 import { formatDate } from '../../formatters'
 
+const phoneOwner = ['FAMILIAR', 'VECINO', 'RECADO', 'OTRO']
+
 const validationSchema = Yup.object().shape({
   address: Yup.string().required('Ingrese dirección'),
   region_id: Yup.number().required('Seleccione region'),
@@ -29,6 +31,8 @@ const validationSchema = Yup.object().shape({
   number: Yup.string().required('Ingrese número'),
   block: Yup.string(),
   department: Yup.string(),
+  phone_owner: Yup.string(),
+
   email: Yup.string().email('Ingrese correo válido').required('Ingreso correo'),
 
   mobile_phone: Yup.string().test(
@@ -87,6 +91,7 @@ const EmployeeModal = ({
       longitude: type === 'UPDATE' ? data.longitude : '',
       latitude: type === 'UPDATE' ? data.latitude : '',
       email: type === 'UPDATE' ? data.email : '',
+      phone_owner: type === 'UPDATE' ? data.phone_owner : '',
       mobile_phone: type === 'UPDATE' ? data.mobile_phone : '',
       other_phone: type === 'UPDATE' ? data.other_phone : '',
       landline_phone: type === 'UPDATE' ? data.landline_phone : '',
@@ -170,6 +175,16 @@ const EmployeeModal = ({
       })
     }
   }, [formik.touched.email])
+
+  useEffect(() => {
+    if (formik.isSubmitting && !formik.isValid) {
+      enqueueSnackbar('Completa los campos requeridos', {
+        autoHideDuration: 2000,
+        variant: 'info'
+      })
+    }
+  }, [!formik.isValid, formik.isSubmitting])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullScreen={isMobile}>
       <Box>
@@ -211,7 +226,7 @@ const EmployeeModal = ({
                       formik.touched.region_id && formik.errors.region_id
                     }
                   >
-                    <option value="">Seleccione una región</option>
+                    <option value="">SELECCIONE REGIÓN </option>
                     {regions.map((item, index) => (
                       <option key={`region--${index}`} value={`${item.id}`}>
                         {`${item.name}`}
@@ -234,7 +249,7 @@ const EmployeeModal = ({
                       formik.touched.commune_id && formik.errors.commune_id
                     }
                   >
-                    <option value="">Seleccione una comuna</option>
+                    <option value="">SELECCIONE UNA COMUNA</option>
                     {communes.map((item, index) => (
                       <option key={`region--${index}`} value={`${item.id}`}>
                         {item.name}
@@ -319,6 +334,27 @@ const EmployeeModal = ({
                 </Typography>
               </Box>
               <Grid container spacing={1}>
+                <Grid item xs={12} md={6}>
+                  <Select
+                    label="A quien pertenece"
+                    name="phone_owner"
+                    required={formik.values.other_phone !== ''}
+                    value={formik.values.phone_owner}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.phone_owner &&
+                      Boolean(formik.errors.phone_owner)
+                    }
+                    helperText={
+                      formik.touched.phone_owner && formik.errors.phone_owner
+                    }
+                  >
+                    <option value="">SELECCIONE ESTADO</option>
+                    {phoneOwner.map((item) => (
+                      <option value={item}>{item}</option>
+                    ))}
+                  </Select>
+                </Grid>
                 <Grid item xs={12} md={6}>
                   <TextField
                     label="Telefóno móvil"
@@ -445,9 +481,7 @@ const EmployeeModal = ({
             <SubmitButton
               onClick={formik.handleSubmit}
               disabled={
-                !formik.isValid ||
-                formik.isSubmitting ||
-                !getValidValidation(formik.values)
+                formik.isSubmitting || !getValidValidation(formik.values)
               }
               loading={formik.isSubmitting}
               success={success}

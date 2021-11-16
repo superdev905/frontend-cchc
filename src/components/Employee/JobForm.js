@@ -203,7 +203,7 @@ const HousingForm = ({
                   formik.touched.business_id && formik.errors.business_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {companies.map((item, index) => (
                   <option key={`type-home--${index}`} value={`${item.id}`}>
                     {`${item.business_name}`}
@@ -227,7 +227,7 @@ const HousingForm = ({
                   formik.errors.construction_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {constructions
                   .filter(
                     (item) =>
@@ -256,7 +256,7 @@ const HousingForm = ({
                   formik.touched.specialty_id && formik.errors.specialty_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {specList.map((item, index) => (
                   <option key={`specialty_id--${index}`} value={`${item.id}`}>
                     {`${item.description}`}
@@ -281,7 +281,7 @@ const HousingForm = ({
                   formik.errors.specialty_detail_id
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {subSpec.map((item, index) => (
                   <option
                     key={`specialty_detail--${index}`}
@@ -307,7 +307,7 @@ const HousingForm = ({
                   formik.touched.contract_term && formik.errors.contract_term
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {['PLAZO FIJO', 'INDEFINIDO', 'POR OBRA O FAENA'].map(
                   (item, index) => (
                     <option key={`property-home--${index}`} value={`${item}`}>
@@ -332,7 +332,7 @@ const HousingForm = ({
                   formik.touched.contract_type && formik.errors.contract_type
                 }
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {['EMPRESA', 'SUB CONTRATRO', 'CESANTE'].map((item, index) => (
                   <option key={`contract-type--${index}`} value={`${item}`}>
                     {item}
@@ -372,7 +372,7 @@ const HousingForm = ({
                 }
                 disabled={formik.values.contract_type !== 'CESANTE'}
               >
-                <option value="">Seleccione una opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {['EMPRESA', 'SUB CONTRATRO', 'CESANTE'].map((item, index) => (
                   <option key={`contract-type--${index}`} value={`${item}`}>
                     {item}

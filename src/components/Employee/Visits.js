@@ -2,23 +2,23 @@ import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiPlus as AddIcon } from 'react-icons/fi'
 import { useParams } from 'react-router-dom'
-import AttachFileIcon from '@material-ui/icons/AttachFile'
 import { Box, Typography } from '@material-ui/core'
 import assistanceActions from '../../state/actions/assistance'
 import { ActionsTable, Button, Wrapper } from '../UI'
-import { DataTable, FileVisor } from '../Shared'
+import { DataTable } from '../Shared'
 import { formatDate } from '../../formatters'
 import { useToggle } from '../../hooks'
 import AssistanceDialog from '../Assistance/Dialog'
-// import VisitDialog from './VisitDialog'
+import { AssistanceDetailsModal } from '../Assistance'
 
 const AttentionDetails = () => {
   const dispatch = useDispatch()
   const { idEmployee } = useParams()
   const [list, setList] = useState([])
   const { employee } = useSelector((state) => state.employees)
-  const { open: showVisor, toggleOpen: toggleShowVisor } = useToggle()
+
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openView, toggleOpen: toggleOpenView } = useToggle()
   const [currentData, setCurrentData] = useState(null)
   const [loading, setLoading] = useState(false)
 
@@ -111,16 +111,11 @@ const AttentionDetails = () => {
                 right: true,
                 cell: (row) => (
                   <ActionsTable
-                    moreOptions={[
-                      {
-                        icon: <AttachFileIcon />,
-                        onClick: () => {
-                          setCurrentData(row)
-                          toggleShowVisor()
-                        },
-                        disabled: !row.attachment
-                      }
-                    ]}
+                    {...row}
+                    onView={() => {
+                      setCurrentData(row)
+                      toggleOpenView()
+                    }}
                   />
                 )
               }
@@ -130,12 +125,11 @@ const AttentionDetails = () => {
           />
         </Box>
 
-        {currentData && showVisor && (
-          <FileVisor
-            open={showVisor}
-            src={currentData.attachment.file_url}
-            filename={currentData.attachment.file_name}
-            onClose={toggleShowVisor}
+        {currentData && openView && (
+          <AssistanceDetailsModal
+            open={openView}
+            onClose={toggleOpenView}
+            assistanceId={currentData.id}
           />
         )}
 

@@ -80,7 +80,7 @@ const CreateActivity = ({ onClose, type, data, submitFunction }) => {
               helperText={formik.touched.founding && formik.errors.founding}
               error={formik.touched.founding && Boolean(formik.errors.founding)}
             >
-              <option value="">Seleccione financiamiento</option>
+              <option value="">SELECCIONE FINANCIAMIENTO</option>
               {options.map((item) => (
                 <option value={item}>{item}</option>
               ))}
@@ -167,7 +167,7 @@ const CreateActivity = ({ onClose, type, data, submitFunction }) => {
               helperText={formik.touched.isActive && formik.errors.isActive}
               error={formik.touched.isActive && Boolean(formik.errors.isActive)}
             >
-              <option value="">Seleccione estado</option>
+              <option value="">SELECCIONE ESTADO </option>
               {statusList.map((item) => (
                 <option value={item}>{item}</option>
               ))}

@@ -5,7 +5,13 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { Avatar, Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Dialog } from '../Shared'
-import { SubmitButton, Button, TextField, Select } from '../UI'
+import {
+  SubmitButton,
+  Button,
+  TextField,
+  Select,
+  TextFieldPassword
+} from '../UI'
 import { useSuccess } from '../../hooks'
 import generatePassword from '../../utils/generatePassword'
 import commonActions from '../../state/actions/common'
@@ -198,7 +204,7 @@ const Form = ({
             </Grid>
             {type === 'ADD' && (
               <Grid item xs={12} md={6}>
-                <TextField
+                <TextFieldPassword
                   name="password"
                   label="Contraseña"
                   required
@@ -224,7 +230,7 @@ const Form = ({
                 error={formik.touched.role_id && Boolean(formik.errors.role_id)}
                 inputProps={{ readOnly }}
               >
-                <option value="">Sin rol</option>
+                <option value="">SIN ROL</option>
                 {roles.map((item) => (
                   <option value={item.id}>{item.name}</option>
                 ))}
@@ -245,7 +251,7 @@ const Form = ({
                 }
                 inputProps={{ readOnly }}
               >
-                <option value="">Sin cargo</option>
+                <option value="">SIN CARGO</option>
                 {charges.map((item) => (
                   <option value={item.id}>{item.name}</option>
                 ))}

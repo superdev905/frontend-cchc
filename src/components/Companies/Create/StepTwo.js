@@ -155,11 +155,22 @@ const StepOne = () => {
       setMainCompanies(buildTreeData(list))
     })
   }, [])
+
   const goBack = () => {
     dispatch(
       companiesActions.updateCreate({ ...create, step: create.step - 1 })
     )
   }
+
+  useEffect(() => {
+    if (formik.isSubmitting && !formik.isValid) {
+      enqueueSnackbar('Completa los campos requeridos', {
+        autoHideDuration: 2000,
+        variant: 'info'
+      })
+    }
+  }, [!formik.isValid, formik.isSubmitting])
+
   return (
     <Box className={classes.form}>
       <Typography className={classes.subtitle} align="center">
@@ -174,8 +185,10 @@ const StepOne = () => {
               onChange={formik.handleChange}
               value={formik.values.type}
               required
+              error={formik.touched.type && Boolean(formik.errors.type)}
+              helperText={formik.touched.type && formik.errors.type}
             >
-              <option value="">Seleccione tipo</option>
+              <option value="">SELECCIONE TIPO</option>
               {businessTypes.map((item, i) => (
                 <option key={`business-type-${i}`} value={item.name}>
                   {item.name}
@@ -210,8 +223,12 @@ const StepOne = () => {
               onChange={formik.handleChange}
               value={formik.values.is_partner}
               required
+              error={
+                formik.touched.is_partner && Boolean(formik.errors.is_partner)
+              }
+              helperText={formik.touched.is_partner && formik.errors.is_partner}
             >
-              <option value="">Seleccione tipo</option>
+              <option value="">SELECCIONE TIPO </option>
               {decisionList.map((item, i) => (
                 <option key={`option-${i}`} value={item}>
                   {item}
@@ -226,7 +243,7 @@ const StepOne = () => {
               onChange={formik.handleChange}
               value={formik.values.benefit_pyme}
             >
-              <option value="">Seleccione opción</option>
+              <option value="">SELECCIONE UNA OPCIÓN</option>
               {decisionList.map((item, i) => (
                 <option key={`pyme-option-${i}`} value={item}>
                   {item}
@@ -249,7 +266,7 @@ const StepOne = () => {
                 formik.touched.social_service && formik.errors.social_service
               }
             >
-              <option value="">Seleccione una opción</option>
+              <option value="">SELECCIONE UNA OPCIÓN</option>
               {decisionList.map((item, i) => (
                 <option key={`social-option-${i}`} value={item}>
                   {item}
@@ -315,9 +332,7 @@ const StepOne = () => {
           loading={formik.isSubmitting}
           onClick={formik.handleSubmit}
           success={success}
-          disabled={
-            !formik.isValid || formik.isSubmitting || getPollValidation()
-          }
+          disabled={formik.isSubmitting || getPollValidation()}
         >
           {create.type === 'UPDATE' ? 'Actualizar' : 'Crear'} empresa
         </SubmitButton>

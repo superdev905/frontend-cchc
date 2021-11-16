@@ -111,7 +111,7 @@ const AssistanceDialog = ({ open, onClose, idCourse }) => {
                     setLectureId(e.target.value)
                   }}
                 >
-                  <option value="">Seleccione clase</option>
+                  <option value="">SELECCIONE CLASE</option>
                   {lectures.map((item) => (
                     <option key={`classes-option-${item.id}`} value={item.id}>
                       {`${item.name}: ${item.title}`}

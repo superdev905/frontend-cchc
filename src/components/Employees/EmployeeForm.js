@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
   Box,
   FormControlLabel,
+  FormHelperText,
   Grid,
   InputLabel,
   makeStyles,
@@ -13,7 +14,14 @@ import {
   Typography
 } from '@material-ui/core'
 import { DatePicker, Dialog } from '../Shared'
-import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
+import {
+  Button,
+  RutTextField,
+  Select,
+  SubmitButton,
+  TextArea,
+  TextField
+} from '../UI'
 import { isPollListAnswered, rutValidation } from '../../validations'
 import commonActions from '../../state/actions/common'
 import pollActions from '../../state/actions/poll'
@@ -42,10 +50,8 @@ const useStyles = makeStyles(() => ({
 
 const disabilitySchema = Yup.object().shape({
   credential_disability: Yup.string().required('Seleccione opción'),
-  disability_type: Yup.string().required('Seleccione tipo'),
-  disability_percentage: Yup.string().required(
-    'Seleccione porcentaje de discapacidad'
-  )
+  disability_type: Yup.string(),
+  disability_percentage: Yup.string()
 })
 
 const validationSchema = Yup.object().shape({
@@ -56,19 +62,20 @@ const validationSchema = Yup.object().shape({
   paternal_surname: Yup.string().required('Ingrese nombres'),
   maternal_surname: Yup.string(),
   gender: Yup.string().required('Seleccione sexo'),
-  born_date: Yup.date().required('Seleccione fecha de nacimiento'),
+  born_date: Yup.date().required('Seleccione fecha de nacimiento').nullable(),
   scholarship_id: Yup.number().required('Seleccione escolaridad'),
   marital_status_id: Yup.number().required('Seleccione estado civil'),
-  disability: Yup.string().required('Seleccione opción'),
+  disability: Yup.string().required('SELECCIONE OPCIÓN'),
   credential_disability: Yup.string(),
-  recognize: Yup.string().required('Seleccione opción'),
+  recognize: Yup.string().required('SELECCIONE OPCIÓN'),
   nationality_id: Yup.number().required('Seleccione nacionalidad'),
-  alive: Yup.string().required('Seleccione opción'),
+  alive: Yup.string().required('SELECCIONE OPCIÓN'),
   //  bank_id: Yup.number('Seleccione banco'),
   account_type: Yup.string('Seleccione tipo de cuenta'),
   account_number: Yup.string('Seleccione número de cuenta'),
-  rsh: Yup.string('Seleccione opción'),
-  rsh_percentage: Yup.string('Seleccione opción')
+  rsh: Yup.string('SELECCIONE OPCIÓN'),
+  rsh_percentage: Yup.string('SELECCIONE OPCIÓN'),
+  comments: Yup.string('Ingrese comentarios')
 })
 
 const EmployeeModal = ({
@@ -119,7 +126,8 @@ const EmployeeModal = ({
       account_number: type === 'UPDATE' ? data.account_number : '',
       rsh: type === 'UPDATE' ? data.rsh : '',
       rsh_percentage: type === 'UPDATE' ? data.rsh_percentage : '',
-      rsh_status: type === 'UPDATE' ? data.rsh_status : ''
+      rsh_status: type === 'UPDATE' ? data.rsh_status : '',
+      comments: type === 'UPDATE' ? data.comments : ''
     },
     onSubmit: (values) => {
       const submitData = { ...values }
@@ -184,6 +192,17 @@ const EmployeeModal = ({
   }, [formik.values.rsh])
 
   useEffect(() => {
+    const format = formik.values.run
+    const newFormat = format.replace(/\./g, '').replace(/-/g, '').slice(0, -1)
+    if (
+      formik.values.bank_id === '1' &&
+      formik.values.account_type === 'VISTA'
+    ) {
+      formik.setFieldValue('account_number', newFormat)
+    }
+  }, [formik.values.bank_id, formik.values.account_type])
+
+  useEffect(() => {
     dispatch(commonActions.getMaritalStatuses())
     dispatch(commonActions.getNationalities())
     dispatch(commonActions.getScholarship())
@@ -191,11 +210,20 @@ const EmployeeModal = ({
     dispatch(commonActions.getRSH())
   }, [])
 
+  useEffect(() => {
+    if (formik.isSubmitting && !formik.isValid) {
+      enqueueSnackbar('Completa los campos requeridos', {
+        autoHideDuration: 2000,
+        variant: 'info'
+      })
+    }
+  }, [!formik.isValid, formik.isSubmitting])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
       <Box>
         <Typography variant="h6" align="center">
-          {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} trabajador`}
+          {`${type === 'UPDATE' ? 'Actualizar' : 'Nuevo'} trabajador`}
         </Typography>
         <Box p={2}>
           <Box>
@@ -286,7 +314,7 @@ const EmployeeModal = ({
                   error={formik.touched.gender && Boolean(formik.errors.gender)}
                   helperText={formik.touched.gender && formik.errors.gender}
                 >
-                  <option value="">Seleccione sexo</option>
+                  <option value="">SELECCIONE GENERO </option>
                   {['MASCULINO', 'FEMENINO', 'INDETERMINADO'].map((item, i) => (
                     <option key={`gender-${i}-${item}`} value={item}>
                       {item}
@@ -310,7 +338,7 @@ const EmployeeModal = ({
                     formik.errors.scholarship_id
                   }
                 >
-                  <option value="">Seleccione escolaridad</option>
+                  <option value="">SELECCIONE ESCOLARIDAD</option>
                   {scholarshipList.map((item, i) => (
                     <option key={`scholarship-${i}-${item.id}`} value={item.id}>
                       {item.description}
@@ -334,7 +362,7 @@ const EmployeeModal = ({
                     formik.errors.marital_status_id
                   }
                 >
-                  <option value="">Seleccione estado civil</option>
+                  <option value="">SELECCIONE ESTADO CIVIL</option>
                   {maritalStatus.map((item, i) => (
                     <option
                       key={`marital-status-${i}-${item.id}`}
@@ -361,7 +389,7 @@ const EmployeeModal = ({
                     formik.errors.nationality_id
                   }
                 >
-                  <option value="">Seleccione nacionalidad</option>
+                  <option value="">SELECCIONE NACIONALIDAD </option>
                   {nationalities.map((item, i) => (
                     <option key={`natinality-${i}-${item.id}`} value={item.id}>
                       {item.description}
@@ -388,7 +416,7 @@ const EmployeeModal = ({
                     formik.touched.disability && formik.errors.disability
                   }
                 >
-                  <option value="">Seleccione opción</option>
+                  <option value="">SELECCIONE OPCIÓN</option>
                   {decisionList.map((item, i) => (
                     <option key={`gender-${i}-${item}`} value={item}>
                       {item}
@@ -413,7 +441,7 @@ const EmployeeModal = ({
                   }
                   disabled={formik.values.disability === 'NO'}
                 >
-                  <option value="">Seleccione opción</option>
+                  <option value="">SELECCIONE OPCIÓN</option>
                   {decisionList.map((item, i) => (
                     <option key={`credential-${i}-${item}`} value={item}>
                       {item}
@@ -424,7 +452,6 @@ const EmployeeModal = ({
 
               <Grid item xs={12} md={4}>
                 <Select
-                  required={hasDisability}
                   label="Tipo de discapacidad"
                   name="disability_type"
                   value={formik.values.disability_type}
@@ -439,7 +466,7 @@ const EmployeeModal = ({
                   }
                   disabled={formik.values.disability === 'NO'}
                 >
-                  <option value="">Seleccione tipo</option>
+                  <option value="">SELECCIONE TIPO</option>
                   {disabilityType.map((item, i) => (
                     <option key={`credential-${i}-${item}`} value={item}>
                       {item}
@@ -452,7 +479,6 @@ const EmployeeModal = ({
                 <TextField
                   label="Discapacidad %"
                   name="disability_percentage"
-                  required
                   value={formik.values.disability_percentage}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -483,7 +509,7 @@ const EmployeeModal = ({
                   }
                   helperText={formik.touched.bank_id && formik.errors.bank_id}
                 >
-                  <option value="">Sin banco</option>
+                  <option value="">SIN BANCO</option>
                   {banks.map((item, i) => (
                     <option key={`gender-${i}-${item}`} value={item.id}>
                       {item.description}
@@ -505,7 +531,7 @@ const EmployeeModal = ({
                     formik.touched.account_type && formik.errors.account_type
                   }
                 >
-                  <option value="">Sin tipo de cuenta</option>
+                  <option value="">SIN TIPO DE CUENTA</option>
                   {['CUENTA CORRIENTE', 'AHORRO', 'VISTA'].map((item, i) => (
                     <option key={`account-type-${i}-${item}`} value={item}>
                       {item}
@@ -538,7 +564,7 @@ const EmployeeModal = ({
                   error={formik.touched.rsh && Boolean(formik.errors.rsh)}
                   helperText={formik.touched.rsh && formik.errors.rsh}
                 >
-                  <option value="">Seleccione opción</option>
+                  <option value="">SELECCIONE OPCIÓN</option>
                   {decisionList.map((item, i) => (
                     <option key={`rsh-item-${i}-${item.id}`} value={item}>
                       {item}
@@ -562,7 +588,7 @@ const EmployeeModal = ({
                     formik.errors.rsh_percentage
                   }
                 >
-                  <option value="">Seleccione opción </option>
+                  <option value="">SELECCIONE OPCIÓN </option>
                   {rshList.map((item, i) => (
                     <option
                       key={`rsh-item-${i}-${item.id}`}
@@ -595,7 +621,7 @@ const EmployeeModal = ({
                     }
                   }}
                 >
-                  <option value="">Seleccione estado</option>
+                  <option value="">SELECCIONE ESTADO</option>
                   {statusList.map((item, i) => (
                     <option key={`rsh_status-item-${i}-${item}`} value={item}>
                       {item}
@@ -638,6 +664,11 @@ const EmployeeModal = ({
                     label="NO"
                   />
                 </Box>
+                {formik.errors.alive && (
+                  <FormHelperText error>
+                    {formik.touched.alive && formik.errors.alive}
+                  </FormHelperText>
+                )}
               </Grid>
               <Grid item xs={12} md={4}>
                 <Select
@@ -653,13 +684,28 @@ const EmployeeModal = ({
                     formik.touched.recognize && formik.errors.recognize
                   }
                 >
-                  <option value="">Seleccione una opción</option>
+                  <option value="">SELECCIONE OPCIÓN</option>
                   {decisionList.map((item, index) => (
                     <option key={`region--${index}`} value={`${item}`}>
                       {item}
                     </option>
                   ))}
                 </Select>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextArea
+                  label="Comentarios"
+                  name="comments"
+                  value={formik.values.comments}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.comments && Boolean(formik.errors.comments)
+                  }
+                  helperText={formik.touched.comments && formik.errors.comments}
+                  maxLength={800}
+                />
               </Grid>
             </Grid>
           </Box>
@@ -670,9 +716,7 @@ const EmployeeModal = ({
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
-              disabled={
-                !formik.isValid || formik.isSubmitting || getPollValidation()
-              }
+              disabled={formik.isSubmitting || getPollValidation()}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} trabajador`}
             </SubmitButton>

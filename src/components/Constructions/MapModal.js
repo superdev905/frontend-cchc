@@ -15,7 +15,13 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const MapModal = ({ loading, open, onClose, successFunction }) => {
+const MapModal = ({
+  loading,
+  open,
+  onClose,
+  successFunction,
+  constructionId
+}) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { isMobile } = useSelector((state) => state.ui)
@@ -23,11 +29,11 @@ const MapModal = ({ loading, open, onClose, successFunction }) => {
   const { success } = useSuccess()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
 
-  const fetchConstructions = () => {
+  const fetchConstruction = () => {
     if (successFunction) {
       successFunction()
     }
-    dispatch(constructionsActions.getConstruction(construction.id))
+    dispatch(constructionsActions.getConstruction(constructionId))
   }
 
   const updateConstruction = (values) =>
@@ -40,7 +46,7 @@ const MapModal = ({ loading, open, onClose, successFunction }) => {
 
   useEffect(() => {
     if (open) {
-      fetchConstructions()
+      fetchConstruction()
     }
   }, [open])
 
@@ -104,7 +110,7 @@ const MapModal = ({ loading, open, onClose, successFunction }) => {
           construction={construction}
           submitFunction={updateConstruction}
           successMessage="Obra actualizada exitosamente"
-          successFunction={fetchConstructions}
+          successFunction={fetchConstruction}
           success={success}
         />
       )}

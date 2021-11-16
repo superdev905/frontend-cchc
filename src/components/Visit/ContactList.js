@@ -83,6 +83,7 @@ const ContactList = () => {
         <Button onClick={toggleOpen}>Nuevo contacto</Button>
       </Box>
       <DataTable
+        background
         columns={[
           {
             name: 'Nombres',

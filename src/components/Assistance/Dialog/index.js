@@ -52,10 +52,10 @@ const WorkerInterventionRecord = ({
   const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
+  const [attachments, setAttachments] = useState([])
   const { areas, managementList } = useSelector((state) => state.common)
   const { user } = useSelector((state) => state.auth)
   const [topics, setTopics] = useState([])
-  const [attachedFile, setAttachedFile] = useState(null)
   const [selectedManagement, setSelectedManagement] = useState('')
   const [activityDetails, setActivityDetails] = useState({
     benefit: null,
@@ -106,27 +106,29 @@ const WorkerInterventionRecord = ({
       attached_key: type === 'UPDATE' ? data.attached_url : ''
     },
     onSubmit: async (values) => {
-      let resultUpload = null
-      let attachment = null
-      if (attachedFile) {
-        const formData = new FormData()
-        formData.append('file', attachedFile, attachedFile.name)
-        resultUpload = await dispatch(
-          filesActions.uploadFileToStorage(formData)
-        )
-        attachment = {
-          fileKey: resultUpload.file_key,
-          fileUrl: resultUpload.file_url,
-          fileSize: resultUpload.file_size,
-          fileName: resultUpload.file_name,
-          uploadDate: resultUpload.upload_date,
-          sourceSystem: 'TRABAJADORES',
-          dataId: employee.id
-        }
-      }
+      const attachmentsList = []
+      await Promise.all(
+        attachments.map(async (item) => {
+          const formData = new FormData()
+          formData.append('file', item.file, item.file.name)
+          const resultUpload = await dispatch(
+            filesActions.uploadFileToStorage(formData)
+          )
+          attachmentsList.push({
+            fileKey: resultUpload.file_key,
+            fileUrl: resultUpload.file_url,
+            fileSize: resultUpload.file_size,
+            fileName: resultUpload.file_name,
+            uploadDate: resultUpload.upload_date,
+            sourceSystem: 'TRABAJADORES',
+            dataId: employee.id
+          })
+        })
+      )
+
       submitFunction({
         ...values,
-        attachment,
+        attachments: attachmentsList,
         assigned_id: user.id,
         created_by: user.id
       }).then((result) => {
@@ -187,6 +189,23 @@ const WorkerInterventionRecord = ({
     return false
   }
 
+  const handleAddPicker = () => {
+    const list = [...attachments]
+    list.push({ id: list.length + 1 })
+    setAttachments(list)
+  }
+
+  const deleteAttachment = (index) => {
+    setAttachments(
+      attachments
+        .filter((file) => file.id !== index)
+        .map((file, i) => ({
+          ...file,
+          id: i + 1
+        }))
+    )
+  }
+
   useEffect(() => {
     const { management_id } = formik.values
     if (management_id) {
@@ -222,11 +241,20 @@ const WorkerInterventionRecord = ({
 
   useEffect(() => {
     if (open) {
-      setAttachedFile(null)
+      setAttachments([])
       dispatch(commonActions.getAreas())
       dispatch(commonActions.getManagement())
     }
   }, [open])
+
+  useEffect(() => {
+    if (formik.isSubmitting && !formik.isValid) {
+      enqueueSnackbar('Completa los campos requeridos', {
+        autoHideDuration: 2000,
+        variant: 'info'
+      })
+    }
+  }, [!formik.isValid, formik.isSubmitting])
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
@@ -294,7 +322,7 @@ const WorkerInterventionRecord = ({
                   formik.errors.attention_place
                 }
               >
-                <option value="">Seleccione Lugar</option>
+                <option value="">SELECCIONE LUGAR</option>
                 {attentionPlaces.map((item, i) => (
                   <option key={`plce-${i}-${item}`} value={item}>
                     {item}
@@ -318,7 +346,7 @@ const WorkerInterventionRecord = ({
                   formik.touched.contact_method && formik.errors.contact_method
                 }
               >
-                <option value="">Seleccione opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {[
                   'PRESENCIAL',
                   'TELEFÓNICO',
@@ -342,7 +370,7 @@ const WorkerInterventionRecord = ({
                 error={formik.touched.area_id && Boolean(formik.errors.area_id)}
                 helperText={formik.touched.area_id && formik.errors.area_id}
               >
-                <option value={`INVALID`}>Seleccione area</option>
+                <option value={`INVALID`}>SELECCIONE ÁREA </option>
                 {areas.map((item, index) => (
                   <option key={`area--${index}`} value={`${item.id}`}>
                     {item.name}
@@ -363,7 +391,7 @@ const WorkerInterventionRecord = ({
                 }
                 helperText={formik.touched.topic_id && formik.errors.topic_id}
               >
-                <option value={`INVALID`}>Seleccione tema</option>
+                <option value={`INVALID`}>SELECCIONE TEMA</option>
                 {topics.map((item, index) => (
                   <option key={`area--${index}`} value={`${item.id}`}>
                     {item.name}
@@ -387,7 +415,7 @@ const WorkerInterventionRecord = ({
                   formik.touched.management_id && formik.errors.management_id
                 }
               >
-                <option value="">Seleccione gestion</option>
+                <option value="">SELECCIONE GESTIÓN </option>
                 {managementList.map((item, i) => (
                   <option key={`management-${i}-${item.id}`} value={item.id}>
                     {item.name}
@@ -406,7 +434,7 @@ const WorkerInterventionRecord = ({
                 error={formik.touched.status && Boolean(formik.errors.status)}
                 helperText={formik.touched.status && formik.errors.status}
               >
-                <option value="">Seleccione estado</option>
+                <option value="">SELECCIONE ESTADO</option>
                 {AttentionStatus.map((item, i) => (
                   <option key={`status-${i}-${item}`} value={`${item.name}`}>
                     {`${item.short}: ${item.name}`}
@@ -554,7 +582,7 @@ const WorkerInterventionRecord = ({
                   }
                   helperText={formik.touched.case_id && formik.errors.case_id}
                 >
-                  <option value="">Seleccione caso</option>
+                  <option value="">SELECCIONE CASO</option>
                   {[
                     { index: 1, name: 'CASO 1' },
                     { index: 2, name: 'CASO 2' }
@@ -578,7 +606,7 @@ const WorkerInterventionRecord = ({
                   }
                   helperText={formik.touched.task_id && formik.errors.task_id}
                 >
-                  <option value="">Seleccione plan de intervención</option>
+                  <option value="">SELECCIONE PLAN DE INTERVRNCIÓN</option>
                   {[
                     { index: 1, name: 'Plan de Intervención 1' },
                     { index: 2, name: 'Plan de Intervención 2' }
@@ -609,13 +637,51 @@ const WorkerInterventionRecord = ({
               />
             </Grid>
             <Grid item xs={12} md={12} lg={12}>
-              <InputLabel>Archivo adjunto</InputLabel>
-
-              <FilePicker
-                onChange={(e) => {
-                  setAttachedFile(e)
-                }}
-              />
+              <Box>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography>
+                    <strong>Archivo adjuntos</strong>
+                  </Typography>
+                  {attachments.length > 0 && (
+                    <Button size="small" onClick={handleAddPicker}>
+                      Agregar nuevo
+                    </Button>
+                  )}
+                </Box>
+                <Grid container spacing={2}>
+                  {attachments.length === 0 ? (
+                    <EmptyState
+                      message="No hay archivos adjuntos"
+                      actionMessage="Agregar"
+                      event={handleAddPicker}
+                    />
+                  ) : (
+                    <>
+                      {attachments.map((item, index) => (
+                        <Grid item xs={12} md={6} key={`file-picker-${index}`}>
+                          <FilePicker
+                            id={item.id}
+                            onChange={(e) => {
+                              setAttachments(
+                                attachments.map((file) =>
+                                  file.id === item.id
+                                    ? { ...file, file: e }
+                                    : file
+                                )
+                              )
+                            }}
+                            onDelete={() => deleteAttachment(item.id)}
+                          />
+                        </Grid>
+                      ))}
+                    </>
+                  )}
+                </Grid>
+              </Box>
             </Grid>
           </Grid>
 
@@ -626,13 +692,7 @@ const WorkerInterventionRecord = ({
 
             <SubmitButton
               onClick={toggleOpenConfirm}
-              disabled={
-                !formik.isValid ||
-                formik.isSubmitting ||
-                getActivityValidation()
-              }
-              loading={formik.isSubmitting}
-              success={success}
+              disabled={formik.isSubmitting || getActivityValidation()}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Registro`}
             </SubmitButton>
@@ -647,6 +707,7 @@ const WorkerInterventionRecord = ({
           fullWidth
           open={openConfirm}
           onClose={toggleOpenConfirm}
+          loading={formik.isSubmitting}
           success={success}
           confirmText="Guardar"
           message={

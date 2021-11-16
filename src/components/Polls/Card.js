@@ -4,6 +4,7 @@ import { Box, Chip, Grid, makeStyles, Typography } from '@material-ui/core'
 import CalendarIcon from '@material-ui/icons/CalendarToday'
 import { Skeleton } from '@material-ui/lab'
 import { useSnackbar } from 'notistack'
+import { FiAlertCircle } from 'react-icons/fi'
 import { formatDate, formatText } from '../../formatters'
 import { StatusChip } from '../UI'
 
@@ -53,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
   calendarIcon: {
     color: theme.palette.gray.gray500,
     marginRight: '5px'
+  },
+  mandatoryStatus: {
+    marginTop: 5
   }
 }))
 
@@ -73,6 +77,7 @@ const PollCard = ({ loader, poll, onClick, showAnswers, isAnswered }) => {
       history.push(`/polls/${poll.id}`)
     }
   }
+
   return (
     <Box className={classes.root}>
       <Box
@@ -146,17 +151,20 @@ const PollCard = ({ loader, poll, onClick, showAnswers, isAnswered }) => {
                     <CalendarIcon className={classes.calendarIcon} />
                     Fecha de fin: {formatDate(poll.end_date)}
                   </Typography>
-                  {poll?.is_mandatory === true && (
-                    <Typography className={classes.center}>
-                      Obligatorio: Si
-                    </Typography>
-                  )}
-                  {poll?.is_mandatory === false && (
-                    <Typography className={classes.center}>
-                      Obligatorio: No
-                    </Typography>
-                  )}
                 </Box>
+                <Box marginTop="10px">
+                  <StatusChip
+                    icon={<FiAlertCircle />}
+                    label={
+                      poll.is_mandatory === false
+                        ? 'NO OBLIGATORIO'
+                        : 'OBLIGATORIO'
+                    }
+                    success={poll.is_mandatory !== true}
+                    error={poll.is_mandatory !== false}
+                  />
+                </Box>
+
                 <Box marginTop="10px">
                   <StatusChip
                     label={

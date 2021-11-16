@@ -145,10 +145,8 @@ const AddressUpdate = ({
                   <Grid item xs={12}>
                     <AddressAutoComplete
                       search={formik.values.address}
-                      required
                       onChange={(value) => {
                         formik.setFieldValue('address', value)
-                        formik.setFieldTouched('address')
                       }}
                       helperText={
                         formik.touched.address && formik.errors.address

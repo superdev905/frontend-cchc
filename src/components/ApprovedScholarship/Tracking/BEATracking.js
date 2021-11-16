@@ -17,7 +17,7 @@ const PmaTracking = ({ form, benefits }) => (
         error={form.touched.benefitId && Boolean(form.errors.benefitId)}
         helperText={form.touched.benefitId && form.errors.benefitId}
       >
-        <option value="">Seleccione beneficio</option>
+        <option value="">SELECCIONE BENEFICIO</option>
         {benefits.map((item) => (
           <option key={`benefit-id-${item.id}`} value={item.id}>
             {item.name}
@@ -102,7 +102,7 @@ const PmaTracking = ({ form, benefits }) => (
           form.touched.mandatoryActivity && form.errors.mandatoryActivity
         }
       >
-        <option value="">Seleccione estado</option>
+        <option value="">SELECCIONE OPCIÓN</option>
         {decisionList.map((item) => (
           <option value={item}>{capitalize(item)}</option>
         ))}
@@ -124,7 +124,7 @@ const PmaTracking = ({ form, benefits }) => (
           form.errors.psychologicalInterview
         }
       >
-        <option value="">Seleccione estado</option>
+        <option value="">SELECCIONE OPCIÓN</option>
         {decisionList.map((item) => (
           <option value={item}>{capitalize(item)}</option>
         ))}
@@ -156,7 +156,7 @@ const PmaTracking = ({ form, benefits }) => (
           form.touched.scholarshipStatus && form.errors.scholarshipStatus
         }
       >
-        <option value="">Seleccione estado</option>
+        <option value="">SELECCIONE OPCIÓN</option>
         {statusList.map((item) => (
           <option value={item}>{capitalize(item)}</option>
         ))}

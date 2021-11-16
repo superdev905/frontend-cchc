@@ -121,6 +121,7 @@ const List = () => {
 
       <DataTable
         bordered
+        background
         emptyMessage="No hay trabajadores atendidos"
         columns={[
           {
@@ -161,7 +162,7 @@ const List = () => {
         ]}
         data={attendedList}
       />
-      {visit && visit.is_active ? (
+      {visit && !visit.is_close ? (
         <Box marginTop="20px" p={1}>
           <Typography style={{ marginBottom: '20px' }}>
             Agregar nuevo trabajador
@@ -257,7 +258,7 @@ const List = () => {
       ) : (
         <Box mt={2}>
           <Locked
-            title={'Visita bloqueda'}
+            title={'Visita cerrada'}
             message={'No se puede agregan mas atenciones'}
           />
         </Box>

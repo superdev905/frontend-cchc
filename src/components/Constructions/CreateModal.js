@@ -232,6 +232,15 @@ const ConstructionModal = ({
     }
   }, [regions])
 
+  useEffect(() => {
+    if (formik.isSubmitting && !formik.isValid) {
+      enqueueSnackbar('Completa los campos requeridos', {
+        autoHideDuration: 2000,
+        variant: 'info'
+      })
+    }
+  }, [!formik.isValid, formik.isSubmitting])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullScreen={isMobile}>
       <Box maxWidth="900px" style={{ margin: '0 auto' }}>
@@ -297,7 +306,7 @@ const ConstructionModal = ({
                   Boolean(formik.errors.typology_id)
                 }
               >
-                <option value="">Sin tipología</option>
+                <option value="">SIN TIPOLOGÍA</option>
                 {typologies.map((item, index) => (
                   <option key={`region--${index}`} value={`${item.id}`}>
                     {item.name}
@@ -321,7 +330,7 @@ const ConstructionModal = ({
                   Boolean(formik.errors.economic_sector_id)
                 }
               >
-                <option value="">Seleccione sector</option>
+                <option value="">SELECCIONE SECTOR</option>
                 {sectors.map((item, index) => (
                   <option key={`region--${index}`} value={`${item.id}`}>
                     {item.name}
@@ -339,7 +348,7 @@ const ConstructionModal = ({
                 helperText={formik.touched.status && formik.errors.status}
                 error={formik.touched.status && Boolean(formik.errors.status)}
               >
-                <option value="">Seleccione estado</option>
+                <option value="">SELECCIONE ESTADO </option>
                 {[
                   { key: 'VIGENTE', name: 'VIGENTE' },
                   { key: 'NO_VIGENTE', name: 'NO VIGENTE' }
@@ -407,6 +416,13 @@ const ConstructionModal = ({
                       onChange={handleSelectChange}
                       value={formik.values.region_id}
                       required
+                      helperText={
+                        formik.touched.region_id && formik.errors.region_id
+                      }
+                      error={
+                        formik.touched.region_id &&
+                        Boolean(formik.errors.region_id)
+                      }
                     >
                       <option value={`INVALID`}>Seleccione una región</option>
                       {regions.map((item, index) => (
@@ -423,6 +439,13 @@ const ConstructionModal = ({
                       onChange={handleSelectChange}
                       value={formik.values.commune_id}
                       required
+                      helperText={
+                        formik.touched.commune_id && formik.errors.commune_id
+                      }
+                      error={
+                        formik.touched.commune_id &&
+                        Boolean(formik.errors.commune_id)
+                      }
                     >
                       <option value={`INVALID`}>Seleccione una comuna</option>
                       {communes.map((item, index) => (
@@ -468,9 +491,7 @@ const ConstructionModal = ({
               </Button>
               <SubmitButton
                 loading={formik.isSubmitting}
-                disabled={
-                  !formik.isValid || formik.isSubmitting || getPollValidation()
-                }
+                disabled={formik.isSubmitting || getPollValidation()}
                 onClick={formik.handleSubmit}
                 success={success}
               >

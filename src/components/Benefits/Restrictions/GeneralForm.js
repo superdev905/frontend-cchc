@@ -129,7 +129,7 @@ const General = ({
                   formik.touched.nationalityId && formik.errors.nationalityId
                 }
               >
-                <option value="">Seleccione nacionalidad</option>
+                <option value="">SELECCIONE NACIONALIDAD </option>
                 {nationalities.map((item, i) => (
                   <option key={`natinality-${i}-${item.id}`} value={item.id}>
                     {item.description}
@@ -146,7 +146,7 @@ const General = ({
                 error={formik.touched.rshId && Boolean(formik.errors.rshId)}
                 helperText={formik.touched.rshId && formik.errors.rshId}
               >
-                <option value="">Sin RSH %</option>
+                <option value="">SIN RSH %</option>
                 {rshList.map((item, i) => (
                   <option
                     key={`rsh-percentage-item-${i}-${item.id}`}
@@ -173,7 +173,7 @@ const General = ({
                   Boolean(formik.errors.legalCharge)
                 }
               >
-                <option value="">Seleccione opción</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {decisionList.map((item, i) => (
                   <option key={`alive-${i}-${item}`} value={item}>
                     {item}
@@ -194,7 +194,7 @@ const General = ({
                   formik.touched.prevision && Boolean(formik.errors.prevision)
                 }
               >
-                <option value="">Seleccione prevision</option>
+                <option value="">SELECCIONE PREVISIÓN </option>
                 {previsionList.map((item) => (
                   <option value={item}>
                     {formatText.capitalizeString(item)}
@@ -213,7 +213,7 @@ const General = ({
                 helperText={formik.touched.retired && formik.errors.retired}
                 error={formik.touched.retired && Boolean(formik.errors.retired)}
               >
-                <option value="">Seleccione estado de jubilación</option>
+                <option value="">SELECCIONE ESTADO DE JUBILACIÓN</option>
                 {decisionList.concat(['NO APLICA']).map((item) => (
                   <option value={item}>
                     {formatText.capitalizeString(item)}
@@ -238,7 +238,7 @@ const General = ({
                   Boolean(formik.errors.belongsToReconocer)
                 }
               >
-                <option value="">Seleccione opcion</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {decisionList.map((item) => (
                   <option value={item}>
                     {formatText.capitalizeString(item)}
@@ -270,7 +270,7 @@ const General = ({
                 helperText={formik.touched.gender && formik.errors.gender}
                 error={formik.touched.gender && Boolean(formik.errors.gender)}
               >
-                <option value="">Seleccione estado civil</option>
+                <option value="">SELECCIONE GENERO</option>
                 {genderList.map((item, i) => (
                   <option key={`gender-${i}-${item.key}`} value={item.key}>
                     {item.name}
@@ -294,7 +294,7 @@ const General = ({
                   Boolean(formik.errors.activityType)
                 }
               >
-                <option value="">Seleccione opcion</option>
+                <option value="">SELECCIONE OPCIÓN</option>
                 {activityTypes.map((item) => (
                   <option value={item}>
                     {formatText.capitalizeString(item)}
@@ -315,7 +315,7 @@ const General = ({
                   formik.touched.inscriber && Boolean(formik.errors.inscriber)
                 }
               >
-                <option value="">Seleccione quien inscribe</option>
+                <option value="">SELECCIONE QUIEN INSCRIBE </option>
                 {inscribers.map((item) => (
                   <option value={item}>
                     {formatText.capitalizeString(item)}
@@ -334,7 +334,7 @@ const General = ({
                 helperText={formik.touched.funding && formik.errors.funding}
                 error={formik.touched.funding && Boolean(formik.errors.funding)}
               >
-                <option value="">Seleccione financiamiento</option>
+                <option value="">SELECCIONE FINANCIAMIENTO</option>
                 {fundingList.map((item) => (
                   <option value={item}>
                     {formatText.capitalizeString(item)}

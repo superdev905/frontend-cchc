@@ -5,7 +5,7 @@ import { Image as ImageIcon, Close as CloseIcon } from '@material-ui/icons'
 import useStyles from './styles'
 import pdfIcon from '../FileThumbnail/pdf.png'
 
-const FilePicker = ({ id, onChange, acceptedFiles, icon }) => {
+const FilePicker = ({ id, onChange, acceptedFiles, onDelete, icon }) => {
   const classes = useStyles()
   const [uploadImg, setUploadImg] = useState(null)
   const [preview, setPreview] = useState(null)
@@ -43,6 +43,7 @@ const FilePicker = ({ id, onChange, acceptedFiles, icon }) => {
   const onRemove = () => {
     setUploadImg(null)
     setPreview(null)
+    onDelete()
   }
 
   const dataPreview = (currentFile) => {

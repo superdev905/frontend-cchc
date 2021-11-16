@@ -276,9 +276,6 @@ const ModulePollsDialog = ({ open, onClose, module }) => {
                 setStep(1)
               }}
             />
-            <Box textAlign="center">
-              <Button textAlign="center">Ver todas</Button>
-            </Box>
           </Box>
         )}
         {step === 1 && (

@@ -233,6 +233,15 @@ const EventForm = ({
     }
   }, [formik.values.type_description, isVisit])
 
+  useEffect(() => {
+    if (formik.isSubmitting && !formik.isValid) {
+      enqueueSnackbar('Completa los campos requeridos', {
+        autoHideDuration: 1500,
+        variant: 'info'
+      })
+    }
+  }, [!formik.isValid, formik.isSubmitting])
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <Box>
@@ -277,7 +286,7 @@ const EventForm = ({
               error={formik.touched.shift_id && Boolean(formik.errors.shift_id)}
               helperText={formik.touched.shift_id && formik.errors.shift_id}
             >
-              <option value="">Seleccione jornada </option>
+              <option value="">SELECCIONE JORNADA </option>
               {shiftList.map((item) => (
                 <option key={`shift-type-${item.id}`} value={item.id}>
                   {item.name}
@@ -339,7 +348,7 @@ const EventForm = ({
               error={formik.touched.type_id && Boolean(formik.errors.type_id)}
               helperText={formik.touched.type_id && formik.errors.type_id}
             >
-              <option value="">Seleccione tipo </option>
+              <option value="">SELECCIONE TIPO</option>
               {eventTypes.map((item) => (
                 <option value={item.id} key={`event-type-${item.id}`}>
                   {item.description}
@@ -431,11 +440,7 @@ const EventForm = ({
           <SubmitButton
             loading={formik.isSubmitting}
             onClick={formik.handleSubmit}
-            disabled={
-              !formik.isValid ||
-              formik.isSubmitting ||
-              !getIsVisit(formik.values)
-            }
+            disabled={formik.isSubmitting || !getIsVisit(formik.values)}
             success={success}
           >
             {`${type === 'CREATE' ? 'Crear' : 'Actualizar'} evento`}
