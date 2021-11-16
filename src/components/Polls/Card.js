@@ -53,6 +53,9 @@ const useStyles = makeStyles((theme) => ({
   calendarIcon: {
     color: theme.palette.gray.gray500,
     marginRight: '5px'
+  },
+  mandatoryStatus: {
+    marginTop: 5
   }
 }))
 
@@ -146,16 +149,9 @@ const PollCard = ({ loader, poll, onClick, showAnswers, isAnswered }) => {
                     <CalendarIcon className={classes.calendarIcon} />
                     Fecha de fin: {formatDate(poll.end_date)}
                   </Typography>
-                  {poll?.is_mandatory === true && (
-                    <Typography className={classes.center}>
-                      Obligatorio: Si
-                    </Typography>
-                  )}
-                  {poll?.is_mandatory === false && (
-                    <Typography className={classes.center}>
-                      Obligatorio: No
-                    </Typography>
-                  )}
+                  <Typography className={classes.mandatoryStatus}>
+                    Obligatorio: {poll.is_mandatory ? 'Si' : 'No'}
+                  </Typography>
                 </Box>
                 <Box marginTop="10px">
                   <StatusChip
