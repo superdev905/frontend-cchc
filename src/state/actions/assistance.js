@@ -328,15 +328,11 @@ const searchEmployee =
         })
     })
 
-const getPersonalInterventionDetails = (id) => (dispatch) =>
+const getAttentionDetails = (id) => () =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.assistance}/assistance/${id}`)
       .then((response) => {
         const { data } = response
-        dispatch({
-          type: assistanceTypes.GET_PERSONAL_INTERVENTION_DETAILS,
-          payload: data
-        })
         resolve(data)
       })
       .catch((err) => {
@@ -439,7 +435,7 @@ export default {
   createAssistance,
   getAssistanceList,
   searchEmployee,
-  getPersonalInterventionDetails,
+  getAttentionDetails,
   getAttention,
   getVisitStatistics,
   createVisitReport,
