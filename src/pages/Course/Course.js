@@ -26,7 +26,8 @@ const Course = ({ children }) => {
   const updateCourse = (values) =>
     dispatch(
       coursesActions.updateCourse(course.id, {
-        ...values
+        ...values,
+        benefitId: course.benefitId
       })
     )
 
