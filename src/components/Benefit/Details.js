@@ -104,9 +104,11 @@ const BenefitDetails = ({ loading }) => {
                   {benefit && benefit?.course.otec.businessName}
                 </Text>
               </LabeledRow>
-              <LabeledRow label={'Relator'} width={200}>
+              <LabeledRow label="Relator" width={200}>
                 <Text loading={loading}>
-                  {benefit && benefit?.course.instructor.names}
+                  {benefit && benefit.course.instructor
+                    ? `${benefit.course.instructor.names} ${benefit.course.instructor.paternalSurname}`
+                    : 'Sin relator'}
                 </Text>
               </LabeledRow>
               <LabeledRow label={'Descripción'} width={200}>
