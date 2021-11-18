@@ -1,7 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles'
 import { Box, InputBase } from '@material-ui/core/'
 import SearchIcon from '@material-ui/icons/Search'
-// import { format } from 'rut.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,7 +16,10 @@ const useStyles = makeStyles((theme) => ({
   },
   input: {
     marginLeft: theme.spacing(1),
-    flex: 1
+    flex: 1,
+    '& input': {
+      textTransform: 'uppercase'
+    }
   },
   iconButton: {
     padding: 10
