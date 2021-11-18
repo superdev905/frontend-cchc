@@ -1,21 +1,15 @@
 import { useSelector } from 'react-redux'
 import { differenceInDays } from 'date-fns'
-import { useHistory } from 'react-router-dom'
 import { FaUserFriends as UsersIcon } from 'react-icons/fa'
 import { IoIosTime as TimeIcon } from 'react-icons/io'
 import { RiMoneyDollarCircleFill as MoneyIcon } from 'react-icons/ri'
 import { Avatar, Box, Grid, Typography } from '@material-ui/core'
-import { Button, DataCard, LabeledRow, StatusChip, Text } from '../UI'
+import { DataCard, LabeledRow, StatusChip, Text } from '../UI'
 import { formatCurrency, formatDate } from '../../formatters'
 import generateColor from '../../utils/generateColor'
 
 const BenefitDetails = ({ loading }) => {
-  const history = useHistory()
   const { benefitDetails: benefit } = useSelector((state) => state.benefits)
-
-  const courseDetails = () => {
-    history.push(`/courses/${benefit.courseId}/classes`)
-  }
 
   return (
     <Box p={1}>
@@ -29,7 +23,7 @@ const BenefitDetails = ({ loading }) => {
             </LabeledRow>
           )}
 
-          <LabeledRow label="Vigencia:" width={200}>
+          <LabeledRow label="Vigencia" width={200}>
             <Text loading={loading}>
               {benefit && (
                 <StatusChip
@@ -74,7 +68,7 @@ const BenefitDetails = ({ loading }) => {
                 })}
             </Text>
           </LabeledRow>
-          <LabeledRow label={'Creado por: '} width={200}>
+          <LabeledRow label={'Creado por '} width={200}>
             <Text loading={loading}>
               <Box display="flex" alignItems="center">
                 <Avatar
@@ -95,10 +89,23 @@ const BenefitDetails = ({ loading }) => {
           <LabeledRow label={'Nombre de proyecto'} width={200}>
             <Text loading={loading}>{benefit && benefit.projectName}</Text>
           </LabeledRow>
-        </Grid>
-        {benefit?.course && (
-          <>
-            <Box p={1}>
+          {benefit?.course && (
+            <Box pt={3}>
+              <Typography
+                align="left"
+                style={{
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  marginBottom: '15px'
+                }}
+              >
+                Detalles del curso
+              </Typography>
+              <LabeledRow label="Curso" width={200}>
+                <Text loading={loading}>
+                  <a href={`/courses/${benefit.courseId}/classes`}>Ver curso</a>
+                </Text>
+              </LabeledRow>
               <LabeledRow label={'OTEC'} width={200}>
                 <Text loading={loading}>
                   {benefit && benefit?.course.otec.businessName}
@@ -116,10 +123,9 @@ const BenefitDetails = ({ loading }) => {
                   {benefit && benefit.course.description}
                 </Text>
               </LabeledRow>
-              <Button onClick={courseDetails}>Ver curso</Button>
             </Box>
-          </>
-        )}
+          )}
+        </Grid>
         <Grid item xs={12} lg={5}>
           <Box mt={2}>
             <Grid container spacing={2}>
