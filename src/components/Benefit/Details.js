@@ -10,6 +10,8 @@ import generateColor from '../../utils/generateColor'
 
 const BenefitDetails = ({ loading }) => {
   const { benefitDetails: benefit } = useSelector((state) => state.benefits)
+
+  console.log(benefit)
   return (
     <Box p={1}>
       <Grid container spacing={2}>
@@ -92,6 +94,13 @@ const BenefitDetails = ({ loading }) => {
             <Text loading={loading}>{benefit && benefit.description}</Text>
           </LabeledRow>
         </Grid>
+        {benefit?.isCouse === true && (
+          <Grid>
+            <LabeledRow label={'OTEC'} width={200}>
+              <Text loading={loading}>{benefit && benefit.otecName}</Text>
+            </LabeledRow>
+          </Grid>
+        )}
         <Grid item xs={12} lg={5}>
           <Box mt={2}>
             <Grid container spacing={2}>

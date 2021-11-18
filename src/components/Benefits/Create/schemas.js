@@ -13,7 +13,14 @@ export const benefitSchema = Yup.object().shape({
     .integer('Ingrese número valido'),
   totalCost: Yup.number('Ingrese número valido')
     .min(1, 'La cantidad minima debe ser 1')
-    .required('Ingrese costo total')
+    .required('Ingrese costo total'),
+  isCourse: Yup.bool()
+})
+
+export const courseSchema = Yup.object().shape({
+  otecId: Yup.number().required('Seleccione otec'),
+  description: Yup.string().required('Ingrese descripción'),
+  instructorId: Yup.number().required('Seleccione relator')
 })
 
 export const restrictionSchema = {}

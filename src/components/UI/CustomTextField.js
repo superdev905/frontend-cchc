@@ -33,15 +33,20 @@ const CustomTextField = ({
   gray,
   className,
   maxLength,
+  type,
   ...props
 }) => {
   const classes = useStyles({ gray, error })
 
   const handleOnChange = (event) => {
-    if (onChange) {
+    if (onChange && type !== 'password') {
       const currentEvent = { ...event }
       currentEvent.target.value = currentEvent.target.value.toUpperCase()
       onChange(currentEvent)
+    }
+    if (onChange && type === 'password') {
+      const currentEventPass = { ...event }
+      onChange(currentEventPass)
     }
   }
 
@@ -62,6 +67,7 @@ const CustomTextField = ({
         onChange={handleOnChange}
         onBlur={onBlur}
         value={value}
+        type={type}
         InputLabelProps={{
           shrink: false
         }}

@@ -1,6 +1,7 @@
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, Switch } from '@material-ui/core'
 import { Select, TextField } from '../../UI'
 import { CurrencyTextField, DatePicker } from '../../Shared'
+import CourseForm from '../../Courses/CourseForm'
 
 const statusList = ['VIGENTE', 'NO VIGENTE']
 
@@ -12,6 +13,7 @@ const BenefitForm = ({ formik, actions }) => {
     if (num === '0') return ''
     return parseInt(num, 10)
   }
+
   return (
     <Box>
       <Box>
@@ -148,6 +150,24 @@ const BenefitForm = ({ formik, actions }) => {
               helperText={formik.touched.totalCost && formik.errors.totalCost}
             />
           </Grid>
+
+          <Box>
+            <Switch
+              color="primary"
+              value={formik.values.isCourse}
+              onChange={(e) => {
+                console.log(e.target.checked)
+                formik.setFieldValue('isCourse', true)
+              }}
+            />
+          </Box>
+
+          {formik.values.isCourse && (
+            <>
+              A
+              <CourseForm formik={formik} type="CREATE" />
+            </>
+          )}
         </Grid>
       </Box>
       {actions}
