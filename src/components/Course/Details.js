@@ -23,6 +23,11 @@ const Details = ({ loading }) => {
               </Text>
             </LabeledRow>
           )}
+          <LabeledRow label="Beneficio:">
+            <Text loading={loading}>
+              <a href={`/benefits/${course?.benefitId}`}>Ver beneficio</a>
+            </Text>
+          </LabeledRow>
           <Box mt={'15px'}>
             <Typography style={{ fontWeight: 'bold' }}>OTEC</Typography>
             <LabeledRow label="Rut:">

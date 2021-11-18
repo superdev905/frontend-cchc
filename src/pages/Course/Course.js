@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Alert } from '@material-ui/lab'
 import { Box, Typography } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
 import { useParams, useHistory } from 'react-router-dom'
@@ -63,8 +64,10 @@ const Course = ({ children }) => {
   }
 
   useEffect(() => {
-    fetchCourse()
-  }, [])
+    if (idCourse) {
+      fetchCourse()
+    }
+  }, [idCourse])
 
   return (
     <Wrapper>
@@ -112,9 +115,16 @@ const Course = ({ children }) => {
           onClose={toggleOpenDelete}
           onConfirm={() => deleteCourses(course.id)}
           message={
-            <Typography variant="h6">
-              ¿Estás seguro de eliminar este curso?
-            </Typography>
+            <Box>
+              <Box mb={2}>
+                <Typography variant="h6">
+                  ¿Estás seguro de eliminar este curso?
+                </Typography>
+              </Box>
+              <Alert severity="warning">
+                Al eliminar este curso se eliminará el beneficio asociado
+              </Alert>
+            </Box>
           }
           loading={deleting}
           success={success}
