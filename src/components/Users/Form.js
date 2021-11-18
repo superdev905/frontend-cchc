@@ -10,11 +10,11 @@ import {
   Button,
   TextField,
   Select,
-  TextFieldPassword
 } from '../UI'
 import { useSuccess } from '../../hooks'
 import generatePassword from '../../utils/generatePassword'
 import commonActions from '../../state/actions/common'
+import CustomTextField from '../UI/CustomTextField'
 
 const useStyles = makeStyles((theme) => ({
   label: {
@@ -204,7 +204,7 @@ const Form = ({
             </Grid>
             {type === 'ADD' && (
               <Grid item xs={12} md={6}>
-                <TextFieldPassword
+                <CustomTextField
                   name="password"
                   label="Contraseña"
                   required

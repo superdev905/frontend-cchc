@@ -8,7 +8,7 @@ import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import Logo from '../../assets/media/logo_cchc.svg'
 import authActions from '../../state/actions/auth'
-import { SubmitButton, TextField, TextFieldPassword } from '../../components/UI'
+import { SubmitButton, TextField } from '../../components/UI'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -130,7 +130,7 @@ const Login = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextFieldPassword
+            <TextField
               type="password"
               label="Contraseña"
               name="password"

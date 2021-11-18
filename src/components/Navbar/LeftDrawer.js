@@ -69,7 +69,7 @@ const LeftDrawer = ({ ...props }) => {
             onClick={() => onItemClick(route.path)}
             key={`drawer-items--${index}`}
             className={clsx(
-              location.pathname.includes(route.path) && classes.activeItem
+              location.pathname === route.path && classes.activeItem
             )}
           >
             <ListItemIcon className={classes.listIcon}>
