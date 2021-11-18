@@ -12,7 +12,7 @@ const StepOne = ({ onClose, data }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { create } = useSelector((state) => state.benefits)
-  const [isCourse, setIsCourse] = useState(create.benefit?.isCourse === false)
+  const [isCourse, setIsCourse] = useState(false)
 
   const formik = useFormik({
     validateOnMount: true,
@@ -28,7 +28,7 @@ const StepOne = ({ onClose, data }) => {
       usersQuantity: create?.benefit?.usersQuantity || '',
       isActive: create?.benefit?.isActive || '',
       totalCost: create?.benefit?.totalCost || '',
-      isCourse: false,
+      isCourse: create?.benefit?.isCourse || false,
       otecId: create?.benefit?.otecId || '',
       otecName: create?.benefit?.otecName || '',
       instructorId: create?.benefit?.instructorId || '',
@@ -36,10 +36,19 @@ const StepOne = ({ onClose, data }) => {
       description: create?.benefit?.description || ''
     },
     onSubmit: (values) => {
+      const body = { ...values }
+      if (values.isCourse) {
+        body.course = {
+          otecId: values.otecId,
+          instructorId: values.instructorId,
+          description: values.description
+        }
+      }
+
       dispatch(
         benefitsActions.updateCreate({
           ...create,
-          benefit: { ...create.benefit, ...values },
+          benefit: { ...create.benefit, ...body },
           step: create.step + 1
         })
       )
@@ -47,25 +56,9 @@ const StepOne = ({ onClose, data }) => {
   })
 
   useEffect(() => {
-    console.log('f', formik.values.isCourse)
     setIsCourse(formik.values.isCourse)
   }, [formik.values.isCourse])
 
-  useEffect(() => {
-    if (formik.values.isCourse === false) {
-      formik.setFieldValue('instructorId', '')
-      formik.setFieldValue('instructorName', '')
-      formik.setFieldValue('otecId', '')
-      formik.setFieldValue('otecName', '')
-      formik.setFieldValue('description', '')
-
-      setIsCourse(false)
-    } else {
-      setIsCourse(true)
-    }
-  }, [formik.values.disability, isCourse])
-
-  console.log(formik.errors)
   useEffect(() => {
     if (data) {
       dispatch(
@@ -86,6 +79,7 @@ const StepOne = ({ onClose, data }) => {
         <BenefitForm
           formData={create.benefit}
           formik={formik}
+          type={create.type}
           actions={
             <Actions
               showBackIcon={false}

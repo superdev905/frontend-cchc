@@ -1,11 +1,17 @@
-import { Box, Grid, Switch } from '@material-ui/core'
+import {
+  Box,
+  FormControlLabel,
+  Grid,
+  Switch,
+  Typography
+} from '@material-ui/core'
 import { Select, TextField } from '../../UI'
 import { CurrencyTextField, DatePicker } from '../../Shared'
 import CourseForm from '../../Courses/CourseForm'
 
 const statusList = ['VIGENTE', 'NO VIGENTE']
 
-const BenefitForm = ({ formik, actions }) => {
+const BenefitForm = ({ type, formik, actions }) => {
   const validNumber = (num) => {
     if (num === '') return ''
     if (Number.isNaN(num)) return ''
@@ -150,29 +156,43 @@ const BenefitForm = ({ formik, actions }) => {
               helperText={formik.touched.totalCost && formik.errors.totalCost}
             />
           </Grid>
-
-          <Box>
-            <Switch
-              color="primary"
-              value={formik.values.isCourse}
-              onChange={(e) => {
-                console.log(e.target.checked)
-                formik.setFieldValue('isCourse', true)
-              }}
-            />
-          </Box>
-
-          {formik.values.isCourse && (
-            <>
-              A
-              <CourseForm formik={formik} type="CREATE" />
-            </>
+          {type === 'CREATE' && (
+            <Grid item xs={12}>
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      color="primary"
+                      value={formik.values.isCourse}
+                      onChange={(e) => {
+                        formik.setFieldValue('isCourse', e.target.checked)
+                      }}
+                    />
+                  }
+                  label="Este beneficio es un curso"
+                />
+              </Box>
+            </Grid>
           )}
+          <Grid item xs={12}>
+            {formik.values.isCourse && type === 'CREATE' && (
+              <Box>
+                <Typography style={{ marginBottom: 10 }}>
+                  Detalles de curso
+                </Typography>
+                <CourseForm formik={formik} type="CREATE" />
+              </Box>
+            )}
+          </Grid>
         </Grid>
       </Box>
       {actions}
     </Box>
   )
+}
+
+BenefitForm.defaultProps = {
+  type: 'CREATE'
 }
 
 export default BenefitForm

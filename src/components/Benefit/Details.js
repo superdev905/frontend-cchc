@@ -11,7 +11,6 @@ import generateColor from '../../utils/generateColor'
 const BenefitDetails = ({ loading }) => {
   const { benefitDetails: benefit } = useSelector((state) => state.benefits)
 
-  console.log(benefit)
   return (
     <Box p={1}>
       <Grid container spacing={2}>

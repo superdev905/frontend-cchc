@@ -50,16 +50,15 @@ const CreateForm = ({ type, data, formik }) => {
   }, [formik.values.instructorId, instructorsList])
 
   useEffect(() => {
-    formik.resetForm()
     dispatch(commonActions.getAllOTECS())
     dispatch(usersActions.getOTECUsers()).then((result) => {
       setInstructorList(result)
     })
-  }, [type])
+  }, [])
 
   return (
-    <Box p={2}>
-      <Grid container>
+    <Box>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           <InputLabel required>OTEC</InputLabel>
           {selectedOTEC ? (

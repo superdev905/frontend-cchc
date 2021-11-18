@@ -5,12 +5,7 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { Avatar, Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Dialog } from '../Shared'
-import {
-  SubmitButton,
-  Button,
-  TextField,
-  Select,
-} from '../UI'
+import { SubmitButton, Button, TextField, Select } from '../UI'
 import { useSuccess } from '../../hooks'
 import generatePassword from '../../utils/generatePassword'
 import commonActions from '../../state/actions/common'

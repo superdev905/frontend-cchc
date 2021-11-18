@@ -53,15 +53,17 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
   }
 
   useEffect(() => {
-    dispatch(
-      benefitsActions.updateCreate({
-        ...create,
-        open,
-        type,
-        step: open ? 0 : create.step,
-        benefit: type === 'UPDATE' ? data : null
-      })
-    )
+    if (open) {
+      dispatch(
+        benefitsActions.updateCreate({
+          ...create,
+          open,
+          type,
+          step: open ? 0 : create.step,
+          benefit: type === 'UPDATE' ? data : null
+        })
+      )
+    }
   }, [type, open])
 
   return (

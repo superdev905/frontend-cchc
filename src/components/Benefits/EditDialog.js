@@ -27,7 +27,8 @@ const EditDialog = ({ open, onClose, benefit, successFunction }) => {
       projectName: benefit?.projectName || '',
       usersQuantity: benefit?.usersQuantity || '',
       isActive: benefit?.isActive ? 'VIGENTE' : 'NO VIGENTE',
-      totalCost: benefit?.totalCost || ''
+      totalCost: benefit?.totalCost || '',
+      isCourse: benefit?.isCourse
     },
     onSubmit: (values) => {
       dispatch(
@@ -67,6 +68,7 @@ const EditDialog = ({ open, onClose, benefit, successFunction }) => {
       </Typography>
       <BenefitForm
         formik={formik}
+        type="UPDATE"
         actions={
           <Box p={2} textAlign={'center'}>
             <Button variant={'outlined'} onClick={onClose}>
