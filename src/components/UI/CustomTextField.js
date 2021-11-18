@@ -7,11 +7,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '15px',
     color: theme.palette.gray.gray600
   },
-  input: ({ gray, error }) => ({
+  input: ({ gray, error, type }) => ({
     '& input': {
       backgroundColor: gray ? '#F5F8FA' : 'transparent',
       color: error ? theme.palette.error.main : theme.palette.common.black,
-      border: `1px solid ${theme.palette.gray.gray50}`
+      border: `1px solid ${theme.palette.gray.gray50}`,
+      textTransform: type !== 'password' ? 'uppercase' : 'inherit'
     }
   })
 }))
@@ -36,19 +37,7 @@ const CustomTextField = ({
   type,
   ...props
 }) => {
-  const classes = useStyles({ gray, error })
-
-  const handleOnChange = (event) => {
-    if (onChange && type !== 'password') {
-      const currentEvent = { ...event }
-      currentEvent.target.value = currentEvent.target.value.toUpperCase()
-      onChange(currentEvent)
-    }
-    if (onChange && type === 'password') {
-      const currentEventPass = { ...event }
-      onChange(currentEventPass)
-    }
-  }
+  const classes = useStyles({ gray, error, type })
 
   return (
     <Box>
@@ -64,7 +53,7 @@ const CustomTextField = ({
         placeholder={placeholder}
         helperText={helperText}
         error={error}
-        onChange={handleOnChange}
+        onChange={onChange}
         onBlur={onBlur}
         value={value}
         type={type}

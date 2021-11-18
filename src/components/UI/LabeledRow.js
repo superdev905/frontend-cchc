@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
   }),
   text: ({ width }) => ({
     fontSize: 16,
+    textTransform: 'uppercase',
     [theme.breakpoints.up('md')]: {
       width: `calc( 100% - ${width || 150}px)`
     }
