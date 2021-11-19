@@ -4,14 +4,14 @@ import PensionSituation from './PensionSituation'
 import HousingSituation from './HousingSituation'
 import { Wrapper } from '../UI'
 
-const Situation = () => (
+const Situation = ({ employeeId }) => (
   <Wrapper>
     <Grid container spacing={1}>
       <Grid item xs={12} md={6}>
-        <PensionSituation />
+        <PensionSituation employeeId={employeeId} />
       </Grid>
       <Grid item xs={12} md={6}>
-        <HousingSituation />
+        <HousingSituation employeeId={employeeId} />
       </Grid>
     </Grid>
   </Wrapper>

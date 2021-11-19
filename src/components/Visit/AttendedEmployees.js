@@ -225,7 +225,7 @@ const List = () => {
                         setSelectedUser(row)
                       }}
                     >
-                      Registrar
+                      Actualizar
                     </Button>
                     <Button
                       size="small"
@@ -283,6 +283,8 @@ const List = () => {
           open={openJobs}
           onClose={toggleOpenJobs}
           employeeId={selectedUser.id}
+          employeeNames={`${selectedUser.names} ${selectedUser.paternal_surname}`}
+          employeeRun={selectedUser.run}
         />
       )}
     </Wrapper>

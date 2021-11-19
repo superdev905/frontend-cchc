@@ -11,10 +11,11 @@ import SpecForm from './SpecForm'
 import { ConfirmDelete, DataTable, FileVisor } from '../Shared'
 import { formatDate } from '../../formatters'
 
-const PensionSituation = () => {
+const PensionSituation = ({ employeeId }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { idEmployee } = useParams()
+  const [currentEmployeeId] = useState(idEmployee || employeeId)
   const [list, setList] = useState([])
   const [current, setCurrent] = useState(null)
   const { user } = useSelector((state) => state.auth)
@@ -25,7 +26,9 @@ const PensionSituation = () => {
 
   const fetchData = () => {
     dispatch(
-      employeesActions.getSpecializationHistory({ employee_id: idEmployee })
+      employeesActions.getSpecializationHistory({
+        employee_id: currentEmployeeId
+      })
     ).then((data) => {
       setList(
         data.map((item) => ({
@@ -51,12 +54,12 @@ const PensionSituation = () => {
       delete values.certifying_entity_id
     }
     if (values.certification_file) {
-      values.certification_file.dataId = idEmployee
+      values.certification_file.dataId = currentEmployeeId
     }
     return dispatch(
       employeesActions.createSpecialization({
         ...values,
-        employee_id: parseInt(idEmployee, 10),
+        employee_id: parseInt(currentEmployeeId, 10),
         created_by: user.id
       })
     )
@@ -70,13 +73,13 @@ const PensionSituation = () => {
       delete values.certifying_entity_id
     }
     if (values.certification_file) {
-      values.certification_file.dataId = idEmployee
+      values.certification_file.dataId = currentEmployeeId
     }
     return dispatch(
       employeesActions.updateSpecialization(current.id, {
         ...values,
         state: current.state,
-        employee_id: parseInt(idEmployee, 10),
+        employee_id: parseInt(currentEmployeeId, 10),
         created_by: current.created_by
       })
     )

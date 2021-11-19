@@ -10,9 +10,10 @@ import PensionSituationForm from './PensionSituationForm'
 import CardPensionSituation from './CardPensionSituation'
 import { ConfirmDelete } from '../Shared'
 
-const PensionSituation = () => {
+const PensionSituation = ({ employeeId }) => {
   const dispatch = useDispatch()
   const { idEmployee } = useParams()
+  const [currentEmployee] = useState(idEmployee || employeeId)
   const [list, setList] = useState([])
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
@@ -24,7 +25,7 @@ const PensionSituation = () => {
 
   const fetchData = () => {
     dispatch(
-      employeesActions.getPensionSituation({ employee_id: idEmployee })
+      employeesActions.getPensionSituation({ employee_id: currentEmployee })
     ).then((data) => {
       setList(data)
     })
@@ -37,7 +38,7 @@ const PensionSituation = () => {
     return dispatch(
       employeesActions.createPensionSituation({
         ...values,
-        employee_id: parseInt(idEmployee, 10),
+        employee_id: parseInt(currentEmployee, 10),
         created_by: user.id
       })
     )
@@ -51,7 +52,7 @@ const PensionSituation = () => {
         state: current.state,
         is_main: current.is_main,
         ...values,
-        employee_id: parseInt(idEmployee, 10),
+        employee_id: parseInt(currentEmployee, 10),
         created_by: current.created_by
       })
     )

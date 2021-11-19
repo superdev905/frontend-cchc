@@ -1,4 +1,4 @@
-import Axios from 'axios'
+import Axios from '../../Axios'
 import config from '../../config'
 
 const downloadFile = (fileUrl, originalFileName) => () =>

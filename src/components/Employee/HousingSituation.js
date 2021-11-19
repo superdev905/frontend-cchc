@@ -10,11 +10,12 @@ import HousingSituationForm from './HousingSituationForm'
 import CardHousingSituation from './CardHousingSituation'
 import { ConfirmDelete } from '../Shared'
 
-const PensionSituation = () => {
+const PensionSituation = ({ employeeId }) => {
   const dispatch = useDispatch()
   const { idEmployee } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
+  const [currentEmployeeId] = useState(idEmployee || employeeId)
   const [list, setList] = useState([])
   const [current, setCurrent] = useState(null)
   const { user } = useSelector((state) => state.auth)
@@ -24,7 +25,7 @@ const PensionSituation = () => {
 
   const fetchData = () => {
     dispatch(
-      employeesActions.getHousingSituation({ employee_id: idEmployee })
+      employeesActions.getHousingSituation({ employee_id: currentEmployeeId })
     ).then((data) => {
       setList(data)
     })
@@ -33,7 +34,7 @@ const PensionSituation = () => {
     dispatch(
       employeesActions.createHousingSituation({
         ...values,
-        employee_id: parseInt(idEmployee, 10),
+        employee_id: parseInt(currentEmployeeId, 10),
         created_by: user.id
       })
     )
@@ -43,7 +44,7 @@ const PensionSituation = () => {
       employeesActions.updateHousingSituation(current.id, {
         ...current,
         ...values,
-        employee_id: parseInt(idEmployee, 10),
+        employee_id: parseInt(currentEmployeeId, 10),
         created_by: current.created_by
       })
     )
