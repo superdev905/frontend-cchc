@@ -104,6 +104,7 @@ const Contacts = ({ ...props }) => {
         </Box>
 
         <ContactModal
+          includeInterlocutor
           open={openCreate}
           onClose={toggleOpenCreate}
           submitFunction={onCrateContact}
@@ -112,6 +113,7 @@ const Contacts = ({ ...props }) => {
         />
         {currentContact && openUpdate && (
           <ContactModal
+            includeInterlocutor
             open={openUpdate}
             onClose={toggleOpenUpdate}
             type="UPDATE"

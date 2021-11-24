@@ -5,7 +5,8 @@ import {
   makeStyles,
   IconButton,
   Card,
-  CardContent
+  CardContent,
+  Chip
 } from '@material-ui/core'
 import {
   MoreHoriz as MoreIcon,
@@ -49,23 +50,41 @@ const ContactCard = ({ contact, onEdit, onDelete }) => {
                 <MoreIcon />
               </IconButton>
             </Box>
-            <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>
+
+            <Typography
+              style={{
+                textTransform: 'uppercase',
+                fontSize: '18px',
+                fontWeight: 'bold'
+              }}
+            >
               {contact.full_name}
             </Typography>
-            <Typography style={{ fontSize: '14px' }}>
+            <Typography
+              style={{
+                fontSize: '14px'
+              }}
+            >
               <CalendarIcon style={{ fontSize: '14px', marginRight: '8px' }} />
               {new Date(contact.created_at).toLocaleDateString('es-CL', {
                 dateStyle: 'long'
               })}
             </Typography>
-            <Box marginTop="10px">
+            <Box marginTop="10px" style={{ textTransform: 'uppercase' }}>
+              {contact?.is_interlocutor && (
+                <Chip color="primary" label="Interlocutor válido" />
+              )}
               <Typography>Correo: {contact.email}</Typography>
               <Typography>
                 Cargo: {capitalize(contact?.charge_name) || ''}
               </Typography>
-              <Typography>Télefono: {contact.cell_phone}</Typography>
-              <Typography>Télefono Oficina: {contact.office_phone}</Typography>
-              <Typography>Otro Télefono: {contact.other_phone}</Typography>
+              <Typography>Télefono: {contact.cell_phone || '---'}</Typography>
+              <Typography>
+                Télefono Oficina: {contact.office_phone || '---'}
+              </Typography>
+              <Typography>
+                Otro Télefono: {contact.other_phone || '---'}
+              </Typography>
             </Box>
           </Box>
         </CardContent>
