@@ -64,6 +64,8 @@ const EventForm = ({
 
   const formik = useFormik({
     validateOnMount: true,
+    validateOnChange: true,
+    validateOnBlur: true,
     validationSchema: isVisit
       ? validationSchema.concat(visitSchema)
       : validationSchema,
@@ -106,16 +108,15 @@ const EventForm = ({
     setSelectedCompany(values)
     const idCompany = values ? values.id : ''
     const nameCompany = values ? values.business_name : ''
-
     formik.setFieldValue('business_id', idCompany)
     formik.setFieldValue('business_name', nameCompany)
     setSelectedCons(null)
   }
 
   const onConstructionChange = (__, values) => {
+    setSelectedCons(values)
     formik.setFieldValue('construction_id', values?.id || '')
     formik.setFieldValue('construction_name', values?.name || '')
-    setSelectedCons(values)
   }
 
   useEffect(() => {
@@ -211,11 +212,14 @@ const EventForm = ({
   const getIsVisit = (form) => {
     if (form.type_description === 'TAREA') return true
 
-    if (form.business_id) return true
-    if (form.business_name) return true
-    if (form.construction_id) return true
-    if (form.construction_name) return true
-
+    if (
+      form.business_id &&
+      form.business_name &&
+      form.construction_id &&
+      form.construction_name
+    ) {
+      return true
+    }
     return false
   }
 
@@ -415,7 +419,6 @@ const EventForm = ({
               </Grid>
             </>
           )}
-
           <Grid item xs={12}>
             <TextArea
               name="observation"
@@ -440,7 +443,7 @@ const EventForm = ({
           <SubmitButton
             loading={formik.isSubmitting}
             onClick={formik.handleSubmit}
-            disabled={formik.isSubmitting || !getIsVisit(formik.values)}
+            disabled={!formik.isValid || !getIsVisit(formik.values)}
             success={success}
           >
             {`${type === 'CREATE' ? 'Crear' : 'Actualizar'} evento`}
