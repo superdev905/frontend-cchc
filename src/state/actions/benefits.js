@@ -187,6 +187,17 @@ const getBenefitsForEmployee = (idEmployee) => () =>
         reject(err.response.data.detail)
       })
   })
+const getBenefitsForBusiness = (idBusiness) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.benefits}/benefits/business/${idBusiness}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 const benefitsActions = {
   updateCreate,
@@ -202,7 +213,8 @@ const benefitsActions = {
   getActivityDetails,
   updateActivity,
   deleteActivity,
-  getBenefitsForEmployee
+  getBenefitsForEmployee,
+  getBenefitsForBusiness
 }
 
 export default benefitsActions

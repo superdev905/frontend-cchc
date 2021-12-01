@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
   name: {
     fontWeight: 'bold',
+    textTransform: 'uppercase',
     fontSize: 17
   },
   info: {

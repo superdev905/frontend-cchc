@@ -1,2 +1,6 @@
 export { default as ScheduleList } from './List'
 export { default as ScheduleBenefitDrawer } from './BenefitDrawer'
+export { default as ScheduleTimeLine } from './TimeLine'
+export { default as ScheduleContactCard } from './ContactCard'
+export { default as ScheduleDetails } from './Details'
+export { default as ScheduleTabs } from './Tabs'

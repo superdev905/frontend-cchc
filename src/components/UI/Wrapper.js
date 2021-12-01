@@ -2,15 +2,19 @@ import PropTypes from 'prop-types'
 import { Box, makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  root: ({ p }) => ({
     backgroundColor: theme.palette.common.white,
     marginBottom: 15,
-    borderRadius: 5
-  }
+    borderRadius: 5,
+    padding: theme.spacing(1),
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(p)
+    }
+  })
 }))
 
 const Wrapper = ({ children, p }) => {
-  const classes = useStyles()
+  const classes = useStyles({ p })
   return (
     <Box className={classes.root} p={p}>
       {children}

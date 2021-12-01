@@ -4,7 +4,7 @@ import { Skeleton } from '@material-ui/lab'
 import { PageHeading, TimeStamp } from '../UI'
 
 const BackHeading = ({ goBack, title, loading, timeAgo }) => (
-  <Box display="flex">
+  <Box display="flex" alignItems="center">
     <Box>
       <IconButton onClick={goBack}>
         <BackIcon />
@@ -16,7 +16,7 @@ const BackHeading = ({ goBack, title, loading, timeAgo }) => (
       ) : (
         <Skeleton width="200px"></Skeleton>
       )}
-      <TimeStamp loading={loading} text={timeAgo} />
+      {timeAgo && <TimeStamp loading={loading} text={timeAgo} />}
     </Box>
   </Box>
 )

@@ -36,6 +36,24 @@ const getOTECUsers =
         })
     })
 
+const getBosses =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.auth}/users/search/jefatura?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const getUserDetails = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.auth}/users/${id}`)
@@ -124,5 +142,6 @@ export default {
   getUserDetails,
   updatePassword,
   getOTECUsers,
+  getBosses,
   getFoundationUsers
 }

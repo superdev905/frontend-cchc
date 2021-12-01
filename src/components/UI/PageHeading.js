@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     color: '#6A707E',
+    textTransform: 'uppercase',
     [theme.breakpoints.up('lg')]: {
       fontSize: 22
     }
