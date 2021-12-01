@@ -31,6 +31,7 @@ const BenefitPage = lazy(() => import('../pages/Benefit'))
 const ScheduleList = lazy(() => import('../pages/ScheduleList'))
 const ScheduleNew = lazy(() => import('../pages/ScheduleNew'))
 const Schedule = lazy(() => import('../pages/Schedule'))
+const Housing = lazy(() => import('../pages/Housing'))
 
 const routes = [
   {
@@ -410,6 +411,22 @@ const routes = [
         yes={() => (
           <Layout>
             <Schedule />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/housing',
+    key: 'HOUSING',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <Housing />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}
