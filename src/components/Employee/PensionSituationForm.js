@@ -31,6 +31,7 @@ const PensionSituation = ({
 
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
+  const { employee } = useSelector((state) => state.employees)
   const { isMobile } = useSelector((state) => state.ui)
   const { AfpIspList, IsapreFonasaList } = useSelector((state) => state.common)
 
@@ -42,7 +43,8 @@ const PensionSituation = ({
       isapre_fonasa_name: type === 'UPDATE' ? data.isapre_fonasa_name : '',
       afp_isp_id: type === 'UPDATE' ? data.afp_isp_id : '',
       is_pensioner: type === 'UPDATE' ? data.is_pensioner : '',
-      belongs_to_recognize: type === 'UPDATE' ? data.belongs_to_recognize : '',
+      belongs_to_recognize:
+        type === 'UPDATE' ? data.belongs_to_recognize : employee.recognize,
       pension_amount:
         type === 'UPDATE'
           ? `${
