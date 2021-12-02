@@ -11,6 +11,7 @@ import {
   Book as BookIcon,
   Favorite as BenefitIcon
 } from '@material-ui/icons'
+import HouseIcon from '@material-ui/icons/House'
 
 const modulesByRole = {
   COMMON: [{ title: 'Home', path: '/home', icon: <DashboardIcon /> }],
@@ -41,6 +42,11 @@ const modulesByRole = {
       title: 'Beneficios',
       path: '/benefits',
       icon: <BenefitIcon />
+    },
+    {
+      title: 'Vivienda',
+      path: 'housing',
+      icon: <HouseIcon />
     },
     { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
     {

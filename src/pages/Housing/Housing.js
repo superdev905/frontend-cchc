@@ -10,17 +10,11 @@ const Housing = () => (
     <PageHeading>Vivienda</PageHeading>
     <Box>
       <HouseDashboard />
-    </Box>
-    <br />
-    <Box>
       <HouseCredit />
-    </Box>
-    <Box>
       <HouseAtention />
-    </Box>
-    <Box>
       <HouseOwners />
     </Box>
+    <br />
   </Box>
 )
 export default Housing
