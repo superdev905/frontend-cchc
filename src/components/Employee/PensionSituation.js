@@ -111,13 +111,15 @@ const PensionSituation = ({ employeeId }) => {
           ))
         )}
       </Box>
-      <PensionSituationForm
-        successMessage="Situación previsional creado"
-        open={openAdd}
-        onClose={toggleOpenAdd}
-        submitFunction={createSituation}
-        successFunction={fetchData}
-      />
+      {openAdd && (
+        <PensionSituationForm
+          successMessage="Situación previsional creado"
+          open={openAdd}
+          onClose={toggleOpenAdd}
+          submitFunction={createSituation}
+          successFunction={fetchData}
+        />
+      )}
       {current && openEdit && (
         <PensionSituationForm
           type="UPDATE"
