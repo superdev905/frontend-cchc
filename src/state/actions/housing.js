@@ -1,27 +1,31 @@
-// import queryString from 'query-string'
+import queryString from 'query-string'
 import Axios from '../../Axios'
-// import scheduleTypes from '../types/schedule'
+import housingTypes from '../types/housing'
 import config from '../../config'
 
-// const getSchedules =
-//   (query = {}) =>
-//   (dispatch) =>
-//     new Promise((resolve, reject) => {
-//       Axios.get(
-//         `${config.services.schedule}/schedule?${queryString.stringify(query)}`
-//       )
-//         .then((response) => {
-//           const { data } = response
-//           dispatch({
-//             type: scheduleTypes.GET_SCHEDULE_LIST,
-//             payload: data.items
-//           })
-//           resolve(data)
-//         })
-//         .catch((err) => {
-//           reject(err.response.data.detail)
-//         })
-//     })
+const getAgreements =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.housing}/agreements?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: housingTypes.GET_AGREEMENTS,
+            payload: data.items
+          })
+          dispatch({
+            type: housingTypes.SET_TOTAL_AGREEMENTS,
+            payload: data.total
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
 
 // const getSchedule = (id) => (dispatch) =>
 //   new Promise((resolve, reject) => {
@@ -104,7 +108,8 @@ const createAgreement = (values) => () =>
 //   })
 
 const housingActions = {
-  createAgreement
+  createAgreement,
+  getAgreements
 }
 
 export default housingActions

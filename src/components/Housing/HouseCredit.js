@@ -1,14 +1,45 @@
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Box, Typography } from '@material-ui/core'
-import { Button } from '../UI'
+import { Box, Grid, Typography } from '@material-ui/core'
+import { ActionsTable, Button, SearchInput, StatusChip } from '../UI'
 import { DataTable } from '../Shared'
-import Can from '../Can'
+import housingActions from '../../state/actions/housing'
+import { formatDate } from '../../formatters'
 
 const HouseAgreements = () => {
+  const dispatch = useDispatch()
   const history = useHistory()
+  const [loading, setLoading] = useState(false)
+  const [query, setQuery] = useState({ page: 1, size: 30, search: '' })
+  const { agreementList, totalAgreements } = useSelector(
+    (state) => state.housing
+  )
+
   const onClickCreate = () => {
     history.push(`/housing/new`)
   }
+
+  const onClickArrow = (id) => {
+    history.push(`/agreement/${id}`)
+  }
+
+  const handleSearch = (e) => {
+    setQuery({ ...query, search: e.target.value })
+  }
+
+  const fetchAgreements = () => {
+    setLoading(true)
+    dispatch(
+      housingActions.getAgreements({ ...query, search: query.search.trim() })
+    ).then(() => {
+      setLoading(false)
+    })
+  }
+
+  useEffect(() => {
+    fetchAgreements()
+  }, [query])
 
   return (
     <Box>
@@ -20,27 +51,70 @@ const HouseAgreements = () => {
           <Button onClick={onClickCreate}>Nuevo convenio</Button>
         </Box>
       </Box>
+      <Box mb={1}>
+        <Grid container>
+          <Grid item xs={12} md={5}>
+            <SearchInput
+              placeholder="Buscar convenio por: Nombre de empresa"
+              value={query.search}
+              onChange={handleSearch}
+            />
+          </Grid>
+        </Grid>
+      </Box>
+
       <DataTable
         higlightOnHover
         pointerOnHover
+        data={agreementList}
+        progressPending={loading}
+        emptyMessage={
+          query.search
+            ? `No se encontraron resultados para:${query.search}`
+            : 'No se crearon convenios'
+        }
         columns={[
           {
             name: 'Fecha',
-            selector: (row) => row.date
+            selector: (row) => formatDate(row.date)
           },
           {
             name: 'Empresa',
-            selector: (row) => row.companies
+            selector: (row) => row.businessName
           },
           {
             name: 'Estado',
-            selector: (row) => row.state
+            selector: (row) => (
+              <StatusChip
+                success={row.isActive}
+                label={row.isActive ? 'Activo' : 'Eliminado'}
+              />
+            )
           },
           {
             name: 'Trabajadores',
-            selector: (row) => row.Workers
+            selector: (row) => row.totalEmployees
+          },
+          {
+            name: '',
+            right: true,
+            selector: (row) => (
+              <ActionsTable onView={() => onClickArrow(row.id)} />
+            )
           }
         ]}
+        onRowClicked={(row) => onClickArrow(row.id)}
+        pagination
+        paginationRowsPerPageOptions={[30, 40]}
+        paginationPerPage={query.size}
+        paginationServer
+        onChangeRowsPerPage={(limit) => {
+          setQuery({ ...query, size: limit })
+        }}
+        onChangePage={(page) => {
+          setQuery({ ...query, page })
+        }}
+        paginationTotalRows={totalAgreements}
       />
     </Box>
   )

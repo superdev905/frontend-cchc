@@ -1,14 +1,14 @@
 import housingTypes from '../types/housing'
 
 const initialState = {
-  list: [],
-  totalPages: 0
+  agreementList: [],
+  totalAgreements: 0
 }
 
 const housingReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case housingTypes.GET_AGREEMENTS:
-      return { ...state, list: payload }
+      return { ...state, agreementList: payload }
     default:
       return state
   }
