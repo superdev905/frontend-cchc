@@ -1,39 +1,48 @@
-import { Box, Grid, Typography } from '@material-ui/core'
-import { Wrapper } from '../UI'
+import { useHistory } from 'react-router-dom'
+import { Box, Typography } from '@material-ui/core'
+import { Button } from '../UI'
 import { DataTable } from '../Shared'
 
-const HouseCredit = () => (
-  <Wrapper>
-    <Box>
-      <Grid container spacing={1} alingItems="center">
-        <Grid Item>
-          <Typography variant="h7">Convenios</Typography>
-        </Grid>
-      </Grid>
-    </Box>
-    <DataTable
-      higlightOnHover
-      pointerOnHover
-      columns={[
-        {
-          name: 'Fecha',
-          selector: (row) => row.date
-        },
-        {
-          name: 'Empresa',
-          selector: (row) => row.companies
-        },
-        {
-          name: 'Estado',
-          selector: (row) => row.state
-        },
-        {
-          name: 'Trabajadores',
-          selector: (row) => row.Workers
-        }
-      ]}
-    />
-  </Wrapper>
-)
+const HouseAgreements = () => {
+  const history = useHistory()
+  const onClickCreate = () => {
+    history.push(`/housing/new`)
+  }
 
-export default HouseCredit
+  return (
+    <Box>
+      <Box>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography style={{ fontSize: 18, fontWeight: 'bold' }} variant="h7">
+            Convenios
+          </Typography>
+          <Button onClick={onClickCreate}>Nuevo convenio</Button>
+        </Box>
+      </Box>
+      <DataTable
+        higlightOnHover
+        pointerOnHover
+        columns={[
+          {
+            name: 'Fecha',
+            selector: (row) => row.date
+          },
+          {
+            name: 'Empresa',
+            selector: (row) => row.companies
+          },
+          {
+            name: 'Estado',
+            selector: (row) => row.state
+          },
+          {
+            name: 'Trabajadores',
+            selector: (row) => row.Workers
+          }
+        ]}
+      />
+    </Box>
+  )
+}
+
+export default HouseAgreements
