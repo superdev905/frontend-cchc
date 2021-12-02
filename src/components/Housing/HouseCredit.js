@@ -2,6 +2,7 @@ import { useHistory } from 'react-router-dom'
 import { Box, Typography } from '@material-ui/core'
 import { Button } from '../UI'
 import { DataTable } from '../Shared'
+import Can from '../Can'
 
 const HouseAgreements = () => {
   const history = useHistory()
