@@ -10,7 +10,8 @@ import {
   BorderColor as BorderColorIcon,
   Book as BookIcon,
   Favorite as BenefitIcon,
-  WatchLater as ScheduleIcon
+  WatchLater as ScheduleIcon,
+  Home as HousingIcon
 } from '@material-ui/icons'
 
 const modulesByRole = {
@@ -47,6 +48,11 @@ const modulesByRole = {
       title: 'Programación',
       path: '/schedule',
       icon: <ScheduleIcon />
+    },
+    {
+      title: 'Vivienda',
+      path: '/housing',
+      icon: <HousingIcon />
     },
     { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
     {
