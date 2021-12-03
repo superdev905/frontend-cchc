@@ -152,6 +152,36 @@ const updateEmployeeDiagnostic = (id, values) => () =>
       })
   })
 
+const getEmployeePhases =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.housing}/employee-phases?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const updatePhase = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.housing}/employee-phases/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const housingActions = {
   createAgreement,
   getAgreements,
@@ -161,7 +191,9 @@ const housingActions = {
   createEmployeeSaving,
   updateEmployeeSaving,
   createEmployeeDiagnostic,
-  updateEmployeeDiagnostic
+  updateEmployeeDiagnostic,
+  getEmployeePhases,
+  updatePhase
 }
 
 export default housingActions

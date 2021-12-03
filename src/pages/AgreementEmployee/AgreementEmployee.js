@@ -6,11 +6,9 @@ import housingActions from '../../state/actions/housing'
 import employeesAction from '../../state/actions/employees'
 import { LabeledRow, Text, Wrapper } from '../../components/UI'
 import { HeadingWithButton } from '../../components/Shared'
-
-import CompanyCard from '../../components/Company/CompanyCard'
-import ContactCard from '../../components/Schedule/ContactCard'
 import Saving from '../../components/AgreementEmployee/Saving'
 import DiagnosticSection from '../../components/AgreementEmployee/Diagnostic'
+import PhaseTimeLine from '../../components/AgreementEmployee/PhaseTimeLine'
 
 const useStyles = makeStyles((theme) => ({
   subHeading: {
@@ -25,7 +23,7 @@ const Employee = () => {
   const { employeeId } = useParams()
   const [loading, setLoading] = useState(false)
   const { employee } = useSelector((state) => state.employees)
-  const { agreementDetails } = useSelector((state) => state.housing)
+  const { employeeData } = useSelector((state) => state.housing)
   const dispatch = useDispatch()
   const history = useHistory()
 
@@ -92,37 +90,23 @@ const Employee = () => {
           </Box>
         </Box>
         <Box mt={2}>
-          <Typography>Datos de ahorro</Typography>
+          <Typography className={classes.subHeading}>
+            Datos de ahorro
+          </Typography>
           <Saving handler={fetchDetails} />
         </Box>
         <Box mt={2}>
-          <Typography>Datos de diagnostico</Typography>
+          <Typography className={classes.subHeading}>
+            Datos de diagnostico
+          </Typography>
           <DiagnosticSection loading={loading} handler={fetchDetails} />
         </Box>
+
         <Box mt={2}>
-          <Box>
-            <Grid container spacing={2}>
-              <Grid item xs={12} lg={6}>
-                <Typography className={classes.subHeading}>
-                  Detalles de empresa
-                </Typography>
-                <CompanyCard
-                  loading={loading}
-                  company={agreementDetails?.business}
-                />
-              </Grid>
-              <Grid item xs={12} lg={6}>
-                <Typography className={classes.subHeading}>
-                  Interlocutor de empresa
-                </Typography>
-                {agreementDetails && (
-                  <ContactCard
-                    contact={agreementDetails?.business?.interlocutor}
-                  />
-                )}
-              </Grid>
-            </Grid>
-          </Box>
+          <Typography className={classes.subHeading}>
+            Etapas de proceso
+          </Typography>
+          <PhaseTimeLine employeeId={employeeData?.id} />
         </Box>
       </Wrapper>
     </Box>

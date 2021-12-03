@@ -36,7 +36,7 @@ const DiagnosticSection = ({ handler, loading }) => {
             />
           ) : (
             <EmptyState
-              message="Este trabajador no tiene datos de ahorro"
+              message="Este trabajador no tiene datos de diagnpóstico"
               actionMessage="Agregar"
               event={toggleOpenAdd}
             />
