@@ -77,7 +77,6 @@ const SavingDialog = ({
         })
     }
   })
-  console.log(formik.errors)
 
   useEffect(() => {
     dispatch(commonActions.getRSH())
