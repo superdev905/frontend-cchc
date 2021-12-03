@@ -133,7 +133,7 @@ const HousingNew = () => {
         })
       })
       .catch((err) => {
-        enqueueSnackbar(err, { variant: 'success' })
+        enqueueSnackbar(err, { variant: 'error' })
         setLoading(false)
       })
   }
@@ -183,42 +183,46 @@ const HousingNew = () => {
         <Box>
           <Grid container spacing={2}>
             <Grid item xs={12} md={12}>
-              {selectedCompany ? (
-                <Box>
-                  <InputLabel>Empresa </InputLabel>
-                  <CompanyRow
-                    company={selectedCompany}
-                    onDelete={() => {
-                      setSelectedCompany(null)
-                      setCompanyDetails(null)
-                    }}
-                  />
-                </Box>
-              ) : (
-                <Autocomplete
-                  options={companies}
-                  // value={selectedCompany || searchValue}
-                  getOptionSelected={(option, value) => option.id === value.id}
-                  getOptionLabel={(option) => option.rut || ''}
-                  onChange={onCompanySelect}
-                  renderOption={(option) =>
-                    loadingCompanies ? (
-                      <Box>loading</Box>
-                    ) : (
-                      <CompanyRow.Autocomplete company={option} />
-                    )
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      value={searchValue}
-                      onChange={searchCompanies}
-                      label="Selecciona empresa"
-                      placeholder="Rut"
+              <Box my={1}>
+                {selectedCompany ? (
+                  <Box>
+                    <InputLabel>Empresa </InputLabel>
+                    <CompanyRow
+                      company={selectedCompany}
+                      onDelete={() => {
+                        setSelectedCompany(null)
+                        setCompanyDetails(null)
+                      }}
                     />
-                  )}
-                />
-              )}
+                  </Box>
+                ) : (
+                  <Autocomplete
+                    options={companies}
+                    // value={selectedCompany || searchValue}
+                    getOptionSelected={(option, value) =>
+                      option.id === value.id
+                    }
+                    getOptionLabel={(option) => option.rut || ''}
+                    onChange={onCompanySelect}
+                    renderOption={(option) =>
+                      loadingCompanies ? (
+                        <Box>loading</Box>
+                      ) : (
+                        <CompanyRow.Autocomplete company={option} />
+                      )
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        value={searchValue}
+                        onChange={searchCompanies}
+                        label="Selecciona empresa"
+                        placeholder="Rut"
+                      />
+                    )}
+                  />
+                )}
+              </Box>
             </Grid>
           </Grid>
         </Box>
@@ -261,7 +265,7 @@ const HousingNew = () => {
 
           <Box>
             <DataTable
-              emptyMessage={'Esta empresa no tiene beneficios'}
+              emptyMessage={'Esta empresa no empresas relacionadas'}
               data={relatedBusinesses}
               progressPending={false}
               columns={[
@@ -333,10 +337,14 @@ const HousingNew = () => {
 
           <Box>
             <DataTable
-              emptyMessage={'Esta empresa no tiene beneficios'}
+              emptyMessage={'No se agregaron trabajadores'}
               data={professionalList}
               progressPending={false}
               columns={[
+                {
+                  name: 'Run',
+                  selector: (row) => row.run
+                },
                 {
                   name: 'Nombre',
                   selector: (row) => row.names
@@ -348,27 +356,6 @@ const HousingNew = () => {
                 {
                   name: 'Correo',
                   selector: (row) => row.email
-                },
-                {
-                  name: '',
-                  right: true,
-                  selector: (row) => (
-                    <Box display="flex" alignItems="center">
-                      <Checkbox
-                        value={row.isSelected}
-                        color="primary"
-                        onChange={(e) => {
-                          const updatedList = professionalList.map((item) =>
-                            item.id === row.id
-                              ? { ...item, isSelected: e.target.checked }
-                              : item
-                          )
-                          setProfessionalList(updatedList)
-                        }}
-                        inputProps={{ 'aria-label': 'status checkbox' }}
-                      />
-                    </Box>
-                  )
                 }
               ]}
               highlightOnHover

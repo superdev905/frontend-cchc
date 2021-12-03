@@ -60,7 +60,7 @@ const services = {
   housing: {
     development: `${BASEURL[env]}:5195/api/v1`,
     testing: `${BASEURL[env]}:5199/api/v1`,
-    production: `${BASEURL[env]}:5111/api/v1`
+    production: `${BASEURL[env]}:5112/api/v1`
   }
 }
 

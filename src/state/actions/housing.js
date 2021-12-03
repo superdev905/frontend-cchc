@@ -182,6 +182,18 @@ const updatePhase = (id, values) => () =>
       })
   })
 
+const getStats = () => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.housing}/stats`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const housingActions = {
   createAgreement,
   getAgreements,
@@ -193,7 +205,8 @@ const housingActions = {
   createEmployeeDiagnostic,
   updateEmployeeDiagnostic,
   getEmployeePhases,
-  updatePhase
+  updatePhase,
+  getStats
 }
 
 export default housingActions

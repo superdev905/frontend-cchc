@@ -7,7 +7,9 @@ const HouseOwners = () => (
     <Box>
       <Grid container spacing={1} alingItems="center">
         <Grid item>
-          <Typography variant="h7">Propietarios</Typography>
+          <Typography variant="h7" style={{ fontSize: 18, fontWeight: 'bold' }}>
+            Propietarios
+          </Typography>
         </Grid>
       </Grid>
     </Box>
