@@ -6,6 +6,7 @@ import companyRoutes from './company'
 import employeeRoutes from './employee'
 import Forbidden from '../pages/Forbidden'
 import coursesRoutes from './courses'
+import houseRoutes from './house'
 
 const Login = lazy(() => import('../pages/Login'))
 const Home = lazy(() => import('../pages/Home'))
@@ -28,8 +29,6 @@ const ApprovedScholarship = lazy(() => import('../pages/ApprovedScholarship'))
 const Scholarship = lazy(() => import('../pages/Scholarship'))
 const Benefits = lazy(() => import('../pages/Benefits'))
 const BenefitPage = lazy(() => import('../pages/Benefit'))
-const Housing = lazy(() => import('../pages/Housing'))
-const HousingNew = lazy(() => import('../pages/Housing'))
 
 const routes = [
   {
@@ -367,38 +366,7 @@ const routes = [
       />
     )
   },
-  {
-    path: '/housing',
-    key: 'housing',
-    exact: true,
-    component: ({ authenticated }) => (
-      <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
-        yes={() => (
-          <Layout>
-            <Housing />
-          </Layout>
-        )}
-        no={() => (authenticated ? <Forbidden /> : <Login />)}
-      />
-    )
-  },
-  {
-    path: '/housing-new',
-    key: 'HOUSING-NEW',
-    exact: true,
-    component: ({ authenticated }) => (
-      <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
-        yes={() => (
-          <Layout>
-            <HousingNew />
-          </Layout>
-        )}
-        no={() => (authenticated ? <Forbidden /> : <Login />)}
-      />
-    )
-  },
-  ...coursesRoutes
+  ...coursesRoutes,
+  ...houseRoutes
 ]
 export default routes
