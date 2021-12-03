@@ -6,6 +6,7 @@ import companyRoutes from './company'
 import employeeRoutes from './employee'
 import Forbidden from '../pages/Forbidden'
 import coursesRoutes from './courses'
+// import houseRoutes from './house'
 
 const Login = lazy(() => import('../pages/Login'))
 const Home = lazy(() => import('../pages/Home'))
@@ -28,6 +29,13 @@ const ApprovedScholarship = lazy(() => import('../pages/ApprovedScholarship'))
 const Scholarship = lazy(() => import('../pages/Scholarship'))
 const Benefits = lazy(() => import('../pages/Benefits'))
 const BenefitPage = lazy(() => import('../pages/Benefit'))
+const ScheduleList = lazy(() => import('../pages/ScheduleList'))
+const ScheduleNew = lazy(() => import('../pages/ScheduleNew'))
+const Schedule = lazy(() => import('../pages/Schedule'))
+const Housing = lazy(() => import('../pages/Housing'))
+const HousingNew = lazy(() => import('../pages/HousingNew'))
+const Agreement = lazy(() => import('../pages/Agreement'))
+const AgreementEmployee = lazy(() => import('../pages/AgreementEmployee'))
 
 const routes = [
   {
@@ -359,6 +367,118 @@ const routes = [
         yes={() => (
           <Layout>
             <BenefitPage />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/schedule',
+    key: 'SCHEDULE-LIST',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <ScheduleList />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/schedule/new',
+    key: 'SCHEDULE-CREATE',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <ScheduleNew />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/schedule/:scheduleId',
+    key: 'SCHEDULE-DETAILS',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <Schedule />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/housing',
+    key: 'HOUSING',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <Housing />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/housing/new',
+    key: 'HOUSING-NEW',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <HousingNew />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/agreement/:agreementId',
+    key: 'AGREEMENT-PAGE',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <Agreement />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/agreement/:agreementId/employee/:employeeId',
+    key: 'AGREEMENT-EMPLOYEE-PAGE',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <AgreementEmployee />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}

@@ -3,7 +3,13 @@ import * as Yup from 'yup'
 import { useSnackbar } from 'notistack'
 import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Grid, makeStyles } from '@material-ui/core'
+import {
+  Box,
+  FormControlLabel,
+  Grid,
+  makeStyles,
+  Switch
+} from '@material-ui/core'
 import useSuccess from '../../hooks/useSuccess'
 import commonActions from '../../state/actions/common'
 import { Heading, TextField, SubmitButton, Select } from '../UI'
@@ -29,7 +35,8 @@ const validationSchema = Yup.object({
     'Check phone',
     'Ingrese télefono válido',
     (v) => phoneValidator(v)
-  )
+  ),
+  is_interlocutor: Yup.bool()
 })
 const useStyles = makeStyles(() => ({
   form: {
@@ -60,7 +67,8 @@ const ContactModal = ({
   data,
   successFunc,
   submitFunction,
-  successMessage
+  successMessage,
+  includeInterlocutor
 }) => {
   const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
@@ -87,10 +95,15 @@ const ContactModal = ({
       charge_name: type === 'UPDATE' ? data.charge_name : '',
       cell_phone: type === 'UPDATE' ? data.cell_phone : '',
       office_phone: type === 'UPDATE' ? data.office_phone : '',
-      other_phone: type === 'UPDATE' ? data.other_phone : ''
+      other_phone: type === 'UPDATE' ? data.other_phone : '',
+      is_interlocutor: type === 'UPDATE' ? data.is_interlocutor : false
     },
     onSubmit: (values, { resetForm }) => {
-      submitFunction(values)
+      const formattedValues = { ...values }
+      if (!includeInterlocutor) {
+        delete formattedValues.is_interlocutor
+      }
+      submitFunction(formattedValues)
         .then(() => {
           formik.setSubmitting(false)
           changeSuccess(false)
@@ -254,6 +267,25 @@ const ContactModal = ({
                 }}
               />
             </Grid>
+            {includeInterlocutor && (
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      color="primary"
+                      checked={formik.values.is_interlocutor}
+                      onChange={(e) => {
+                        formik.setFieldValue(
+                          'is_interlocutor',
+                          e.target.checked
+                        )
+                      }}
+                    />
+                  }
+                  label="Este contacto es interlocutor válido"
+                />
+              </Grid>
+            )}
           </Grid>
         </Box>
         <Box className={classes.actions}>
@@ -272,7 +304,8 @@ const ContactModal = ({
 }
 
 ContactModal.defaultProps = {
-  type: 'CREATE'
+  type: 'CREATE',
+  includeInterlocutor: false
 }
 
 export default ContactModal

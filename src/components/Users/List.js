@@ -174,8 +174,8 @@ const List = () => {
             left: true,
             cell: (row) => (
               <StatusChip
-                label={row.role.name}
-                success={row.state === 'ACTIVE'}
+                label={row?.role?.name}
+                success={row?.state === 'ACTIVE'}
               />
             )
           },

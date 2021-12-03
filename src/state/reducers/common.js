@@ -27,7 +27,8 @@ const initialState = {
   areas: [],
   roles: [],
   otecs: [],
-  totalOtecs: 0
+  totalOtecs: 0,
+  communes: []
 }
 
 const commonReducer = (state = initialState, { type, payload }) => {
@@ -86,6 +87,8 @@ const commonReducer = (state = initialState, { type, payload }) => {
       return { ...state, otecs: payload }
     case commonTypes.SET_TOTAL_OTECS:
       return { ...state, totalOtecs: payload }
+    case commonTypes.GET_COMMUNES:
+      return { ...state, communes: payload }
 
     default:
       return state

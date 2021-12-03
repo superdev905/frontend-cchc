@@ -9,8 +9,11 @@ import {
   School as SchoolIcon,
   BorderColor as BorderColorIcon,
   Book as BookIcon,
-  Favorite as BenefitIcon
+  Favorite as BenefitIcon,
+  WatchLater as ScheduleIcon,
+  Home as HousingIcon
 } from '@material-ui/icons'
+import HouseIcon from '@material-ui/icons/House'
 
 const modulesByRole = {
   COMMON: [{ title: 'Home', path: '/home', icon: <DashboardIcon /> }],
@@ -41,6 +44,16 @@ const modulesByRole = {
       title: 'Beneficios',
       path: '/benefits',
       icon: <BenefitIcon />
+    },
+    {
+      title: 'Programación',
+      path: '/schedule',
+      icon: <ScheduleIcon />
+    },
+    {
+      title: 'Vivienda',
+      path: '/housing',
+      icon: <HousingIcon />
     },
     { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
     {
@@ -82,6 +95,11 @@ const modulesByRole = {
       title: 'Beneficios',
       path: '/benefits',
       icon: <BenefitIcon />
+    },
+    {
+      title: 'Programación',
+      path: '/schedule',
+      icon: <ScheduleIcon />
     }
   ],
   PROJECTS: [

@@ -51,6 +51,16 @@ const services = {
     development: `${BASEURL[env]}:5193/api/v1`,
     testing: `${BASEURL[env]}:5199/api/v1`,
     production: `${BASEURL[env]}:5110/api/v1`
+  },
+  schedule: {
+    development: `${BASEURL[env]}:5194/api/v1`,
+    testing: `${BASEURL[env]}:5199/api/v1`,
+    production: `${BASEURL[env]}:5111/api/v1`
+  },
+  housing: {
+    development: `${BASEURL[env]}:5195/api/v1`,
+    testing: `${BASEURL[env]}:5199/api/v1`,
+    production: `${BASEURL[env]}:5112/api/v1`
   }
 }
 
@@ -64,7 +74,9 @@ const config = {
     employee: services.employee[env],
     scholarship: services.scholarship[env],
     courses: services.courses[env],
-    benefits: services.benefits[env]
+    benefits: services.benefits[env],
+    schedule: services.schedule[env],
+    housing: services.housing[env]
   }
 }
 
@@ -79,3 +91,4 @@ export { default as areaConfig } from './area'
 export { default as statusList } from './statusList'
 export { default as moduleConfig } from './modules'
 export { default as scholarshipConfig } from './scholarship'
+export { default as months } from './months'
