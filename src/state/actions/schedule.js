@@ -1,3 +1,4 @@
+import { saveAs } from 'file-saver'
 import queryString from 'query-string'
 import Axios from '../../Axios'
 import scheduleTypes from '../types/schedule'
@@ -36,6 +37,24 @@ const getSchedule = (id) => (dispatch) =>
       })
       .catch((err) => {
         reject(err.response.data.detail)
+      })
+  })
+
+const downloadScheduleFile = (id, name) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.schedule}/schedule/${id}/file`, null, {
+      responseType: 'arraybuffer'
+    })
+      .then((response) => {
+        const blob = new Blob([response.data], {
+          type: 'application/pdf'
+        })
+
+        saveAs(blob, `${name}-${new Date().getTime()}`)
+        resolve(response.data)
+      })
+      .catch((err) => {
+        reject(err)
       })
   })
 
@@ -103,13 +122,28 @@ const updateScheduleMeeting = (id, values) => (dispatch) =>
       })
   })
 
+const updateProgrammedBenefit = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.schedule}/schedule-benefits/${id}`, values)
+      .then((response) => {
+        const { data } = response
+
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const scheduleActions = {
   createSchedule,
   getSchedules,
   getSchedule,
   getScheduleMeetings,
   createScheduleMeeting,
-  updateScheduleMeeting
+  updateScheduleMeeting,
+  updateProgrammedBenefit,
+  downloadScheduleFile
 }
 
 export default scheduleActions

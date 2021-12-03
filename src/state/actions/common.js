@@ -426,6 +426,18 @@ const deleteOTEC = (id) => () =>
         reject(err.response.data.detail)
       })
   })
+const getCommunes = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.parameters}/communes`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_COMMUNES, payload: data })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 export default {
   getRegions,
@@ -458,5 +470,6 @@ export default {
   getAllOTECS,
   createOTEC,
   updateOTEC,
-  deleteOTEC
+  deleteOTEC,
+  getCommunes
 }

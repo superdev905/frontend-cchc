@@ -11,7 +11,7 @@ const validationSchema = Yup.object().shape({
   endMonth: Yup.string().required('Selecciones mes de inicio')
 })
 
-const BenefitDrawer = ({ open, onClose, onSubmit, benefit }) => {
+const BenefitDrawer = ({ open, onClose, onSubmit, benefit, data, type }) => {
   const { isMobile } = useSelector((state) => state.ui)
 
   const formik = useFormik({
@@ -19,13 +19,27 @@ const BenefitDrawer = ({ open, onClose, onSubmit, benefit }) => {
     validateOnChange: true,
     validationSchema,
     initialValues: {
-      startMonth: '',
-      endMonth: ''
+      startMonth:
+        type === 'UPDATE'
+          ? months.find((item) => item.name === data.startMonth).index
+          : '',
+      endMonth:
+        type === 'UPDATE'
+          ? months.find((item) => item.name === data.endMonth).index
+          : ''
     }
   })
 
   const handleSubmit = () => {
-    onSubmit(benefit.id, formik.values)
+    const formattedValues = {
+      startMonth: months.find(
+        (item) => item.index === parseInt(formik.values.startMonth, 10)
+      ).name,
+      endMonth: months.find(
+        (item) => item.index === parseInt(formik.values.endMonth, 10)
+      ).name
+    }
+    onSubmit(benefit.id, formattedValues)
     onClose()
   }
   return (
@@ -96,7 +110,7 @@ const BenefitDrawer = ({ open, onClose, onSubmit, benefit }) => {
           </Grid>
           <Box mt={2} textAlign="center">
             <Button variant="outlined" onClick={onClose}>
-              Guardar
+              Cancelar
             </Button>
             <Button disabled={!formik.isValid} onClick={handleSubmit}>
               Guardar
@@ -106,6 +120,10 @@ const BenefitDrawer = ({ open, onClose, onSubmit, benefit }) => {
       </Box>
     </Dialog>
   )
+}
+
+BenefitDrawer.defaultProps = {
+  type: 'CREATE'
 }
 
 export default BenefitDrawer

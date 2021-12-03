@@ -27,21 +27,21 @@ const getAgreements =
         })
     })
 
-// const getSchedule = (id) => (dispatch) =>
-//   new Promise((resolve, reject) => {
-//     Axios.get(`${config.services.schedule}/schedule/${id}`)
-//       .then((response) => {
-//         const { data } = response
-//         dispatch({
-//           type: scheduleTypes.GET_SCHEDULE_DETAILS,
-//           payload: data
-//         })
-//         resolve(data)
-//       })
-//       .catch((err) => {
-//         reject(err.response.data.detail)
-//       })
-//   })
+const getAgreementDetails = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.housing}/agreements/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: housingTypes.GET_AGREEMENT_DETAILS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 const createAgreement = (values) => () =>
   new Promise((resolve, reject) => {
@@ -55,61 +55,113 @@ const createAgreement = (values) => () =>
       })
   })
 
-// const getScheduleMeetings =
-//   (query = {}) =>
-//   (dispatch) =>
-//     new Promise((resolve, reject) => {
-//       Axios.get(
-//         `${config.services.schedule}/meetings?${queryString.stringify(query)}`
-//       )
-//         .then((response) => {
-//           const { data } = response
-//           dispatch({
-//             type: scheduleTypes.GET_SCHEDULE_MEETINGS,
-//             payload: data.items
-//           })
-//           resolve(data)
-//         })
-//         .catch((err) => {
-//           reject(err.response.data.detail)
-//         })
-//     })
+const getAgreementEmployees =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.housing}/employees?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: housingTypes.GET_AGREEMENT_EMPLOYEES,
+            payload: data.items
+          })
+          dispatch({
+            type: housingTypes.SET_TOTAL_AGREEMENT_EMPLOYEES,
+            payload: data.total
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
 
-// const createAgreementMeeting = (values) => (dispatch) =>
-//   new Promise((resolve, reject) => {
-//     Axios.post(`${config.services.schedule}/meetings`, values)
-//       .then((response) => {
-//         const { data } = response
-//         dispatch({
-//           type: scheduleTypes.CREATE_SCHEDULE_MEETING,
-//           payload: data
-//         })
-//         resolve(data)
-//       })
-//       .catch((err) => {
-//         reject(err.response.data.detail)
-//       })
-//   })
+const getEmployee = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.housing}/employees/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: housingTypes.GET_HOUSING_EMPLOYEE_DETAILS,
+          payload: data
+        })
 
-// const updateScheduleMeeting = (id, values) => (dispatch) =>
-//   new Promise((resolve, reject) => {
-//     Axios.put(`${config.services.schedule}/meetings/${id}`, values)
-//       .then((response) => {
-//         const { data } = response
-//         dispatch({
-//           type: scheduleTypes.UPDATE_SCHEDULE_MEETING,
-//           payload: data
-//         })
-//         resolve(data)
-//       })
-//       .catch((err) => {
-//         reject(err.response.data.detail)
-//       })
-//   })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const createEmployeeSaving = (id, values) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.housing}/employees/${id}/saving`, values)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: housingTypes.UPDATE_EMPLOYEE_SAVING,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateEmployeeSaving = (id, values) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.housing}/employees/saving/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: housingTypes.UPDATE_EMPLOYEE_SAVING,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const createEmployeeDiagnostic = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.housing}/employees/${id}/diagnostic`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateEmployeeDiagnostic = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.housing}/employees/diagnostic/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 const housingActions = {
   createAgreement,
-  getAgreements
+  getAgreements,
+  getAgreementDetails,
+  getAgreementEmployees,
+  getEmployee,
+  createEmployeeSaving,
+  updateEmployeeSaving,
+  createEmployeeDiagnostic,
+  updateEmployeeDiagnostic
 }
 
 export default housingActions

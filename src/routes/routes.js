@@ -33,6 +33,8 @@ const ScheduleNew = lazy(() => import('../pages/ScheduleNew'))
 const Schedule = lazy(() => import('../pages/Schedule'))
 const Housing = lazy(() => import('../pages/Housing'))
 const HousingNew = lazy(() => import('../pages/HousingNew'))
+const Agreement = lazy(() => import('../pages/Agreement'))
+const AgreementEmployee = lazy(() => import('../pages/AgreementEmployee'))
 
 const routes = [
   {
@@ -444,6 +446,38 @@ const routes = [
         yes={() => (
           <Layout>
             <HousingNew />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/agreement/:agreementId',
+    key: 'AGREEMENT-PAGE',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <Agreement />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/agreement/:agreementId/employee/:employeeId',
+    key: 'AGREEMENT-EMPLOYEE-PAGE',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <AgreementEmployee />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}

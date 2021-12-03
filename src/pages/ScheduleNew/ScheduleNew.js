@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
+import { useSnackbar } from 'notistack'
+import { useHistory } from 'react-router-dom'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import { FiSave as SaveIcon } from 'react-icons/fi'
@@ -8,17 +10,20 @@ import { useDispatch } from 'react-redux'
 import companiesActions from '../../state/actions/companies'
 import {
   ScheduleBenefitDrawer,
-  ScheduleContactCard,
-  ScheduleTimeLine
+  ScheduleContactCard
 } from '../../components/Schedule'
-import { CompanyRow, DataTable } from '../../components/Shared'
+import {
+  CompanyRow,
+  DataTable,
+  HeadingWithButton
+} from '../../components/Shared'
 
 import {
   Button,
   InputLabel,
   LabeledRow,
-  PageHeading,
   Select,
+  SubmitButton,
   TextField,
   Wrapper
 } from '../../components/UI'
@@ -27,7 +32,6 @@ import benefitsActions from '../../state/actions/benefits'
 import { useToggle } from '../../hooks'
 import users from '../../state/actions/users'
 import scheduleActions from '../../state/actions/schedule'
-import { months } from '../../config'
 
 const useStyles = makeStyles(() => ({
   subHeading: {
@@ -40,15 +44,6 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-/**
- * business_id: int = Field(alias="businessId")
-    business_name: str = Field(alias="businessName")
-    interlocutor_id: int = Field(alias="interlocutorId")
-    interlocutor_name: str = Field(alias="interlocutorName")
-    date: datetime
-    period: int
- */
-
 const validationSchema = Yup.object().shape({
   businessId: Yup.number().required('Seleccione empresa'),
   businessName: Yup.string().required('Seleccione empresa'),
@@ -59,9 +54,12 @@ const validationSchema = Yup.object().shape({
 
 const ListPage = () => {
   const classes = useStyles()
+  const history = useHistory()
+  const { enqueueSnackbar } = useSnackbar()
   const dispatch = useDispatch()
   const [currentDate] = useState(new Date())
   const [periods, setPeriods] = useState([])
+  const [creating, setCreating] = useState(false)
   const [searchValue, setSearchValue] = useState('')
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [companyDetails, setCompanyDetails] = useState(null)
@@ -71,6 +69,8 @@ const ListPage = () => {
   const [currentBenefit, setCurrentBenefit] = useState(null)
   const [bosses, setBosses] = useState([])
   const { open: openBenefit, toggleOpen: toggleOpenBenefit } = useToggle()
+  const { open: openBenefitEdit, toggleOpen: toggleOpenBenefitEdit } =
+    useToggle()
 
   const formik = useFormik({
     validationSchema,
@@ -125,16 +125,25 @@ const ListPage = () => {
       schedule: benefits.map((item) => ({
         benefitName: item.name,
         benefitId: item.id,
-        startMonth: months.find(
-          (month) => month.index === parseInt(item.startMonth, 10)
-        ).name,
-        endMonth: months.find(
-          (month) => month.index === parseInt(item.endMonth, 10)
-        ).name
+        startMonth: item.startMonth,
+        endMonth: item.endMonth
       }))
     }
+    setCreating(true)
     dispatch(scheduleActions.createSchedule(createData))
+      .then((res) => {
+        enqueueSnackbar('Porgreamación creada', { variant: 'success' })
+        setCreating(false)
+        history.push(`/schedule/${res.id}`)
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, { variant: 'error' })
+        setCreating(false)
+      })
   }
+
+  const benefitsValidation = () =>
+    benefits.filter((item) => !item.startMonth || !item.endMonth).length === 0
 
   useEffect(() => {
     if (selectedCompany) {
@@ -171,7 +180,7 @@ const ListPage = () => {
     <Box>
       <Wrapper>
         <Box marginBottom={2}>
-          <PageHeading>Nueva programación</PageHeading>
+          <HeadingWithButton title="Nueva programación" />
         </Box>
         <Box>
           <Grid container spacing={2}>
@@ -328,7 +337,7 @@ const ListPage = () => {
                           variant="outlined"
                           size="small"
                           onClick={() => {
-                            toggleOpenBenefit()
+                            toggleOpenBenefitEdit()
                             setCurrentBenefit(row)
                           }}
                         >
@@ -359,33 +368,33 @@ const ListPage = () => {
           </Box>
         </Box>
         <Box textAlign="right">
-          <Button
-            disabled={!formik.isValid}
+          <SubmitButton
+            disabled={!formik.isValid || creating || !benefitsValidation()}
             startIcon={<SaveIcon />}
             onClick={createSchedule}
+            loading={creating}
           >
             Guardar
-          </Button>
-        </Box>
-        <Box className={classes.section}>
-          <Typography
-            style={{ fontWeight: 'bold' }}
-            component="div"
-            display="flex"
-          >
-            Programación{' '}
-            <Typography
-              style={{ marginLeft: '8px', opacity: 0.7, fontWeight: 'bold' }}
-              component="p"
-            >{`(${3}) beneficios`}</Typography>
-          </Typography>
-          <ScheduleTimeLine />
+          </SubmitButton>
         </Box>
         {openBenefit && currentBenefit && (
           <ScheduleBenefitDrawer
             benefit={currentBenefit}
             open={openBenefit}
             onClose={toggleOpenBenefit}
+            onSubmit={setSchedule}
+          />
+        )}
+        {openBenefitEdit && currentBenefit && (
+          <ScheduleBenefitDrawer
+            type="UPDATE"
+            data={{
+              startMonth: currentBenefit.startMonth,
+              endMonth: currentBenefit.endMonth
+            }}
+            benefit={currentBenefit}
+            open={openBenefitEdit}
+            onClose={toggleOpenBenefitEdit}
             onSubmit={setSchedule}
           />
         )}

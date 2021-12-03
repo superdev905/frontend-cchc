@@ -1,16 +1,30 @@
 import { Box } from '@material-ui/core'
-import { LabeledRow } from '../UI'
+import { LabeledRow, Text } from '../UI'
 
-const CompanyCard = ({ company }) => (
+const CompanyCard = ({ company, loading }) => (
   <Box>
-    <LabeledRow label="Rut: ">{company?.rut}</LabeledRow>
-    <LabeledRow label="Razón social: ">
-      {company?.business_name || company?.businessName}
+    <LabeledRow label="Rut: ">
+      <Text loading={loading}>{company?.rut}</Text>
     </LabeledRow>
-    <LabeledRow label="Dirección: ">{company?.address}</LabeledRow>
-    <LabeledRow label="Region: ">{company?.region?.name}</LabeledRow>
-    <LabeledRow label="Comuna: ">{company?.commune?.name}</LabeledRow>
-    <LabeledRow label="Tipo: ">{company?.type}</LabeledRow>
+    <LabeledRow label="Razón social: ">
+      <Text loading={loading}>
+        {company?.business_name || company?.businessName}
+      </Text>
+    </LabeledRow>
+    <LabeledRow label="Dirección: ">
+      <Text loading={loading}>{company?.address}</Text>
+    </LabeledRow>
+    <LabeledRow label="Region: ">
+      <Text loading={loading}>{company?.region?.name}</Text>
+    </LabeledRow>
+    <LabeledRow label="Comuna: ">
+      <Text loading={loading}>{company?.commune?.name}</Text>
+    </LabeledRow>
+    {company?.type && (
+      <LabeledRow label="Tipo: ">
+        <Text loading={loading}>{company?.type}</Text>
+      </LabeledRow>
+    )}
   </Box>
 )
 

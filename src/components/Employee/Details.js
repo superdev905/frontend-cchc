@@ -22,7 +22,7 @@ const Details = ({ loading }) => {
 
   const updateEmployeeInfo = (values) =>
     dispatch(
-      employeesActions.updateEmployee(employee, {
+      employeesActions.updateEmployee(employee.id, {
         ...values,
         created_by: employee.created_by
       })
