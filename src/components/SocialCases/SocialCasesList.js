@@ -35,6 +35,7 @@ const SocialCasesList = () => {
     page: 1,
     size: 30,
     search: '',
+    businessId: '',
     state: ''
   })
 
