@@ -6,6 +6,7 @@ import companyRoutes from './company'
 import employeeRoutes from './employee'
 import Forbidden from '../pages/Forbidden'
 import coursesRoutes from './courses'
+import SocialCaseRoutes from './SocialCase'
 // import houseRoutes from './house'
 
 const Login = lazy(() => import('../pages/Login'))
@@ -485,6 +486,7 @@ const routes = [
       />
     )
   },
-  ...coursesRoutes
+  ...coursesRoutes,
+  ...SocialCaseRoutes
 ]
 export default routes

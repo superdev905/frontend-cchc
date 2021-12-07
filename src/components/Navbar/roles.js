@@ -65,6 +65,11 @@ const modulesByRole = {
       title: 'Configuración',
       path: '/settings',
       icon: <SettingsIcon />
+    },
+    {
+      title: 'Caso Social',
+      path: '/social-case',
+      icon: <BookIcon />
     }
   ],
   SOCIAL_ASSISTANCE: [
