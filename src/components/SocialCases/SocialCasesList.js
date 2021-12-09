@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/styles'
 import { Grid, Box } from '@material-ui/core'
 import { ActionsTable, SearchInput, Button, Wrapper } from '../UI'
@@ -16,7 +17,7 @@ const useStyles = makeStyles(() => ({
 const SocialCasesList = () => {
   const dispatch = useDispatch()
   const { open, handleOpen, handleClose, anchorEl } = useMenu()
-
+  const history = useHistory()
   const classes = useStyles()
   const [loading, setLoading] = useState(false)
   const { totalCases, casesList, filters } = useSelector(
@@ -45,7 +46,7 @@ const SocialCasesList = () => {
   }
 
   const onRowClick = (row) => {
-    alert(row)
+    history.push(`/social-case/${row.id}/details`)
   }
 
   useEffect(() => {

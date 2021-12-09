@@ -31,7 +31,22 @@ const getSocialCases =
 const setFilters = (value) => (dispatch) =>
   dispatch({ type: socialCaseTypes.SET_FILTERS, payload: value })
 
-export default {
+const createSocialCase = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.socialCase}/social-cases`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data.items)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const socialCasesActions = {
   getSocialCases,
-  setFilters
+  setFilters,
+  createSocialCase
 }
+
+export default socialCasesActions

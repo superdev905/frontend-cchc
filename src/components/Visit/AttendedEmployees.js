@@ -271,7 +271,10 @@ const List = () => {
           visitShift={visit.shift.name}
           onClose={toggleOpen}
           submitFunction={createAttention}
-          company={{ business_name: visit.business_name }}
+          company={{
+            business_name: visit.business_name,
+            id: visit.business_id
+          }}
           construction={{ name: visit.construction_name }}
           successFunction={fetchAttendedList}
           successMessage="Atención creada con éxito"
