@@ -7,12 +7,13 @@ const initialState = {
     size: 30,
     search: '',
     businessId: '',
-    isActive: '',
-    employeeNames: '',
+    STATE: '',
+    assistanceId: '',
     zone: '',
     delegation: '',
-    createdDate: '',
-    areaId: ''
+    areaId: '',
+    startDate: '',
+    endDate: ''
   },
   totalCases: 0,
   caseDetails: null

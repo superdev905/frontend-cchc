@@ -6,6 +6,7 @@ import { ActionsTable, SearchInput, Button, Wrapper } from '../UI'
 import { formatDate } from '../../formatters'
 import { DataTable } from '../Shared'
 import FiltersMenu from './FiltersMenu'
+import TagsList from './TagsList'
 import socialCaseActions from '../../state/actions/socialCase'
 import { useMenu } from '../../hooks'
 
@@ -37,11 +38,26 @@ const SocialCasesList = () => {
 
   const fetchSocialCases = () => {
     setLoading(true)
-    dispatch(socialCaseActions.getSocialCases(/* { ...filters } */)).then(
-      () => {
-        setLoading(false)
-      }
-    )
+    const formatedFilter = { ...filters }
+
+    if (!formatedFilter.startDate) {
+      delete formatedFilter.startDate
+    }
+    if (!formatedFilter.endDate) {
+      delete formatedFilter.endDate
+    }
+    if (!formatedFilter.businessId) {
+      delete formatedFilter.businessId
+    }
+    if (!formatedFilter.assistanceId) {
+      delete formatedFilter.assistanceId
+    }
+    if (!formatedFilter.areaId) {
+      delete formatedFilter.areaId
+    }
+    dispatch(socialCaseActions.getSocialCases(formatedFilter)).then(() => {
+      setLoading(false)
+    })
   }
 
   const onRowClick = (row) => {
@@ -68,6 +84,9 @@ const SocialCasesList = () => {
               <Button onClick={(e) => handleOpen(e)}>Filtros</Button>
               <Button>Nuevo</Button>
             </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <TagsList />
           </Grid>
         </Grid>
       </Grid>
