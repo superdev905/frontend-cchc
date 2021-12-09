@@ -584,7 +584,7 @@ const WorkerInterventionRecord = ({
                 >
                   <option value="">SELECCIONE CASO</option>
                   {[
-                    { index: 1, name: 'CASO 1' },
+                    { index: 1, name: 'NUEVO' },
                     { index: 2, name: 'CASO 2' }
                   ].map((item, i) => (
                     <option key={`case_id-${i}-${item}`} value={item.index}>
@@ -652,7 +652,7 @@ const WorkerInterventionRecord = ({
                     </Button>
                   )}
                 </Box>
-                <Grid container spacing={2}>
+                <Box>
                   {attachments.length === 0 ? (
                     <EmptyState
                       message="No hay archivos adjuntos"
@@ -661,26 +661,33 @@ const WorkerInterventionRecord = ({
                     />
                   ) : (
                     <>
-                      {attachments.map((item, index) => (
-                        <Grid item xs={12} md={6} key={`file-picker-${index}`}>
-                          <FilePicker
-                            id={item.id}
-                            onChange={(e) => {
-                              setAttachments(
-                                attachments.map((file) =>
-                                  file.id === item.id
-                                    ? { ...file, file: e }
-                                    : file
+                      <Grid container spacing={2}>
+                        {attachments.map((item, index) => (
+                          <Grid
+                            item
+                            xs={12}
+                            md={6}
+                            key={`file-picker-${index}`}
+                          >
+                            <FilePicker
+                              id={item.id}
+                              onChange={(e) => {
+                                setAttachments(
+                                  attachments.map((file) =>
+                                    file.id === item.id
+                                      ? { ...file, file: e }
+                                      : file
+                                  )
                                 )
-                              )
-                            }}
-                            onDelete={() => deleteAttachment(item.id)}
-                          />
-                        </Grid>
-                      ))}
+                              }}
+                              onDelete={() => deleteAttachment(item.id)}
+                            />
+                          </Grid>
+                        ))}
+                      </Grid>
                     </>
                   )}
-                </Grid>
+                </Box>
               </Box>
             </Grid>
           </Grid>
