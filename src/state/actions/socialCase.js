@@ -4,7 +4,7 @@ import socialCaseTypes from '../types/socialCase'
 import config from '../../config'
 
 const getSocialCases =
-  (query = {}) =>
+  (query = {}, handleDispatch = true) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
       Axios.get(
@@ -14,12 +14,14 @@ const getSocialCases =
       )
         .then((response) => {
           const { data } = response
-          dispatch({ type: socialCaseTypes.GET_CASES, payload: data.items })
-          dispatch({
-            type: socialCaseTypes.SET_TOTAL_CASES,
-            payload: data.total
-          })
-          resolve(data)
+          if (handleDispatch) {
+            dispatch({ type: socialCaseTypes.GET_CASES, payload: data.items })
+            dispatch({
+              type: socialCaseTypes.SET_TOTAL_CASES,
+              payload: data.total
+            })
+          }
+          resolve(data.items)
         })
         .catch((err) => {
           reject(err.response.data.detail)

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles } from '@material-ui/styles'
 import { Box, Menu, Fade } from '@material-ui/core'
 import { Select, Button } from '../UI'
 import companiesActions from '../../state/actions/companies'
 import employeesActions from '../../state/actions/employees'
+import commonActions from '../../state/actions/common'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,8 +18,18 @@ const useStyles = makeStyles((theme) => ({
 const FiltersMenu = ({ open, anchorEl, onClose }) => {
   const dispatch = useDispatch()
   const classes = useStyles()
+  const { areas } = useSelector((state) => state.common)
   const [companies, setCompanies] = useState([])
   const [employees, setEmployees] = useState([])
+  /* const [seleted, setSeleted] = useState({
+    businessId: '',
+    isActive: '',
+    employeeNames: '',
+    zone: '',
+    delegation: '',
+    createdDate: '',
+    areaId: ''
+  }) */
 
   useEffect(() => {
     dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
@@ -31,6 +42,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
         setEmployees(list)
       }
     )
+    dispatch(commonActions.getAreas())
   }, [])
 
   return (
@@ -94,6 +106,81 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
                 value={item.id}
               >
                 {item.names}
+              </option>
+            ))}
+          </Select>
+        </Box>
+
+        <Box width="100%">
+          Zona:
+          <Select name="zone">
+            <option value="">-Seleccione-</option>
+            {employees.map((item) => (
+              <option
+                key={`application--filters-zone${item.id}`}
+                value={item.id}
+              >
+                {item.names}
+              </option>
+            ))}
+          </Select>
+        </Box>
+
+        <Box width="100%">
+          Delegación:
+          <Select name="delegation">
+            <option value="">-Seleccione-</option>
+            {employees.map((item) => (
+              <option
+                key={`application--filters-delegation${item.id}`}
+                value={item.id}
+              >
+                {item.names}
+              </option>
+            ))}
+          </Select>
+        </Box>
+
+        <Box width="100%">
+          Fecha de Inicio:
+          <Select name="firstDate">
+            <option value="">-Seleccione-</option>
+            {employees.map((item) => (
+              <option
+                key={`application--filters-firstDate${item.id}`}
+                value={item.id}
+              >
+                {item.names}
+              </option>
+            ))}
+          </Select>
+        </Box>
+
+        <Box width="100%">
+          Fecha de Fin:
+          <Select name="endDate">
+            <option value="">-Seleccione-</option>
+            {employees.map((item) => (
+              <option
+                key={`application--filters-endDate${item.id}`}
+                value={item.id}
+              >
+                {item.names}
+              </option>
+            ))}
+          </Select>
+        </Box>
+
+        <Box width="100%">
+          Area:
+          <Select name="area">
+            <option value="">-Seleccione-</option>
+            {areas.map((item) => (
+              <option
+                key={`application--filters-areas${item.id}`}
+                value={item.id}
+              >
+                {item.name}
               </option>
             ))}
           </Select>
