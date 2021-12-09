@@ -134,6 +134,24 @@ const getFoundationUsers =
         })
     })
 
+const getSocialAssistanceList =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.auth
+        }/users/search/assistance?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 export default {
   getUsers,
   createUser,
@@ -143,5 +161,6 @@ export default {
   updatePassword,
   getOTECUsers,
   getBosses,
-  getFoundationUsers
+  getFoundationUsers,
+  getSocialAssistanceList
 }

@@ -56,6 +56,7 @@ const WorkerInterventionRecord = ({
   const { success, changeSuccess } = useSuccess()
   const [attachments, setAttachments] = useState([])
   const { areas, managementList } = useSelector((state) => state.common)
+  const { casesForSelect } = useSelector((state) => state.socialCase)
   const { user } = useSelector((state) => state.auth)
   const [topics, setTopics] = useState([])
   const [selectedManagement, setSelectedManagement] = useState('')
@@ -279,6 +280,7 @@ const WorkerInterventionRecord = ({
       setAttachments([])
       dispatch(commonActions.getAreas())
       dispatch(commonActions.getManagement())
+      dispatch(socialCasesActions.getListCases())
     }
   }, [open])
 
@@ -633,14 +635,18 @@ const WorkerInterventionRecord = ({
                       }
                     >
                       <option value="">SELECCIONE OPCIÓN</option>
-                      {[
-                        { index: 'NEW', name: 'NUEVO' },
-                        { index: 2, name: 'CASO 2' }
-                      ].map((item, i) => (
-                        <option key={`case_id-${i}-${item}`} value={item.index}>
-                          {item.name}
-                        </option>
-                      ))}
+                      {[{ index: 'NEW', name: 'NUEVO' }]
+                        .concat(casesForSelect)
+                        .map((item, i) => (
+                          <option
+                            key={`case_id-${i}-${item}`}
+                            value={item.index}
+                          >
+                            {item.index === 'NEW'
+                              ? item.name
+                              : `CASO N° ${item.id}`}
+                          </option>
+                        ))}
                     </Select>
                   </Grid>
                   <Grid item xs={12} lg={5}>
