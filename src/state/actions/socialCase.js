@@ -47,6 +47,9 @@ const getListCases = () => (dispatch) =>
 const setFilters = (value) => (dispatch) =>
   dispatch({ type: socialCaseTypes.SET_FILTERS, payload: value })
 
+const setTags = (value) => (dispatch) =>
+  dispatch({ type: socialCaseTypes.SET_TAGS, payload: value })
+
 const createSocialCase = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.socialCase}/social-cases`, values)
@@ -85,6 +88,7 @@ const getInterventionPlans =
 const socialCasesActions = {
   getSocialCases,
   setFilters,
+  setTags,
   createSocialCase,
   getListCases,
   getInterventionPlans

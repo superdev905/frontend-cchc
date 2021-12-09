@@ -15,6 +15,7 @@ const initialState = {
     startDate: '',
     endDate: ''
   },
+  tags: {},
   casesForSelect: [],
   totalCases: 0,
   caseDetails: null,
@@ -30,6 +31,8 @@ const socialCase = (state = initialState, { type, payload }) => {
       return { ...state, totalCases: payload }
     case socialCaseTypes.SET_FILTERS:
       return { ...state, filters: payload }
+    case socialCaseTypes.SET_TAGS:
+      return { ...state, tags: payload }
     case socialCaseTypes.GET_CASES_FOR_SELECTED:
       return { ...state, casesForSelect: payload }
     case socialCaseTypes.GET_INTERVENTION_PLANS:

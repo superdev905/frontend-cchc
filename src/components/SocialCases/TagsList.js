@@ -6,39 +6,41 @@ import socialCaseActions from '../../state/actions/socialCase'
 
 const TagsList = () => {
   const dispatch = useDispatch()
-  const { filters } = useSelector((state) => state.socialCase)
+  const { tags: tagsStore, filters } = useSelector((state) => state.socialCase)
   const [tags, setTags] = useState([])
 
   const handleDelete = (data) => {
     const newFilter = { ...filters }
-    newFilter[data.filterName] = ''
+    const newTags = { ...tagsStore }
+
+    newTags[data.keyTag].filter = ''
+    newFilter[data.keyFilters] = ''
+
     dispatch(socialCaseActions.setFilters(newFilter))
+    dispatch(socialCaseActions.setTags(newTags))
   }
 
   useEffect(() => {
     const arrayItem = []
-    Object.entries(filters).forEach((e) => {
-      const key = e[0]
-      const value = e[1]
+    Object.values(tagsStore).forEach((values) => {
+      const { filter } = values
 
-      if (key === 'page' || key === 'size' || key === 'search') {
+      if (!filter) {
         return
       }
-      if (value === '' || value === 0) {
-        return
-      }
-      const item = { filterName: key, label: value }
+      const item = values
       arrayItem.push(item)
     })
     setTags(arrayItem)
+    console.log(arrayItem)
   }, [filters])
 
   return (
     <Box container padding="10px">
       {tags.map((data) => (
-        <span key={data.clave} style={{ margin: '3px' }}>
+        <span key={data.key} style={{ margin: '3px' }}>
           <Chip
-            label={`${data.filterName}: ${data.label}`}
+            label={`${data.label}: ${data.filter}`}
             deleteIcon={<HighlightOff />}
             onDelete={() => handleDelete(data)}
           />

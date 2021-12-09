@@ -47,15 +47,28 @@ const SocialCasesList = () => {
     if (!formatedFilter.endDate) {
       delete formatedFilter.endDate
     }
-    if (!formatedFilter.businessId) {
-      delete formatedFilter.businessId
+    if (!formatedFilter.areaId) {
+      delete formatedFilter.areaId
+    }
+    if (!formatedFilter.delegation) {
+      delete formatedFilter.delegation
+    }
+    if (!formatedFilter.zone) {
+      delete formatedFilter.zone
     }
     if (!formatedFilter.assistanceId) {
       delete formatedFilter.assistanceId
     }
-    if (!formatedFilter.areaId) {
-      delete formatedFilter.areaId
+    if (!formatedFilter.STATE) {
+      delete formatedFilter.STATE
     }
+    if (!formatedFilter.businessId) {
+      delete formatedFilter.businessId
+    }
+    if (!formatedFilter.search) {
+      delete formatedFilter.search
+    }
+
     dispatch(socialCaseActions.getSocialCases(formatedFilter)).then(() => {
       setLoading(false)
     })

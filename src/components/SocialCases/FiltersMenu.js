@@ -4,6 +4,8 @@ import { makeStyles } from '@material-ui/styles'
 import { Box, Menu, Fade } from '@material-ui/core'
 import { Select, Button } from '../UI'
 import statesData from '../../resources/statesData'
+import filterSocialCase from '../../resources/filtersSocialCase'
+import tagsSocialCase from '../../resources/tagsSocialCase'
 import DatePicker from '../Shared/DatePicker'
 import companiesActions from '../../state/actions/companies'
 import usersActions from '../../state/actions/users'
@@ -25,24 +27,28 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
   const { filters } = useSelector((state) => state.socialCase)
   const [companies, setCompanies] = useState([])
   const [employees, setEmployees] = useState([])
-  const [seleted, setSeleted] = useState({
-    businessId: 0,
-    STATE: '',
-    assistanceId: 0,
-    zone: '',
-    delegation: '',
-    areaId: 0,
-    startDate: '',
-    endDate: ''
-  })
+  const [seleted, setSeleted] = useState(filterSocialCase)
+  const [seletedTags, setSeletedTags] = useState(tagsSocialCase)
+
+  const closeFilterMenu = () => {
+    setSeleted(filterSocialCase)
+    onClose()
+  }
 
   const onSelectedOption = (event, typeInput) => {
     const { value } = event.target
-
+    const { text } = event.target[event.target.selectedIndex]
     if (typeInput === 'companies') {
       setSeleted({
         ...seleted,
         businessId: parseInt(value, 10)
+      })
+      setSeletedTags({
+        ...seletedTags,
+        business: {
+          ...seletedTags.business,
+          filter: text
+        }
       })
     }
     if (typeInput === 'states') {
@@ -50,11 +56,25 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
         ...seleted,
         STATE: value
       })
+      setSeletedTags({
+        ...seletedTags,
+        state: {
+          ...seletedTags.state,
+          filter: text
+        }
+      })
     }
     if (typeInput === 'profesional') {
       setSeleted({
         ...seleted,
         assistanceId: value
+      })
+      setSeletedTags({
+        ...seletedTags,
+        assistance: {
+          ...seletedTags.assistance,
+          filter: text
+        }
       })
     }
     if (typeInput === 'zone') {
@@ -62,17 +82,38 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
         ...seleted,
         zone: value
       })
+      setSeletedTags({
+        ...seletedTags,
+        zone: {
+          ...seletedTags.zone,
+          filter: text
+        }
+      })
     }
     if (typeInput === 'delegation') {
       setSeleted({
         ...seleted,
         delegation: value
       })
+      setSeletedTags({
+        ...seletedTags,
+        delegation: {
+          ...seletedTags.delegation,
+          filter: text
+        }
+      })
     }
     if (typeInput === 'area') {
       setSeleted({
         ...seleted,
         areaId: value
+      })
+      setSeletedTags({
+        ...seletedTags,
+        area: {
+          ...seletedTags.area,
+          filter: text
+        }
       })
     }
   }
@@ -82,12 +123,26 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
       ...seleted,
       startDate: date
     })
+    setSeletedTags({
+      ...seletedTags,
+      startDate: {
+        ...seletedTags.startDate,
+        filter: date
+      }
+    })
   }
 
   const getEndDate = (date) => {
     setSeleted({
       ...seleted,
       endDate: date
+    })
+    setSeletedTags({
+      ...seletedTags,
+      endDate: {
+        ...seletedTags.endDate,
+        filter: date
+      }
     })
   }
 
@@ -114,8 +169,11 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
       startDate,
       endDate
     }
+
     dispatch(socialCaseActions.setFilters(newFilters))
-    onClose()
+    dispatch(socialCaseActions.setTags(seletedTags))
+
+    closeFilterMenu()
   }
 
   useEffect(() => {
