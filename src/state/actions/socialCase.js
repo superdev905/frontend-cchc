@@ -28,10 +28,66 @@ const getSocialCases =
         })
     })
 
+const getListCases = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.socialCase}/social-cases/collect`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: socialCaseTypes.GET_CASES_FOR_SELECTED,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const setFilters = (value) => (dispatch) =>
   dispatch({ type: socialCaseTypes.SET_FILTERS, payload: value })
 
-export default {
+const createSocialCase = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.socialCase}/social-cases`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data.items)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getInterventionPlans =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.socialCase
+        }/intervention-plans?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({ type: socialCaseTypes.GET_CASES, payload: data.items })
+          dispatch({
+            type: socialCaseTypes.SET_TOTAL_CASES,
+            payload: data.total
+          })
+          resolve(data.items)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const socialCasesActions = {
   getSocialCases,
-  setFilters
+  setFilters,
+  createSocialCase,
+  getListCases,
+  getInterventionPlans
 }
+
+export default socialCasesActions
