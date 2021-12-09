@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/styles'
 import { Grid, Box } from '@material-ui/core'
 import { ActionsTable, SearchInput, Button, Wrapper } from '../UI'
 import { formatDate } from '../../formatters'
 import { DataTable } from '../Shared'
 import FiltersMenu from './FiltersMenu'
-
+import socialCaseActions from '../../state/actions/socialCase'
 import { useMenu } from '../../hooks'
 
 const useStyles = makeStyles(() => ({
@@ -13,56 +14,38 @@ const useStyles = makeStyles(() => ({
 }))
 
 const SocialCasesList = () => {
-  const caseList = [
-    {
-      id: 1,
-      estado: 'activo',
-      fecha: '2021-11-25T15:00:14.449000',
-      rut: '00.000.000-0',
-      nombres: 'test test',
-      apellidos: 'test test test',
-      empresa: 'test',
-      oficina: 'test'
-    }
-  ]
-  const totalCases = 0
-
+  const dispatch = useDispatch()
   const { open, handleOpen, handleClose, anchorEl } = useMenu()
 
   const classes = useStyles()
   const [loading, setLoading] = useState(false)
-  const [filters, setFilters] = useState({
-    page: 1,
-    size: 30,
-    search: '',
-    businessId: '',
-    state: ''
-  })
+  const { totalCases, casesList, filters } = useSelector(
+    (state) => state.socialCase
+  )
 
   const onSearchChange = (e) => {
     const { value } = e.target
 
-    setFilters({
-      ...filters,
-      search: value.toString(),
-      page: 1
-    })
+    dispatch(
+      socialCaseActions.setFilters({
+        ...filters,
+        search: value.toString(),
+        page: 1
+      })
+    )
   }
 
   const fetchSocialCases = () => {
     setLoading(true)
-    console.log(filters) /* dispach para consultar el store */
-    setTimeout(() => {
-      setLoading(false)
-    }, 1000)
+    dispatch(socialCaseActions.getSocialCases(/* { ...filters } */)).then(
+      () => {
+        setLoading(false)
+      }
+    )
   }
 
   const onRowClick = (row) => {
     alert(row)
-  }
-
-  const handleCompanySelected = (e) => {
-    setFilters({ ...filters, state: e.target.value })
   }
 
   useEffect(() => {
@@ -100,36 +83,31 @@ const SocialCasesList = () => {
         columns={[
           {
             name: 'Estado',
-            selector: (row) => row.estado
+            selector: (row) => (row.isActive ? 'Activo' : 'Completado')
           },
           {
             name: 'Fecha',
-            selector: (row) => formatDate(row.fecha),
+            selector: (row) => formatDate(row.createdDate),
             hide: 'md'
           },
           {
             name: 'Rut',
-            selector: (row) => row.rut,
+            selector: (row) => row.employeeRut,
             hide: 'md'
           },
           {
             name: 'Nombres',
-            selector: (row) => row.nombres,
-            hide: 'md'
-          },
-          {
-            name: 'Apellidos',
-            selector: (row) => row.apellidos,
+            selector: (row) => row.employeeNames,
             hide: 'md'
           },
           {
             name: 'Empresa',
-            selector: (row) => row.empresa,
+            selector: (row) => row.businessName,
             hide: 'md'
           },
           {
             name: 'Oficina',
-            selector: (row) => row.oficina,
+            selector: (row) => row.office,
             hide: 'md'
           },
           {
@@ -148,26 +126,26 @@ const SocialCasesList = () => {
             )
           }
         ]}
-        data={caseList}
+        data={casesList}
         pagination
         onRowClicked={onRowClick}
         paginationRowsPerPageOptions={[15, 30]}
         paginationPerPage={filters.size}
         paginationServer={true}
         onChangeRowsPerPage={(limit) => {
-          setFilters({ ...filters, size: limit })
+          dispatch(
+            socialCaseActions.setFilters({
+              ...filters,
+              size: limit
+            })
+          )
         }}
-        onChangePage={(page) => {
+        /* onChangePage={(page) => {
           setFilters({ ...filters, skip: page })
-        }}
+        }} */
         paginationTotalRows={totalCases}
       />
-      <FiltersMenu
-        open={open}
-        onClose={handleClose}
-        anchorEl={anchorEl}
-        handleCompanyChange={handleCompanySelected}
-      />
+      <FiltersMenu open={open} onClose={handleClose} anchorEl={anchorEl} />
     </Wrapper>
   )
 }
