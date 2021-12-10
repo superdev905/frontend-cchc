@@ -13,6 +13,7 @@ import {
   WatchLater as ScheduleIcon,
   Home as HousingIcon
 } from '@material-ui/icons'
+import LanguageIcon from '@material-ui/icons/Language'
 
 const modulesByRole = {
   COMMON: [{ title: 'Home', path: '/home', icon: <DashboardIcon /> }],
@@ -60,6 +61,11 @@ const modulesByRole = {
       title: 'Usuarios',
       path: '/users',
       icon: <UserIcon />
+    },
+    {
+      title: 'Consultas Web',
+      path: '/webconsult',
+      icon: <LanguageIcon />
     },
     {
       title: 'Configuración',
