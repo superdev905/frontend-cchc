@@ -7,6 +7,7 @@ import employeeRoutes from './employee'
 import Forbidden from '../pages/Forbidden'
 import coursesRoutes from './courses'
 // import houseRoutes from './house'
+import webQuestionEmployee from './webEmployee'
 
 const Login = lazy(() => import('../pages/Login'))
 const Home = lazy(() => import('../pages/Home'))
@@ -485,6 +486,7 @@ const routes = [
       />
     )
   },
-  ...coursesRoutes
+  ...coursesRoutes,
+  ...webQuestionEmployee
 ]
 export default routes
