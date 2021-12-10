@@ -5,10 +5,10 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
-import authActions from '../../state/actions/auth'
 import { RutTextField, SubmitButton } from '../../components/UI'
 import { rutValidation } from '../../validations'
 import AuthForm from '../../components/Auth/Form'
+import questionEmployeeActions from '../../state/actions/questionEmployee'
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -23,7 +23,7 @@ const useStyles = makeStyles(() => ({
 }))
 
 const validationSchema = Yup.object().shape({
-  run: Yup.string()
+  rut: Yup.string()
     .required('Ingrese run')
     .test('validRUN', 'Ingrese run válido', (v) => rutValidation(v))
 })
@@ -41,10 +41,10 @@ const Login = () => {
       rut: ''
     },
     onSubmit: (values) => {
-      dispatch(authActions.loginUser(values))
+      dispatch(questionEmployeeActions.validateRut(values))
         .then(() => {
           formik.setSubmitting(false)
-          enqueueSnackbar('Inicio de sesión exitoso', {
+          enqueueSnackbar('Rut válido', {
             variant: 'success',
             anchorOrigin: { vertical: 'bottom', horizontal: 'center' }
           })
