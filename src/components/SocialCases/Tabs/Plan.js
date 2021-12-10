@@ -2,13 +2,13 @@ import { Box, Typography } from '@material-ui/core'
 import List from '../InterventionPlan/List'
 import useStyles from './styles'
 
-const Background = () => {
+const InterventionTasks = () => {
   const classes = useStyles()
   return (
     <Box>
       <Box>
         <Typography className={classes.title}>
-          Tareas de plan de intervención
+          Tareas de Plan de Intervención Social
         </Typography>
       </Box>
       <List />
@@ -16,4 +16,4 @@ const Background = () => {
   )
 }
 
-export default Background
+export default InterventionTasks

@@ -7,7 +7,8 @@ import { Box, Grid, Typography } from '@material-ui/core'
 import commonActions from '../../../state/actions/common'
 import userActions from '../../../state/actions/users'
 import { DatePicker, Dialog } from '../../Shared'
-import { Button, Select } from '../../UI'
+import { Button, Select, SubmitButton } from '../../UI'
+import { useSuccess } from '../../../hooks'
 
 const validationSchema = Yup.object().shape({
   managementId: Yup.number().required('Seleccione gestión'),
@@ -29,9 +30,11 @@ const PlanDialog = ({
   const [users, setUsers] = useState([])
   const { isMobile } = useSelector((state) => state.ui)
   const { managementList: list } = useSelector((state) => state.common)
+  const { success, changeSuccess } = useSuccess()
   const formik = useFormik({
     validateOnMount: true,
     validateOnChange: true,
+    validateOnBlur: true,
     validationSchema,
     initialValues: {
       managementId: type === 'UPDATE' ? data.managementId : '',
@@ -40,17 +43,23 @@ const PlanDialog = ({
       nextDate: type === 'UPDATE' ? new Date(data.nextDate) : null
     },
     onSubmit: (values) => {
-      const foundUser = users.find((item) => item.id === values.professionalId)
+      const foundUser = users.find(
+        (item) => item.id === parseInt(values.professionalId, 10)
+      )
       submitFunction({
         ...values,
-        managementName: list.find((item) => item.id === values.managementId)
-          .name,
+        managementName: list.find(
+          (item) => item.id === parseInt(values.managementId, 10)
+        ).name,
         professionalNames:
           `${foundUser.names} ${foundUser.paternal_surname} ${foundUser.maternal_surname}`.trim()
       })
         .then(() => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, { variant: 'success' })
+          changeSuccess(true, () => {
+            onClose()
+          })
         })
         .catch((err) => {
           formik.setSubmitting(false)
@@ -86,6 +95,7 @@ const PlanDialog = ({
                 name="frequency"
                 value={formik.values.frequency}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={
                   formik.touched.frequency && Boolean(formik.errors.frequency)
                 }
@@ -108,6 +118,10 @@ const PlanDialog = ({
                 value={formik.values.nextDate}
                 onChange={(newDate) => {
                   formik.setFieldValue('nextDate', newDate)
+                  formik.setFieldTouched('nextDate')
+                }}
+                onBlur={() => {
+                  formik.setFieldTouched('nextDate')
                 }}
                 error={
                   formik.touched.nextDate && Boolean(formik.errors.nextDate)
@@ -122,6 +136,7 @@ const PlanDialog = ({
                 name="managementId"
                 value={formik.values.managementId}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={
                   formik.touched.managementId &&
                   Boolean(formik.errors.managementId)
@@ -145,6 +160,7 @@ const PlanDialog = ({
                 name="professionalId"
                 value={formik.values.professionalId}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={
                   formik.touched.professionalId &&
                   Boolean(formik.errors.professionalId)
@@ -166,7 +182,12 @@ const PlanDialog = ({
             <Button variant="outlined" onClick={onClose}>
               Cancelar
             </Button>
-            <Button>{`${type === 'UPDATE' ? 'Actualizar' : 'Crear'}`}</Button>
+            <SubmitButton
+              disabled={!formik.isValid || formik.isSubmitting}
+              loading={formik.isSubmitting}
+              onClick={formik.handleSubmit}
+              success={success}
+            >{`${type === 'UPDATE' ? 'Actualizar' : 'Crear'}`}</SubmitButton>
           </Box>
         </Box>
       </Box>

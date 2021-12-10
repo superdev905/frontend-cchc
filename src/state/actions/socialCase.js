@@ -70,9 +70,12 @@ const getInterventionPlans =
       )
         .then((response) => {
           const { data } = response
-          dispatch({ type: socialCaseTypes.GET_CASES, payload: data.items })
           dispatch({
-            type: socialCaseTypes.SET_TOTAL_CASES,
+            type: socialCaseTypes.GET_INTERVENTION_PLANS,
+            payload: data.items
+          })
+          dispatch({
+            type: socialCaseTypes.SET_INTERVENTION_PLAN_TOTAL,
             payload: data.total
           })
           resolve(data.items)
@@ -82,12 +85,62 @@ const getInterventionPlans =
         })
     })
 
+const createInterventionTask = (values) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.socialCase}/intervention-plans`, values)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: socialCaseTypes.CREATE_TASK_INTERVENTION_PLAN,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateInterventionTask = (id, values) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.socialCase}/intervention-plans/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: socialCaseTypes.UPDATE_TASK_INTERVENTION_PLAN,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const deleteInterventionTask = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`${config.services.socialCase}/intervention-plans/${id}`)
+      .then(() => {
+        dispatch({
+          type: socialCaseTypes.DELETE_TASK_INTERVENTION_PLAN,
+          payload: id
+        })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const socialCasesActions = {
   getSocialCases,
   setFilters,
   createSocialCase,
   getListCases,
-  getInterventionPlans
+  getInterventionPlans,
+  createInterventionTask,
+  updateInterventionTask,
+  deleteInterventionTask
 }
 
 export default socialCasesActions
