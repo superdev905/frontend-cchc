@@ -74,6 +74,7 @@ const Login = () => {
             label="Rut"
             name="rut"
             required
+            placeholder="8.828.635-9"
             value={formik.values.rut}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
