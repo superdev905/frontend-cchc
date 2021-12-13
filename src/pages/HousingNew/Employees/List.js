@@ -1,8 +1,8 @@
 import { Box, Typography } from '@material-ui/core'
-import { Button } from '../../../components/UI'
+import { ActionsTable, Button } from '../../../components/UI'
 import { DataTable } from '../../../components/Shared'
 
-const EmployeeList = ({ employees, onAdd }) => (
+const EmployeeList = ({ employees, onAdd, onDelete }) => (
   <Box>
     <Box display="flex" justifyContent="space-between" alignItems="center">
       <Typography
@@ -33,6 +33,17 @@ const EmployeeList = ({ employees, onAdd }) => (
           {
             name: 'Sexo',
             selector: (row) => row.gender
+          },
+          {
+            name: '',
+            right: true,
+            selector: (row) => (
+              <ActionsTable
+                onDelete={() => {
+                  onDelete(row)
+                }}
+              />
+            )
           }
         ]}
         highlightOnHover

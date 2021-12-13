@@ -3,13 +3,14 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useHistory } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
+import { Box, Chip, Grid, makeStyles, Typography } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 import { FiSave as SaveIcon } from 'react-icons/fi'
 import { useDispatch } from 'react-redux'
 import companiesActions from '../../state/actions/companies'
 import { ScheduleContactCard } from '../../components/Schedule'
-import { DataTable, HeadingWithButton } from '../../components/Shared'
-import { SubmitButton, TextArea, Wrapper } from '../../components/UI'
+import { HeadingWithButton } from '../../components/Shared'
+import { SubmitButton, TextArea, TextField, Wrapper } from '../../components/UI'
 import { useSuccess, useToggle } from '../../hooks'
 import usersActions from '../../state/actions/users'
 import CompanyCard from '../../components/Company/CompanyCard'
@@ -52,6 +53,7 @@ const HousingNew = () => {
   const [relatedBusinesses, setRelatedBusinesses] = useState([])
   const [employeeList, setEmployeeList] = useState([])
   const [professionalList, setProfessionalList] = useState([])
+  const [users, setUsers] = useState([])
   const { open: openAddEmployee, toggleOpen: toggleOpenAddEmployee } =
     useToggle()
 
@@ -222,6 +224,12 @@ const HousingNew = () => {
           <EmployeeList
             employees={employeeList}
             onAdd={toggleOpenAddEmployee}
+            onDelete={(employee) => {
+              const updatedList = employeeList.filter(
+                (item) => item.id !== employee.id
+              )
+              setEmployeeList(updatedList)
+            }}
           />
           {openAddEmployee && (
             <HouseAddEmployee
@@ -229,9 +237,18 @@ const HousingNew = () => {
               onClose={toggleOpenAddEmployee}
               submitFunction={(list) => setEmployeeList(list)}
               onAdd={(employee) => {
-                const updatedList = [...employeeList]
-                updatedList.push(employee)
-                setEmployeeList(updatedList)
+                const foundEmployee = employeeList.find(
+                  (item) => item.id === employee.id
+                )
+                if (!foundEmployee) {
+                  const updatedList = [...employeeList]
+                  updatedList.push(employee)
+                  setEmployeeList(updatedList)
+                } else {
+                  enqueueSnackbar('Este trabajador ya fue agregado', {
+                    variant: 'error'
+                  })
+                }
               }}
             />
           )}
@@ -245,30 +262,42 @@ const HousingNew = () => {
           </Typography>
 
           <Box>
-            <DataTable
-              emptyMessage={'No se agregaron trabajadores'}
-              data={professionalList}
-              progressPending={false}
-              columns={[
-                {
-                  name: 'Run',
-                  selector: (row) => row.run
-                },
-                {
-                  name: 'Nombre',
-                  selector: (row) => row.names
-                },
-                {
-                  name: 'Apellidos',
-                  selector: (row) => row.paternal_surname
-                },
-                {
-                  name: 'Correo',
-                  selector: (row) => row.email
-                }
-              ]}
-              highlightOnHover
-              pointerOnHover
+            <Autocomplete
+              multiple
+              filterSelectedOptions
+              id="professionals"
+              options={professionalList}
+              value={users}
+              onChange={(__, values) => {
+                setUsers(values)
+              }}
+              getOptionLabel={(option) => option.names || ''}
+              renderOption={(values) => (
+                <Box>
+                  <Typography style={{ fontSize: 18, fontWeight: 'bold' }}>
+                    {`Nombre:  ${values.names} ${values.paternal_surname}`.toLocaleUpperCase()}
+                  </Typography>
+                  <Typography
+                    style={{ fontSize: 15, textTransform: 'capitalize' }}
+                  >
+                    Cargo: {values.charge_name || ''}{' '}
+                  </Typography>
+                </Box>
+              )}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip
+                    variant="outlined"
+                    label={`${option.names} ${option.paternal_surname}-${
+                      option.charge_name || ''
+                    }`.toUpperCase()}
+                    {...getTagProps({ index })}
+                  />
+                ))
+              }
+              renderInput={(params) => (
+                <TextField {...params} placeholder="Seleccione profesionales" />
+              )}
             />
           </Box>
         </Box>
@@ -287,7 +316,7 @@ const HousingNew = () => {
         </Box>
         <Box textAlign="right">
           <SubmitButton
-            disabled={!formik.isValid || loading}
+            disabled={!formik.isValid || loading || employeeList.length === 0}
             startIcon={<SaveIcon />}
             onClick={createAgreement}
             loading={loading}
