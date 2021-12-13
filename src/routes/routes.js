@@ -36,7 +36,8 @@ const Housing = lazy(() => import('../pages/Housing'))
 const HousingNew = lazy(() => import('../pages/HousingNew'))
 const Agreement = lazy(() => import('../pages/Agreement'))
 const AgreementEmployee = lazy(() => import('../pages/AgreementEmployee'))
-const Question = lazy(() => import('../pages/WebConsultBoss'))
+const QuestionPage = lazy(() => import('../pages/WebConsultBoss'))
+const Question = lazy(() => import('../pages/Question'))
 
 const routes = [
   {
@@ -489,6 +490,22 @@ const routes = [
   {
     path: '/webconsult',
     key: 'WEB-CONSULT',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        yes={() => (
+          <Layout>
+            <QuestionPage />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: `/Question/:idQuestion`,
+    key: 'Question',
     exact: true,
     component: ({ authenticated }) => (
       <Can

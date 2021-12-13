@@ -6,11 +6,12 @@ import { useToggle } from '../../hooks'
 import questionActions from '../../state/actions/questions'
 import QuestionAssign from './QuestionAssign'
 
-const Questions = () => {
+const Question = () => {
   const history = useHistory()
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
   const { open: openAssign, toggleOpen: toogleOpenAssign } = useToggle()
+
   const AssignQuestion = (values) => {
     const data = {
       ...values,
@@ -22,7 +23,7 @@ const Questions = () => {
   }
 
   const redirectToQuestion = (id) => {
-    history.pushState(`/webconsult/${id}`)
+    history.push(`/question/${id}`)
   }
 
   return (
@@ -50,4 +51,4 @@ const Questions = () => {
     </Wrapper>
   )
 }
-export default Questions
+export default Question

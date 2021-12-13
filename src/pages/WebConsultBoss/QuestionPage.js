@@ -1,14 +1,14 @@
 import { Box } from '@material-ui/core'
 import { PageHeading, Wrapper } from '../../components/UI'
-import Questions from '../../components/WebConsultBoss/Question'
+import Question from '../../components/WebConsultBoss/Question'
 import QuestionList from '../../components/WebConsultBoss/QuestionList'
 
-const Question = () => (
+const QuestionPage = () => (
   <Box>
     <Wrapper>
       <PageHeading>Preguntas</PageHeading>
       <Box>
-        <Questions />
+        <Question />
       </Box>
       <Box>
         <QuestionList />
@@ -17,4 +17,4 @@ const Question = () => (
   </Box>
 )
 
-export default Question
+export default QuestionPage
