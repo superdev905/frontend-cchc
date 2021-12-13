@@ -2,16 +2,19 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
+import { useToggle } from '../../hooks'
 import { DataTable } from '../Shared'
 import { ActionsTable, Button, SearchInput } from '../UI'
 import housingActions from '../../state/actions/housing'
 import { formatDate } from '../../formatters'
+import AddEmployee from './AddEmployee'
 
 const EmployeeList = ({ annexedId, status }) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const { agreementId } = useParams()
   const [loading, setLoading] = useState(false)
+  const { open, toggleOpen } = useToggle()
   const [query, setQuery] = useState({
     page: 1,
     size: 30,
@@ -33,6 +36,9 @@ const EmployeeList = ({ annexedId, status }) => {
       setLoading(false)
     })
   }
+
+  const addEmployee = (values) =>
+    dispatch(housingActions.addEmployee(annexedId, values))
 
   useEffect(() => {
     fetchEmployees()
@@ -56,7 +62,9 @@ const EmployeeList = ({ annexedId, status }) => {
         </Grid>
         <Grid item xs={12} md={7}>
           <Box display="flex" justifyContent="flex-end">
-            <Button disabled={status === 'VALID'}>Agregar</Button>
+            <Button onClick={toggleOpen} disabled={status === 'VALID'}>
+              Agregar
+            </Button>
           </Box>
         </Grid>
       </Grid>
@@ -106,6 +114,15 @@ const EmployeeList = ({ annexedId, status }) => {
         }}
         paginationTotalRows={totalDocs}
       />
+      {open && (
+        <AddEmployee
+          open={open}
+          onClose={toggleOpen}
+          submitFunction={addEmployee}
+          successMessage="Trabajador agregado"
+          successFunction={fetchEmployees}
+        />
+      )}
     </Box>
   )
 }

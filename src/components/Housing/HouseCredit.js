@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { ActionsTable, Button, SearchInput, StatusChip } from '../UI'
+import { ActionsTable, Button, SearchInput } from '../UI'
 import { DataTable } from '../Shared'
 import housingActions from '../../state/actions/housing'
 import { formatDate } from '../../formatters'
@@ -88,20 +88,7 @@ const HouseAgreements = () => {
           },
           {
             name: 'Empresa',
-            selector: (row) => row.businessName
-          },
-          {
-            name: 'Estado',
-            selector: (row) => (
-              <StatusChip
-                success={row.isActive}
-                label={row.isActive ? 'Activo' : 'Eliminado'}
-              />
-            )
-          },
-          {
-            name: 'Trabajadores',
-            selector: (row) => row.totalEmployees
+            selector: (row) => row.businessName.toUpperCase()
           },
           {
             name: '',

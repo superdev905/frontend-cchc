@@ -230,6 +230,18 @@ const validAnnexed = (id) => () =>
       })
   })
 
+const addEmployee = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.housing}/annexes/${id}/employee`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const housingActions = {
   createAgreement,
   getAgreements,
@@ -245,7 +257,8 @@ const housingActions = {
   getStats,
   createAnnexed,
   getAnnexed,
-  validAnnexed
+  validAnnexed,
+  addEmployee
 }
 
 export default housingActions
