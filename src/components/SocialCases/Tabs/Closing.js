@@ -1,5 +1,87 @@
-import { Box } from '@material-ui/core'
+import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { makeStyles, Box, Grid, Typography } from '@material-ui/core'
+import { Wrapper, Button, LabeledRow, Text } from '../../UI'
+import ClosingModal from '../Closing/ClosingModal'
+import { formatDate } from '../../../formatters'
 
-const Background = () => <Box>Cierre</Box>
+const useStyles = makeStyles(() => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  message: {
+    fontSize: '19px',
+    fontWeight: 'bold'
+  }
+}))
 
-export default Background
+const Closing = () => {
+  const classes = useStyles()
+  const [open, setOpen] = useState(false)
+  const { caseDetails } = useSelector((state) => state.socialCase)
+
+  const openModal = () => {
+    setOpen(true)
+  }
+  const closeModal = () => {
+    setOpen(false)
+  }
+
+  useEffect(() => {
+    closeModal()
+  }, [caseDetails])
+
+  return (
+    <Grid item xs={12}>
+      {!caseDetails.closing ? (
+        <Box>
+          <Wrapper>
+            <Box className={classes.root}>
+              <Typography className={classes.message}>
+                Este Caso No Fue Cerrado
+              </Typography>
+              <Button onClick={openModal}>Cerrar</Button>
+            </Box>
+          </Wrapper>
+        </Box>
+      ) : (
+        <Wrapper>
+          <Box>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
+                Detalles de Cierre de Caso
+              </Typography>
+            </Box>
+            <Box p={2}>
+              <Grid container>
+                <Grid item xs={12} md={6}>
+                  <LabeledRow label={'Fecha'}>
+                    <Text>{formatDate(caseDetails.closing.date)} </Text>
+                  </LabeledRow>
+                  <LabeledRow label={'Estado'}>
+                    <Text>{caseDetails.closing.state} </Text>
+                  </LabeledRow>
+                  <LabeledRow label={'Encargado'}>
+                    <Text>{caseDetails.closing.professionalNames}</Text>
+                  </LabeledRow>
+                  <LabeledRow label={'Observaciones'}>
+                    <Text>{caseDetails.closing.observations}</Text>
+                  </LabeledRow>
+                </Grid>
+              </Grid>
+            </Box>
+          </Box>
+        </Wrapper>
+      )}
+      <ClosingModal open={open} onClose={closeModal} />
+    </Grid>
+  )
+}
+
+export default Closing

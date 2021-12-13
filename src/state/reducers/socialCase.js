@@ -19,6 +19,7 @@ const initialState = {
   casesForSelect: [],
   totalCases: 0,
   caseDetails: null,
+  derivationDetails: null,
   interventionPlans: [],
   totalInterventions: 0
 }
@@ -29,6 +30,8 @@ const socialCase = (state = initialState, { type, payload }) => {
       return { ...state, casesList: payload }
     case socialCaseTypes.GET_CASE_BY_ID:
       return { ...state, caseDetails: payload }
+    case socialCaseTypes.GET_DERIVATION_DETAILS:
+      return { ...state, derivationDetails: payload }
     case socialCaseTypes.SET_TOTAL_CASES:
       return { ...state, totalCases: payload }
     case socialCaseTypes.SET_FILTERS:

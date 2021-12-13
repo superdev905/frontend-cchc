@@ -102,6 +102,58 @@ const getInterventionPlans =
         })
     })
 
+const createDerivation = (socialCaseId, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.socialCase}/social-cases/${socialCaseId}/derivation`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getDerivation =
+  (socialCaseId, derivationId, handleDispatch = true) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.socialCase}/social-cases/${socialCaseId}/derivation/${derivationId}`
+      )
+        .then((response) => {
+          const { data } = response
+          if (handleDispatch) {
+            dispatch({
+              type: socialCaseTypes.GET_DERIVATION_DETAILS,
+              payload: data
+            })
+          }
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const createClosing = (socialCaseId, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.socialCase}/social-cases/${socialCaseId}/close`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const socialCasesActions = {
   getSocialCases,
   getSocialCaseById,
@@ -109,7 +161,10 @@ const socialCasesActions = {
   setTags,
   createSocialCase,
   getListCases,
-  getInterventionPlans
+  getInterventionPlans,
+  createDerivation,
+  getDerivation,
+  createClosing
 }
 
 export default socialCasesActions

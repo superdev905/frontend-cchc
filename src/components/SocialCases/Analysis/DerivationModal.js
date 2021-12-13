@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch /* , useSelector */ } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useSnackbar } from 'notistack'
+import { useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/styles'
 import {
   Box,
@@ -13,7 +15,8 @@ import { Autocomplete } from '@material-ui/lab'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { Select, Button } from '../../UI'
-import assistanceActions from '../../../state/actions/assistance'
+import usersActions from '../../../state/actions/users'
+import socialCaseActions from '../../../state/actions/socialCase'
 
 const useStyles = makeStyles(() => ({
   main: {},
@@ -39,12 +42,14 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const DerivationModal = ({ open, onClose, assistance }) => {
+const DerivationModal = ({ open, onClose, assistanceID }) => {
   const classes = useStyles()
+  const { socialCaseId } = useParams()
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const [assistanceList, setAssistanceList] = useState([])
-  const currentAssistance = [...assistance]
-  const [value, setValue] = useState([...currentAssistance])
+  const [state] = useState('ASIGNADO')
+  const [value, setValue] = useState([])
 
   const priority = ['BAJA', 'MEDIA', 'ALTA']
 
@@ -58,13 +63,37 @@ const DerivationModal = ({ open, onClose, assistance }) => {
       observations: Yup.string().required('El campo Observaciones es requerido')
     }),
     onSubmit: (formData) => {
-      console.log(formData)
+      try {
+        formData.date = new Date().toISOString()
+        formData.assistanceTitularId = assistanceID
+        formData.state = state
+        formData.professionals = [...value]
+        console.log({ formData })
+        console.log({ socialCaseId })
+        dispatch(
+          socialCaseActions.createDerivation(socialCaseId, formData)
+        ).then(() => {
+          enqueueSnackbar('Delegación Ingresada Exitosamente', {
+            variant: 'success'
+          })
+          dispatch(socialCaseActions.getSocialCaseById(socialCaseId))
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
   })
 
   useEffect(() => {
-    dispatch(assistanceActions.getAttention()).then((item) => {
-      setAssistanceList(item)
+    dispatch(usersActions.getSocialAssistanceList()).then((item) => {
+      const list = []
+      item.forEach((assistance) => {
+        list.push({
+          userId: assistance.id,
+          fullName: `${assistance.names} ${assistance.paternal_surname} ${assistance.maternal_surname}`
+        })
+      })
+      setAssistanceList(list)
     })
   }, [])
   return (
@@ -83,7 +112,7 @@ const DerivationModal = ({ open, onClose, assistance }) => {
                     <Typography>Estado *</Typography>
                     <TextField
                       name="businessName"
-                      value="ASIGNADO"
+                      value={state}
                       disabled
                       fullWidth
                     />
@@ -135,27 +164,21 @@ const DerivationModal = ({ open, onClose, assistance }) => {
                 </Box>
                 <Box className={classes.boxHorizontal}>
                   <Box className={classes.boxInput}>
-                    <Typography>Encargados *</Typography>
+                    <Typography>Agregar nuevos Encargados *</Typography>
                     <Autocomplete
                       multiple
                       id="fixed-tags-demo"
                       value={value}
                       onChange={(event, newValue) => {
-                        setValue([
-                          ...assistance,
-                          ...newValue.filter(
-                            (option) => assistance.indexOf(option) === -1
-                          )
-                        ])
+                        setValue([...newValue])
                       }}
                       options={assistanceList}
-                      getOptionLabel={(option) => option.employee_name}
+                      getOptionLabel={(option) => option.fullName}
                       renderTags={(tagValue, getTagProps) =>
                         tagValue.map((option, index) => (
                           <Chip
-                            label={option.employee_name}
+                            label={option.fullName}
                             {...getTagProps({ index })}
-                            disabled={assistance.indexOf(option) !== -1}
                           />
                         ))
                       }
