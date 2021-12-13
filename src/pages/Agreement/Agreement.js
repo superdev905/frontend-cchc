@@ -130,6 +130,7 @@ const Agreement = () => {
                 selectedCompany={{ id: agreementDetails.businessId }}
                 open={open}
                 onClose={toggleOpen}
+                successFunction={fetchDetails}
               />
             )}
           </Box>

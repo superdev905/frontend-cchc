@@ -35,7 +35,7 @@ const validationSchema = Yup.object().shape({
   observations: Yup.string().required('Ingrese observaciones')
 })
 
-const AnnexedDialog = ({ open, onClose, selectedCompany }) => {
+const AnnexedDialog = ({ open, onClose, selectedCompany, successFunction }) => {
   const dispatch = useDispatch()
   const { agreementId } = useParams()
   const { enqueueSnackbar } = useSnackbar()
@@ -85,6 +85,10 @@ const AnnexedDialog = ({ open, onClose, selectedCompany }) => {
     dispatch(housingActions.createAnnexed(createData))
       .then(() => {
         setLoading(false)
+        onClose()
+        if (successFunction) {
+          successFunction()
+        }
       })
       .catch((err) => {
         enqueueSnackbar(err, { variant: 'error' })

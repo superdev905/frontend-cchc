@@ -1,6 +1,5 @@
 import { Box } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
 import { useToggle } from '../../../hooks'
 import housingActions from '../../../state/actions/housing'
 import { EmptyState } from '../../UI'
@@ -9,13 +8,13 @@ import SavingCard from './Card'
 
 const SavingSection = ({ handler }) => {
   const dispatch = useDispatch()
-  const { employeeId } = useParams()
+
   const { employeeData } = useSelector((state) => state.housing)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
 
   const createSaving = (values) =>
-    dispatch(housingActions.createEmployeeSaving(employeeId, values))
+    dispatch(housingActions.createEmployeeSaving(employeeData.id, values))
 
   const updateSaving = (values) =>
     dispatch(
