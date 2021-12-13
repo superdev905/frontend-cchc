@@ -1,26 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { makeStyles, Box, Typography, Grid } from '@material-ui/core'
-import { Wrapper, Button, LabeledRow, Text } from '../../UI'
+import { Box, Typography, Grid } from '@material-ui/core'
+import { Wrapper, EmptyState, LabeledRow, Text } from '../../UI'
 import DerivationModal from '../Analysis/DerivationModal'
 import socialCasesActions from '../../../state/actions/socialCase'
 import { formatDate } from '../../../formatters'
 
-const useStyles = makeStyles(() => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  },
-  message: {
-    fontSize: '19px',
-    fontWeight: 'bold'
-  }
-}))
-
 const Analysis = () => {
-  const classes = useStyles()
   const { socialCaseId } = useParams()
   const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
@@ -47,12 +34,11 @@ const Analysis = () => {
       {caseDetails && !derivationDetails ? (
         <Box>
           <Wrapper>
-            <Box className={classes.root}>
-              <Typography className={classes.message}>
-                Este Caso No Tiene Derivación
-              </Typography>
-              <Button onClick={openModal}>Crear</Button>
-            </Box>
+            <EmptyState
+              message={'Este Caso No Tiene Derivación'}
+              event={openModal}
+              actionMessage={'Crear'}
+            />
           </Wrapper>
           <DerivationModal
             open={open}

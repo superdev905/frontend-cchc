@@ -1,24 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { makeStyles, Box, Grid, Typography } from '@material-ui/core'
-import { Wrapper, Button, LabeledRow, Text } from '../../UI'
+import { Box, Grid, Typography } from '@material-ui/core'
+import { Wrapper, LabeledRow, Text, EmptyState } from '../../UI'
 import ClosingModal from '../Closing/ClosingModal'
 import { formatDate } from '../../../formatters'
 
-const useStyles = makeStyles(() => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  },
-  message: {
-    fontSize: '19px',
-    fontWeight: 'bold'
-  }
-}))
-
 const Closing = () => {
-  const classes = useStyles()
   const [open, setOpen] = useState(false)
   const { caseDetails } = useSelector((state) => state.socialCase)
 
@@ -38,12 +25,11 @@ const Closing = () => {
       {!caseDetails.closing ? (
         <Box>
           <Wrapper>
-            <Box className={classes.root}>
-              <Typography className={classes.message}>
-                Este Caso No Fue Cerrado
-              </Typography>
-              <Button onClick={openModal}>Cerrar</Button>
-            </Box>
+            <EmptyState
+              message={'Este Caso No Fue Cerrado'}
+              event={openModal}
+              actionMessage={'Cerrar'}
+            />
           </Wrapper>
         </Box>
       ) : (
