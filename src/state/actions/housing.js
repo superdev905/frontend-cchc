@@ -194,6 +194,42 @@ const getStats = () => () =>
       })
   })
 
+const createAnnexed = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.housing}/annexes`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getAnnexed = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.housing}/annexes/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const validAnnexed = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.housing}/annexes/${id}/validate`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const housingActions = {
   createAgreement,
   getAgreements,
@@ -206,7 +242,10 @@ const housingActions = {
   updateEmployeeDiagnostic,
   getEmployeePhases,
   updatePhase,
-  getStats
+  getStats,
+  createAnnexed,
+  getAnnexed,
+  validAnnexed
 }
 
 export default housingActions

@@ -1,12 +1,10 @@
-import { useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
-import filesAction from '../../../state/actions/files'
-import { DatePicker, Dialog, FilePicker } from '../../Shared'
-import { Button, InputLabel, Select, SubmitButton, TextArea } from '../../UI'
+import { DatePicker, Dialog } from '../../Shared'
+import { Button, Select, SubmitButton, TextArea } from '../../UI'
 import { decisionList } from '../../../config'
 import { useSuccess } from '../../../hooks'
 
@@ -24,10 +22,8 @@ const ApproveDialog = ({
   submitFunction,
   successMessage
 }) => {
-  const dispatch = useDispatch()
   const { isMobile } = useSelector((state) => state.ui)
   const { success } = useSuccess()
-  const [file, setFile] = useState(null)
   const { enqueueSnackbar } = useSnackbar()
   const formik = useFormik({
     validateOnMount: true,
@@ -39,28 +35,8 @@ const ApproveDialog = ({
       modality: data ? data.modality : '',
       observation: data ? data.observation : ''
     },
-    onSubmit: async (values) => {
-      const formattedValues = { ...values }
-      let attachment = null
-      if (file) {
-        const formData = new FormData()
-        formData.append('file', file, file.name)
-        const resultUpload = await dispatch(
-          filesAction.uploadFileToStorage(formData)
-        )
-        attachment = {
-          fileKey: resultUpload.file_key,
-          fileUrl: resultUpload.file_url,
-          fileSize: resultUpload.file_size,
-          fileName: resultUpload.file_name,
-          uploadDate: resultUpload.upload_date
-        }
-      }
-      if (attachment) {
-        formattedValues.attachment = attachment
-      }
-
-      submitFunction(formattedValues)
+    onSubmit: (values) => {
+      submitFunction(values)
         .then(() => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, { variant: 'success' })
@@ -82,7 +58,7 @@ const ApproveDialog = ({
             variant="h6"
             style={{ fontWeight: 'bold' }}
           >
-            Aprobación
+            Datos de envio
           </Typography>
         </Box>
         <Box>
@@ -154,18 +130,6 @@ const ApproveDialog = ({
                   formik.touched.observation && formik.errors.observation
                 }
                 maxLength={800}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <InputLabel>Archivo</InputLabel>
-              <FilePicker
-                value={file}
-                onChange={(e) => {
-                  setFile(e)
-                }}
-                onDelete={() => {
-                  setFile(null)
-                }}
               />
             </Grid>
           </Grid>

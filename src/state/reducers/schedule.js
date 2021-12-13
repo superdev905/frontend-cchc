@@ -4,7 +4,8 @@ const initialState = {
   list: [],
   totalPages: 0,
   scheduleDetails: null,
-  meetings: []
+  meetings: [],
+  benefits: []
 }
 
 const scheduleReducer = (state = initialState, { type, payload }) => {
@@ -23,6 +24,36 @@ const scheduleReducer = (state = initialState, { type, payload }) => {
         meetings: state.meetings.map((item) =>
           item.id === payload.id ? payload : item
         )
+      }
+    case scheduleTypes.GET_SCHEDULE_BENEFITS:
+      return {
+        ...state,
+        benefits: payload
+      }
+    case scheduleTypes.UPDATE_SCHEDULE_BENEFIT_MONTHS:
+      return {
+        ...state,
+        benefits: state.benefits.map((item) =>
+          item.id === payload.id ? payload : item
+        )
+      }
+    case scheduleTypes.CREATE_SCHEDULE_APPROBATION:
+      return {
+        ...state,
+        scheduleDetails: {
+          ...state.scheduleDetails,
+          approbationId: payload.id,
+          approbation: payload
+        }
+      }
+    case scheduleTypes.CREATE_UPDATE_SCHEDULE_SEND_STATUS:
+      return {
+        ...state,
+        scheduleDetails: {
+          ...state.scheduleDetails,
+          sendId: payload.id,
+          sendStatus: payload
+        }
       }
     default:
       return state

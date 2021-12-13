@@ -48,7 +48,6 @@ const HouseAgreements = () => {
           <Typography style={{ fontSize: 18, fontWeight: 'bold' }} variant="h7">
             Convenios
           </Typography>
-          <Button onClick={onClickCreate}>Nuevo convenio</Button>
         </Box>
       </Box>
       <Box mb={1}>
@@ -59,6 +58,11 @@ const HouseAgreements = () => {
               value={query.search}
               onChange={handleSearch}
             />
+          </Grid>
+          <Grid item xs={12} md={7}>
+            <Box textAlign="right">
+              <Button onClick={onClickCreate}>Nuevo convenio</Button>
+            </Box>
           </Grid>
         </Grid>
       </Box>
@@ -77,6 +81,10 @@ const HouseAgreements = () => {
           {
             name: 'Fecha',
             selector: (row) => formatDate(row.date)
+          },
+          {
+            name: 'Número',
+            selector: (row) => row.number
           },
           {
             name: 'Empresa',

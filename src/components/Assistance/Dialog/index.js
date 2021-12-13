@@ -8,6 +8,7 @@ import {
   Grid,
   Typography,
   FormControlLabel,
+  FormHelperText,
   Radio,
   Avatar
 } from '@material-ui/core'
@@ -499,6 +500,7 @@ const WorkerInterventionRecord = ({
                   }
                   label="SI"
                 />
+
                 <FormControlLabel
                   value="end"
                   control={
@@ -512,6 +514,11 @@ const WorkerInterventionRecord = ({
                   }
                   label="NO"
                 />
+                {formik.errors.company_report && (
+                  <FormHelperText error>
+                    {formik.errors.company_report}{' '}
+                  </FormHelperText>
+                )}
               </Box>
             </Grid>
 
@@ -567,6 +574,11 @@ const WorkerInterventionRecord = ({
                     }
                     label="NO"
                   />
+                  {formik.errors.is_social_case && (
+                    <FormHelperText error>
+                      {formik.errors.is_social_case}{' '}
+                    </FormHelperText>
+                  )}
                 </Box>
               </Grid>
               <Grid item xs={12} md={3} lg={4}>

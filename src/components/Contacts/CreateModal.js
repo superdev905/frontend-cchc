@@ -68,7 +68,8 @@ const ContactModal = ({
   successFunc,
   submitFunction,
   successMessage,
-  includeInterlocutor
+  includeInterlocutor,
+  interlocutorAsDefault
 }) => {
   const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
@@ -96,7 +97,8 @@ const ContactModal = ({
       cell_phone: type === 'UPDATE' ? data.cell_phone : '',
       office_phone: type === 'UPDATE' ? data.office_phone : '',
       other_phone: type === 'UPDATE' ? data.other_phone : '',
-      is_interlocutor: type === 'UPDATE' ? data.is_interlocutor : false
+      is_interlocutor:
+        type === 'UPDATE' ? data.is_interlocutor : interlocutorAsDefault
     },
     onSubmit: (values, { resetForm }) => {
       const formattedValues = { ...values }
@@ -104,7 +106,7 @@ const ContactModal = ({
         delete formattedValues.is_interlocutor
       }
       submitFunction(formattedValues)
-        .then(() => {
+        .then((res) => {
           formik.setSubmitting(false)
           changeSuccess(false)
           enqueueSnackbar(successMessage, {
@@ -114,7 +116,7 @@ const ContactModal = ({
             resetForm()
             onClose()
             if (successFunc) {
-              successFunc()
+              successFunc(res)
             }
           }, 500)
         })
@@ -305,7 +307,8 @@ const ContactModal = ({
 
 ContactModal.defaultProps = {
   type: 'CREATE',
-  includeInterlocutor: false
+  includeInterlocutor: false,
+  interlocutorAsDefault: false
 }
 
 export default ContactModal

@@ -3,31 +3,22 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useHistory } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import { Box, Checkbox, Grid, makeStyles, Typography } from '@material-ui/core'
-import { Autocomplete } from '@material-ui/lab'
+import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { FiSave as SaveIcon } from 'react-icons/fi'
 import { useDispatch } from 'react-redux'
 import companiesActions from '../../state/actions/companies'
 import { ScheduleContactCard } from '../../components/Schedule'
-import {
-  CompanyRow,
-  DataTable,
-  HeadingWithButton
-} from '../../components/Shared'
-import {
-  InputLabel,
-  SubmitButton,
-  TextArea,
-  TextField,
-  Wrapper
-} from '../../components/UI'
-import searchWithRut from '../../formatters/searchWithRut'
+import { DataTable, HeadingWithButton } from '../../components/Shared'
+import { SubmitButton, TextArea, Wrapper } from '../../components/UI'
 import { useSuccess, useToggle } from '../../hooks'
 import usersActions from '../../state/actions/users'
 import CompanyCard from '../../components/Company/CompanyCard'
-import AddEmployeeDialog from './Employees/AddDialog'
+import SearchCompany from '../../components/Companies/SearchCompany'
 import EmployeeList from './Employees/List'
-import { HouseAddEmployee } from '../../components/Housing'
+import {
+  HouseAddEmployee,
+  HouseRelatedBusiness
+} from '../../components/Housing'
 import housingActions from '../../state/actions/housing'
 
 const useStyles = makeStyles(() => ({
@@ -42,9 +33,9 @@ const useStyles = makeStyles(() => ({
 }))
 
 const validationSchema = Yup.object().shape({
+  number: Yup.string().required('Seleccione empresa'),
   businessId: Yup.number().required('Seleccione empresa'),
   businessName: Yup.string().required('Seleccione empresa'),
-  interlocutorId: Yup.number().required('Seleccione interlocutor'),
   observations: Yup.string().required('Ingrese observaciones')
 })
 
@@ -56,14 +47,11 @@ const HousingNew = () => {
   const [loading, setLoading] = useState(false)
   const { sucess: createSuccess, changeSuccess: changeCreateSuccess } =
     useSuccess()
-  const [searchValue, setSearchValue] = useState('')
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [companyDetails, setCompanyDetails] = useState(null)
-  const [companies, setCompanies] = useState([])
   const [relatedBusinesses, setRelatedBusinesses] = useState([])
   const [employeeList, setEmployeeList] = useState([])
   const [professionalList, setProfessionalList] = useState([])
-  const [loadingCompanies, setLoadingCompanies] = useState([])
   const { open: openAddEmployee, toggleOpen: toggleOpenAddEmployee } =
     useToggle()
 
@@ -72,57 +60,38 @@ const HousingNew = () => {
     validateOnMount: true,
     validateOnChange: true,
     initialValues: {
+      number: '',
       businessId: '',
-      businessName: '',
-      interlocutorId: '',
-      observations: ''
+      businessName: ''
     }
   })
-
-  const onCompanySelect = (__, e) => {
-    setSelectedCompany(e)
-    formik.setFieldValue('businessId', e.id)
-    formik.setFieldValue('businessName', e.business_name)
-  }
-  const searchCompanies = (e) => {
-    setSearchValue(searchWithRut(e.target.value))
-    setLoadingCompanies(true)
-    dispatch(
-      companiesActions.getCompanies(
-        { state: 'CREATED', search: searchWithRut(e.target.value) },
-        false
-      )
-    ).then((list) => {
-      setLoadingCompanies(false)
-      setCompanies(list)
-    })
-  }
 
   const createAgreement = () => {
     setLoading(true)
     const createData = {
       ...formik.values,
       date: new Date().toISOString(),
-      employees: employeeList.map((item) => ({
-        employee_id: item.id,
-        fullName: `${item.names} ${item.paternal_surname} ${
-          item.maternal_surname || ''
-        }`
-      })),
-      professionals: professionalList
-        .filter((item) => item.isSelected)
-        .map((item) => ({
+      annexed: {
+        observations: formik.values.observations,
+        employees: employeeList.map((item) => ({
+          employeeId: item.id,
+          employeeRut: item.run,
+          fullName: `${item.names} ${item.paternal_surname} ${
+            item.maternal_surname || ''
+          }`
+        })),
+        professionals: professionalList.map((item) => ({
           userId: item.id,
           fullName: `${item.names} ${item.paternal_surname} ${
             item.maternal_surname || ''
           }`
         })),
-      related_businesses: relatedBusinesses
-        .filter((item) => item.isSelected)
-        .map((item) => ({
+        related_businesses: relatedBusinesses.map((item) => ({
           businessId: item.id,
-          businessName: item.business_name
+          businessName: item.business_name,
+          businessRut: item.rut
         }))
+      }
     }
     dispatch(housingActions.createAgreement(createData))
       .then((res) => {
@@ -140,13 +109,6 @@ const HousingNew = () => {
 
   useEffect(() => {
     if (selectedCompany) {
-      dispatch(companiesActions.getRelatedCompanies(selectedCompany.id)).then(
-        (list) => {
-          setRelatedBusinesses(
-            list.map((related) => ({ ...related, isSelected: false }))
-          )
-        }
-      )
       dispatch(usersActions.getFoundationUsers({})).then((result) => {
         setProfessionalList(
           result.map((item) => ({ ...item, isSelected: false }))
@@ -154,20 +116,11 @@ const HousingNew = () => {
       })
       dispatch(companiesActions.getCompany(selectedCompany.id, false)).then(
         (res) => {
-          if (res.interlocutor) {
-            formik.setFieldValue('interlocutorId', res.interlocutor.id)
-            formik.setFieldValue(
-              'interlocutorName',
-              `${res.interlocutor.names} ${res.interlocutor.paternal_surname}`
-            )
-          }
           setCompanyDetails(res)
         }
       )
     }
   }, [selectedCompany])
-
-  useEffect(() => {}, [])
 
   return (
     <Box>
@@ -183,45 +136,19 @@ const HousingNew = () => {
         <Box>
           <Grid container spacing={2}>
             <Grid item xs={12} md={12}>
-              <Box my={1}>
-                {selectedCompany ? (
-                  <Box>
-                    <InputLabel>Empresa </InputLabel>
-                    <CompanyRow
-                      company={selectedCompany}
-                      onDelete={() => {
-                        setSelectedCompany(null)
-                        setCompanyDetails(null)
-                      }}
-                    />
-                  </Box>
-                ) : (
-                  <Autocomplete
-                    options={companies}
-                    // value={selectedCompany || searchValue}
-                    getOptionSelected={(option, value) =>
-                      option.id === value.id
-                    }
-                    getOptionLabel={(option) => option.rut || ''}
-                    onChange={onCompanySelect}
-                    renderOption={(option) =>
-                      loadingCompanies ? (
-                        <Box>loading</Box>
-                      ) : (
-                        <CompanyRow.Autocomplete company={option} />
-                      )
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        value={searchValue}
-                        onChange={searchCompanies}
-                        label="Selecciona empresa"
-                        placeholder="Rut"
-                      />
-                    )}
-                  />
-                )}
+              <Box>
+                <SearchCompany
+                  onSelected={(value) => {
+                    setSelectedCompany(value)
+                    formik.setFieldValue('businessId', value.id)
+                    formik.setFieldValue('businessName', value.business_name)
+                    formik.setFieldValue('number', value.rut)
+                  }}
+                  onDelete={() => {
+                    setSelectedCompany(null)
+                    setCompanyDetails(null)
+                  }}
+                />
               </Box>
             </Grid>
           </Grid>
@@ -239,10 +166,18 @@ const HousingNew = () => {
                 Detalles de interlocutor
               </Typography>
               <Box>
-                {companyDetails?.interlocutor && (
+                {companyDetails && (
                   <ScheduleContactCard
-                    contact={companyDetails.interlocutor}
+                    emptyMessage="Esta empresa no tiene interlocutor"
+                    contact={companyDetails?.interlocutor}
                     onEdit={() => {}}
+                    businessId={companyDetails?.id}
+                    onSuccessFunction={(contact) => {
+                      setCompanyDetails({
+                        ...companyDetails,
+                        interlocutor: contact.is_interlocutor ? contact : null
+                      })
+                    }}
                   />
                 )}
               </Box>
@@ -250,63 +185,38 @@ const HousingNew = () => {
           </Grid>
         </Box>
         <Box className={classes.section}>
-          <Typography
-            component="div"
-            style={{ display: 'flex', fontWeight: 'bold' }}
-          >
-            Empresas relaciondas
-            <Typography
-              style={{ marginLeft: '8px', opacity: 0.7, fontWeight: 'bold' }}
-              component="p"
-            >{`(${
-              relatedBusinesses.filter((item) => item.isSelected).length
-            }) seleccionados`}</Typography>
-          </Typography>
-
-          <Box>
-            <DataTable
-              emptyMessage={'Esta empresa no empresas relacionadas'}
-              data={relatedBusinesses}
-              progressPending={false}
-              columns={[
-                {
-                  name: 'Rut',
-                  selector: (row) => row.rut
-                },
-                {
-                  name: 'Nombre',
-                  selector: (row) => row.business_name
-                },
-                {
-                  name: 'Dirección',
-                  selector: (row) => row.address
-                },
-                {
-                  name: '',
-                  right: true,
-                  selector: (row) => (
-                    <Box display="flex" alignItems="center">
-                      <Checkbox
-                        value={row.isSelected}
-                        color="primary"
-                        onChange={(e) => {
-                          const updatedList = relatedBusinesses.map((item) =>
-                            item.id === row.id
-                              ? { ...item, isSelected: e.target.checked }
-                              : item
-                          )
-                          setRelatedBusinesses(updatedList)
-                        }}
-                        inputProps={{ 'aria-label': 'status checkbox' }}
-                      />
-                    </Box>
-                  )
+          <HouseRelatedBusiness
+            list={relatedBusinesses}
+            onAdd={(company) => {
+              if (selectedCompany.id === company.id) {
+                enqueueSnackbar(
+                  'No puedes seleccionar la empresa de convenido como empresa relacionada',
+                  {
+                    variant: 'error'
+                  }
+                )
+              } else {
+                const foundCompany = relatedBusinesses.find(
+                  (item) => item.id === company.id
+                )
+                if (!foundCompany) {
+                  const updatedList = [...relatedBusinesses]
+                  updatedList.push(company)
+                  setRelatedBusinesses(updatedList)
+                } else {
+                  enqueueSnackbar('Esta empresa ya esta agregada', {
+                    variant: 'error'
+                  })
                 }
-              ]}
-              highlightOnHover
-              pointerOnHover
-            />
-          </Box>
+              }
+            }}
+            onDelete={(company) => {
+              const updatedList = relatedBusinesses.filter(
+                (item) => item.id !== company.id
+              )
+              setRelatedBusinesses(updatedList)
+            }}
+          />
         </Box>
         <Box className={classes.section}>
           <EmployeeList
@@ -314,16 +224,15 @@ const HousingNew = () => {
             onAdd={toggleOpenAddEmployee}
           />
           {openAddEmployee && (
-            <AddEmployeeDialog
-              open={openAddEmployee}
-              onClose={toggleOpenAddEmployee}
-            />
-          )}
-          {openAddEmployee && (
             <HouseAddEmployee
               open={openAddEmployee}
               onClose={toggleOpenAddEmployee}
               submitFunction={(list) => setEmployeeList(list)}
+              onAdd={(employee) => {
+                const updatedList = [...employeeList]
+                updatedList.push(employee)
+                setEmployeeList(updatedList)
+              }}
             />
           )}
         </Box>
@@ -365,16 +274,13 @@ const HousingNew = () => {
         </Box>
         <Box>
           <TextArea
+            required
             name="observations"
             value={formik.values.observations}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={
-              formik.touched.observations && Boolean(formik.errors.observations)
-            }
-            helperText={
-              formik.touched.observations && formik.errors.observations
-            }
+            error={Boolean(formik.errors.observations)}
+            helperText={formik.errors.observations}
             label="Observaciones"
             maxLength={800}
           ></TextArea>

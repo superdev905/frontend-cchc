@@ -1,4 +1,4 @@
-import { Box, Checkbox, Typography } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import { Button } from '../../../components/UI'
 import { DataTable } from '../../../components/Shared'
 
@@ -15,7 +15,7 @@ const EmployeeList = ({ employees, onAdd }) => (
     </Box>
     <Box>
       <DataTable
-        emptyMessage={'Esta empresa no tiene beneficios'}
+        emptyMessage={'No se seleccionaron trabajadores'}
         data={employees}
         progressPending={false}
         columns={[
@@ -33,20 +33,6 @@ const EmployeeList = ({ employees, onAdd }) => (
           {
             name: 'Sexo',
             selector: (row) => row.gender
-          },
-          {
-            name: '',
-            right: true,
-            selector: (row) => (
-              <Box display="flex" alignItems="center">
-                <Checkbox
-                  value={row.isSelected}
-                  color="primary"
-                  onChange={() => {}}
-                  inputProps={{ 'aria-label': 'status checkbox' }}
-                />
-              </Box>
-            )
           }
         ]}
         highlightOnHover

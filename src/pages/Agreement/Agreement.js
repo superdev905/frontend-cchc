@@ -4,27 +4,33 @@ import { useParams, useHistory } from 'react-router-dom'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import housingActions from '../../state/actions/housing'
 import { formatDate } from '../../formatters'
-import { LabeledRow, Text, Wrapper } from '../../components/UI'
+import { Button, LabeledRow, Text, Wrapper } from '../../components/UI'
 import { HeadingWithButton } from '../../components/Shared'
-import EmployeeList from '../../components/Agreement/EmployeeList'
 import CompanyCard from '../../components/Company/CompanyCard'
 import ContactCard from '../../components/Schedule/ContactCard'
+import { AddAnnexedDialog, AgreementTabs } from '../../components/Agreement'
+import { useToggle } from '../../hooks'
 
 const useStyles = makeStyles((theme) => ({
   subHeading: {
     fontSize: 17,
     fontWeight: 'bold',
     marginBottom: theme.spacing(1)
+  },
+  simpleHeading: {
+    fontSize: 17,
+    fontWeight: 'bold'
   }
 }))
 
 const Agreement = () => {
   const classes = useStyles()
+  const history = useHistory()
+  const dispatch = useDispatch()
   const { agreementId } = useParams()
   const [loading, setLoading] = useState(false)
   const { agreementDetails } = useSelector((state) => state.housing)
-  const dispatch = useDispatch()
-  const history = useHistory()
+  const { open, toggleOpen } = useToggle()
 
   const fetchDetails = () => {
     setLoading(true)
@@ -40,7 +46,7 @@ const Agreement = () => {
     <Box>
       <Wrapper>
         <HeadingWithButton
-          title={`Convenio ${agreementId}: ${agreementDetails?.businessName}`}
+          title={`Convenio ${agreementDetails?.number}: ${agreementDetails?.businessName}`}
           loading={loading}
           goBack={() => {
             history.goBack()
@@ -110,7 +116,24 @@ const Agreement = () => {
           </Box>
         </Box>
         <Box mt={2}>
-          <EmployeeList />
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography className={classes.simpleHeading}>
+              Anexos de convenio
+            </Typography>
+            <Button onClick={toggleOpen}>Nuevo anexo</Button>
+            {open && agreementDetails && (
+              <AddAnnexedDialog
+                selectedCompany={{ id: agreementDetails.businessId }}
+                open={open}
+                onClose={toggleOpen}
+              />
+            )}
+          </Box>
+          <AgreementTabs />
         </Box>
       </Wrapper>
     </Box>

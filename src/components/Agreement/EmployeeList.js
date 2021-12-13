@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams, useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { DataTable } from '../Shared'
-import { ActionsTable, SearchInput } from '../UI'
+import { ActionsTable, Button, SearchInput } from '../UI'
 import housingActions from '../../state/actions/housing'
 import { formatDate } from '../../formatters'
 
-const EmployeeList = () => {
+const EmployeeList = ({ annexedId, status }) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const { agreementId } = useParams()
@@ -15,8 +15,7 @@ const EmployeeList = () => {
   const [query, setQuery] = useState({
     page: 1,
     size: 30,
-    search: '',
-    agreementId
+    search: ''
   })
 
   const onRowClick = (id) => {
@@ -28,14 +27,16 @@ const EmployeeList = () => {
 
   const fetchEmployees = () => {
     setLoading(true)
-    dispatch(housingActions.getAgreementEmployees(query)).then(() => {
+    dispatch(
+      housingActions.getAgreementEmployees({ ...query, annexedId })
+    ).then(() => {
       setLoading(false)
     })
   }
 
   useEffect(() => {
     fetchEmployees()
-  }, [query])
+  }, [query, annexedId])
   return (
     <Box>
       <Typography
@@ -53,6 +54,11 @@ const EmployeeList = () => {
             }}
           />
         </Grid>
+        <Grid item xs={12} md={7}>
+          <Box display="flex" justifyContent="flex-end">
+            <Button disabled={status === 'VALID'}>Agregar</Button>
+          </Box>
+        </Grid>
       </Grid>
       <DataTable
         progressPending={loading}
@@ -67,17 +73,19 @@ const EmployeeList = () => {
           {
             name: 'Fecha de convenio',
             selector: (row) => formatDate(row.createdDate),
+            hide: 'md'
+          },
+          {
+            name: 'Rut',
+            selector: (row) => row.employeeRut,
+
             sortable: true
           },
           {
             name: 'Nombres y apellidos',
             selector: (row) => row.fullName
           },
-          {
-            name: 'Apellidos',
-            selector: (row) => row.paternal_surname,
-            hide: 'md'
-          },
+
           {
             name: '',
             right: true,

@@ -39,7 +39,7 @@ const Schedule = () => {
           title={`${scheduleDetails?.period} - ${scheduleDetails?.businessName}`}
           loading={loading}
           goBack={() => {
-            history.goBack()
+            history.push('/schedule')
           }}
         />
         <Button disabled={!scheduleDetails} onClick={downloadFile}>
@@ -47,7 +47,7 @@ const Schedule = () => {
         </Button>
       </Box>
       <Box p={2}>
-        <ScheduleDetails />
+        <ScheduleDetails loading={loading} />
       </Box>
       <Box>
         <ScheduleTabs />
