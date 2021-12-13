@@ -27,6 +27,8 @@ const socialCase = (state = initialState, { type, payload }) => {
   switch (type) {
     case socialCaseTypes.GET_CASES:
       return { ...state, casesList: payload }
+    case socialCaseTypes.GET_CASE_BY_ID:
+      return { ...state, caseDetails: payload }
     case socialCaseTypes.SET_TOTAL_CASES:
       return { ...state, totalCases: payload }
     case socialCaseTypes.SET_FILTERS:

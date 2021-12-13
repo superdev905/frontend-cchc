@@ -28,6 +28,23 @@ const getSocialCases =
         })
     })
 
+const getSocialCaseById =
+  (socialCaseId, handleDispatch = true) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`${config.services.socialCase}/social-cases/${socialCaseId}`)
+        .then((response) => {
+          const { data } = response
+          if (handleDispatch) {
+            dispatch({ type: socialCaseTypes.GET_CASE_BY_ID, payload: data })
+          }
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const getListCases = () => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.socialCase}/social-cases/collect`)
@@ -87,6 +104,7 @@ const getInterventionPlans =
 
 const socialCasesActions = {
   getSocialCases,
+  getSocialCaseById,
   setFilters,
   setTags,
   createSocialCase,
