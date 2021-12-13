@@ -85,6 +85,28 @@ const getInterventionPlans =
         })
     })
 
+const getPlansForCalendar =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.socialCase
+        }/intervention-plans/calendar?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: socialCaseTypes.GET_INTERVENTION_PLANS_CALENDAR,
+            payload: data
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const createInterventionTask = (values) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.socialCase}/intervention-plans`, values)
@@ -140,7 +162,8 @@ const socialCasesActions = {
   getInterventionPlans,
   createInterventionTask,
   updateInterventionTask,
-  deleteInterventionTask
+  deleteInterventionTask,
+  getPlansForCalendar
 }
 
 export default socialCasesActions

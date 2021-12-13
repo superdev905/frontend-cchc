@@ -18,7 +18,8 @@ const initialState = {
   totalCases: 0,
   caseDetails: null,
   interventionPlans: [],
-  totalInterventions: 0
+  totalInterventions: 0,
+  calendarTasks: []
 }
 
 const socialCase = (state = initialState, { type, payload }) => {
@@ -53,6 +54,11 @@ const socialCase = (state = initialState, { type, payload }) => {
         interventionPlans: state.interventionPlans.filter(
           (item) => item.id !== payload
         )
+      }
+    case socialCaseTypes.GET_INTERVENTION_PLANS_CALENDAR:
+      return {
+        ...state,
+        calendarTasks: payload
       }
     default:
       return state
