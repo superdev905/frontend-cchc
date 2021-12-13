@@ -28,6 +28,23 @@ const getSocialCases =
         })
     })
 
+const getSocialCaseById =
+  (socialCaseId, handleDispatch = true) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`${config.services.socialCase}/social-cases/${socialCaseId}`)
+        .then((response) => {
+          const { data } = response
+          if (handleDispatch) {
+            dispatch({ type: socialCaseTypes.GET_CASE_BY_ID, payload: data })
+          }
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const getListCases = () => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.socialCase}/social-cases/collect`)
@@ -46,6 +63,9 @@ const getListCases = () => (dispatch) =>
 
 const setFilters = (value) => (dispatch) =>
   dispatch({ type: socialCaseTypes.SET_FILTERS, payload: value })
+
+const setTags = (value) => (dispatch) =>
+  dispatch({ type: socialCaseTypes.SET_TAGS, payload: value })
 
 const createSocialCase = (values) => () =>
   new Promise((resolve, reject) => {
@@ -107,6 +127,43 @@ const getPlansForCalendar =
         })
     })
 
+const createDerivation = (socialCaseId, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.socialCase}/social-cases/${socialCaseId}/derivation`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getDerivation =
+  (socialCaseId, derivationId, handleDispatch = true) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.socialCase}/social-cases/${socialCaseId}/derivation/${derivationId}`
+      )
+        .then((response) => {
+          const { data } = response
+          if (handleDispatch) {
+            dispatch({
+              type: socialCaseTypes.GET_DERIVATION_DETAILS,
+              payload: data
+            })
+          }
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const createInterventionTask = (values) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.socialCase}/intervention-plans`, values)
@@ -132,6 +189,21 @@ const updateInterventionTask = (id, values) => (dispatch) =>
           type: socialCaseTypes.UPDATE_TASK_INTERVENTION_PLAN,
           payload: data
         })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const createClosing = (socialCaseId, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.socialCase}/social-cases/${socialCaseId}/close`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
         resolve(data)
       })
       .catch((err) => {
@@ -156,14 +228,19 @@ const deleteInterventionTask = (id) => (dispatch) =>
 
 const socialCasesActions = {
   getSocialCases,
+  getSocialCaseById,
   setFilters,
+  setTags,
   createSocialCase,
   getListCases,
   getInterventionPlans,
   createInterventionTask,
   updateInterventionTask,
   deleteInterventionTask,
-  getPlansForCalendar
+  getPlansForCalendar,
+  createDerivation,
+  getDerivation,
+  createClosing
 }
 
 export default socialCasesActions

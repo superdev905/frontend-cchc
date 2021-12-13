@@ -1,5 +1,109 @@
-import { Box } from '@material-ui/core'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { makeStyles, Box, Typography, Grid } from '@material-ui/core'
+import { Wrapper, Button, LabeledRow, Text } from '../../UI'
+import DerivationModal from '../Analysis/DerivationModal'
+import socialCasesActions from '../../../state/actions/socialCase'
+import { formatDate } from '../../../formatters'
 
-const Background = () => <Box>Analisis</Box>
+const useStyles = makeStyles(() => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  message: {
+    fontSize: '19px',
+    fontWeight: 'bold'
+  }
+}))
 
-export default Background
+const Analysis = () => {
+  const classes = useStyles()
+  const { socialCaseId } = useParams()
+  const dispatch = useDispatch()
+  const [open, setOpen] = useState(false)
+  const { caseDetails, derivationDetails } = useSelector(
+    (state) => state.socialCase
+  )
+
+  const openModal = () => {
+    setOpen(true)
+  }
+  const closeModal = () => {
+    setOpen(false)
+  }
+
+  useEffect(() => {
+    dispatch(
+      socialCasesActions.getDerivation(socialCaseId, caseDetails?.derivationId),
+      closeModal()
+    )
+  }, [caseDetails])
+
+  return (
+    <Grid item xs={12}>
+      {caseDetails && !derivationDetails ? (
+        <Box>
+          <Wrapper>
+            <Box className={classes.root}>
+              <Typography className={classes.message}>
+                Este Caso No Tiene Derivación
+              </Typography>
+              <Button onClick={openModal}>Crear</Button>
+            </Box>
+          </Wrapper>
+          <DerivationModal
+            open={open}
+            onClose={closeModal}
+            assistanceID={caseDetails.assistanceId}
+          />
+        </Box>
+      ) : (
+        <Wrapper>
+          <Box>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
+                Detalles Delegación
+              </Typography>
+            </Box>
+            <Box p={2}>
+              <Grid container>
+                <Grid item xs={12} md={6}>
+                  <LabeledRow label={'Fecha'}>
+                    <Text>{formatDate(derivationDetails.date)} </Text>
+                  </LabeledRow>
+                  <LabeledRow label={'Estado'}>
+                    <Text>{derivationDetails.state} </Text>
+                  </LabeledRow>
+                  <LabeledRow label={'Prioridad'}>
+                    <Text>{derivationDetails.priority}</Text>
+                  </LabeledRow>
+                  <LabeledRow label={'Observaciones'}>
+                    <Text>{derivationDetails.observations}</Text>
+                  </LabeledRow>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <LabeledRow label={'Encargados'}>
+                    {derivationDetails.professionals.map((item, index) => (
+                      <Text key={item.id}>
+                        {index + 1} - {item.fullName}
+                      </Text>
+                    ))}
+                  </LabeledRow>
+                </Grid>
+              </Grid>
+            </Box>
+          </Box>
+        </Wrapper>
+      )}
+    </Grid>
+  )
+}
+
+export default Analysis
