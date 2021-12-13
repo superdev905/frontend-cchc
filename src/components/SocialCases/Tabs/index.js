@@ -40,7 +40,7 @@ const SocialCaseTabs = () => {
         tabs={[
           'Antecendes',
           'Análisis',
-          'Plan de derivación',
+          'Planes de intervención',
           'Registros de intervencion',
           'Cierre de caso'
         ]}
