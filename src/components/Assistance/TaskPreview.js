@@ -97,7 +97,7 @@ const TaskPreview = ({ open, onClose, anchorEl, event }) => {
         </Box>
         <Box p={2}>
           <Box mb={2}>
-            {task.isCompleted && (
+            {task?.isCompleted && (
               <Chip
                 className={classes.completedChip}
                 icon={<CompletedIcon className={classes.completedIcon} />}
