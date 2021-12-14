@@ -82,7 +82,13 @@ const ClosingModal = ({ open, onClose }) => {
   }, [open])
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullScreen={isMobile}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      fullScreen={isMobile}
+    >
       <Box>
         <Typography variant="h6" align="center" className={classes.title}>
           Cierre De Caso
@@ -145,7 +151,9 @@ const ClosingModal = ({ open, onClose }) => {
                   </Box>
                 </Box>
                 <Box className={classes.boxHorizontal}>
-                  <Button type="submit">Guardar</Button>
+                  <Button type="submit" disabled={!formik.isValid}>
+                    Guardar
+                  </Button>
                 </Box>
               </Box>
             </form>

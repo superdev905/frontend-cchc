@@ -100,7 +100,13 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
     })
   }, [])
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullScreen={isMobile}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      fullScreen={isMobile}
+    >
       <Box>
         <Typography variant="h6" align="center" className={classes.title}>
           Crear Derivación
