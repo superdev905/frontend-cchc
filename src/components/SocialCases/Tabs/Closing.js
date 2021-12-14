@@ -26,7 +26,7 @@ const Closing = () => {
         <Box>
           <Wrapper>
             <EmptyState
-              message={'Este Caso No Fue Cerrado'}
+              message={'Este caso no fue cerrado'}
               event={openModal}
               actionMessage={'Cerrar'}
             />

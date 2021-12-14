@@ -35,7 +35,7 @@ const Analysis = () => {
         <Box>
           <Wrapper>
             <EmptyState
-              message={'Este Caso No Tiene Derivación'}
+              message={'Este caso no tiene derivación'}
               event={openModal}
               actionMessage={'Crear'}
             />

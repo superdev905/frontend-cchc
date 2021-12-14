@@ -87,6 +87,7 @@ const SocialCasesList = () => {
             {
               name: 'N°',
               width: '100px',
+              sortable: true,
               center: true,
               selector: (row) => row.id
             },

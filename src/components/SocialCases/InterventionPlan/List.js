@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { FiPlus as AddIcon } from 'react-icons/fi'
 import socialCasesActions from '../../../state/actions/socialCase'
 import { ConfirmDelete, DataTable } from '../../Shared'
-import { ActionsTable, Button, SearchInput } from '../../UI'
+import { ActionsTable, Button, SearchInput, StatusChip } from '../../UI'
 import PlanDialog from './Dialog'
 import { useSuccess, useToggle } from '../../../hooks'
 import { formatDate } from '../../../formatters'
@@ -124,6 +124,16 @@ const List = () => {
           {
             name: 'Frecuencia',
             selector: (row) => row.frequency
+          },
+          {
+            name: 'Estado',
+            selector: (row) => (
+              <StatusChip
+                success={row.isCompleted}
+                error={!row.isCompleted}
+                label={row.isCompleted ? 'Completado' : 'Pendiente'}
+              />
+            )
           },
           {
             right: true,
