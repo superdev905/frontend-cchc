@@ -148,34 +148,15 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
   }
 
   const applyFilter = () => {
-    const {
-      businessId,
-      state,
-      assistanceId,
-      zone,
-      delegation,
-      areaId,
-      startDate,
-      endDate
-    } = seleted
-
-    const newFilters = {
-      ...filters,
-      businessId,
-      state,
-      assistanceId,
-      zone,
-      delegation,
-      areaId,
-      startDate,
-      endDate
-    }
-
-    dispatch(socialCaseActions.setFilters(newFilters))
+    dispatch(socialCaseActions.setFilters(seleted))
     dispatch(socialCaseActions.setTags(seletedTags))
 
     closeFilterMenu()
   }
+
+  useEffect(() => {
+    setSeleted(filters)
+  }, [filters])
 
   useEffect(() => {
     dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
@@ -218,6 +199,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
           Empresa:
           <Select
             name="companies"
+            value={seleted.businessId}
             onChange={(e) => onSelectedOption(e, 'companies')}
           >
             <option value="">-Seleccione-</option>
@@ -234,7 +216,11 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
 
         <Box width="100%">
           Estado:
-          <Select name="status" onChange={(e) => onSelectedOption(e, 'states')}>
+          <Select
+            name="status"
+            value={seleted.state}
+            onChange={(e) => onSelectedOption(e, 'states')}
+          >
             <option value="">-Seleccione-</option>
             {statesData.map((item, index) => (
               <option key={`application--filters-state${index}`} value={item}>
@@ -248,6 +234,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
           Profesional:
           <Select
             name="profesional"
+            value={seleted.professionalId}
             onChange={(e) => onSelectedOption(e, 'profesional')}
           >
             <option value="">-Seleccione-</option>
@@ -264,7 +251,11 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
 
         <Box width="100%">
           Zona:
-          <Select name="zone" onChange={(e) => onSelectedOption(e, 'zone')}>
+          <Select
+            value={seleted.zone}
+            name="zone"
+            onChange={(e) => onSelectedOption(e, 'zone')}
+          >
             <option value="">-Seleccione-</option>
             {regions.map((item) => (
               <option
@@ -281,6 +272,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
           Delegación:
           <Select
             name="delegation"
+            value={seleted.delegation}
             onChange={(e) => onSelectedOption(e, 'delegation')}
           >
             <option value="">-Seleccione-</option>
@@ -297,17 +289,21 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
 
         <Box width="100%">
           Fecha desde:
-          <DatePicker onChange={getStartDate} />
+          <DatePicker value={seleted.startDate} onChange={getStartDate} />
         </Box>
 
         <Box width="100%">
           Fecha Hasta:
-          <DatePicker onChange={getEndDate} />
+          <DatePicker value={seleted.endDate} onChange={getEndDate} />
         </Box>
 
         <Box width="100%">
           Area:
-          <Select name="area" onChange={(e) => onSelectedOption(e, 'area')}>
+          <Select
+            value={seleted.areaId}
+            name="area"
+            onChange={(e) => onSelectedOption(e, 'area')}
+          >
             <option value="">-Seleccione-</option>
             {areas.map((item) => (
               <option

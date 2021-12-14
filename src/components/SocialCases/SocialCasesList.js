@@ -33,8 +33,18 @@ const SocialCasesList = () => {
 
   const fetchSocialCases = () => {
     setLoading(true)
+    const formattedFilters = { ...filters }
+
+    if (formattedFilters.startDate) {
+      formattedFilters.startDate = new Date(filters.startDate).toISOString()
+    }
+    if (formattedFilters.endDate) {
+      formattedFilters.endDate = new Date(filters.endDate).toISOString()
+    }
     dispatch(
-      socialCaseActions.getSocialCases(formatQuery(formatQuery(filters)))
+      socialCaseActions.getSocialCases(
+        formatQuery(formatQuery(formattedFilters))
+      )
     ).then(() => {
       setLoading(false)
     })
