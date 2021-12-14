@@ -11,6 +11,7 @@ import companiesActions from '../../state/actions/companies'
 import usersActions from '../../state/actions/users'
 import commonActions from '../../state/actions/common'
 import socialCaseActions from '../../state/actions/socialCase'
+import { formatDate } from '../../formatters'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -127,7 +128,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
       ...seletedTags,
       startDate: {
         ...seletedTags.startDate,
-        filter: date
+        filter: formatDate(date)
       }
     })
   }
@@ -141,7 +142,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
       ...seletedTags,
       endDate: {
         ...seletedTags.endDate,
-        filter: date
+        filter: formatDate(date)
       }
     })
   }
