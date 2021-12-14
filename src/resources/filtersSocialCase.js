@@ -1,6 +1,6 @@
 const filters = {
   businessId: '',
-  STATE: '',
+  state: '',
   assistanceId: '',
   zone: '',
   delegation: '',
