@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { makeStyles } from '@material-ui/styles'
-import { Box, Dialog, Typography, Grid, TextField } from '@material-ui/core'
+import { Box, Typography, Grid } from '@material-ui/core'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { Select, Button } from '../../UI'
+import { Select, Button, TextField, TextArea } from '../../UI'
+import { Dialog } from '../../Shared'
 import states from '../../../resources/statesData'
 import socialCaseActions from '../../../state/actions/socialCase'
 
@@ -39,6 +40,7 @@ const ClosingModal = ({ open, onClose }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { socialCaseId } = useParams()
+  const { isMobile } = useSelector((state) => state.ui)
   const { user } = useSelector((state) => state.auth)
   const [profesional] = useState({
     id: user.id,
@@ -73,9 +75,15 @@ const ClosingModal = ({ open, onClose }) => {
     }
   })
 
+  useEffect(() => {
+    if (open) {
+      formik.resetForm()
+    }
+  }, [open])
+
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <Box padding="30px">
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullScreen={isMobile}>
+      <Box>
         <Typography variant="h6" align="center" className={classes.title}>
           Cierre De Caso
         </Typography>
@@ -86,8 +94,8 @@ const ClosingModal = ({ open, onClose }) => {
               <Box className={classes.BoxForm}>
                 <Box className={classes.boxHorizontal}>
                   <Box className={classes.boxInput}>
-                    <Typography>Profesional *</Typography>
                     <TextField
+                      label="Profesional"
                       name="profesional"
                       value={profesional.fullName}
                       disabled
@@ -96,8 +104,8 @@ const ClosingModal = ({ open, onClose }) => {
                   </Box>
 
                   <Box className={classes.boxInput}>
-                    <Typography>Estado de cierre *</Typography>
                     <Select
+                      label="Estado de cierre *"
                       name="state"
                       value={formik.values.state}
                       onChange={formik.handleChange}
@@ -117,8 +125,8 @@ const ClosingModal = ({ open, onClose }) => {
                 </Box>
                 <Box className={classes.boxHorizontal}>
                   <Box className={classes.boxInput}>
-                    <Typography>Observaciones *</Typography>
-                    <TextField
+                    <TextArea
+                      label="Observaciones *"
                       name="observations"
                       multiline
                       rows={8}

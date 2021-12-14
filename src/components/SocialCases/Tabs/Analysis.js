@@ -24,14 +24,14 @@ const Analysis = () => {
 
   useEffect(() => {
     dispatch(
-      socialCasesActions.getDerivation(socialCaseId, caseDetails?.derivationId),
+      socialCasesActions.getDerivation(socialCaseId, caseDetails.derivationId),
       closeModal()
     )
   }, [caseDetails])
 
   return (
     <Grid item xs={12}>
-      {caseDetails && !derivationDetails ? (
+      {!derivationDetails ? (
         <Box>
           <Wrapper>
             <EmptyState
