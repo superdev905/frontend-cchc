@@ -16,14 +16,14 @@ const SocialCaseDetails = () => {
 
   useEffect(() => {
     dispatch(socialCasesActions.getSocialCaseById(socialCaseId))
-  }, [])
+  }, [socialCaseId])
   return (
     <Box>
       <Wrapper>
         {caseDetails ? (
           <Box>
             <BackHeading
-              title={`CASO ${socialCaseId} -  ${caseDetails.employeeNames}`}
+              title={`CASO ${caseDetails?.id} -  ${caseDetails.employeeNames}`}
               goBack={() => {
                 history.push('/social-case')
               }}
