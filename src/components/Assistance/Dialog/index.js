@@ -48,7 +48,10 @@ const WorkerInterventionRecord = ({
   company,
   construction,
   visitShift,
-  sourceSystem
+  sourceSystem,
+  defaultCaseId,
+  defaultTaskId,
+  defaultSocialCase
 }) => {
   const dispatch = useDispatch()
   const classes = useStyles()
@@ -64,6 +67,7 @@ const WorkerInterventionRecord = ({
     benefit: null,
     activity: null
   })
+  const [selectedPlans, setSelectedPlans] = useState([])
   const { open: openBenefit, toggleOpen: toggleOpenBenefit } = useToggle()
   const { open: openConfirm, toggleOpen: toggleOpenConfirm } = useToggle()
 
@@ -114,9 +118,10 @@ const WorkerInterventionRecord = ({
       company_report: type === 'UPDATE' ? data.company_report : '',
       company_report_observation:
         type === 'UPDATE' ? data.company_report_observation : '',
-      is_social_case: type === 'UPDATE' ? data.is_social_case : '',
-      case_id: type === 'UPDATE' ? data.case_id : '',
-      task_id: type === 'UPDATE' ? data.task_id : '',
+      is_social_case:
+        type === 'UPDATE' ? data.is_social_case : defaultSocialCase || '',
+      case_id: type === 'UPDATE' ? data.case_id : defaultCaseId || '',
+      task_id: type === 'UPDATE' ? data.task_id : defaultTaskId || '',
       assigned_id: type === 'UPDATE' ? data.assigned_id : '',
       observation: type === 'UPDATE' ? data.observation : '',
       attached_url: type === 'UPDATE' ? data.attached_url : '',
@@ -184,6 +189,11 @@ const WorkerInterventionRecord = ({
               ...caseFormik.values
             }
             handleCreateCaseSocial(newCase)
+          }
+          if (formik.values.task_id) {
+            dispatch(
+              socialCasesActions.completeInterventionTask(formik.values.task_id)
+            )
           }
         })
       })
@@ -266,6 +276,19 @@ const WorkerInterventionRecord = ({
       )
     }
   }, [type, visitShift])
+
+  useEffect(() => {
+    if (
+      formik.values.case_id &&
+      formik.values.case_id !== 'NEW' &&
+      areas.length > 0
+    ) {
+      const foundCase = casesForSelect.find(
+        (item) => item.id === parseInt(formik.values.case_id, 10)
+      )
+      setSelectedPlans(foundCase.interventionPlans)
+    }
+  }, [formik.values.case_id, casesForSelect])
 
   useEffect(() => {
     if (formik.values.area_id && areas.length > 0) {
@@ -617,11 +640,16 @@ const WorkerInterventionRecord = ({
                     <Select
                       label="Caso"
                       name="case_id"
-                      required
+                      disabled={
+                        formik.values.case_id === 'NEW' ||
+                        formik.values.is_social_case === 'NO'
+                      }
+                      required={formik.values.is_social_case === 'SI'}
                       value={formik.values.case_id}
                       onChange={(e) => {
                         formik.setFieldValue(e.target.name, e.target.value)
                         formik.setFieldTouched(e.target.value)
+                        formik.setFieldValue('task_id', '')
                         if (e.target.value === 'NEW') {
                           formik.setFieldValue('task_id', '')
                         }
@@ -635,14 +663,11 @@ const WorkerInterventionRecord = ({
                       }
                     >
                       <option value="">SELECCIONE OPCIÓN</option>
-                      {[{ index: 'NEW', name: 'NUEVO' }]
+                      {[{ id: 'NEW', name: 'NUEVO' }]
                         .concat(casesForSelect)
                         .map((item, i) => (
-                          <option
-                            key={`case_id-${i}-${item}`}
-                            value={item.index}
-                          >
-                            {item.index === 'NEW'
+                          <option key={`case_id-${i}-${item}`} value={item.id}>
+                            {item.id === 'NEW'
                               ? item.name
                               : `CASO N° ${item.id}`}
                           </option>
@@ -653,7 +678,7 @@ const WorkerInterventionRecord = ({
                     <Select
                       label="Plan de Intervención"
                       name="task_id"
-                      required
+                      required={formik.values.is_social_case === 'SI'}
                       value={formik.values.task_id}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -663,15 +688,15 @@ const WorkerInterventionRecord = ({
                       helperText={
                         formik.touched.task_id && formik.errors.task_id
                       }
-                      disabled={formik.values.case_id === 'NEW'}
+                      disabled={
+                        formik.values.case_id === 'NEW' ||
+                        formik.values.is_social_case === 'NO'
+                      }
                     >
                       <option value="">SELECCIONE PLAN DE INTERVENCIÓN</option>
-                      {[
-                        { index: 1, name: 'Plan de Intervención 1' },
-                        { index: 2, name: 'Plan de Intervención 2' }
-                      ].map((item, i) => (
-                        <option key={`plan-${i}-${item}`} value={item.index}>
-                          {item.name}
+                      {selectedPlans.map((item, i) => (
+                        <option key={`plan-${i}-${item}`} value={item.id}>
+                          {item.managementName}
                         </option>
                       ))}
                     </Select>
@@ -832,7 +857,10 @@ const WorkerInterventionRecord = ({
 
 WorkerInterventionRecord.defaultProps = {
   type: 'CREATE',
-  sourceSystem: 'VISITAS'
+  sourceSystem: 'VISITAS',
+  defaultCaseId: null,
+  defaultTaskId: null,
+  defaultSocialCase: null
 }
 
 export default WorkerInterventionRecord

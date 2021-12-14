@@ -212,6 +212,20 @@ const updateInterventionTask = (id, values) => (dispatch) =>
       })
   })
 
+const completeInterventionTask = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.socialCase}/intervention-plans/${id}/complete`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const createClosing = (socialCaseId, values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(
@@ -257,7 +271,8 @@ const socialCasesActions = {
   createDerivation,
   getDerivation,
   createClosing,
-  getInterventionTaskDetails
+  getInterventionTaskDetails,
+  completeInterventionTask
 }
 
 export default socialCasesActions

@@ -11,7 +11,7 @@ export const validationSchema = Yup.object().shape({
   status: Yup.string().required('Seleccione estado'),
   company_report: Yup.string().required('Seleccione opcion').nullable(),
   is_social_case: Yup.string().required('Seleccione caso social'),
-  case_id: Yup.string().required('Seleccione caso'),
+  case_id: Yup.string('Seleccione caso'),
   task_id: Yup.number(),
   assigned_id: Yup.string('Ingrese profesional'),
   observation: Yup.string('Ingrese observaciones'),

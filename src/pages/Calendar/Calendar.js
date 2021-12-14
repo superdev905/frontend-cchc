@@ -257,6 +257,7 @@ const EventsCalendar = () => {
       ...calendarTasks.map((item) => ({
         ...item,
         taskId: item.id,
+        isCompleted: item.isCompleted,
         title: item.managementName,
         allDay: true,
         isTask: true,
