@@ -31,7 +31,7 @@ const SocialCaseDetails = () => {
         {caseDetails ? (
           <Box>
             <BackHeading
-              title={`CASO ${socialCaseId} -  ${caseDetails.employeeNames}`}
+              title={`CASO ${caseDetails.id} -  ${caseDetails.employeeNames}`}
             />
             {/* <TimeStamp loading={false} text={createdDate} /> */}
             <Box container className={classes.root}>

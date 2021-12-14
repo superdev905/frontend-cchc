@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/styles'
-import {
-  Box,
-  Dialog,
-  Typography,
-  Grid,
-  TextField,
-  Chip
-} from '@material-ui/core'
+import { Box, Typography, Grid, Chip } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { Select, Button } from '../../UI'
+import { Select, Button, TextField, TextArea } from '../../UI'
+import { Dialog } from '../../Shared'
 import usersActions from '../../../state/actions/users'
 import socialCaseActions from '../../../state/actions/socialCase'
 
@@ -46,6 +40,7 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
   const classes = useStyles()
   const { socialCaseId } = useParams()
   const dispatch = useDispatch()
+  const { isMobile } = useSelector((state) => state.ui)
   const { enqueueSnackbar } = useSnackbar()
   const [assistanceList, setAssistanceList] = useState([])
   const [state] = useState('ASIGNADO')
@@ -85,6 +80,13 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
   })
 
   useEffect(() => {
+    if (open) {
+      formik.resetForm()
+      setValue([])
+    }
+  }, [open])
+
+  useEffect(() => {
     dispatch(usersActions.getSocialAssistanceList()).then((item) => {
       const list = []
       item.forEach((assistance) => {
@@ -97,8 +99,8 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
     })
   }, [])
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <Box padding="30px">
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullScreen={isMobile}>
+      <Box>
         <Typography variant="h6" align="center" className={classes.title}>
           Crear Derivación
         </Typography>
@@ -109,9 +111,9 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
               <Box className={classes.BoxForm}>
                 <Box className={classes.boxHorizontal}>
                   <Box className={classes.boxInput}>
-                    <Typography>Estado *</Typography>
                     <TextField
-                      name="businessName"
+                      label="Estado *"
+                      name="state"
                       value={state}
                       disabled
                       fullWidth
@@ -119,8 +121,8 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
                   </Box>
 
                   <Box className={classes.boxInput}>
-                    <Typography>Prioridad *</Typography>
                     <Select
+                      label="Prioridad *"
                       name="priority"
                       value={formik.values.priority}
                       onChange={formik.handleChange}
@@ -143,14 +145,17 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
                 </Box>
                 <Box className={classes.boxHorizontal}>
                   <Box className={classes.boxInput}>
-                    <Typography>Observaciones *</Typography>
-                    <TextField
+                    <TextArea
+                      label="Observaciones"
                       name="observations"
                       multiline
                       rows={8}
                       variant="outlined"
                       fullWidth
+                      required
+                      value={formik.values.observations}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       error={
                         formik.touched.observations &&
                         Boolean(formik.errors.observations)
@@ -167,7 +172,6 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
                     <Typography>Agregar nuevos Encargados *</Typography>
                     <Autocomplete
                       multiple
-                      id="fixed-tags-demo"
                       value={value}
                       onChange={(event, newValue) => {
                         setValue([...newValue])
