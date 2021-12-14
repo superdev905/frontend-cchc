@@ -61,6 +61,11 @@ const services = {
     development: `${BASEURL[env]}:5195/api/v1`,
     testing: `${BASEURL[env]}:5199/api/v1`,
     production: `${BASEURL[env]}:5112/api/v1`
+  },
+  socialCase: {
+    development: `${BASEURL[env]}:5196/api/v1`,
+    testing: `${BASEURL[env]}:5196/api/v1`,
+    production: `${BASEURL[env]}:5113/api/v1`
   }
 }
 
@@ -76,7 +81,8 @@ const config = {
     courses: services.courses[env],
     benefits: services.benefits[env],
     schedule: services.schedule[env],
-    housing: services.housing[env]
+    housing: services.housing[env],
+    socialCase: services.socialCase[env]
   }
 }
 

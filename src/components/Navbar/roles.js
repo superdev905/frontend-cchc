@@ -54,6 +54,11 @@ const modulesByRole = {
       path: '/housing',
       icon: <HousingIcon />
     },
+    {
+      title: 'Caso Social',
+      path: '/social-case',
+      icon: <BookIcon />
+    },
     { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
     {
       index: 5,
@@ -99,6 +104,11 @@ const modulesByRole = {
       title: 'Programación',
       path: '/schedule',
       icon: <ScheduleIcon />
+    },
+    {
+      title: 'Caso Social',
+      path: '/social-case',
+      icon: <BookIcon />
     }
   ],
   PROJECTS: [
