@@ -134,10 +134,10 @@ const ListPage = () => {
 
   const handleContactChange = (contact) => {
     if (contact.is_interlocutor) {
-      formik.setFieldValue('interlocutorId', contact.interlocutor.id)
+      formik.setFieldValue('interlocutorId', contact.id)
       formik.setFieldValue(
         'interlocutorName',
-        `${contact.interlocutor.names} ${contact.interlocutor.paternal_surname}`
+        `${contact.full_name} ${contact.paternal_surname}`
       )
     }
     setCompanyDetails({
