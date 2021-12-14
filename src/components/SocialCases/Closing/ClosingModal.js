@@ -59,7 +59,6 @@ const ClosingModal = ({ open, onClose }) => {
         formData.date = new Date().toISOString()
         formData.professionalId = profesional.id
         formData.professionalNames = profesional.fullName
-        console.log(formData)
         dispatch(socialCaseActions.createClosing(socialCaseId, formData)).then(
           () => {
             enqueueSnackbar('Caso Cerrado Exitosamente', {

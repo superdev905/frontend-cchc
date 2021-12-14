@@ -68,8 +68,7 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
         formData.assistanceTitularId = assistanceID
         formData.state = state
         formData.professionals = [...value]
-        console.log({ formData })
-        console.log({ socialCaseId })
+
         dispatch(
           socialCaseActions.createDerivation(socialCaseId, formData)
         ).then(() => {
@@ -79,7 +78,9 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
           dispatch(socialCaseActions.getSocialCaseById(socialCaseId))
         })
       } catch (error) {
-        console.log(error)
+        enqueueSnackbar(error, {
+          variant: 'error'
+        })
       }
     }
   })

@@ -54,7 +54,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
     if (typeInput === 'states') {
       setSeleted({
         ...seleted,
-        STATE: value
+        state: value
       })
       setSeletedTags({
         ...seletedTags,
@@ -149,7 +149,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
   const applyFilter = () => {
     const {
       businessId,
-      STATE,
+      state,
       assistanceId,
       zone,
       delegation,
@@ -161,7 +161,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
     const newFilters = {
       ...filters,
       businessId,
-      STATE,
+      state,
       assistanceId,
       zone,
       delegation,
@@ -225,7 +225,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
                 key={`application--filters-companies${item.id}`}
                 value={item.id}
               >
-                {item.name}
+                {item.business_name.toUpperCase()}
               </option>
             ))}
           </Select>

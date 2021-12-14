@@ -1,11 +1,11 @@
 const states = [
-  'Solicitado',
-  'Caso Atendido en Faena',
-  'Asignado',
-  'Reformular',
-  'Cerrado',
-  'Programado',
-  'Sin Movimiento'
+  'SOLICITADO',
+  'CASO ATENDIDO EN FAENA',
+  'ASIGNADO',
+  'REFORMULAR',
+  'CERRADO',
+  'PROGRAMADO',
+  'SIN MOVIMIENTO'
 ]
 
 export default states

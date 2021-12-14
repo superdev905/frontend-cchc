@@ -15,12 +15,13 @@ import { useMenu, useSuccess, useToggle } from '../../hooks'
 import {
   EventExportDialog,
   EventForm,
-  EventPreview
+  EventPreview,
+  TaskPreview
 } from '../../components/Assistance'
 import { ConfirmDelete } from '../../components/Shared'
 import useStyles from './styles'
 import './custom.css'
-import { formatHours, formatDate } from '../../formatters'
+import { formatHours } from '../../formatters'
 import socialCasesActions from '../../state/actions/socialCase'
 
 const EventsCalendar = () => {
@@ -39,6 +40,12 @@ const EventsCalendar = () => {
     end_date: endOfWeek(currentDate)
   })
   const { open: openPreview, handleClose, handleOpen, anchorEl } = useMenu()
+  const {
+    open: openTask,
+    handleClose: handleCloseTask,
+    handleOpen: handleOpenTask,
+    anchorEl: anchorElTask
+  } = useMenu()
   const { calendarEvents } = useSelector((state) => state.assistance)
   const { calendarTasks } = useSelector((state) => state.socialCase)
   const { user } = useSelector((state) => state.auth)
@@ -188,8 +195,7 @@ const EventsCalendar = () => {
   }
 
   const renderCard = ({ event }) => {
-    const { shift_name, start_date, end_date, isTask, nextDate } =
-      event.extendedProps
+    const { shift_name, start_date, end_date, isTask } = event.extendedProps
     return (
       <Box
         className={clsx(
@@ -198,13 +204,9 @@ const EventsCalendar = () => {
           getCardClass(shift_name)
         )}
       >
-        {!isTask ? (
+        {!isTask && (
           <Typography className={classes.hours}>
             {`${formatHours(start_date)}-${formatHours(end_date)}`}
-          </Typography>
-        ) : (
-          <Typography className={classes.hours}>
-            {`${formatDate(nextDate, {})}`}
           </Typography>
         )}
         <Typography className={classes.title}>{event.title}</Typography>
@@ -254,6 +256,7 @@ const EventsCalendar = () => {
       })),
       ...calendarTasks.map((item) => ({
         ...item,
+        taskId: item.id,
         title: item.managementName,
         allDay: true,
         isTask: true,
@@ -327,7 +330,11 @@ const EventsCalendar = () => {
                 date: event.event.extendedProps.start_date,
                 title: event.event.title
               })
-              handleOpen({ currentTarget: event.el })
+              if (event.event.extendedProps.isTask) {
+                handleOpenTask({ currentTarget: event.el })
+              } else {
+                handleOpen({ currentTarget: event.el })
+              }
             }}
           />
         </Box>
@@ -348,6 +355,16 @@ const EventsCalendar = () => {
           changeDateTrigger={onNavigate}
         />
       )}
+
+      {currentEvent && openTask && (
+        <TaskPreview
+          anchorEl={anchorElTask}
+          event={currentEvent}
+          open={openTask}
+          onClose={handleCloseTask}
+        />
+      )}
+
       {currentEvent && openPreview && (
         <EventPreview
           anchorEl={anchorEl}

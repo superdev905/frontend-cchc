@@ -164,6 +164,22 @@ const getDerivation =
         })
     })
 
+const getInterventionTaskDetails = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.socialCase}/intervention-plans/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: socialCaseTypes.GET_PLAN_TASK_DETAILS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const createInterventionTask = (values) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.socialCase}/intervention-plans`, values)
@@ -240,7 +256,8 @@ const socialCasesActions = {
   getPlansForCalendar,
   createDerivation,
   getDerivation,
-  createClosing
+  createClosing,
+  getInterventionTaskDetails
 }
 
 export default socialCasesActions

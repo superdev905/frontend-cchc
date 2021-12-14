@@ -22,7 +22,8 @@ const initialState = {
   derivationDetails: null,
   interventionPlans: [],
   totalInterventions: 0,
-  calendarTasks: []
+  calendarTasks: [],
+  interventionPlanTask: null
 }
 
 const socialCase = (state = initialState, { type, payload }) => {
@@ -68,6 +69,11 @@ const socialCase = (state = initialState, { type, payload }) => {
       return {
         ...state,
         calendarTasks: payload
+      }
+    case socialCaseTypes.GET_PLAN_TASK_DETAILS:
+      return {
+        ...state,
+        interventionPlanTask: payload
       }
     default:
       return state

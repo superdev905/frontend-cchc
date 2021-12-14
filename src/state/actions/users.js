@@ -145,7 +145,6 @@ const getSocialAssistanceList =
       )
         .then((response) => {
           const { data } = response
-          console.log(data)
           resolve(data)
         })
         .catch((err) => {

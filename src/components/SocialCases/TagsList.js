@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Box, Chip } from '@material-ui/core'
 import { HighlightOff } from '@material-ui/icons'
 import socialCaseActions from '../../state/actions/socialCase'
+import { formatDate } from '../../formatters'
 
 const TagsList = () => {
   const dispatch = useDispatch()
@@ -32,15 +33,22 @@ const TagsList = () => {
       arrayItem.push(item)
     })
     setTags(arrayItem)
-    console.log(arrayItem)
   }, [filters])
+
+  const renderFilter = (key, filter) => {
+    if (key === 'starDate' || key === 'endDate') {
+      return formatDate(filter)
+    }
+
+    return filter
+  }
 
   return (
     <Box container padding="10px">
       {tags.map((data) => (
         <span key={data.key} style={{ margin: '3px' }}>
           <Chip
-            label={`${data.label}: ${data.filter}`}
+            label={`${data.label}: ${renderFilter(data.key, data.filter)}`}
             deleteIcon={<HighlightOff />}
             onDelete={() => handleDelete(data)}
           />
