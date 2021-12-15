@@ -40,10 +40,27 @@ const getEmployeeDetails = (id) => (dispatch) =>
       })
   })
 
+const createQuestion = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.questionWeb}/public/employee/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: questionEmpTypes.QE_GET_EMPLOYEE_DETAILS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const questionEmployeeActions = {
   validateRut,
   getEmployeeDetails,
-  logOutEmployee
+  logOutEmployee,
+  createQuestion
 }
 
 export default questionEmployeeActions

@@ -3,9 +3,11 @@ import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Avatar, Box, makeStyles, Typography } from '@material-ui/core'
-import { Button } from '../UI'
 import { COLORS } from '../../utils/generateColor'
 import questionEmployeeActions from '../../state/actions/questionEmployee'
+import { Button } from '../UI'
+import { useToggle } from '../../hooks'
+import { EmployeeQuestionModal } from '../WebConsult/Employee'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,6 +38,7 @@ const WebConsult = ({ children }) => {
   const { employeeId, employee } = useSelector(
     (state) => state.questionEmployee
   )
+  const { open, toggleOpen } = useToggle()
 
   useEffect(() => {
     dispatch(questionEmployeeActions.getEmployeeDetails(employeeId))
@@ -65,7 +68,7 @@ const WebConsult = ({ children }) => {
           </Box>
         </Box>
         <Box>
-          <Button>Nueva pregunta</Button>
+          <Button onClick={toggleOpen}>Nueva pregunta</Button>
           <Button
             onClick={() => {
               handleLogOut()
@@ -78,6 +81,7 @@ const WebConsult = ({ children }) => {
         </Box>
       </Box>
       <Box className={classes.wrapper}>{children}</Box>
+      {open && <EmployeeQuestionModal open={open} onClose={toggleOpen} />}
     </Box>
   )
 }
