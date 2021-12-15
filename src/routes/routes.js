@@ -488,7 +488,7 @@ const routes = [
     )
   },
   {
-    path: '/webconsult',
+    path: '/question',
     key: 'WEB-CONSULT',
     exact: true,
     component: ({ authenticated }) => (
@@ -504,7 +504,7 @@ const routes = [
     )
   },
   {
-    path: `/Question/:idQuestion`,
+    path: `/question/:idQuestion`,
     key: 'Question',
     exact: true,
     component: ({ authenticated }) => (

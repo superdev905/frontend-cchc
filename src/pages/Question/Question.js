@@ -11,6 +11,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import QuestionActions from '../../state/actions/questions'
 import { PageHeading, Wrapper } from '../../components/UI'
+import Answer from '../../components/WebConsultBoss/Answer'
 
 const useStyles = makeStyles((theme) => ({
   head: {
@@ -70,6 +71,7 @@ const Question = () => {
               <CalendarIcon className={classes.icon} />
               {!loading && `Creado ${Question?.creadted_delta}`}
             </Typography>
+            <Answer />
           </Box>
         </Box>
         <Box>

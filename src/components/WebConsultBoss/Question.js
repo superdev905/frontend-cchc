@@ -1,5 +1,5 @@
 import { Box, Grid } from '@material-ui/core'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { SearchInput, Wrapper, Button } from '../UI'
 import { useToggle } from '../../hooks'
@@ -9,15 +9,12 @@ import QuestionAssign from './QuestionAssign'
 const Question = () => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const { user } = useSelector((state) => state.auth)
   const { open: openAssign, toggleOpen: toogleOpenAssign } = useToggle()
 
   const AssignQuestion = (values) => {
     const data = {
       ...values,
-      state: 'ACTIVE',
-      created_by: user.id,
-      author: `${user.names} ${user.paternal_surname} ${user?.maternal_surname}`
+      date: new Date().toISOString()
     }
     return dispatch(questionActions.AssignQuestion(data))
   }
