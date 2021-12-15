@@ -5,8 +5,10 @@ import { Box, Typography, Grid } from '@material-ui/core'
 import { Wrapper, EmptyState, LabeledRow, Text } from '../../UI'
 import DerivationModal from '../Analysis/DerivationModal'
 import socialCasesActions from '../../../state/actions/socialCase'
+import contactActions from '../../../state/actions/contact'
 import { formatDate } from '../../../formatters'
-import { ContactCard } from '../../Contacts'
+import { ContactCard, ContactModal } from '../../Contacts'
+import { useToggle } from '../../../hooks'
 
 const Analysis = () => {
   const { socialCaseId } = useParams()
@@ -15,6 +17,18 @@ const Analysis = () => {
   const { caseDetails, derivationDetails } = useSelector(
     (state) => state.socialCase
   )
+  const [currentContact, setCurrentContact] = useState(null)
+  const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
+
+  const onEditContact = (values) =>
+    dispatch(
+      contactActions.updateContact(currentContact.id, {
+        ...currentContact,
+        ...values,
+        state: currentContact.state,
+        email: values.email.toLowerCase()
+      })
+    )
 
   const openModal = () => {
     setOpen(true)
@@ -94,9 +108,32 @@ const Analysis = () => {
                     <ContactCard
                       key={`contact-card-${item.id}`}
                       contact={item}
+                      onEdit={() => {
+                        setCurrentContact(item)
+                        toggleOpenUpdate()
+                      }}
                     />
                   ))}
                 </Grid>
+                {currentContact && openUpdate && (
+                  <ContactModal
+                    includeInterlocutor
+                    open={openUpdate}
+                    onClose={toggleOpenUpdate}
+                    type="UPDATE"
+                    data={currentContact}
+                    submitFunction={onEditContact}
+                    successFunc={() => {
+                      dispatch(
+                        socialCasesActions.getDerivation(
+                          socialCaseId,
+                          caseDetails.derivationId
+                        )
+                      )
+                    }}
+                    successMessage="Contacto actualizado con éxito"
+                  />
+                )}
               </Box>
             </Box>
           </Box>
