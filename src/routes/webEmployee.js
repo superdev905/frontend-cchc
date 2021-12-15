@@ -20,6 +20,26 @@ const publicRoutes = [
         <WebConsultEmployee />
       </WebConsult>
     )
+  },
+  {
+    path: '/consultas-web/preguntas',
+    key: 'housing',
+    exact: true,
+    component: () => (
+      <WebConsult>
+        <WebConsultEmployee />
+      </WebConsult>
+    )
+  },
+  {
+    path: '/consultas-web/historial',
+    key: 'housing',
+    exact: true,
+    component: () => (
+      <WebConsult>
+        <WebConsultEmployee />
+      </WebConsult>
+    )
   }
 ]
 

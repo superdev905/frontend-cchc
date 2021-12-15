@@ -1,8 +1,11 @@
+import { useEffect } from 'react'
 import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { Avatar, Box, makeStyles, Typography } from '@material-ui/core'
 import { Button } from '../UI'
 import generateColor from '../../utils/generateColor'
+import questionEmployeeActions from '../../state/actions/questionEmployee'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,8 +25,16 @@ const useStyles = makeStyles((theme) => ({
 
 const WebConsult = ({ children }) => {
   const classes = useStyles()
-
+  const dispatch = useDispatch()
   const history = useHistory()
+  const { employeeId, employee } = useSelector(
+    (state) => state.questionEmployee
+  )
+
+  useEffect(() => {
+    dispatch(questionEmployeeActions.getEmployeeDetails(employeeId))
+  }, [employeeId])
+
   return (
     <Box className={classes.root}>
       <Box
@@ -45,9 +56,9 @@ const WebConsult = ({ children }) => {
           </Avatar>
           <Box>
             <Typography style={{ fontSize: 18, fontWeight: 'bold' }}>
-              Jhon Doe
+              {`${employee?.names} ${employee?.paternal_surname}`.toUpperCase()}
             </Typography>
-            <Typography>Rut: 3737.38734y</Typography>
+            <Typography>{`Rut: ${employee?.run}`}</Typography>
           </Box>
         </Box>
         <Box>
