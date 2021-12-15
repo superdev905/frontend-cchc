@@ -1,4 +1,5 @@
 import { lazy } from 'react'
+import WebConsult from '../components/Layout/WebConsult'
 
 const QuestionLogin = lazy(() => import('../pages/QuestionLogin'))
 const QuestionEmployee = lazy(() => import('../pages/QuestionEmployee'))

@@ -112,6 +112,11 @@ const Login = () => {
           />
         </Grid>
       </Grid>
+      <Box my={1} textAlign="center">
+        <a href="/consultas-web" target="_blank">
+          Ver consultas web
+        </a>
+      </Box>
       <Box className={classes.actions}>
         <SubmitButton
           disabled={!formik.isValid || formik.isSubmitting}

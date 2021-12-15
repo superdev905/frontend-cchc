@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
+import { useHistory } from 'react-router-dom'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { RutTextField, SubmitButton } from '../../components/UI'
@@ -31,6 +32,7 @@ const validationSchema = Yup.object().shape({
 const Login = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
   const [error, setError] = useState('')
 
@@ -48,6 +50,7 @@ const Login = () => {
             variant: 'success',
             anchorOrigin: { vertical: 'bottom', horizontal: 'center' }
           })
+          history.push(`/consultas-web/employee`)
         })
         .catch((err) => {
           formik.setSubmitting(false)

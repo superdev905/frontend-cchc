@@ -8,8 +8,8 @@ import { useSuccess } from '../../hooks'
 
 const validationSchema = Yup.object().shape({
   status: Yup.string().required('Seleccione estado').nullable(),
-  startDate: Yup.date().nullable().required('Seleccione fecha de inicio'),
-  endDate: Yup.date().nullable().required('Seleccione fecha de inicio')
+  startDate: Yup.date().nullable(),
+  endDate: Yup.date().nullable()
 })
 
 const PhaseDialog = ({
@@ -79,7 +79,6 @@ const PhaseDialog = ({
               <DatePicker
                 label="Fecha de inicio"
                 value={formik.values.startDate}
-                required
                 onChange={(date) => {
                   formik.setFieldValue('startDate', date)
                   formik.setFieldValue('endDate', null)
@@ -90,7 +89,6 @@ const PhaseDialog = ({
               <DatePicker
                 label="Fecha de din"
                 value={formik.values.endDate}
-                required
                 onChange={(date) => {
                   formik.setFieldValue('endDate', date)
                 }}

@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
+import { Alert } from '@material-ui/lab'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { ActionsTable, Button, Wrapper } from '../../UI'
 import { formatDate } from '../../../formatters'
 import { useToggle, useSuccess } from '../../../hooks'
 import { ConfirmDelete, DataTable } from '../../Shared'
 import Can from '../../Can'
+import benefitsActions from '../../../state/actions/benefits'
 import coursesActions from '../../../state/actions/courses'
 import WorkerRegistration from './WorkerRegistration'
 import EmployeeDialog from './Dialog'
@@ -20,7 +22,10 @@ const EmployeesRegistrationList = () => {
   const [currentStudent, setCurrentStudent] = useState(null)
   const [loading, setLoading] = useState(false)
   const { success, changeSuccess } = useSuccess()
-  const { studentsCourse } = useSelector((state) => state.courses)
+  const { benefitDetails: benefit } = useSelector((state) => state.benefits)
+  const { studentsCourse, courseDetails: course } = useSelector(
+    (state) => state.courses
+  )
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const { open: openView, toggleOpen: toggleOpenView } = useToggle()
@@ -77,6 +82,12 @@ const EmployeesRegistrationList = () => {
   }
 
   useEffect(() => {
+    if (course) {
+      dispatch(benefitsActions.getBenefitDetails(course.benefitId))
+    }
+  }, [course])
+
+  useEffect(() => {
     fetchEmployees()
   }, [])
 
@@ -84,6 +95,14 @@ const EmployeesRegistrationList = () => {
     <Wrapper>
       <Box>
         <Grid container spacing={1} alignItems="center">
+          <Box width="100%">
+            {benefit?.usersQuantity === studentsCourse.length && (
+              <Alert severity="warning">
+                Ya no se puede inscribir mas trabajadores.{' '}
+                <strong>Cupo de usuarios cumplido</strong>
+              </Alert>
+            )}
+          </Box>
           <Grid item xs={12} md={12}>
             <Box display="flex" justifyContent="flex-end">
               <Can
@@ -93,7 +112,12 @@ const EmployeesRegistrationList = () => {
                     <Button onClick={toggleOpenAssistance}>
                       Registrar asistencia
                     </Button>
-                    <Button onClick={toggleOpenAdd}>
+                    <Button
+                      disabled={
+                        benefit?.usersQuantity === studentsCourse.length
+                      }
+                      onClick={toggleOpenAdd}
+                    >
                       Inscribir trabajador
                     </Button>
                   </Box>

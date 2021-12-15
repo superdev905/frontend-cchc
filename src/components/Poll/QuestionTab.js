@@ -5,13 +5,14 @@ import { Box } from '@material-ui/core'
 import pollActions from '../../state/actions/poll'
 import { useToggle } from '../../hooks'
 import { QuestionCard, AddQuestion, QuestionModal } from './Question'
+import { EmptyState } from '../UI'
 
 const QuestionTab = () => {
   const { open, toggleOpen } = useToggle()
   const { idPoll } = useParams()
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
-  const { questionList } = useSelector((state) => state.poll)
+  const { questionList, poll } = useSelector((state) => state.poll)
 
   const createQuestion = (values) =>
     dispatch(
@@ -31,21 +32,27 @@ const QuestionTab = () => {
 
   return (
     <Box>
-      <AddQuestion onClick={toggleOpen} />
-      {questionList.map((item, index) => (
-        <QuestionCard
-          question={{
-            ...item,
-            type_name: item.question_type.display_name,
-            type: item.question_type.key
-          }}
-          index={index + 1}
-          textResponse=""
-          selectedOptions={[]}
-          simpleResponse=""
-          successFunction={getQuestions}
-        />
-      ))}
+      {poll?.status === 'VIGENTE' && <AddQuestion onClick={toggleOpen} />}
+      {questionList.length === 0 ? (
+        <EmptyState message="Esta encuesta no tiene preguntas" />
+      ) : (
+        <>
+          {questionList.map((item, index) => (
+            <QuestionCard
+              question={{
+                ...item,
+                type_name: item.question_type.display_name,
+                type: item.question_type.key
+              }}
+              index={index + 1}
+              textResponse=""
+              selectedOptions={[]}
+              simpleResponse=""
+              successFunction={getQuestions}
+            />
+          ))}
+        </>
+      )}
 
       <QuestionModal
         open={open}

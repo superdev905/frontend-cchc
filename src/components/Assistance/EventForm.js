@@ -265,8 +265,8 @@ const EventForm = ({
               required
               value={formik.values.title}
               onChange={formik.handleChange}
-              error={formik.touched.title && Boolean(formik.errors.title)}
-              helperText={formik.touched.title && formik.errors.title}
+              error={Boolean(formik.errors.title)}
+              helperText={formik.errors.title}
             />
           </Grid>
           <Grid item xs={12}>
@@ -287,8 +287,8 @@ const EventForm = ({
               required
               value={formik.values.shift_id}
               onChange={formik.handleChange}
-              error={formik.touched.shift_id && Boolean(formik.errors.shift_id)}
-              helperText={formik.touched.shift_id && formik.errors.shift_id}
+              error={Boolean(formik.errors.shift_id)}
+              helperText={formik.errors.shift_id}
             >
               <option value="">SELECCIONE JORNADA </option>
               {shiftList.map((item) => (
@@ -349,8 +349,8 @@ const EventForm = ({
               required
               value={formik.values.type_id}
               onChange={formik.handleChange}
-              error={formik.touched.type_id && Boolean(formik.errors.type_id)}
-              helperText={formik.touched.type_id && formik.errors.type_id}
+              error={Boolean(formik.errors.type_id)}
+              helperText={formik.errors.type_id}
             >
               <option value="">SELECCIONE TIPO</option>
               {eventTypes.map((item) => (
@@ -427,12 +427,8 @@ const EventForm = ({
               label="Observaciones"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={
-                formik.touched.observation && Boolean(formik.errors.observation)
-              }
-              helperText={
-                formik.touched.observation && formik.errors.observation
-              }
+              error={Boolean(formik.errors.observation)}
+              helperText={formik.errors.observation}
             />
           </Grid>
         </Grid>

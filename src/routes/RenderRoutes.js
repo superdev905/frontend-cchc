@@ -20,7 +20,7 @@ function RenderRoutes() {
       .catch(() => {
         setLoading(false)
         window.location.reload()
-        window.localStorage.clear()
+        window.localStorage.removeItem('token')
       })
   }
 

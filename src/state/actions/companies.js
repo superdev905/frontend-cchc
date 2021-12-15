@@ -219,6 +219,18 @@ const updateCompany = (id, values) => () =>
       })
   })
 
+const searchCompanies = (query) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(`/business/search?${queryString.stringify(query)}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 export default {
   toggleCreateModal,
   updateFilters,
@@ -237,5 +249,6 @@ export default {
   getTreeCompanies,
   getMainCompany,
   getAvailableCompanies,
-  getRelatedCompanies
+  getRelatedCompanies,
+  searchCompanies
 }

@@ -4,13 +4,13 @@ import { useHistory } from 'react-router-dom'
 import { Box, Grid } from '@material-ui/core'
 import scheduleActions from '../../state/actions/schedule'
 import { DataTable } from '../Shared'
-import { ActionsTable, Button, SearchInput, Wrapper } from '../UI'
-import { formatDate } from '../../formatters'
+import { ActionsTable, Button, SearchInput, StatusChip, Wrapper } from '../UI'
+import { formatDate, formatSearchWithRut } from '../../formatters'
 
 const List = () => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
-  const [filters, setFilters] = useState({
+  const [query, setQuery] = useState({
     page: 1,
     size: 30,
     search: ''
@@ -24,21 +24,30 @@ const List = () => {
 
   const fetchSchedules = () => {
     setLoading(true)
-    dispatch(scheduleActions.getSchedules(filters)).then(() => {
+    dispatch(scheduleActions.getSchedules(query)).then(() => {
       setLoading(false)
     })
   }
 
   useEffect(() => {
     fetchSchedules()
-  }, [])
+  }, [query])
 
   return (
     <Wrapper>
       <Box display="flex">
         <Grid container alignItems="center">
           <Grid item xs={12} md={6} lg={5}>
-            <SearchInput placeholder="Buscar por: Nombre de empresa" />
+            <SearchInput
+              value={query.search}
+              onChange={(e) =>
+                setQuery({
+                  ...query,
+                  search: formatSearchWithRut(e.target.value)
+                })
+              }
+              placeholder="Buscar por: RUT, Nombre de empresa"
+            />
           </Grid>
           <Grid item xs={12} md={6} lg={7}>
             <Box textAlign="right">
@@ -56,8 +65,8 @@ const List = () => {
       <Box mt={2}>
         <DataTable
           emptyMessage={
-            filters.search
-              ? `No se encontraron resultados para: ${filters.search}`
+            query.search
+              ? `No se encontraron resultados para: ${query.search}`
               : 'Lista vacía'
           }
           data={list}
@@ -65,12 +74,15 @@ const List = () => {
           columns={[
             {
               name: 'Fecha de programación',
-              selector: (row) => formatDate(row.date),
-              sortable: true
+              selector: (row) => formatDate(row.date, {})
+            },
+            {
+              name: 'RUT',
+              selector: (row) => row.businessRut
             },
             {
               name: 'Empresa',
-              selector: (row) => row.businessName,
+              selector: (row) => row.businessName.toUpperCase(),
               sortable: true
             },
             {
@@ -79,14 +91,33 @@ const List = () => {
               sortable: true
             },
             {
-              name: 'Beneficios programados',
-              selector: (row) => row.benefits.length
+              name: 'Enviado',
+              selector: (row) =>
+                row.sendStatus ? (
+                  <StatusChip
+                    success={row.sendStatus.status === 'SI'}
+                    error={row.sendStatus.status !== 'SI'}
+                    label={row.sendStatus.status}
+                  />
+                ) : (
+                  '--'
+                ),
+              center: true
             },
             {
-              name: 'Estado',
-              selector: () => <Box>aaa</Box>
+              name: 'Aprobado',
+              selector: (row) =>
+                row.approbation ? (
+                  <StatusChip
+                    success={row.approbation.status === 'SI'}
+                    error={row.approbation.status !== 'SI'}
+                    label={row.approbation.status}
+                  />
+                ) : (
+                  '--'
+                ),
+              center: true
             },
-
             {
               name: '',
               right: true,
@@ -101,12 +132,12 @@ const List = () => {
           onRowClicked={(row) => handleRowClick(row.id)}
           paginationServer={true}
           paginationRowsPerPageOptions={[30, 40]}
-          paginationPerPage={filters.size}
+          paginationPerPage={query.size}
           onChangeRowsPerPage={(limit) => {
-            setFilters({ ...filters, size: limit })
+            setQuery({ ...query, size: limit })
           }}
           onChangePage={(page) => {
-            setFilters({ ...filters, page })
+            setQuery({ ...query, page })
           }}
           paginationTotalRows={totalPages}
         />

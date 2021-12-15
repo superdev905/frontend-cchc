@@ -1,4 +1,4 @@
-import { FiEdit2 as EditIcon } from 'react-icons/fi'
+import { FiEdit as EditIcon } from 'react-icons/fi'
 import { Box, IconButton, makeStyles, Typography } from '@material-ui/core'
 import { formatDate, formatHours } from '../../../formatters'
 

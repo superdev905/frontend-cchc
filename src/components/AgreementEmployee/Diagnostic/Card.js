@@ -1,4 +1,4 @@
-import { FiEdit2 as EditIcon } from 'react-icons/fi'
+import { FiEdit as EditIcon } from 'react-icons/fi'
 import { Box, IconButton, makeStyles, Typography } from '@material-ui/core'
 import { formatCurrency, formatDate } from '../../../formatters'
 
@@ -30,16 +30,31 @@ const SavingCard = ({ diagnostic, onEdit }) => {
         </IconButton>
       )}
       <Box mb={1}>
-        <Typography className={classes.date}>{`${formatDate(
-          new Date(diagnostic.createdDate),
-          {}
-        )}`}</Typography>
+        <Typography className={classes.date}>
+          {`${formatDate(new Date(diagnostic.createdDate))}`}
+        </Typography>
       </Box>
       <Box>
-        <Typography>{`RSH: ${diagnostic.rshId}`}</Typography>
-        <Typography>{`Ahorro : ${formatCurrency(
-          diagnostic.salary
-        )}`}</Typography>
+        <Typography>
+          {`RSH:`} <strong>{diagnostic.rsh}</strong>
+        </Typography>
+        <Typography>
+          {`Comuna (RSH): `} <strong>{diagnostic.commune}</strong>
+        </Typography>
+        <Typography>
+          {`Renta : `}
+          <strong>{formatCurrency(diagnostic.salary)}</strong>
+        </Typography>
+        <Typography>
+          {`ATC: `} <strong>{diagnostic.atc}</strong>
+        </Typography>
+        <Typography>
+          {`Discapacidad: `}
+          <strong>{diagnostic.disability}</strong>
+        </Typography>
+        <Typography>
+          {`Tipo de contrato: `} <strong>{diagnostic.contractType}</strong>
+        </Typography>
       </Box>
     </Box>
   )

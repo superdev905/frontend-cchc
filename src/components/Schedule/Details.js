@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import CompanyCard from '../Company/CompanyCard'
 import ContactCard from './ContactCard'
 
-const BenefitDetails = () => {
+const BenefitDetails = ({ loading }) => {
   const { scheduleDetails } = useSelector((state) => state.schedule)
   return (
     <Box>
@@ -12,7 +12,7 @@ const BenefitDetails = () => {
           <Typography style={{ fontWeight: 'bold', marginBottom: 8 }}>
             Detalles de Empresa
           </Typography>
-          <CompanyCard company={scheduleDetails?.business} />
+          <CompanyCard company={scheduleDetails?.business} loading={loading} />
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography style={{ fontWeight: 'bold', marginBottom: 8 }}>

@@ -29,11 +29,14 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #C6C6C6'
   },
   imgPreview: {
-    width: '50%',
+    width: '100%',
     padding: 20,
-    height: 300,
+    height: 450,
     borderRadius: 5,
-    margin: '0 auto'
+    margin: '0 auto',
+    backgroundSize: 'contain',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center'
   },
   deleteImgIcon: {
     position: 'absolute',
