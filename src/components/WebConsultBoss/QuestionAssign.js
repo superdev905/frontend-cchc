@@ -1,16 +1,18 @@
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useEffect, useState } from 'react'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Dialog, DataTable } from '../Shared'
 import { useSuccess } from '../../hooks'
 import { Select, SubmitButton, Button } from '../UI'
+import commonActions from '../../state/actions/common'
+import usersActions from '../../state/actions/users'
 
 const validationSchema = Yup.object().shape({
-  departament: Yup.string().required('Selecciona Departamento'),
-  professional: Yup.string().required('Seleccione Profesional')
+  department: Yup.string().required('Selecciona Departamento'),
+  assignedUserNames: Yup.string().required('Seleccione Profesional')
 })
 
 const QuestionAssign = ({
@@ -23,6 +25,9 @@ const QuestionAssign = ({
   successFunction
 }) => {
   const { enqueueSnackbar } = useSnackbar()
+  const dispatch = useDispatch()
+  const [userList, setUserList] = useState([])
+  const { regions } = useSelector((state) => state.common)
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
 
@@ -30,15 +35,13 @@ const QuestionAssign = ({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      departament: type === 'UPDATE' ? data.departament : '',
-      professional: type === 'UPDATE' ? data.professional : '',
-      is_mandatory:
-        type === 'UPDATE' ? `${data.is_mandatory ? 'SI' : 'NO'}` : ''
+      department: type === 'UPDATE' ? data.department : '',
+      assignedUserNames: type === 'UPDATE' ? data.assignedUserNames : ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction({
         ...values,
-        is_mandatory: values.is_mandatory === 'SI'
+        is_mandatory: values.is_mandatory === 'NO'
       })
         .then((result) => {
           formik.setSubmitting(false)
@@ -64,6 +67,10 @@ const QuestionAssign = ({
   useEffect(() => {
     if (open) {
       formik.resetForm()
+      dispatch(commonActions.getRegions())
+      dispatch(usersActions.getFoundationUsers()).then((response) => {
+        setUserList(response)
+      })
     }
   }, [open])
 
@@ -78,37 +85,45 @@ const QuestionAssign = ({
             <Grid item xs={12} md={6}>
               <Select
                 label="Departamento"
-                name="departament"
+                name="department"
                 required
                 onChange={formik.handleChange}
-                value={formik.values.departament}
+                value={formik.values.department}
                 error={
-                  formik.touched.departament &&
-                  Boolean(formik.errors.departament)
+                  formik.touched.department && Boolean(formik.errors.department)
                 }
                 helperText={
-                  formik.touched.departament && formik.errors.departament
+                  formik.touched.department && formik.errors.department
                 }
               >
                 <option value="">Seleccione Departamento</option>
+                {regions.map((item) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
               </Select>
             </Grid>
             <Grid item xs={12} md={6}>
               <Select
                 label="Profesional"
-                name="professional"
+                name="assignedUserNames"
                 required
                 onChange={formik.handleChange}
-                value={formik.values.professional}
+                value={formik.values.assignedUserNames}
                 error={
-                  formik.touched.professional &&
-                  Boolean(formik.errors.professional)
+                  formik.touched.assignedUserNames &&
+                  Boolean(formik.errors.assignedUserNames)
                 }
                 helperText={
-                  formik.touched.professional && formik.errors.professional
+                  formik.touched.assignedUserNames &&
+                  formik.errors.assignedUserNames
                 }
               >
                 <option value="">Seleccione Profesional</option>
+                {userList.map((item) => (
+                  <option value={item.id}>
+                    {item.names} {item.paternal_surname}
+                  </option>
+                ))}
               </Select>
             </Grid>
             <DataTable
@@ -139,7 +154,6 @@ const QuestionAssign = ({
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
-              disabled={!formik.isValid || formik.isSubmitting}
               loading={formik.isSubmitting}
               success={success}
             >

@@ -4,13 +4,13 @@ import config from '../../config'
 
 const QuestionAssign = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${config.services.question}/webconsult`, values)
+    Axios.post(`${config.services.question}/questions/assignation`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
       })
       .catch((err) => {
-        reject(err.response.data.detail)
+        reject(err.response.data)
       })
   })
 

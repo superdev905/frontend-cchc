@@ -69,7 +69,7 @@ const modulesByRole = {
     },
     {
       title: 'Consultas Web',
-      path: '/webconsult',
+      path: '/question',
       icon: <LanguageIcon />
     },
     {
