@@ -1,6 +1,8 @@
 import { lazy } from 'react'
+import WebConsult from '../components/Layout/WebConsult'
 
 const QuestionLogin = lazy(() => import('../pages/QuestionLogin'))
+const WebConsultEmployee = lazy(() => import('../pages/WebConsultEmployee'))
 
 const publicRoutes = [
   {
@@ -8,6 +10,16 @@ const publicRoutes = [
     key: 'housing',
     exact: true,
     component: () => <QuestionLogin />
+  },
+  {
+    path: '/consultas-web/employee',
+    key: 'housing',
+    exact: true,
+    component: () => (
+      <WebConsult>
+        <WebConsultEmployee />
+      </WebConsult>
+    )
   }
 ]
 
