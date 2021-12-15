@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Avatar, Box, makeStyles, Typography } from '@material-ui/core'
 import { Button } from '../UI'
-import generateColor from '../../utils/generateColor'
+import { COLORS } from '../../utils/generateColor'
 import questionEmployeeActions from '../../state/actions/questionEmployee'
 
 const useStyles = makeStyles((theme) => ({
@@ -20,6 +20,12 @@ const useStyles = makeStyles((theme) => ({
   },
   heading: {
     borderBottom: `1px solid ${theme.palette.gray.gray700}`
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    backgroundColor: COLORS[2],
+    marginRight: 10
   }
 }))
 
@@ -35,6 +41,10 @@ const WebConsult = ({ children }) => {
     dispatch(questionEmployeeActions.getEmployeeDetails(employeeId))
   }, [employeeId])
 
+  const handleLogOut = () => {
+    dispatch(questionEmployeeActions.logOutEmployee())
+  }
+
   return (
     <Box className={classes.root}>
       <Box
@@ -44,15 +54,8 @@ const WebConsult = ({ children }) => {
         className={clsx(classes.wrapper, classes.heading)}
       >
         <Box display="flex" alignItems="center">
-          <Avatar
-            style={{
-              width: 50,
-              height: 50,
-              backgroundColor: generateColor(),
-              marginRight: 10
-            }}
-          >
-            J
+          <Avatar className={classes.avatar}>
+            {employee?.names && employee.names.charAt(0).toUpperCase()}
           </Avatar>
           <Box>
             <Typography style={{ fontSize: 18, fontWeight: 'bold' }}>
@@ -65,8 +68,10 @@ const WebConsult = ({ children }) => {
           <Button>Nueva pregunta</Button>
           <Button
             onClick={() => {
+              handleLogOut()
               history.push(`/consultas-web`)
             }}
+            variant="outlined"
           >
             Salir
           </Button>

@@ -19,6 +19,11 @@ const validateRut = (body) => (dispatch) =>
       })
   })
 
+const logOutEmployee = () => (dispatch) => {
+  dispatch({ type: questionEmpTypes.SET_EMPLOYEE_ID, payload: null })
+  window.localStorage.removeItem('employeeId')
+}
+
 const getEmployeeDetails = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.employee}/public/employee/${id}`)
@@ -35,6 +40,10 @@ const getEmployeeDetails = (id) => (dispatch) =>
       })
   })
 
-const questionEmployeeActions = { validateRut, getEmployeeDetails }
+const questionEmployeeActions = {
+  validateRut,
+  getEmployeeDetails,
+  logOutEmployee
+}
 
 export default questionEmployeeActions
