@@ -29,40 +29,33 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const QuestionCard = () => {
+const QuestionCard = ({ question }) => {
   const classes = useStyles()
 
   return (
     <Box p={2} className={classes.root}>
-      <Box className={classes.numberWrapper}>N° 022828</Box>
+      <Box className={classes.numberWrapper}>{`N° ${question.number}`}</Box>
       <Box mt={1}>
         <Typography style={{ fontSize: 14 }}>
-          {`${formatDate(new Date())} - ${formatHours(new Date())}`}
+          {`${formatDate(new Date(question.createdDate))} - ${formatHours(
+            new Date(question.createdDate)
+          )}`}
         </Typography>
         <Box my={1}>
-          <Typography className={classes.title}>Consulta de Estado</Typography>
-          <Typography>
-            It is a long established fact that a reader will be distracted by
-            the readable content of a page when looking at its layout. The point
-            of using Lorem Ipsum is that it has a more-or-less normal
-            distribution of letters, as opposed to using 'Content here, content
-            here', making it look like readable English. Many desktop publishing
-            packages and web page editors now use Lorem Ipsum as their default
-            model text, and a search for 'lorem ipsum' will uncover many web
-            sites still in their infancy. Var
-          </Typography>
+          <Typography className={classes.title}>{question.title}</Typography>
+          <Typography>{question.question}</Typography>
         </Box>
         <Box display="flex">
           <Chip
             className={classes.chip}
             variant="oulined"
-            label={`Estado: ${'Asginado'}`}
+            label={`Estado: ${question.status}`}
             size="medium"
           />
           <Chip
             className={classes.chip}
             variant="oulined"
-            label={`Area: ${'Salud'}`}
+            label={`Area: ${question.areaName}`}
             size="medium"
           />
         </Box>

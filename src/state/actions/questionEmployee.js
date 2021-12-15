@@ -1,3 +1,4 @@
+import queryString from 'query-string'
 import Axios from '../../Axios'
 import config from '../../config'
 import questionEmpTypes from '../types/questionEmployee'
@@ -40,14 +41,39 @@ const getEmployeeDetails = (id) => (dispatch) =>
       })
   })
 
-const createQuestion = (id) => (dispatch) =>
+const createQuestion = (values) => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.questionWeb}/public/employee/${id}`)
+    Axios.post(`${config.services.questionWeb}/employee/questions`, values)
+      .then((response) => {
+        const { data } = response
+        console.log(data)
+        dispatch({
+          type: questionEmpTypes.QE_ADD_QUESTION,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getQuestions = (query) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${
+        config.services.questionWeb
+      }/employee/questions?${queryString.stringify(query)}`
+    )
       .then((response) => {
         const { data } = response
         dispatch({
-          type: questionEmpTypes.QE_GET_EMPLOYEE_DETAILS,
-          payload: data
+          type: questionEmpTypes.QE_GET_QUESTIONS,
+          payload: data.items
+        })
+        dispatch({
+          type: questionEmpTypes.QE_SET_TOTAL_QUESTIONS,
+          payload: data.total
         })
         resolve(data)
       })
@@ -60,7 +86,8 @@ const questionEmployeeActions = {
   validateRut,
   getEmployeeDetails,
   logOutEmployee,
-  createQuestion
+  createQuestion,
+  getQuestions
 }
 
 export default questionEmployeeActions

@@ -1,47 +1,85 @@
 import { useEffect } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
+import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dialog } from '../../Shared'
 import { Button, Select, SubmitButton, TextArea } from '../../UI'
 import commonPublicActions from '../../../state/actions/commonPublic'
+import questionEmployeeActions from '../../../state/actions/questionEmployee'
+import { useSuccess } from '../../../hooks'
 
 const validationSchema = Yup.object().shape({
   areaId: Yup.number().required('Seleccione area'),
   title: Yup.string().required('Ingrese título'),
-  question: Yup.string().required('Ingrese consulta')
+  question: Yup.string().required('Ingrese consulta'),
+  delegation: Yup.string().required('Seleeciona delegación')
 })
 
 const QuestionModal = ({ open, onClose }) => {
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
-  const { areas } = useSelector((state) => state.commonPublic)
+  const { areas, regions } = useSelector((state) => state.commonPublic)
+  const { employee } = useSelector((state) => state.questionEmployee)
+  const { success, changeSuccess } = useSuccess()
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
     initialValues: {
       areaId: '',
       title: '',
-      question: ''
+      question: '',
+      delegation: ''
     },
-    onSubmit: () => {}
+    onSubmit: (values) => {
+      dispatch(
+        questionEmployeeActions.createQuestion({
+          ...values,
+          areaName: areas.find(
+            (item) => item.id === parseInt(values.areaId, 10)
+          ).name,
+          employeeId: employee.id,
+          employeeRut: employee.run,
+          delegation: 'ANTOFAGASTA',
+          zone: 'ANTOFAGASTA',
+          employeeNames: `${employee.names} ${employee.paternal_surname}`
+            .trim()
+            .toUpperCase()
+        })
+      )
+        .then(() => {
+          formik.setSubmitting(false)
+          changeSuccess(true, () => {
+            onClose()
+            enqueueSnackbar('Pregunta creada', { variant: 'success' })
+          })
+        })
+        .catch((err) => {
+          formik.setSubmitting(false)
+          enqueueSnackbar(err, { variant: 'error' })
+        })
+    }
   })
 
   useEffect(() => {
     if (open) {
       dispatch(commonPublicActions.getAreas())
+      dispatch(commonPublicActions.getRegions())
     }
   }, [open])
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
       <Box>
-        <Typography align="center" variant="h6">
-          Nueva pregunta
-        </Typography>
+        <Box mb={1}>
+          <Typography align="center" variant="h6">
+            Nueva pregunta
+          </Typography>
+        </Box>
         <Box>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} lg={6}>
               <Select
                 required
                 label="Area"
@@ -54,6 +92,30 @@ const QuestionModal = ({ open, onClose }) => {
               >
                 <option value="">SELECCIONA AREA</option>
                 {areas.map((item) => (
+                  <option key={`area-${item.id}`} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </Select>
+            </Grid>
+
+            <Grid item xs={12} lg={6}>
+              <Select
+                required
+                label="Delegación"
+                name="delegation"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.delegation}
+                error={
+                  formik.touched.delegation && Boolean(formik.errors.delegation)
+                }
+                helperText={
+                  formik.touched.delegation && formik.errors.delegation
+                }
+              >
+                <option value="">SELECCIONA DELEGACIÓN</option>
+                {regions.map((item) => (
                   <option key={`area-${item.id}`} value={item.id}>
                     {item.name}
                   </option>
@@ -97,6 +159,7 @@ const QuestionModal = ({ open, onClose }) => {
             <SubmitButton
               loading={formik.isSubmitting}
               onClick={formik.handleSubmit}
+              success={success}
             >
               Crear pregunta
             </SubmitButton>

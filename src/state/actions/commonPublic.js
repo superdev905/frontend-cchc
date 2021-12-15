@@ -15,9 +15,22 @@ const getAreas = () => (dispatch) =>
         reject(err)
       })
   })
+const getRegions = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.parameters}/public/regions`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.PUBLIC_GET_REGIONS, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 
 const commonPublicActions = {
-  getAreas
+  getAreas,
+  getRegions
 }
 
 export default commonPublicActions
