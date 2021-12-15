@@ -15,12 +15,14 @@ import { useMenu, useSuccess, useToggle } from '../../hooks'
 import {
   EventExportDialog,
   EventForm,
-  EventPreview
+  EventPreview,
+  TaskPreview
 } from '../../components/Assistance'
 import { ConfirmDelete } from '../../components/Shared'
 import useStyles from './styles'
 import './custom.css'
 import { formatHours } from '../../formatters'
+import socialCasesActions from '../../state/actions/socialCase'
 
 const EventsCalendar = () => {
   const dispatch = useDispatch()
@@ -38,7 +40,14 @@ const EventsCalendar = () => {
     end_date: endOfWeek(currentDate)
   })
   const { open: openPreview, handleClose, handleOpen, anchorEl } = useMenu()
+  const {
+    open: openTask,
+    handleClose: handleCloseTask,
+    handleOpen: handleOpenTask,
+    anchorEl: anchorElTask
+  } = useMenu()
   const { calendarEvents } = useSelector((state) => state.assistance)
+  const { calendarTasks } = useSelector((state) => state.socialCase)
   const { user } = useSelector((state) => state.auth)
   const [events, setEvents] = useState([])
   const [currentSlot, setCurrentSlot] = useState(null)
@@ -166,25 +175,6 @@ const EventsCalendar = () => {
     setCalendarDate(targetDate)
   }
 
-  /*
-  const getBgColor = (eventStatus) => {
-    if (eventStatus === 'PROGRAMADA' || eventStatus === 'REPROGRAMADA')
-      return '#aed5ff'
-    if (eventStatus === 'TERMINADA') return '#81d88d'
-    if (eventStatus === 'INICIADA' || eventStatus === 'PAUSA') return '#f6e68f'
-    return '#FFEBF6'
-  }
-
-  const getCardClass = (eventStatus) => {
-    if (eventStatus === 'PROGRAMADA' || eventStatus === 'REPROGRAMADA')
-      return classes.blue
-    if (eventStatus === 'TERMINADA') return classes.green
-    if (eventStatus === 'INICIADA' || eventStatus === 'PAUSA')
-      return classes.yellow
-    return classes.red
-  }
- */
-
   const getBgColorShift = (shiftName) => {
     if (shiftName === 'MANAÑA') return '#f6e68f'
     if (shiftName === 'TARDE') return '#81d88d'
@@ -205,14 +195,24 @@ const EventsCalendar = () => {
   }
 
   const renderCard = ({ event }) => {
-    const { shift_name, start_date, end_date } = event.extendedProps
+    const { shift_name, start_date, end_date, isTask } = event.extendedProps
     return (
-      <Box className={clsx(classes.eventCard, getCardClass(shift_name))}>
-        <Typography className={classes.hours}>
-          {`${formatHours(start_date)}-${formatHours(end_date)}`}
-        </Typography>
+      <Box
+        className={clsx(
+          classes.eventCard,
+          isTask && classes.task,
+          getCardClass(shift_name)
+        )}
+      >
+        {!isTask && (
+          <Typography className={classes.hours}>
+            {`${formatHours(start_date)}-${formatHours(end_date)}`}
+          </Typography>
+        )}
         <Typography className={classes.title}>{event.title}</Typography>
-        <Typography className={classes.status}>{shift_name}</Typography>
+        <Typography className={classes.status}>
+          {isTask ? 'Tarea' : shift_name}
+        </Typography>
       </Box>
     )
   }
@@ -233,18 +233,40 @@ const EventsCalendar = () => {
     }
   }
 
+  const fetchInterventionPlanTasks = (query) => {
+    dispatch(
+      socialCasesActions.getPlansForCalendar({
+        startDate: query.start_date
+          ? new Date(query.start_date).toISOString()
+          : null,
+        endDate: query.end_date ? new Date(query.end_date).toISOString() : null
+      })
+    )
+  }
   useEffect(() => {
-    setEvents(
-      calendarEvents.map((item) => ({
+    const list = [
+      ...calendarEvents.map((item) => ({
         ...item,
         visitId: item.id,
         date: new Date(item.date),
         start: new Date(item.start_date),
         end: new Date(item.end_date),
+        isTask: false,
         backgroundColor: getBgColorShift(item.status)
+      })),
+      ...calendarTasks.map((item) => ({
+        ...item,
+        taskId: item.id,
+        isCompleted: item.isCompleted,
+        title: item.managementName,
+        allDay: true,
+        isTask: true,
+        date: new Date(item.nextDate),
+        backgroundColor: '#3C83FF'
       }))
-    )
-  }, [calendarEvents])
+    ]
+    setEvents(list)
+  }, [calendarEvents, calendarTasks])
 
   useEffect(() => {
     if (rangeDate.start && rangeDate.end) {
@@ -254,6 +276,7 @@ const EventsCalendar = () => {
 
   useEffect(() => {
     fetchEvents(filters)
+    fetchInterventionPlanTasks(filters)
   }, [filters])
 
   return (
@@ -262,6 +285,7 @@ const EventsCalendar = () => {
         <Box miHeight="600px">
           <FullCalendar
             ref={calendarApi}
+            droppable={false}
             height="700px"
             now={calendarDate}
             plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
@@ -294,9 +318,9 @@ const EventsCalendar = () => {
               setCurrentView(e.view.type)
               setRangeDate({ start: e.start, end: e.end })
             }}
-            allDayContent={false}
-            allDaySlot={false}
-            editable={true}
+            allDayContent={true}
+            allDaySlot={true}
+            editable={false}
             selectable={true}
             eventContent={
               currentView !== 'dayGridMonth' ? renderCard : () => {}
@@ -307,7 +331,11 @@ const EventsCalendar = () => {
                 date: event.event.extendedProps.start_date,
                 title: event.event.title
               })
-              handleOpen({ currentTarget: event.el })
+              if (event.event.extendedProps.isTask) {
+                handleOpenTask({ currentTarget: event.el })
+              } else {
+                handleOpen({ currentTarget: event.el })
+              }
             }}
           />
         </Box>
@@ -328,6 +356,16 @@ const EventsCalendar = () => {
           changeDateTrigger={onNavigate}
         />
       )}
+
+      {currentEvent && openTask && (
+        <TaskPreview
+          anchorEl={anchorElTask}
+          event={currentEvent}
+          open={openTask}
+          onClose={handleCloseTask}
+        />
+      )}
+
       {currentEvent && openPreview && (
         <EventPreview
           anchorEl={anchorEl}

@@ -162,6 +162,5 @@ const EventPreview = ({
     </Menu>
   )
 }
-EventPreview.propTypes = {}
 
 export default EventPreview

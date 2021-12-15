@@ -7,7 +7,7 @@ import { Button, Select } from '../UI'
 import { Dialog } from '../Shared'
 
 const validationSchema = Yup.object().shape({
-  startMonth: Yup.string().required('Selecciones mes de inicio'),
+  startMonth: Yup.string().required('Seleccione mes de inicio'),
   endMonth: Yup.string().required('Selecciones mes de inicio')
 })
 
@@ -15,8 +15,6 @@ const BenefitDrawer = ({ open, onClose, onSubmit, benefit, data, type }) => {
   const { isMobile } = useSelector((state) => state.ui)
 
   const formik = useFormik({
-    validateOnMount: true,
-    validateOnChange: true,
     validationSchema,
     initialValues: {
       startMonth:
@@ -42,6 +40,7 @@ const BenefitDrawer = ({ open, onClose, onSubmit, benefit, data, type }) => {
     onSubmit(benefit.id, formattedValues)
     onClose()
   }
+
   return (
     <Dialog
       anchor="right"
@@ -61,10 +60,13 @@ const BenefitDrawer = ({ open, onClose, onSubmit, benefit, data, type }) => {
                 label="Mes de inicio"
                 name="startMonth"
                 value={formik.values.startMonth}
+                onBlur={formik.handleBlur}
                 onChange={(e) => {
-                  formik.setFieldValue('startMonth', e.target.value)
-                  formik.setFieldTouched('startMonth')
                   formik.setFieldValue('endMonth', '')
+                  formik.setFieldValue('startMonth', e.target.value)
+                  setTimeout(() => {
+                    formik.setFieldTouched('startMonth')
+                  }, 500)
                 }}
                 helperText={
                   formik.touched.startMonth && formik.errors.startMonth

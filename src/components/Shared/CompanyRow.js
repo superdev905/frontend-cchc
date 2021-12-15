@@ -6,11 +6,11 @@ import { Button } from '../UI'
 import { formatText } from '../../formatters'
 
 const useStyles = makeStyles((theme) => ({
-  root: () => ({
+  root: ({ selectable }) => ({
     width: '100%',
     position: 'relative',
     marginBottom: theme.spacing(2),
-    cursor: 'pointer',
+    cursor: selectable ? 'pointer' : 'inherit',
     display: 'flex',
     borderRadius: 5,
     justifyContent: 'space-between',
@@ -107,7 +107,7 @@ const CompanyRow = ({
   onSelect,
   iconColor
 }) => {
-  const classes = useStyles()
+  const classes = useStyles({ selectable })
   return (
     <Box p={1} className={classes.root}>
       <CompanyInfo company={company} iconColor={iconColor} type={type} />
@@ -116,9 +116,13 @@ const CompanyRow = ({
           Seleccionar
         </Button>
       ) : (
-        <IconButton onClick={onDelete}>
-          <IconDelete className={classes.deleteIcon} />
-        </IconButton>
+        <>
+          {onDelete && (
+            <IconButton onClick={onDelete}>
+              <IconDelete className={classes.deleteIcon} />
+            </IconButton>
+          )}
+        </>
       )}
     </Box>
   )

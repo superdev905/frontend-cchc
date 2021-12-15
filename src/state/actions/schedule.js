@@ -70,6 +70,18 @@ const createSchedule = (values) => () =>
       })
   })
 
+const getValidSchedule = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.schedule}/schedule/validate`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const getScheduleMeetings =
   (query = {}) =>
   (dispatch) =>
@@ -122,12 +134,111 @@ const updateScheduleMeeting = (id, values) => (dispatch) =>
       })
   })
 
-const updateProgrammedBenefit = (id, values) => () =>
+const getBenefits = (query) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.schedule}/schedule-benefits?${queryString.stringify(
+        query
+      )}`
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scheduleTypes.GET_SCHEDULE_BENEFITS,
+          payload: data.items
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateProgrammedBenefit = (id, values) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.put(`${config.services.schedule}/schedule-benefits/${id}`, values)
       .then((response) => {
         const { data } = response
+        dispatch({
+          type: scheduleTypes.UPDATE_SCHEDULE_BENEFIT_MONTHS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
+const createApprobation = (scheduleId, values) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.schedule}/schedule/${scheduleId}/approbation`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scheduleTypes.CREATE_SCHEDULE_APPROBATION,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateApprobation = (scheduleId, idApprobation, values) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.put(
+      `${config.services.schedule}/schedule/${scheduleId}/approbation/${idApprobation}`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scheduleTypes.CREATE_SCHEDULE_APPROBATION,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const createSendStatus = (scheduleId, values) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.schedule}/schedule/${scheduleId}/send-status`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scheduleTypes.CREATE_UPDATE_SCHEDULE_SEND_STATUS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateSendStatus = (scheduleId, sendId, values) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.put(
+      `${config.services.schedule}/schedule/${scheduleId}/send-status/${sendId}`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scheduleTypes.CREATE_UPDATE_SCHEDULE_SEND_STATUS,
+          payload: data
+        })
         resolve(data)
       })
       .catch((err) => {
@@ -137,13 +248,19 @@ const updateProgrammedBenefit = (id, values) => () =>
 
 const scheduleActions = {
   createSchedule,
+  getValidSchedule,
   getSchedules,
   getSchedule,
   getScheduleMeetings,
   createScheduleMeeting,
   updateScheduleMeeting,
   updateProgrammedBenefit,
-  downloadScheduleFile
+  downloadScheduleFile,
+  createApprobation,
+  updateApprobation,
+  createSendStatus,
+  updateSendStatus,
+  getBenefits
 }
 
 export default scheduleActions

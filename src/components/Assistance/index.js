@@ -1,6 +1,7 @@
 export { default as EventForm } from './EventForm'
 export { default as EventPage } from './EventPage'
 export { default as EventPreview } from './EventPreview'
+export { default as TaskPreview } from './TaskPreview'
 export { default as EventList } from './EventList'
 export { default as VisitToCloseList } from './VisitToCloseList'
 export { default as EventExportDialog } from './ExportDialog'

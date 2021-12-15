@@ -1,6 +1,6 @@
 import { Box } from '@material-ui/core'
-import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { useToggle } from '../../../hooks'
 import housingActions from '../../../state/actions/housing'
 import { EmptyState } from '../../UI'

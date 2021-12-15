@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Skeleton } from '@material-ui/lab'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { Dialog, DataTable } from '../../Shared'
+import { Dialog } from '../../Shared'
 import { formatSearchWithRut } from '../../../formatters'
-import { Button, EmptyState, TextField, ActionsTable } from '../../UI'
+import { EmptyState, TextField } from '../../UI'
 import EmployeeRow from '../../Scholarships/Create/EmployeeRow'
 import employeesActions from '../../../state/actions/employees'
 import generateColor from '../../../utils/generateColor'
 
-const AddEmployee = ({ open, onClose, loader, submitFunction }) => {
+const AddEmployee = ({ open, onClose, loader, onAdd }) => {
   const dispatch = useDispatch()
 
   const { isMobile } = useSelector((state) => state.ui)
@@ -21,11 +21,6 @@ const AddEmployee = ({ open, onClose, loader, submitFunction }) => {
   const addEmployee = (selected) => {
     const updatedList = employeeList.concat(selected)
     setEmployeeList(updatedList)
-  }
-
-  const handleSubmit = () => {
-    submitFunction(employeeList)
-    onClose()
   }
 
   useEffect(() => {
@@ -120,6 +115,8 @@ const AddEmployee = ({ open, onClose, loader, submitFunction }) => {
                             option={item}
                             onClick={() => {
                               addEmployee(item)
+                              onAdd(item)
+                              onClose()
                             }}
                           />
                         ))}
@@ -130,57 +127,6 @@ const AddEmployee = ({ open, onClose, loader, submitFunction }) => {
               )}
             </Box>
           )}
-        </Box>
-
-        <Box mt={2}>
-          <Box>
-            <Typography
-              style={{ fontSize: 18, fontWeight: 'bold' }}
-            >{`Trabajadores seleccionados: ${employeeList.length}`}</Typography>
-          </Box>
-          <DataTable
-            data={employeeList}
-            columns={[
-              { name: 'Run', selector: (row) => row.run },
-              {
-                name: 'Nombres y apellidos',
-                selector: (row) =>
-                  `${row.names} ${row.paternal_surname} ${
-                    row.paternal_surname || ''
-                  }`
-              },
-              {
-                name: 'Sexo',
-                selector: (row) => row.gender
-              },
-              {
-                name: '',
-                right: true,
-                selector: (row) => (
-                  <ActionsTable
-                    onDelete={() => {
-                      const list = employeeList.filter(
-                        (item) => item.id !== row.id
-                      )
-                      setEmployeeList(list)
-                    }}
-                  />
-                )
-              }
-            ]}
-          />
-        </Box>
-
-        <Box textAlign="center" marginTop="10px">
-          <Button onClick={onClose} variant="outlined">
-            Cancelar
-          </Button>
-          <Button
-            onClick={() => handleSubmit()}
-            disabled={employeeList.length === 0}
-          >
-            Agregar
-          </Button>
         </Box>
       </Box>
     </Dialog>

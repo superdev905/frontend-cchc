@@ -22,7 +22,14 @@ function getStepContent(stepIndex, { onClose }) {
   }
 }
 
-const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
+const CreateDialog = ({
+  open,
+  onClose,
+  type,
+  data,
+  successFunction,
+  benefitName
+}) => {
   const steps = getSteps()
   const dispatch = useDispatch()
   const { create } = useSelector((state) => state.benefits)
@@ -60,7 +67,7 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
           open,
           type,
           step: open ? 0 : create.step,
-          benefit: type === 'UPDATE' ? data : null
+          benefit: type === 'UPDATE' ? data : { name: benefitName }
         })
       )
     }
@@ -98,7 +105,8 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
 }
 
 CreateDialog.defaultProps = {
-  type: 'CREATE'
+  type: 'CREATE',
+  benefitName: ''
 }
 
 export default CreateDialog

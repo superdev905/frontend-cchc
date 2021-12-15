@@ -8,6 +8,7 @@ import {
   Grid,
   Typography,
   FormControlLabel,
+  FormHelperText,
   Radio,
   Avatar
 } from '@material-ui/core'
@@ -30,7 +31,9 @@ import BenefitDialog from '../BenefitDialog'
 import { ActivityCard, BenefitCard } from '../../Benefits'
 import benefitsActions from '../../../state/actions/benefits'
 import useStyles from './styles'
-import validationSchema from './schema'
+import { validationSchema, caseAdditionalSchema } from './schema'
+import socialCasesActions from '../../../state/actions/socialCase'
+import CaseAdditionalForm from './CaseAdditionalForm'
 
 const attentionPlaces = ['OFICINA', 'TERRENO', 'VIRTUAL']
 
@@ -46,7 +49,10 @@ const WorkerInterventionRecord = ({
   company,
   construction,
   visitShift,
-  sourceSystem
+  sourceSystem,
+  defaultCaseId,
+  defaultTaskId,
+  defaultSocialCase
 }) => {
   const dispatch = useDispatch()
   const classes = useStyles()
@@ -54,6 +60,7 @@ const WorkerInterventionRecord = ({
   const { success, changeSuccess } = useSuccess()
   const [attachments, setAttachments] = useState([])
   const { areas, managementList } = useSelector((state) => state.common)
+  const { casesForSelect } = useSelector((state) => state.socialCase)
   const { user } = useSelector((state) => state.auth)
   const [topics, setTopics] = useState([])
   const [selectedManagement, setSelectedManagement] = useState('')
@@ -61,6 +68,7 @@ const WorkerInterventionRecord = ({
     benefit: null,
     activity: null
   })
+  const [selectedPlans, setSelectedPlans] = useState([])
   const { open: openBenefit, toggleOpen: toggleOpenBenefit } = useToggle()
   const { open: openConfirm, toggleOpen: toggleOpenConfirm } = useToggle()
 
@@ -76,6 +84,20 @@ const WorkerInterventionRecord = ({
       })
     )
   }
+
+  const handleCreateCaseSocial = (body) => {
+    dispatch(socialCasesActions.createSocialCase(body))
+  }
+  const caseFormik = useFormik({
+    validationSchema: caseAdditionalSchema,
+    validateOnChange: true,
+    validateOnMount: true,
+    initialValues: {
+      zone: '',
+      office: '',
+      delegation: ''
+    }
+  })
 
   const formik = useFormik({
     validateOnMount: true,
@@ -97,9 +119,10 @@ const WorkerInterventionRecord = ({
       company_report: type === 'UPDATE' ? data.company_report : '',
       company_report_observation:
         type === 'UPDATE' ? data.company_report_observation : '',
-      is_social_case: type === 'UPDATE' ? data.is_social_case : '',
-      case_id: type === 'UPDATE' ? data.case_id : '',
-      task_id: type === 'UPDATE' ? data.task_id : '',
+      is_social_case:
+        type === 'UPDATE' ? data.is_social_case : defaultSocialCase || '',
+      case_id: type === 'UPDATE' ? data.case_id : defaultCaseId || '',
+      task_id: type === 'UPDATE' ? data.task_id : defaultTaskId || '',
       assigned_id: type === 'UPDATE' ? data.assigned_id : '',
       observation: type === 'UPDATE' ? data.observation : '',
       attached_url: type === 'UPDATE' ? data.attached_url : '',
@@ -129,6 +152,8 @@ const WorkerInterventionRecord = ({
       submitFunction({
         ...values,
         attachments: attachmentsList,
+        case_id: values.case_id === 'NEW' ? null : values.case_id,
+        task_id: values.task_id ? values.task_id : null,
         assigned_id: user.id,
         created_by: user.id
       }).then((result) => {
@@ -147,6 +172,28 @@ const WorkerInterventionRecord = ({
               activityDetails.benefit,
               activityDetails.activity,
               result.id
+            )
+          }
+          if (formik.values.case_id === 'NEW') {
+            const newCase = {
+              date: new Date().toISOString(),
+              assistanceId: result.id,
+              businessId: company.id,
+              businessName: company.business_name,
+              employeeId: employee.id,
+              employeeRut: employee.run,
+              employeeNames: `${employee.names} ${employee.paternal_surname} ${
+                employee.maternal_surname || ''
+              }`.trim(),
+              areaId: values.area_id,
+              professionalId: user.id,
+              ...caseFormik.values
+            }
+            handleCreateCaseSocial(newCase)
+          }
+          if (formik.values.task_id) {
+            dispatch(
+              socialCasesActions.completeInterventionTask(formik.values.task_id)
             )
           }
         })
@@ -232,6 +279,19 @@ const WorkerInterventionRecord = ({
   }, [type, visitShift])
 
   useEffect(() => {
+    if (
+      formik.values.case_id &&
+      formik.values.case_id !== 'NEW' &&
+      areas.length > 0
+    ) {
+      const foundCase = casesForSelect.find(
+        (item) => item.id === parseInt(formik.values.case_id, 10)
+      )
+      setSelectedPlans(foundCase.interventionPlans)
+    }
+  }, [formik.values.case_id, casesForSelect])
+
+  useEffect(() => {
     if (formik.values.area_id && areas.length > 0) {
       handleSelectChange({
         target: { name: 'area', value: formik.values.area_id }
@@ -244,6 +304,7 @@ const WorkerInterventionRecord = ({
       setAttachments([])
       dispatch(commonActions.getAreas())
       dispatch(commonActions.getManagement())
+      dispatch(socialCasesActions.getListCases())
     }
   }, [open])
 
@@ -499,6 +560,7 @@ const WorkerInterventionRecord = ({
                   }
                   label="SI"
                 />
+
                 <FormControlLabel
                   value="end"
                   control={
@@ -512,6 +574,11 @@ const WorkerInterventionRecord = ({
                   }
                   label="NO"
                 />
+                {formik.errors.company_report && (
+                  <FormHelperText error>
+                    {formik.errors.company_report}{' '}
+                  </FormHelperText>
+                )}
               </Box>
             </Grid>
 
@@ -537,86 +604,120 @@ const WorkerInterventionRecord = ({
               </Grid>
             )}
 
-            <Grid container spacing={2} item xs={12} md={12} lg={12}>
-              <Grid item xs={12} md={3} lg={2}>
-                <InputLabel required>Caso Social</InputLabel>
-                <Box>
-                  <FormControlLabel
-                    value="end"
-                    control={
-                      <Radio
-                        color="primary"
-                        checked={formik.values.is_social_case === 'SI'}
-                        onChange={() => {
-                          formik.setFieldValue('is_social_case', 'SI')
-                        }}
+            <Grid item xs={12} md={12} lg={12}>
+              <Box>
+                <Box mb={2}>
+                  <Typography>
+                    <strong>Datos de Caso Social</strong>
+                  </Typography>
+                </Box>{' '}
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={3} lg={2}>
+                    <InputLabel required>Caso Social</InputLabel>
+                    <Box>
+                      <FormControlLabel
+                        value="end"
+                        control={
+                          <Radio
+                            color="primary"
+                            checked={formik.values.is_social_case === 'SI'}
+                            onChange={() => {
+                              formik.setFieldValue('is_social_case', 'SI')
+                            }}
+                          />
+                        }
+                        label="SI"
                       />
-                    }
-                    label="SI"
-                  />
-                  <FormControlLabel
-                    value="end"
-                    control={
-                      <Radio
-                        color="primary"
-                        checked={formik.values.is_social_case === 'NO'}
-                        onChange={() => {
-                          formik.setFieldValue('is_social_case', 'NO')
-                        }}
+                      <FormControlLabel
+                        value="end"
+                        control={
+                          <Radio
+                            color="primary"
+                            checked={formik.values.is_social_case === 'NO'}
+                            onChange={() => {
+                              formik.setFieldValue('is_social_case', 'NO')
+                            }}
+                          />
+                        }
+                        label="NO"
                       />
-                    }
-                    label="NO"
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} lg={5}>
+                    <Select
+                      label="Caso"
+                      name="case_id"
+                      disabled={
+                        formik.values.case_id === 'NEW' ||
+                        formik.values.is_social_case === 'NO'
+                      }
+                      required={formik.values.is_social_case === 'SI'}
+                      value={formik.values.case_id}
+                      onChange={(e) => {
+                        formik.setFieldValue(e.target.name, e.target.value)
+                        formik.setFieldTouched(e.target.value)
+                        formik.setFieldValue('task_id', '')
+                        if (e.target.value === 'NEW') {
+                          formik.setFieldValue('task_id', '')
+                        }
+                      }}
+                      onBlur={formik.handleBlur}
+                      error={
+                        formik.touched.case_id && Boolean(formik.errors.case_id)
+                      }
+                      helperText={
+                        formik.touched.case_id && formik.errors.case_id
+                      }
+                    >
+                      <option value="">SELECCIONE OPCIÓN</option>
+                      {[{ id: 'NEW', name: 'NUEVO' }]
+                        .concat(casesForSelect)
+                        .map((item, i) => (
+                          <option key={`case_id-${i}-${item}`} value={item.id}>
+                            {item.id === 'NEW'
+                              ? item.name
+                              : `CASO N° ${item.id}`}
+                          </option>
+                        ))}
+                    </Select>
+                  </Grid>
+                  <Grid item xs={12} lg={5}>
+                    <Select
+                      label="Plan de Intervención"
+                      name="task_id"
+                      required={formik.values.is_social_case === 'SI'}
+                      value={formik.values.task_id}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={
+                        formik.touched.task_id && Boolean(formik.errors.task_id)
+                      }
+                      helperText={
+                        formik.touched.task_id && formik.errors.task_id
+                      }
+                      disabled={
+                        formik.values.case_id === 'NEW' ||
+                        formik.values.is_social_case === 'NO'
+                      }
+                    >
+                      <option value="">SELECCIONE PLAN DE INTERVENCIÓN</option>
+                      {selectedPlans.map((item, i) => (
+                        <option key={`plan-${i}-${item}`} value={item.id}>
+                          {item.managementName}
+                        </option>
+                      ))}
+                    </Select>
+                  </Grid>
+                </Grid>
+                {formik.values.case_id === 'NEW' && (
+                  <CaseAdditionalForm
+                    formik={caseFormik}
+                    onReset={() => {
+                      formik.setFieldValue('case_id', '')
+                    }}
                   />
-                </Box>
-              </Grid>
-              <Grid item xs={12} md={3} lg={4}>
-                <Select
-                  label="Caso"
-                  name="case_id"
-                  required
-                  value={formik.values.case_id}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={
-                    formik.touched.case_id && Boolean(formik.errors.case_id)
-                  }
-                  helperText={formik.touched.case_id && formik.errors.case_id}
-                >
-                  <option value="">SELECCIONE CASO</option>
-                  {[
-                    { index: 1, name: 'CASO 1' },
-                    { index: 2, name: 'CASO 2' }
-                  ].map((item, i) => (
-                    <option key={`case_id-${i}-${item}`} value={item.index}>
-                      {item.name}
-                    </option>
-                  ))}
-                </Select>
-              </Grid>
-              <Grid item xs={12} md={3} lg={4}>
-                <Select
-                  label="Plan de Intervención"
-                  name="task_id"
-                  required
-                  value={formik.values.task_id}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={
-                    formik.touched.task_id && Boolean(formik.errors.task_id)
-                  }
-                  helperText={formik.touched.task_id && formik.errors.task_id}
-                >
-                  <option value="">SELECCIONE PLAN DE INTERVRNCIÓN</option>
-                  {[
-                    { index: 1, name: 'Plan de Intervención 1' },
-                    { index: 2, name: 'Plan de Intervención 2' }
-                  ].map((item, i) => (
-                    <option key={`plan-${i}-${item}`} value={item.index}>
-                      {item.name}
-                    </option>
-                  ))}
-                </Select>
-              </Grid>
+                )}
+              </Box>
             </Grid>
 
             <Grid item xs={12} md={12} lg={12}>
@@ -652,7 +753,7 @@ const WorkerInterventionRecord = ({
                     </Button>
                   )}
                 </Box>
-                <Grid container spacing={2}>
+                <Box>
                   {attachments.length === 0 ? (
                     <EmptyState
                       message="No hay archivos adjuntos"
@@ -661,26 +762,33 @@ const WorkerInterventionRecord = ({
                     />
                   ) : (
                     <>
-                      {attachments.map((item, index) => (
-                        <Grid item xs={12} md={6} key={`file-picker-${index}`}>
-                          <FilePicker
-                            id={item.id}
-                            onChange={(e) => {
-                              setAttachments(
-                                attachments.map((file) =>
-                                  file.id === item.id
-                                    ? { ...file, file: e }
-                                    : file
+                      <Grid container spacing={2}>
+                        {attachments.map((item, index) => (
+                          <Grid
+                            item
+                            xs={12}
+                            md={6}
+                            key={`file-picker-${index}`}
+                          >
+                            <FilePicker
+                              id={item.id}
+                              onChange={(e) => {
+                                setAttachments(
+                                  attachments.map((file) =>
+                                    file.id === item.id
+                                      ? { ...file, file: e }
+                                      : file
+                                  )
                                 )
-                              )
-                            }}
-                            onDelete={() => deleteAttachment(item.id)}
-                          />
-                        </Grid>
-                      ))}
+                              }}
+                              onDelete={() => deleteAttachment(item.id)}
+                            />
+                          </Grid>
+                        ))}
+                      </Grid>
                     </>
                   )}
-                </Grid>
+                </Box>
               </Box>
             </Grid>
           </Grid>
@@ -761,7 +869,10 @@ const WorkerInterventionRecord = ({
 
 WorkerInterventionRecord.defaultProps = {
   type: 'CREATE',
-  sourceSystem: 'VISITAS'
+  sourceSystem: 'VISITAS',
+  defaultCaseId: null,
+  defaultTaskId: null,
+  defaultSocialCase: null
 }
 
 export default WorkerInterventionRecord

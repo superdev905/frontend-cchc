@@ -12,8 +12,9 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     marginBottom: 2,
-    fontSize: 14,
-    fontWeight: 'bold'
+    fontSize: 13,
+    fontWeight: 'bold',
+    overflow: 'hidden'
   },
   hours: {
     fontSize: 13
@@ -24,28 +25,32 @@ const useStyles = makeStyles((theme) => ({
   },
   blue: {
     backgroundColor: '#aed5ff',
-    border: `3px solid #076af9`
+    border: `2px solid #076af9`
   },
   green: {
     backgroundColor: '#81d88d',
-    border: `3px solid #48C659`
+    border: `2px solid #48C659`
   },
-  yellow: { backgroundColor: '#f6e68f', border: `3px solid #F2DB5C` },
+  yellow: { backgroundColor: '#f6e68f', border: `2px solid #F2DB5C` },
   red: {
     backgroundColor: '#FFEBF6',
-    border: `3px solid #ED61B0`
+    border: `2px solid #ED61B0`
   },
   brown: {
     backgroundColor: '#cc7722',
-    border: `3px solid #704241`
+    border: `2px solid #704241`
   },
   grey: {
     backgroundColor: '#8c92ac',
-    border: `3px solid #536878`
+    border: `2px solid #536878`
   },
   orange: {
     backgroundColor: '#ff9933',
-    border: `3px solid #ff4f00`
+    border: `2px solid #ff4f00`
+  },
+  task: {
+    backgroundColor: '#DAD3FE',
+    border: `2px solid #6353BA`
   }
 }))
 

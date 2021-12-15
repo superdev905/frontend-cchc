@@ -18,6 +18,7 @@ import benefits from './benefits'
 import schedule from './schedule'
 import housing from './housing'
 import questionEmployee from './questionEmployee'
+import socialCase from './socialCase'
 
 const reducers = (history) =>
   combineReducers({
@@ -39,6 +40,7 @@ const reducers = (history) =>
     schedule,
     housing,
     questionEmployee,
+    socialCase,
     router: connectRouter(history)
   })
 

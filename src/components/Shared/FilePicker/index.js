@@ -15,10 +15,9 @@ const FilePicker = ({ id, onChange, acceptedFiles, onDelete, icon }) => {
     if (!currentFile.file) return <></>
     if (currentFile.type.includes('image')) {
       return (
-        <img
-          alt="upload preview"
+        <Box
           className={classes.imgPreview}
-          src={currentFile.file}
+          style={{ backgroundImage: `url(${currentFile.file})` }}
         />
       )
     }

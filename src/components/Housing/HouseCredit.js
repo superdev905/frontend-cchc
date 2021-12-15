@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { ActionsTable, Button, SearchInput, StatusChip } from '../UI'
+import { ActionsTable, Button, SearchInput } from '../UI'
 import { DataTable } from '../Shared'
 import housingActions from '../../state/actions/housing'
 import { formatDate } from '../../formatters'
@@ -48,7 +48,6 @@ const HouseAgreements = () => {
           <Typography style={{ fontSize: 18, fontWeight: 'bold' }} variant="h7">
             Convenios
           </Typography>
-          <Button onClick={onClickCreate}>Nuevo convenio</Button>
         </Box>
       </Box>
       <Box mb={1}>
@@ -59,6 +58,11 @@ const HouseAgreements = () => {
               value={query.search}
               onChange={handleSearch}
             />
+          </Grid>
+          <Grid item xs={12} md={7}>
+            <Box textAlign="right">
+              <Button onClick={onClickCreate}>Nuevo convenio</Button>
+            </Box>
           </Grid>
         </Grid>
       </Box>
@@ -79,21 +83,12 @@ const HouseAgreements = () => {
             selector: (row) => formatDate(row.date)
           },
           {
+            name: 'Número',
+            selector: (row) => row.number
+          },
+          {
             name: 'Empresa',
-            selector: (row) => row.businessName
-          },
-          {
-            name: 'Estado',
-            selector: (row) => (
-              <StatusChip
-                success={row.isActive}
-                label={row.isActive ? 'Activo' : 'Eliminado'}
-              />
-            )
-          },
-          {
-            name: 'Trabajadores',
-            selector: (row) => row.totalEmployees
+            selector: (row) => row.businessName.toUpperCase()
           },
           {
             name: '',
