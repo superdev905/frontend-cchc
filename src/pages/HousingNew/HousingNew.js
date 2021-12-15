@@ -135,195 +135,200 @@ const HousingNew = () => {
             }}
           />
         </Box>
-        <Box>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={12}>
-              <Box>
-                <SearchCompany
-                  onSelected={(value) => {
-                    setSelectedCompany(value)
-                    formik.setFieldValue('businessId', value.id)
-                    formik.setFieldValue('businessName', value.business_name)
-                    formik.setFieldValue('number', value.rut)
-                  }}
-                  onDelete={() => {
-                    setSelectedCompany(null)
-                    setCompanyDetails(null)
-                  }}
-                />
-              </Box>
-            </Grid>
-          </Grid>
-        </Box>
-        <Box className={classes.section}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <Typography className={classes.subHeading}>
-                Detalles de Empresa
-              </Typography>
-              <CompanyCard company={companyDetails} />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography className={classes.subHeading}>
-                Detalles de interlocutor
-              </Typography>
-              <Box>
-                {companyDetails && (
-                  <ScheduleContactCard
-                    emptyMessage="Esta empresa no tiene interlocutor"
-                    contact={companyDetails?.interlocutor}
-                    onEdit={() => {}}
-                    businessId={companyDetails?.id}
-                    onSuccessFunction={(contact) => {
-                      setCompanyDetails({
-                        ...companyDetails,
-                        interlocutor: contact.is_interlocutor ? contact : null
-                      })
+        <Box px={1}>
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={12}>
+                <Box>
+                  <SearchCompany
+                    onSelected={(value) => {
+                      setSelectedCompany(value)
+                      formik.setFieldValue('businessId', value.id)
+                      formik.setFieldValue('businessName', value.business_name)
+                      formik.setFieldValue('number', value.rut)
+                    }}
+                    onDelete={() => {
+                      setSelectedCompany(null)
+                      setCompanyDetails(null)
                     }}
                   />
-                )}
-              </Box>
-            </Grid>
-          </Grid>
-        </Box>
-        <Box className={classes.section}>
-          <HouseRelatedBusiness
-            list={relatedBusinesses}
-            onAdd={(company) => {
-              if (selectedCompany.id === company.id) {
-                enqueueSnackbar(
-                  'No puedes seleccionar la empresa de convenido como empresa relacionada',
-                  {
-                    variant: 'error'
-                  }
-                )
-              } else {
-                const foundCompany = relatedBusinesses.find(
-                  (item) => item.id === company.id
-                )
-                if (!foundCompany) {
-                  const updatedList = [...relatedBusinesses]
-                  updatedList.push(company)
-                  setRelatedBusinesses(updatedList)
-                } else {
-                  enqueueSnackbar('Esta empresa ya esta agregada', {
-                    variant: 'error'
-                  })
-                }
-              }
-            }}
-            onDelete={(company) => {
-              const updatedList = relatedBusinesses.filter(
-                (item) => item.id !== company.id
-              )
-              setRelatedBusinesses(updatedList)
-            }}
-          />
-        </Box>
-        <Box className={classes.section}>
-          <EmployeeList
-            employees={employeeList}
-            onAdd={toggleOpenAddEmployee}
-            onDelete={(employee) => {
-              const updatedList = employeeList.filter(
-                (item) => item.id !== employee.id
-              )
-              setEmployeeList(updatedList)
-            }}
-          />
-          {openAddEmployee && (
-            <HouseAddEmployee
-              open={openAddEmployee}
-              onClose={toggleOpenAddEmployee}
-              submitFunction={(list) => setEmployeeList(list)}
-              onAdd={(employee) => {
-                const foundEmployee = employeeList.find(
-                  (item) => item.id === employee.id
-                )
-                if (!foundEmployee) {
-                  const updatedList = [...employeeList]
-                  updatedList.push(employee)
-                  setEmployeeList(updatedList)
-                } else {
-                  enqueueSnackbar('Este trabajador ya fue agregado', {
-                    variant: 'error'
-                  })
-                }
-              }}
-            />
-          )}
-        </Box>
-        <Box className={classes.section}>
-          <Typography
-            component="div"
-            style={{ display: 'flex', fontWeight: 'bold' }}
-          >
-            Profesionales relaciondas
-          </Typography>
-
-          <Box>
-            <Autocomplete
-              multiple
-              filterSelectedOptions
-              id="professionals"
-              options={professionalList}
-              value={users}
-              onChange={(__, values) => {
-                setUsers(values)
-              }}
-              getOptionLabel={(option) => option.names || ''}
-              renderOption={(values) => (
-                <Box>
-                  <Typography style={{ fontSize: 18, fontWeight: 'bold' }}>
-                    {`Nombre:  ${values.names} ${values.paternal_surname}`.toLocaleUpperCase()}
-                  </Typography>
-                  <Typography
-                    style={{ fontSize: 15, textTransform: 'capitalize' }}
-                  >
-                    Cargo: {values.charge_name || ''}{' '}
-                  </Typography>
                 </Box>
-              )}
-              renderTags={(value, getTagProps) =>
-                value.map((option, index) => (
-                  <Chip
-                    variant="outlined"
-                    label={`${option.names} ${option.paternal_surname}-${
-                      option.charge_name || ''
-                    }`.toUpperCase()}
-                    {...getTagProps({ index })}
-                  />
-                ))
-              }
-              renderInput={(params) => (
-                <TextField {...params} placeholder="Seleccione profesionales" />
-              )}
+              </Grid>
+            </Grid>
+          </Box>
+          <Box className={classes.section}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <Typography className={classes.subHeading}>
+                  Detalles de Empresa
+                </Typography>
+                <CompanyCard company={companyDetails} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography className={classes.subHeading}>
+                  Detalles de interlocutor
+                </Typography>
+                <Box>
+                  {companyDetails && (
+                    <ScheduleContactCard
+                      emptyMessage="Esta empresa no tiene interlocutor"
+                      contact={companyDetails?.interlocutor}
+                      onEdit={() => {}}
+                      businessId={companyDetails?.id}
+                      onSuccessFunction={(contact) => {
+                        setCompanyDetails({
+                          ...companyDetails,
+                          interlocutor: contact.is_interlocutor ? contact : null
+                        })
+                      }}
+                    />
+                  )}
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+          <Box className={classes.section}>
+            <HouseRelatedBusiness
+              list={relatedBusinesses}
+              onAdd={(company) => {
+                if (selectedCompany.id === company.id) {
+                  enqueueSnackbar(
+                    'No puedes seleccionar la empresa de convenido como empresa relacionada',
+                    {
+                      variant: 'error'
+                    }
+                  )
+                } else {
+                  const foundCompany = relatedBusinesses.find(
+                    (item) => item.id === company.id
+                  )
+                  if (!foundCompany) {
+                    const updatedList = [...relatedBusinesses]
+                    updatedList.push(company)
+                    setRelatedBusinesses(updatedList)
+                  } else {
+                    enqueueSnackbar('Esta empresa ya esta agregada', {
+                      variant: 'error'
+                    })
+                  }
+                }
+              }}
+              onDelete={(company) => {
+                const updatedList = relatedBusinesses.filter(
+                  (item) => item.id !== company.id
+                )
+                setRelatedBusinesses(updatedList)
+              }}
             />
           </Box>
-        </Box>
-        <Box>
-          <TextArea
-            required
-            name="observations"
-            value={formik.values.observations}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={Boolean(formik.errors.observations)}
-            helperText={formik.errors.observations}
-            label="Observaciones"
-            maxLength={800}
-          ></TextArea>
-        </Box>
-        <Box textAlign="right">
-          <SubmitButton
-            disabled={!formik.isValid || loading || employeeList.length === 0}
-            startIcon={<SaveIcon />}
-            onClick={createAgreement}
-            loading={loading}
-            success={createSuccess}
-          >
-            Guardar
-          </SubmitButton>
+          <Box className={classes.section}>
+            <EmployeeList
+              employees={employeeList}
+              onAdd={toggleOpenAddEmployee}
+              onDelete={(employee) => {
+                const updatedList = employeeList.filter(
+                  (item) => item.id !== employee.id
+                )
+                setEmployeeList(updatedList)
+              }}
+            />
+            {openAddEmployee && (
+              <HouseAddEmployee
+                open={openAddEmployee}
+                onClose={toggleOpenAddEmployee}
+                submitFunction={(list) => setEmployeeList(list)}
+                onAdd={(employee) => {
+                  const foundEmployee = employeeList.find(
+                    (item) => item.id === employee.id
+                  )
+                  if (!foundEmployee) {
+                    const updatedList = [...employeeList]
+                    updatedList.push(employee)
+                    setEmployeeList(updatedList)
+                  } else {
+                    enqueueSnackbar('Este trabajador ya fue agregado', {
+                      variant: 'error'
+                    })
+                  }
+                }}
+              />
+            )}
+          </Box>
+          <Box className={classes.section}>
+            <Typography
+              component="div"
+              style={{ display: 'flex', fontWeight: 'bold' }}
+            >
+              Profesionales relaciondas
+            </Typography>
+
+            <Box>
+              <Autocomplete
+                multiple
+                filterSelectedOptions
+                id="professionals"
+                options={professionalList}
+                value={users}
+                onChange={(__, values) => {
+                  setUsers(values)
+                }}
+                getOptionLabel={(option) => option.names || ''}
+                renderOption={(values) => (
+                  <Box>
+                    <Typography style={{ fontSize: 18, fontWeight: 'bold' }}>
+                      {`Nombre:  ${values.names} ${values.paternal_surname}`.toLocaleUpperCase()}
+                    </Typography>
+                    <Typography
+                      style={{ fontSize: 15, textTransform: 'capitalize' }}
+                    >
+                      Cargo: {values.charge_name || ''}{' '}
+                    </Typography>
+                  </Box>
+                )}
+                renderTags={(value, getTagProps) =>
+                  value.map((option, index) => (
+                    <Chip
+                      variant="outlined"
+                      label={`${option.names} ${option.paternal_surname}-${
+                        option.charge_name || ''
+                      }`.toUpperCase()}
+                      {...getTagProps({ index })}
+                    />
+                  ))
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Seleccione profesionales"
+                  />
+                )}
+              />
+            </Box>
+          </Box>
+          <Box>
+            <TextArea
+              required
+              name="observations"
+              value={formik.values.observations}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={Boolean(formik.errors.observations)}
+              helperText={formik.errors.observations}
+              label="Observaciones"
+              maxLength={800}
+            ></TextArea>
+          </Box>
+          <Box textAlign="right">
+            <SubmitButton
+              disabled={!formik.isValid || loading || employeeList.length === 0}
+              startIcon={<SaveIcon />}
+              onClick={createAgreement}
+              loading={loading}
+              success={createSuccess}
+            >
+              Guardar
+            </SubmitButton>
+          </Box>
         </Box>
       </Wrapper>
     </Box>

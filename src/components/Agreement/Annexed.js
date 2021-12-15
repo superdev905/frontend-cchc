@@ -6,11 +6,12 @@ import { useDispatch } from 'react-redux'
 import { formatDate } from '../../formatters'
 import { useToggle } from '../../hooks'
 import housingActions from '../../state/actions/housing'
-import { ConfirmDelete } from '../Shared'
+import { CompanyRow, ConfirmDelete } from '../Shared'
 import { Button, LabeledRow, Text } from '../UI'
+import { UserCard } from '../Users'
 import EmployeeList from './EmployeeList'
 
-const Annexed = ({ data }) => {
+const Annexed = ({ data, index }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(false)
@@ -45,7 +46,7 @@ const Annexed = ({ data }) => {
     <Box>
       <Typography
         style={{ fontSize: 20, fontWeight: 'bold' }}
-      >{`Detalles de Anexo ${details?.id}`}</Typography>
+      >{`Detalles de Anexo ${index}`}</Typography>
       <Box my={1}>
         <Grid container spacing={2}>
           <Grid item xs={12} lg={7}>
@@ -118,6 +119,34 @@ const Annexed = ({ data }) => {
         {details && (
           <EmployeeList annexedId={details.id} status={details?.state} />
         )}
+      </Box>
+      <Box mb={2}>
+        <Typography
+          style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5 }}
+        >
+          Empresas relacionadas
+        </Typography>
+        <Grid container spacing={2}>
+          {details?.relatedBusinesses.map((item) => (
+            <Grid item xs={12} md={6}>
+              <CompanyRow company={item} />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+      <Box>
+        <Typography
+          style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5 }}
+        >
+          Profesionales
+        </Typography>
+        <Grid container spacing={2}>
+          {details?.professionals.map((item) => (
+            <Grid item xs={12} md={6}>
+              <UserCard user={item} />
+            </Grid>
+          ))}
+        </Grid>
       </Box>
     </Box>
   )

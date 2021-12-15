@@ -43,18 +43,23 @@ const SavingDialog = ({
     validateOnChange: true,
     initialValues: {
       rsh: type === 'UPDATE' ? data.rsh : '',
-      rshId: type === 'UPDATE' ? data.rshId : '',
+      rshId: type === 'UPDATE' ? data.rshId : employee?.rsh_id,
       communeId: type === 'UPDATE' ? data.communeId : '',
       commune: type === 'UPDATE' ? data.commune : '',
       currentSubsidy: type === 'UPDATE' ? data.currentSubsidy : '',
       targetSubsidy: type === 'UPDATE' ? data.targetSubsidy : '',
       atc: type === 'UPDATE' ? data.atc : '',
-      disability: type === 'UPDATE' ? data.disability : '',
-      salary: type === 'UPDATE' ? data.salary : employee?.current_job.salary
+      disability: type === 'UPDATE' ? data.disability : employee?.disability,
+      salary: type === 'UPDATE' ? data.salary : employee?.current_job?.salary
     },
     onSubmit: (values) => {
       const formData = {
         ...values,
+        rsh: rshList.find((item) => item.id === parseInt(values.rshId, 10))
+          .description,
+        commune: communes.find(
+          (item) => item.id === parseInt(values.communeId, 10)
+        ).name,
         maritalStatusId: employee?.marital_status_id,
         contractType: employee?.current_job.contract_type
       }
@@ -63,9 +68,14 @@ const SavingDialog = ({
           formik.setSubmitting(false)
           changeSuccess(true, () => {
             onClose()
-            enqueueSnackbar('Datos de diagnostico creado', {
-              variant: 'success'
-            })
+            enqueueSnackbar(
+              `Datos de diagnostico ${
+                type === 'UPDATE' ? 'actualizados' : 'creados'
+              }`,
+              {
+                variant: 'success'
+              }
+            )
             if (successFunction) {
               successFunction()
             }
@@ -154,7 +164,7 @@ const SavingDialog = ({
                 <option value="">Selecciona una opción</option>
                 {['Subsidio 1', 'Subsidio 2'].map((item) => (
                   <option key={`option-subsidio-${item}`} value={item.id}>
-                    {item}
+                    {item.toUpperCase()}
                   </option>
                 ))}
               </Select>
@@ -230,7 +240,7 @@ const SavingDialog = ({
               <CurrencyTextField
                 label="Renta"
                 required
-                value={employee?.current_job.salary}
+                value={employee?.current_job?.salary}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
@@ -238,7 +248,7 @@ const SavingDialog = ({
               <TextField
                 label="Tipo de contrato"
                 required
-                value={employee?.current_job.contract_type}
+                value={employee?.current_job?.contract_type}
                 inputProps={{ readOnly: true }}
               />
             </Grid>

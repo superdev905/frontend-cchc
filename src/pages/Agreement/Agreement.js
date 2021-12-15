@@ -52,89 +52,86 @@ const Agreement = () => {
             history.goBack()
           }}
         />
-        <Box mt={2}>
-          <Typography className={classes.subHeading}>
-            Detalles de convenio
-          </Typography>
-          <Box>
-            <Grid container spacing={2}>
-              <Grid item xs={12} lg={6}>
-                <LabeledRow label="Fecha:">
-                  <Text loading={loading} loaderWidth="40%">
-                    {agreementDetails && formatDate(agreementDetails.date)}
-                  </Text>
-                </LabeledRow>
-                <LabeledRow label="Creado por:">
-                  <Text loading={loading} loaderWidth="50%">
-                    {`${agreementDetails?.author?.names} ${agreementDetails?.author?.paternalSurname}`}
-                  </Text>
-                </LabeledRow>
-              </Grid>
-              <Grid item xs={12} lg={6}>
-                <LabeledRow label="Empresa:">
-                  <Text loading={loading} loaderWidth="20%">
-                    <a
-                      href={`/company/${agreementDetails?.businessId}/details`}
-                      target="_blank"
-                    >
-                      {agreementDetails?.businessName}
-                    </a>
-                  </Text>
-                </LabeledRow>
-                <LabeledRow label="Cantidad de trabajadores:" width="220px">
-                  <Text loading={loading} loaderWidth="10%">
-                    {agreementDetails?.totalEmployees}
-                  </Text>
-                </LabeledRow>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-        <Box mt={2}>
-          <Box>
-            <Grid container spacing={2}>
-              <Grid item xs={12} lg={6}>
-                <Typography className={classes.subHeading}>
-                  Detalles de empresa
-                </Typography>
-                <CompanyCard
-                  loading={loading}
-                  company={agreementDetails?.business}
-                />
-              </Grid>
-              <Grid item xs={12} lg={6}>
-                <Typography className={classes.subHeading}>
-                  Interlocutor de empresa
-                </Typography>
-                {agreementDetails && (
-                  <ContactCard
-                    contact={agreementDetails?.business?.interlocutor}
-                  />
-                )}
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-        <Box mt={2}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography className={classes.simpleHeading}>
-              Anexos de convenio
+        <Box px={2}>
+          <Box mt={2}>
+            <Typography className={classes.subHeading}>
+              Detalles de convenio
             </Typography>
-            <Button onClick={toggleOpen}>Nuevo anexo</Button>
-            {open && agreementDetails && (
-              <AddAnnexedDialog
-                selectedCompany={{ id: agreementDetails.businessId }}
-                open={open}
-                onClose={toggleOpen}
-                successFunction={fetchDetails}
-              />
-            )}
+            <Box>
+              <Grid container spacing={2}>
+                <Grid item xs={12} lg={6}>
+                  <LabeledRow label="Fecha:">
+                    <Text loading={loading} loaderWidth="40%">
+                      {agreementDetails && formatDate(agreementDetails.date)}
+                    </Text>
+                  </LabeledRow>
+                  <LabeledRow label="Creado por:">
+                    <Text loading={loading} loaderWidth="50%">
+                      {`${agreementDetails?.author?.names} ${agreementDetails?.author?.paternalSurname}`}
+                    </Text>
+                  </LabeledRow>
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <LabeledRow label="Empresa:">
+                    <Text loading={loading} loaderWidth="20%">
+                      <a
+                        href={`/company/${agreementDetails?.businessId}/details`}
+                        target="_blank"
+                      >
+                        {agreementDetails?.businessName}
+                      </a>
+                    </Text>
+                  </LabeledRow>
+                </Grid>
+              </Grid>
+            </Box>
           </Box>
-          <AgreementTabs />
+          <Box mt={2}>
+            <Box>
+              <Grid container spacing={2}>
+                <Grid item xs={12} lg={6}>
+                  <Typography className={classes.subHeading}>
+                    Detalles de empresa
+                  </Typography>
+                  <CompanyCard
+                    loading={loading}
+                    company={agreementDetails?.business}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <Typography className={classes.subHeading}>
+                    Interlocutor de empresa
+                  </Typography>
+                  {agreementDetails && (
+                    <ContactCard
+                      contact={agreementDetails?.business?.interlocutor}
+                    />
+                  )}
+                </Grid>
+              </Grid>
+            </Box>
+          </Box>
+          <Box mt={2}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography className={classes.simpleHeading}>
+                Anexos de convenio
+              </Typography>
+              <Button onClick={toggleOpen}>Nuevo anexo</Button>
+              {open && agreementDetails && (
+                <AddAnnexedDialog
+                  selectedCompany={{ id: agreementDetails.businessId }}
+                  open={open}
+                  onClose={toggleOpen}
+                  successFunction={fetchDetails}
+                />
+              )}
+            </Box>
+            <AgreementTabs />
+          </Box>
         </Box>
       </Wrapper>
     </Box>

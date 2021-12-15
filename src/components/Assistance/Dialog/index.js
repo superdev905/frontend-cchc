@@ -710,7 +710,12 @@ const WorkerInterventionRecord = ({
                   </Grid>
                 </Grid>
                 {formik.values.case_id === 'NEW' && (
-                  <CaseAdditionalForm formik={caseFormik} />
+                  <CaseAdditionalForm
+                    formik={caseFormik}
+                    onReset={() => {
+                      formik.setFieldValue('case_id', '')
+                    }}
+                  />
                 )}
               </Box>
             </Grid>

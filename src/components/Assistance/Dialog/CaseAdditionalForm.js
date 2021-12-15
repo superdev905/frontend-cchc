@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
+import { FiTrash2 as DeleteIcon } from 'react-icons/fi'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, IconButton } from '@material-ui/core'
 import commonActions from '../../../state/actions/common'
 import { Select } from '../../UI'
 import useStyles from './styles'
 
-const CaseAdditionalForm = ({ formik }) => {
+const CaseAdditionalForm = ({ formik, onReset }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { regions } = useSelector((state) => state.common)
@@ -16,6 +17,9 @@ const CaseAdditionalForm = ({ formik }) => {
   return (
     <Box my={2} p={2} className={classes.newCase}>
       <Box mb={2}>Se creará nuevo caso social</Box>
+      <IconButton className={classes.deleteIcon} onClick={onReset}>
+        <DeleteIcon />
+      </IconButton>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={4}>
           <Select
