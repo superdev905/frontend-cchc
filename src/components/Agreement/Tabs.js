@@ -19,7 +19,7 @@ const AgreementTabs = () => {
             )}
             onChange={(__, newValue) => setValue(newValue)}
           >
-            <Annexed data={agreementDetails.annexes[value]} />
+            <Annexed data={agreementDetails.annexes[value]} index={value + 1} />
           </Tabs>
         </>
       )}

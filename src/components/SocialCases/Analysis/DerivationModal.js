@@ -9,7 +9,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { Select, Button, TextField, TextArea } from '../../UI'
 import { Dialog } from '../../Shared'
-import usersActions from '../../../state/actions/users'
+import companyActions from '../../../state/actions/companies'
 import socialCaseActions from '../../../state/actions/socialCase'
 
 const useStyles = makeStyles(() => ({
@@ -41,8 +41,9 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
   const { socialCaseId } = useParams()
   const dispatch = useDispatch()
   const { isMobile } = useSelector((state) => state.ui)
+  const { caseDetails } = useSelector((state) => state.socialCase)
+  const { contacts } = useSelector((state) => state.companies)
   const { enqueueSnackbar } = useSnackbar()
-  const [assistanceList, setAssistanceList] = useState([])
   const [state] = useState('ASIGNADO')
   const [value, setValue] = useState([])
 
@@ -62,7 +63,10 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
         formData.date = new Date().toISOString()
         formData.assistanceTitularId = assistanceID
         formData.state = state
-        formData.professionals = [...value]
+        formData.professionals = value.map((item) => ({
+          userId: item.id,
+          fullName: item.full_name
+        }))
 
         dispatch(
           socialCaseActions.createDerivation(socialCaseId, formData)
@@ -88,17 +92,12 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
   }, [open])
 
   useEffect(() => {
-    dispatch(usersActions.getSocialAssistanceList()).then((item) => {
-      const list = []
-      item.forEach((assistance) => {
-        list.push({
-          userId: assistance.id,
-          fullName: `${assistance.names} ${assistance.paternal_surname} ${assistance.maternal_surname}`
-        })
-      })
-      setAssistanceList(list)
-    })
-  }, [])
+    if (open) {
+      if (caseDetails) {
+        dispatch(companyActions.getContacts(caseDetails.businessId))
+      }
+    }
+  }, [caseDetails, open])
   return (
     <Dialog
       open={open}
@@ -183,12 +182,14 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
                       onChange={(event, newValue) => {
                         setValue([...newValue])
                       }}
-                      options={assistanceList}
-                      getOptionLabel={(option) => option.fullName}
+                      options={contacts}
+                      getOptionLabel={(option) => option.full_name}
                       renderTags={(tagValue, getTagProps) =>
                         tagValue.map((option, index) => (
                           <Chip
-                            label={option.fullName}
+                            label={`${option.full_name.toUpperCase()}-${
+                              option.charge_name
+                            }`}
                             {...getTagProps({ index })}
                           />
                         ))
@@ -199,6 +200,23 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
                           variant="outlined"
                           placeholder="Selecciona los Encargados"
                         />
+                      )}
+                      renderOption={(values) => (
+                        <Box>
+                          <Typography
+                            style={{ fontSize: 17, fontWeight: 'bold' }}
+                          >
+                            {`Nombre:  ${values.full_name}`}
+                          </Typography>
+                          <Typography
+                            style={{
+                              fontSize: 15,
+                              textTransform: 'capitalize'
+                            }}
+                          >
+                            Cargo: {values.charge_name}{' '}
+                          </Typography>
+                        </Box>
                       )}
                     />
                   </Box>

@@ -1,4 +1,5 @@
 export { default as EmployeeDetails } from './Details'
+export { default as EmployeeDetailsForm } from './DetailsForm'
 export { default as EmployeeFamiliarGroup } from './FamiliarGroup'
 export { default as EmployeeInfoContact } from './InfoContact'
 export { default as PensionSituation } from './PensionSituation'

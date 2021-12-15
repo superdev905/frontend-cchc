@@ -20,35 +20,33 @@ const SocialCaseDetails = () => {
   return (
     <Box>
       <Wrapper>
-        {caseDetails ? (
-          <Box>
-            <BackHeading
-              title={`CASO ${socialCaseId} -  ${caseDetails.employeeNames}`}
-              goBack={() => {
-                history.push('/social-case')
-              }}
-            />
-            {/* <TimeStamp loading={false} text={createdDate} /> */}
-            <Box px={2}>
-              <Grid container>
-                <Grid item xs={12} lg={6}>
-                  <LabeledRow label={'Fecha de Inicio'}>
-                    <Text>{formatDate(caseDetails.createdDate)} </Text>
-                  </LabeledRow>
-                </Grid>
-                <Grid item xs={12} lg={6}>
-                  <LabeledRow label={'Estado'}>
-                    <Text>{caseDetails.state}</Text>
-                  </LabeledRow>
-                </Grid>
+        <Box>
+          <BackHeading
+            title={`CASO ${socialCaseId} -  ${caseDetails?.employeeNames}`}
+            goBack={() => {
+              history.push('/social-case')
+            }}
+          />
+          {/* <TimeStamp loading={false} text={createdDate} /> */}
+          <Box px={2}>
+            <Grid container>
+              <Grid item xs={12} lg={6}>
+                <LabeledRow label={'Fecha de Inicio'}>
+                  <Text>{formatDate(caseDetails?.createdDate)} </Text>
+                </LabeledRow>
               </Grid>
-            </Box>
-
-            <Box>
-              <SocialCaseTabs />
-            </Box>
+              <Grid item xs={12} lg={6}>
+                <LabeledRow label={'Estado'}>
+                  <Text>{caseDetails?.state}</Text>
+                </LabeledRow>
+              </Grid>
+            </Grid>
           </Box>
-        ) : null}
+
+          <Box>
+            <SocialCaseTabs />
+          </Box>
+        </Box>
       </Wrapper>
     </Box>
   )

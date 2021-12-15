@@ -7,7 +7,14 @@ const useStyles = makeStyles((theme) => ({
   },
   newCase: {
     borderRadius: 5,
-    border: `2px solid ${theme.palette.primary.light}`
+    border: `2px solid ${theme.palette.primary.light}`,
+    position: 'relative'
+  },
+  deleteIcon: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    color: theme.palette.error.main
   }
 }))
 

@@ -6,6 +6,7 @@ import { Wrapper, EmptyState, LabeledRow, Text } from '../../UI'
 import DerivationModal from '../Analysis/DerivationModal'
 import socialCasesActions from '../../../state/actions/socialCase'
 import { formatDate } from '../../../formatters'
+import { ContactCard } from '../../Contacts'
 
 const Analysis = () => {
   const { socialCaseId } = useParams()
@@ -23,10 +24,15 @@ const Analysis = () => {
   }
 
   useEffect(() => {
-    dispatch(
-      socialCasesActions.getDerivation(socialCaseId, caseDetails.derivationId),
-      closeModal()
-    )
+    if (caseDetails) {
+      dispatch(
+        socialCasesActions.getDerivation(
+          socialCaseId,
+          caseDetails.derivationId
+        ),
+        closeModal()
+      )
+    }
   }, [caseDetails])
 
   return (
@@ -40,11 +46,13 @@ const Analysis = () => {
               actionMessage={'Crear'}
             />
           </Wrapper>
-          <DerivationModal
-            open={open}
-            onClose={closeModal}
-            assistanceID={caseDetails.assistanceId}
-          />
+          {caseDetails && (
+            <DerivationModal
+              open={open}
+              onClose={closeModal}
+              assistanceID={caseDetails.assistanceId}
+            />
+          )}
         </Box>
       ) : (
         <Wrapper>
@@ -58,9 +66,9 @@ const Analysis = () => {
                 Detalles Delegación
               </Typography>
             </Box>
-            <Box p={2}>
+            <Box>
               <Grid container>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={12}>
                   <LabeledRow label={'Fecha'}>
                     <Text>{formatDate(derivationDetails.date)} </Text>
                   </LabeledRow>
@@ -74,16 +82,22 @@ const Analysis = () => {
                     <Text>{derivationDetails.observations}</Text>
                   </LabeledRow>
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <LabeledRow label={'Encargados'}>
-                    {derivationDetails.professionals.map((item, index) => (
-                      <Text key={item.id}>
-                        {index + 1} - {item.fullName}
-                      </Text>
-                    ))}
-                  </LabeledRow>
-                </Grid>
               </Grid>
+              <Box mt={2}>
+                <Typography
+                  style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 6 }}
+                >
+                  Profesionales
+                </Typography>
+                <Grid container>
+                  {derivationDetails.professionals.map((item) => (
+                    <ContactCard
+                      key={`contact-card-${item.id}`}
+                      contact={item}
+                    />
+                  ))}
+                </Grid>
+              </Box>
             </Box>
           </Box>
         </Wrapper>

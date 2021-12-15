@@ -1,4 +1,4 @@
-import { FiEdit2 as EditIcon } from 'react-icons/fi'
+import { FiEdit as EditIcon } from 'react-icons/fi'
 import { Box, IconButton, makeStyles, Typography } from '@material-ui/core'
 import { formatCurrency, formatDate } from '../../../formatters'
 
@@ -30,15 +30,20 @@ const SavingCard = ({ saving, onEdit }) => {
         </IconButton>
       )}
       <Box mb={1}>
-        <Typography className={classes.date}>{`${formatDate(
-          new Date(saving.createdDate),
-          {}
-        )}`}</Typography>
+        <Typography className={classes.date}>
+          {`${formatDate(new Date(saving.createdDate))}`}
+        </Typography>
       </Box>
       <Box>
-        <Typography>{`Entidad: ${saving.entity}`}</Typography>
-        <Typography>{`N° de cuenta: ${saving.accountNumber}`}</Typography>
-        <Typography>{`Ahorro : ${formatCurrency(saving.amount)}`}</Typography>
+        <Typography>
+          {`Entidad: `} <strong>{saving.entity}</strong>
+        </Typography>
+        <Typography>
+          {`N° de cuenta: `} <strong>{saving.accountNumber}</strong>
+        </Typography>
+        <Typography>
+          {`Ahorro : `} <strong>{formatCurrency(saving.amount)}</strong>
+        </Typography>
       </Box>
     </Box>
   )

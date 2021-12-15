@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
 import filesAction from '../../../state/actions/files'
-import { DatePicker, Dialog, FilePicker } from '../../Shared'
+import { DatePicker, Dialog, FilePicker, FileThumbnail } from '../../Shared'
 import { Button, InputLabel, Select, SubmitButton, TextArea } from '../../UI'
 import { decisionList } from '../../../config'
 import { useSuccess } from '../../../hooks'
@@ -27,6 +27,9 @@ const ApproveDialog = ({
   const dispatch = useDispatch()
   const { isMobile } = useSelector((state) => state.ui)
   const { success } = useSuccess()
+  const [uploadAttachment, setUploadAttachment] = useState(
+    data?.attachment || null
+  )
   const [file, setFile] = useState(null)
   const { enqueueSnackbar } = useSnackbar()
   const formik = useFormik({
@@ -157,16 +160,29 @@ const ApproveDialog = ({
               />
             </Grid>
             <Grid item xs={12}>
-              <InputLabel>Archivo</InputLabel>
-              <FilePicker
-                value={file}
-                onChange={(e) => {
-                  setFile(e)
-                }}
-                onDelete={() => {
-                  setFile(null)
-                }}
-              />
+              {uploadAttachment ? (
+                <>
+                  <FileThumbnail
+                    fileName={uploadAttachment?.fileName}
+                    onDelete={() => {
+                      setUploadAttachment(null)
+                    }}
+                  />
+                </>
+              ) : (
+                <>
+                  <InputLabel>Archivo adjunto</InputLabel>
+                  <FilePicker
+                    value={file}
+                    onChange={(e) => {
+                      setFile(e)
+                    }}
+                    onDelete={() => {
+                      setFile(null)
+                    }}
+                  />
+                </>
+              )}
             </Grid>
           </Grid>
           <Box textAlign="center">

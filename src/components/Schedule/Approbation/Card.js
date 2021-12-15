@@ -1,4 +1,5 @@
 import { FiEdit as EditIcon } from 'react-icons/fi'
+import { useDispatch } from 'react-redux'
 import {
   Box,
   Grid,
@@ -6,7 +7,10 @@ import {
   makeStyles,
   Typography
 } from '@material-ui/core'
+import files from '../../../state/actions/files'
 import { formatDate } from '../../../formatters'
+import { useToggle } from '../../../hooks'
+import { FileThumbnail } from '../../Shared'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,6 +51,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Card = ({ data, onEdit }) => {
   const classes = useStyles()
+  const dispatch = useDispatch()
+  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
   return (
     <Box className={classes.root} p={2}>
       <Box>
@@ -88,7 +94,36 @@ const Card = ({ data, onEdit }) => {
               </Typography>
             </Box>
           </Grid>
+          <Box>
+            {data?.attachment && (
+              <FileThumbnail
+                ileName={data.attachment.fileName}
+                date={data.attachment.uploadDate}
+                fileSize={data.attachment.fileSize}
+                label={data.attachment.module}
+                onView={() => {
+                  toggleOpenVisor()
+                }}
+                onDownload={() => {
+                  dispatch(
+                    files.downloadFile(
+                      data.attachment.fileUrl,
+                      data.attachment.fileName
+                    )
+                  )
+                }}
+              />
+            )}
+          </Box>
         </Box>
+        {data?.attachment && openVisor && (
+          <FileVisor
+            open={openVisor}
+            onClose={toggleOpenVisor}
+            filename={data.attachment.fileName}
+            src={data.attachment.fileUrl}
+          />
+        )}
       </Box>
     </Box>
   )

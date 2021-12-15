@@ -1,4 +1,5 @@
 import { Box } from '@material-ui/core'
+import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useToggle } from '../../../hooks'
 import housingActions from '../../../state/actions/housing'
@@ -8,12 +9,13 @@ import DiagnosticCard from './Card'
 
 const DiagnosticSection = ({ handler, loading }) => {
   const dispatch = useDispatch()
+  const { employeeId } = useParams()
   const { employeeData } = useSelector((state) => state.housing)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
 
   const createDiagnostic = (values) =>
-    dispatch(housingActions.createEmployeeDiagnostic(employeeData.id, values))
+    dispatch(housingActions.createEmployeeDiagnostic(employeeId, values))
 
   const updateSaving = (values) =>
     dispatch(

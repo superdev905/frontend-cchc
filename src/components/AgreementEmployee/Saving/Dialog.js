@@ -1,5 +1,6 @@
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
+import { useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { CurrencyTextField, Dialog } from '../../Shared'
@@ -22,13 +23,15 @@ const SavingDialog = ({
 }) => {
   const { success, changeSuccess } = useSuccess()
   const { enqueueSnackbar } = useSnackbar()
+  const { employee } = useSelector((state) => state.employees)
   const formik = useFormik({
     validationSchema,
     validateOnMount: true,
     validateOnChange: true,
     initialValues: {
       entity: type === 'UPDATE' ? data.entity : '',
-      accountNumber: type === 'UPDATE' ? data.accountNumber : '',
+      accountNumber:
+        type === 'UPDATE' ? data.accountNumber : employee?.account_number || '',
       amount: type === 'UPDATE' ? data.amount : ''
     },
     onSubmit: (values) => {
@@ -37,7 +40,12 @@ const SavingDialog = ({
           formik.setSubmitting(false)
           changeSuccess(true, () => {
             onClose()
-            enqueueSnackbar('Datos de ahorro creados', { variant: 'success' })
+            enqueueSnackbar(
+              `Datos de ahorro ${
+                type === 'UPDATE' ? 'actualizados' : 'creado'
+              }`,
+              { variant: 'success' }
+            )
             if (successFunction) {
               successFunction()
             }
