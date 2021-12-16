@@ -43,7 +43,7 @@ const getEmployeeDetails = (id) => (dispatch) =>
 
 const createQuestion = (values) => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.post(`${config.services.questionWeb}/employee/questions`, values)
+    Axios.post(`${config.services.question}/employee/questions`, values)
       .then((response) => {
         const { data } = response
         console.log(data)
@@ -61,9 +61,9 @@ const createQuestion = (values) => (dispatch) =>
 const getQuestions = (query) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(
-      `${
-        config.services.questionWeb
-      }/employee/questions?${queryString.stringify(query)}`
+      `${config.services.question}/employee/questions?${queryString.stringify(
+        query
+      )}`
     )
       .then((response) => {
         const { data } = response
