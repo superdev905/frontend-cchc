@@ -503,7 +503,7 @@ const ListPage = () => {
                 creating ||
                 !benefitsValidation() ||
                 periodValidation.error ||
-                validInitialBenefits
+                validInitialBenefits()
               }
               startIcon={<SaveIcon />}
               onClick={createSchedule}
