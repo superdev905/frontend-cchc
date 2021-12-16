@@ -10,6 +10,8 @@ const QuestionPage = () => (
       <Box>
         <Question />
       </Box>
+    </Wrapper>
+    <Wrapper>
       <Box>
         <QuestionList />
       </Box>

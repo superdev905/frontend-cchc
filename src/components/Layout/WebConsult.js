@@ -48,6 +48,12 @@ const WebConsult = ({ children }) => {
     dispatch(questionEmployeeActions.logOutEmployee())
   }
 
+  useEffect(() => {
+    if (!employeeId) {
+      history.push('/consultas-web')
+    }
+  }, [employeeId])
+
   return (
     <Box className={classes.root}>
       <Box

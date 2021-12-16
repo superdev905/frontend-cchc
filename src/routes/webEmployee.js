@@ -3,6 +3,7 @@ import WebConsult from '../components/Layout/WebConsult'
 
 const QuestionLogin = lazy(() => import('../pages/QuestionLogin'))
 const WebConsultEmployee = lazy(() => import('../pages/WebConsultEmployee'))
+const QuestionPage = lazy(() => import('../pages/QuestionPage'))
 
 const publicRoutes = [
   {
@@ -38,6 +39,16 @@ const publicRoutes = [
     component: () => (
       <WebConsult>
         <WebConsultEmployee />
+      </WebConsult>
+    )
+  },
+  {
+    path: '/consultas-web/preguntas/:questionNumber',
+    key: 'housing',
+    exact: true,
+    component: () => (
+      <WebConsult>
+        <QuestionPage />
       </WebConsult>
     )
   }

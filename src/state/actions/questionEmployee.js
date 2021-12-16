@@ -46,7 +46,6 @@ const createQuestion = (values) => (dispatch) =>
     Axios.post(`${config.services.question}/employee/questions`, values)
       .then((response) => {
         const { data } = response
-        console.log(data)
         dispatch({
           type: questionEmpTypes.QE_ADD_QUESTION,
           payload: data
@@ -82,12 +81,30 @@ const getQuestions = (query) => (dispatch) =>
       })
   })
 
+const getQuestionDetails = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.question}/employee/questions/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: questionEmpTypes.QE_GET_QUESTION_DETAILS,
+          payload: data
+        })
+
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const questionEmployeeActions = {
   validateRut,
   getEmployeeDetails,
   logOutEmployee,
   createQuestion,
-  getQuestions
+  getQuestions,
+  getQuestionDetails
 }
 
 export default questionEmployeeActions

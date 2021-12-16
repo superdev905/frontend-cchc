@@ -77,10 +77,14 @@ const QuestionAssign = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
       <Box>
-        <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
+        <Typography
+          variant="h6"
+          align="center"
+          style={{ fontWeight: 'bold', marginBottom: 10 }}
+        >
           Asignar Preguntas
         </Typography>
-        <Box p={6}>
+        <Box>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <Select
@@ -121,7 +125,7 @@ const QuestionAssign = ({
                 <option value="">Seleccione Profesional</option>
                 {userList.map((item) => (
                   <option value={item.id}>
-                    {item.names} {item.paternal_surname}
+                    {`${item.names} ${item.paternal_surname}`.toUpperCase()}
                   </option>
                 ))}
               </Select>

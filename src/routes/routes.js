@@ -508,7 +508,7 @@ const routes = [
     )
   },
   {
-    path: `/question/:idQuestion`,
+    path: `/question/:questionNumber`,
     key: 'Question',
     exact: true,
     component: ({ authenticated }) => (

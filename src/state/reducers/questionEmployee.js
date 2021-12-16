@@ -7,7 +7,8 @@ const initialState = {
   employeeId: employeeId || null,
   employee: null,
   questions: [],
-  totalQuestions: 0
+  totalQuestions: 0,
+  question: null
 }
 
 const questionEmployeeReducer = (state = initialState, { type, payload }) => {
@@ -22,6 +23,8 @@ const questionEmployeeReducer = (state = initialState, { type, payload }) => {
       return { ...state, totalQuestions: payload }
     case questionTypes.QE_ADD_QUESTION:
       return { ...state, questions: [{ ...payload }].concat(state.questions) }
+    case questionTypes.QE_GET_QUESTION_DETAILS:
+      return { ...state, question: payload }
     default:
       return state
   }
