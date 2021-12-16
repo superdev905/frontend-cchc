@@ -1,5 +1,6 @@
 import { Box, Chip, makeStyles, Typography } from '@material-ui/core'
 import AnswerForm from './AnswerForm'
+import AnswerFilled from './Answer/Filled'
 
 const useStyles = makeStyles(() => ({
   chip: {
@@ -34,6 +35,9 @@ const Details = ({ question }) => {
       </Box>
       <Box>
         <AnswerForm />
+      </Box>
+      <Box>
+        <AnswerFilled />
       </Box>
     </Box>
   )
