@@ -4,15 +4,22 @@ import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { Box, Grid, Typography } from '@material-ui/core'
+import { formatDate, formatHours } from '../../formatters'
 import { Dialog, DataTable } from '../Shared'
 import { useSuccess } from '../../hooks'
 import { Select, SubmitButton, Button } from '../UI'
 import commonActions from '../../state/actions/common'
 import usersActions from '../../state/actions/users'
+import questionActions from '../../state/actions/questions'
 
 const validationSchema = Yup.object().shape({
+  date: Yup.date().required(),
   department: Yup.string().required('Selecciona Departamento'),
-  assignedUserNames: Yup.string().required('Seleccione Profesional')
+  assignedUserId: Yup.number().required(),
+  assignedUserNames: Yup.string().required('Seleccione Profesional'),
+  bossId: Yup.number(),
+  bossNames: Yup.string(),
+  questions: Yup.number()
 })
 
 const QuestionAssign = ({
@@ -27,16 +34,34 @@ const QuestionAssign = ({
   const { enqueueSnackbar } = useSnackbar()
   const dispatch = useDispatch()
   const [userList, setUserList] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [query, setQuery] = useState({ page: 1, size: 30 })
   const { regions } = useSelector((state) => state.common)
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
+
+  const { questions, totalQuestions: totalDocs } = useSelector(
+    (state) => state.questions
+  )
+
+  const getQuestions = () => {
+    setLoading(true)
+    dispatch(questionActions.getQuestions(query)).then(() => {
+      setLoading(false)
+    })
+  }
 
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
     initialValues: {
+      date: '',
       department: type === 'UPDATE' ? data.department : '',
-      assignedUserNames: type === 'UPDATE' ? data.assignedUserNames : ''
+      assignedUserId: '',
+      assignedUserNames: type === 'UPDATE' ? data.assignedUserNames : '',
+      bossId: '',
+      bossNames: '',
+      questions: ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction({
@@ -73,6 +98,9 @@ const QuestionAssign = ({
       })
     }
   }, [open])
+  useEffect(() => {
+    getQuestions()
+  }, [query])
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
@@ -131,25 +159,56 @@ const QuestionAssign = ({
               </Select>
             </Grid>
             <DataTable
+              data={questions}
+              selectableRows
               emptyMessage={'No existen Preguntas'}
               columns={[
                 {
                   name: 'N°',
-                  selector: (row) => row.number
+                  selector: (row) => <strong>{row.number}</strong>,
+                  width: '80px',
+                  sortable: true,
+                  compact: true
                 },
                 {
                   name: 'Fecha',
-                  selector: (row) => row.date
+                  selector: (row) =>
+                    `${formatDate(row.createdDate, {})} - ${formatHours(
+                      row.createdDate
+                    )}`,
+                  compact: true
                 },
                 {
                   name: 'Area',
-                  selector: (row) => row.area
+                  selector: (row) => row.areaName,
+                  compact: true,
+                  hide: 'md',
+                  maxWidth: '100px'
                 },
                 {
                   name: 'Beneficiario',
-                  selector: (row) => row.beneficiario
+                  selector: (row) => row.employeeNames,
+                  sortable: true,
+                  compact: true,
+                  hide: 'md'
                 }
               ]}
+              progressPending={loading}
+              pagination
+              paginationRowsPerPageOptions={[30, 40]}
+              paginationRowsPerPage={query.size}
+              paginationServer={true}
+              onChangeRowsPerPage={(limit) => {
+                setQuery({ ...query, size: limit })
+              }}
+              onChangePAge={(page) => {
+                setQuery({ ...query, page })
+              }}
+              paginationTotalRows={totalDocs}
+              expandableRows
+              expandOnRowClicked
+              expandableRowsHideExpander
+              selectableRowsHighlight
             />
           </Grid>
           <Box textAlign="center" marginTop="10px">
