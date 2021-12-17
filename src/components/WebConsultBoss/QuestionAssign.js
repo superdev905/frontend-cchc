@@ -7,26 +7,20 @@ import { Box, Grid, Typography } from '@material-ui/core'
 import { formatDate, formatHours } from '../../formatters'
 import { Dialog, DataTable } from '../Shared'
 import { useSuccess } from '../../hooks'
-import { Select, SubmitButton, Button } from '../UI'
+import { Select, SubmitButton, Button, ActionsTable } from '../UI'
 import commonActions from '../../state/actions/common'
 import usersActions from '../../state/actions/users'
 import questionActions from '../../state/actions/questions'
 
 const validationSchema = Yup.object().shape({
-  date: Yup.date().required(),
   department: Yup.string().required('Selecciona Departamento'),
   assignedUserId: Yup.number().required(),
-  assignedUserNames: Yup.string().required('Seleccione Profesional'),
-  bossId: Yup.number(),
-  bossNames: Yup.string(),
-  questions: Yup.number()
+  bossId: Yup.number()
 })
 
 const QuestionAssign = ({
   open,
   onClose,
-  type,
-  data,
   submitFunction,
   successMessage,
   successFunction
@@ -34,39 +28,24 @@ const QuestionAssign = ({
   const { enqueueSnackbar } = useSnackbar()
   const dispatch = useDispatch()
   const [userList, setUserList] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [query, setQuery] = useState({ page: 1, size: 30 })
   const { regions } = useSelector((state) => state.common)
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
-
-  const { questions, totalQuestions: totalDocs } = useSelector(
-    (state) => state.questions
-  )
-
-  const getQuestions = () => {
-    setLoading(true)
-    dispatch(questionActions.getQuestions(query)).then(() => {
-      setLoading(false)
-    })
-  }
+  const { selectedList } = useSelector((state) => state.questions)
 
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      date: '',
-      department: type === 'UPDATE' ? data.department : '',
+      department: '',
       assignedUserId: '',
-      assignedUserNames: type === 'UPDATE' ? data.assignedUserNames : '',
-      bossId: '',
-      bossNames: '',
-      questions: ''
+      bossId: ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction({
         ...values,
-        is_mandatory: values.is_mandatory === 'NO'
+        date: new Date().toISOString(),
+        questions: selectedList.map((item) => ({ number: item.number }))
       })
         .then((result) => {
           formik.setSubmitting(false)
@@ -93,17 +72,20 @@ const QuestionAssign = ({
     if (open) {
       formik.resetForm()
       dispatch(commonActions.getRegions())
-      dispatch(usersActions.getFoundationUsers()).then((response) => {
+      dispatch(usersActions.getSocialAssistanceList()).then((response) => {
         setUserList(response)
       })
     }
   }, [open])
-  useEffect(() => {
-    getQuestions()
-  }, [query])
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth={'lg'}
+      fullScreen={isMobile}
+    >
       <Box>
         <Typography
           variant="h6"
@@ -137,17 +119,16 @@ const QuestionAssign = ({
             <Grid item xs={12} md={6}>
               <Select
                 label="Profesional"
-                name="assignedUserNames"
+                name="assignedUserId"
                 required
                 onChange={formik.handleChange}
-                value={formik.values.assignedUserNames}
+                value={formik.values.assignedUserId}
                 error={
-                  formik.touched.assignedUserNames &&
-                  Boolean(formik.errors.assignedUserNames)
+                  formik.touched.assignedUserId &&
+                  Boolean(formik.errors.assignedUserId)
                 }
                 helperText={
-                  formik.touched.assignedUserNames &&
-                  formik.errors.assignedUserNames
+                  formik.touched.assignedUserId && formik.errors.assignedUserId
                 }
               >
                 <option value="">Seleccione Profesional</option>
@@ -159,16 +140,16 @@ const QuestionAssign = ({
               </Select>
             </Grid>
             <DataTable
-              data={questions}
-              selectableRows
+              data={selectedList}
               emptyMessage={'No existen Preguntas'}
               columns={[
                 {
                   name: 'N°',
-                  selector: (row) => <strong>{row.number}</strong>,
+                  selector: (row) => row.number,
                   width: '80px',
                   sortable: true,
-                  compact: true
+                  compact: true,
+                  center: true
                 },
                 {
                   name: 'Fecha',
@@ -179,36 +160,40 @@ const QuestionAssign = ({
                   compact: true
                 },
                 {
-                  name: 'Area',
-                  selector: (row) => row.areaName,
-                  compact: true,
-                  hide: 'md',
-                  maxWidth: '100px'
+                  name: 'Rut Beneficiario',
+                  selector: (row) => row.employeeRut,
+                  sortable: true,
+                  compact: true
                 },
                 {
                   name: 'Beneficiario',
                   selector: (row) => row.employeeNames,
                   sortable: true,
+                  compact: true
+                },
+                {
+                  name: 'Area',
+                  selector: (row) => row.areaName,
                   compact: true,
-                  hide: 'md'
+                  maxWidth: '100px'
+                },
+                {
+                  name: '',
+                  right: true,
+                  selector: (row) => (
+                    <ActionsTable
+                      onDelete={() => {
+                        const updatedList = selectedList.filter(
+                          (item) => item.number !== row.number
+                        )
+                        dispatch(
+                          questionActions.updateSelectedList(updatedList)
+                        )
+                      }}
+                    />
+                  )
                 }
               ]}
-              progressPending={loading}
-              pagination
-              paginationRowsPerPageOptions={[30, 40]}
-              paginationRowsPerPage={query.size}
-              paginationServer={true}
-              onChangeRowsPerPage={(limit) => {
-                setQuery({ ...query, size: limit })
-              }}
-              onChangePAge={(page) => {
-                setQuery({ ...query, page })
-              }}
-              paginationTotalRows={totalDocs}
-              expandableRows
-              expandOnRowClicked
-              expandableRowsHideExpander
-              selectableRowsHighlight
             />
           </Grid>
           <Box textAlign="center" marginTop="10px">
@@ -218,6 +203,7 @@ const QuestionAssign = ({
             <SubmitButton
               onClick={formik.handleSubmit}
               loading={formik.isSubmitting}
+              disabled={!formik.isValid || selectedList.length === 0}
               success={success}
             >
               Asignar

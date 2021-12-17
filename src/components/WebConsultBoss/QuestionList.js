@@ -35,7 +35,7 @@ const QuestionList = () => {
     })
   }
   const handleSelectedRows = ({ selectedRows }) => {
-    console.log(selectedRows)
+    dispatch(questionActions.updateSelectedList(selectedRows))
   }
 
   useEffect(() => {

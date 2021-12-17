@@ -9,6 +9,9 @@ const updateQuery = (values) => (dispatch) =>
 const updateUIFilters = (values) => (dispatch) =>
   dispatch({ type: questionsTypes.UPDATE_UI_FILTERS, payload: values })
 
+const updateSelectedList = (values) => (dispatch) =>
+  dispatch({ type: questionsTypes.UPDATE_SELECTED_LIST, payload: values })
+
 const questionAssign = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.question}/questions/assignation`, values)
@@ -118,6 +121,7 @@ const getStats = (query) => (dispatch) =>
 const questionActions = {
   updateQuery,
   updateUIFilters,
+  updateSelectedList,
   getQuestions,
   questionAssign,
   getQuestionDetails,

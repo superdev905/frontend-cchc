@@ -1,7 +1,6 @@
 import { Box, Chip, Grid } from '@material-ui/core'
 import { HighlightOff } from '@material-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
 import { SearchInput, Button } from '../UI'
 import { useMenu, useToggle } from '../../hooks'
 import questionActions from '../../state/actions/questions'
@@ -10,26 +9,32 @@ import { formatSearchWithRut } from '../../formatters'
 import FiltersMenu from './FiltersMenu'
 
 const Question = () => {
-  const history = useHistory()
   const dispatch = useDispatch()
   const { open: openAssign, toggleOpen: toggleOpenAssign } = useToggle()
-  const { query, uiFilters } = useSelector((state) => state.questions)
+  const { user } = useSelector((state) => state.auth)
+  const { query, uiFilters, selectedList } = useSelector(
+    (state) => state.questions
+  )
   const { open, anchorEl, handleClose, handleOpen } = useMenu()
 
   const AssignQuestion = (values) => {
     const data = {
       ...values,
-      date: new Date().toISOString()
+      bossId: user.id
     }
-    return dispatch(questionActions.AssignQuestion(data))
-  }
-
-  const redirectToQuestion = (id) => {
-    history.push(`/question/${id}`)
+    return dispatch(questionActions.questionAssign(data))
   }
 
   const handleUpdateQuery = (values) => {
     dispatch(questionActions.updateQuery(values))
+  }
+
+  const getQuestions = () => {
+    const formattedQuery = { ...query, professionalId: user.id }
+    if (user.role.key === 'ADMIN' || user.role.key === 'JEFATURA') {
+      delete formattedQuery.professionalId
+    }
+    dispatch(questionActions.getQuestions(formattedQuery))
   }
 
   const handleDelete = (key) => {
@@ -64,7 +69,12 @@ const Question = () => {
         <Grid item xs={12} md={6} lg={7}>
           <Box textAlign="right">
             <Button onClick={handleOpen}>Filtros</Button>
-            <Button onClick={toggleOpenAssign}>Asignar</Button>
+            <Button
+              disabled={selectedList.length === 0}
+              onClick={toggleOpenAssign}
+            >
+              Asignar
+            </Button>
           </Box>
         </Grid>
       </Grid>
@@ -92,7 +102,7 @@ const Question = () => {
           onClose={toggleOpenAssign}
           submitFunction={AssignQuestion}
           successMessage="Pregunta Asignada Correctamente"
-          successFunction={redirectToQuestion}
+          successFunction={getQuestions}
         />
       )}
     </Box>

@@ -11,12 +11,8 @@ const initialState = {
     page: 1,
     size: 30
   },
-  uiFilters: {
-    status: {
-      label: 'Estado',
-      value: 'RESPONDIDO'
-    }
-  }
+  uiFilters: {},
+  selectedList: []
 }
 
 const questionsReducer = (state = initialState, { type, payload }) => {
@@ -37,6 +33,8 @@ const questionsReducer = (state = initialState, { type, payload }) => {
       return { ...state, query: payload }
     case questionTypes.UPDATE_UI_FILTERS:
       return { ...state, uiFilters: payload }
+    case questionTypes.UPDATE_SELECTED_LIST:
+      return { ...state, selectedList: payload }
 
     default:
       return state
