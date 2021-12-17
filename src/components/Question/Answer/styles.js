@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core'
+import { COLORS } from '../../../utils/generateColor'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -6,6 +7,27 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: 18,
+    fontWeight: 'bold'
+  },
+  chip: {
+    fontSize: 15,
+    marginRight: 5,
+    backgroundColor: theme.palette.common.white
+  },
+  areaChip: {
+    backgroundColor: '#DAD3FE'
+  },
+  channelChip: {
+    backgroundColor: '#BAE7FE'
+  },
+  topicArea: {
+    backgroundColor: '#F5CBC7'
+  },
+  avatar: {
+    backgroundColor: COLORS[3],
+    marginRight: 5
+  },
+  professional: {
     fontWeight: 'bold'
   }
 }))

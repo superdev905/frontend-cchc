@@ -3,11 +3,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { useParams } from 'react-router-dom'
 import QuestionActions from '../../state/actions/questions'
-import { Button, Wrapper } from '../../components/UI'
+import {
+  Button,
+  EmptyState,
+  InputLabel,
+  LabeledRow,
+  Text,
+  Wrapper
+} from '../../components/UI'
 import Answer from '../../components/WebConsultBoss/Answer'
 import { HeadingWithButton } from '../../components/Shared'
 import { QuestionDetails, QuestionLoader } from '../../components/Question'
 import { formatDate, formatHours } from '../../formatters'
+import { UserCard } from '../../components/Users'
 
 const useStyles = makeStyles((theme) => ({
   head: {
@@ -19,6 +27,10 @@ const useStyles = makeStyles((theme) => ({
   assignationContent: {
     backgroundColor: theme.palette.gray.gray100,
     borderRadius: theme.spacing(1)
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold'
   }
 }))
 
@@ -73,10 +85,47 @@ const Question = () => {
           <Grid item xs={12} lg={5}>
             <Box className={classes.assignationContent} p={2}>
               <Box>
-                <Typography>Detalles de trabajador</Typography>
+                <Typography className={classes.title}>
+                  Detalles de trabajador
+                </Typography>
+                <Box mt={1}></Box>
               </Box>
               <Box>
-                <Typography>Detalles de asignación</Typography>
+                <Typography className={classes.title}>
+                  Detalles de asignación
+                </Typography>
+                <Box>
+                  <>
+                    {!question?.assignation ? (
+                      <EmptyState
+                        bgWhite
+                        message="Esta pregunta no fue asignada"
+                      />
+                    ) : (
+                      <>
+                        <LabeledRow label="Fecha:">
+                          <Text loading={loading}>
+                            {formatDate(question?.assignation?.date)}
+                          </Text>
+                        </LabeledRow>
+                        {question?.assignation?.assignedUser && (
+                          <Box mt={2}>
+                            <InputLabel>Assistente</InputLabel>
+                            <UserCard
+                              user={question?.assignation?.assignedUser}
+                            />
+                          </Box>
+                        )}
+                        {question?.assignation?.boss && (
+                          <Box mt={2}>
+                            <InputLabel>Jefatura</InputLabel>
+                            <UserCard user={question?.assignation?.boss} />
+                          </Box>
+                        )}
+                      </>
+                    )}
+                  </>
+                </Box>
               </Box>
             </Box>
           </Grid>

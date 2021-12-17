@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
 import { Box, Chip, makeStyles, Typography } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
@@ -49,6 +50,12 @@ const useStyles = makeStyles((theme) => ({
   },
   pLoader: {
     height: 17
+  },
+  areaChip: {
+    backgroundColor: '#BAE7FE'
+  },
+  statusArea: {
+    backgroundColor: '#F5CBC7'
   }
 }))
 
@@ -114,7 +121,7 @@ const QuestionCard = ({ question, asCard, children, hideNumber }) => {
       className={classes.root}
       onClick={() => handleClick(question.number)}
     >
-      {hideNumber && (
+      {!hideNumber && (
         <Box className={classes.numberWrapper}>{`N° ${question.number}`}</Box>
       )}
       <Box className={classes.content}>
@@ -129,13 +136,13 @@ const QuestionCard = ({ question, asCard, children, hideNumber }) => {
         </Box>
         <Box display="flex">
           <Chip
-            className={classes.chip}
+            className={clsx(classes.chip, classes.statusArea)}
             variant="oulined"
             label={`Estado: ${question.status}`}
             size="medium"
           />
           <Chip
-            className={classes.chip}
+            className={clsx(classes.chip, classes.areaChip)}
             variant="oulined"
             label={`Area: ${question.areaName}`}
             size="medium"

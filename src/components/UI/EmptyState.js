@@ -2,8 +2,8 @@ import PropTypes from 'prop-types'
 import { Box, makeStyles, Typography } from '@material-ui/core'
 import Button from './CustomButton'
 
-const useStyles = makeStyles(() => ({
-  root: {
+const useStyles = makeStyles((theme) => ({
+  root: ({ bgWhite }) => ({
     height: 150,
     width: '100%',
     borderRadius: 10,
@@ -11,8 +11,8 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'center',
     flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: '#F5F8FA'
-  },
+    backgroundColor: bgWhite ? theme.palette.common.white : '#F5F8FA'
+  }),
   message: {
     fontWeight: 'bold',
     fontSize: 16,
@@ -20,8 +20,8 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const EmptyState = ({ message, event, actionMessage }) => {
-  const classes = useStyles()
+const EmptyState = ({ message, event, actionMessage, bgWhite }) => {
+  const classes = useStyles({ bgWhite })
   return (
     <Box p={2} className={classes.root}>
       <Typography align="center" className={classes.message}>
@@ -39,7 +39,8 @@ const EmptyState = ({ message, event, actionMessage }) => {
 EmptyState.propTypes = {
   message: PropTypes.string.isRequired,
   event: PropTypes.func,
-  actionMessage: PropTypes.string
+  actionMessage: PropTypes.string,
+  bgWhite: false
 }
 
 export default EmptyState

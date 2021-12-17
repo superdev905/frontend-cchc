@@ -1,10 +1,11 @@
 import { Avatar, Box, makeStyles, Typography } from '@material-ui/core'
-import generateColor from '../../utils/generateColor'
+import { COLORS } from '../../utils/generateColor'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     border: `2px solid ${theme.palette.gray.gray200}`,
-    borderRadius: theme.spacing(1)
+    borderRadius: theme.spacing(1),
+    width: '100%'
   },
   name: {
     fontSize: 18,
@@ -17,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '10px',
     width: 55,
     height: 55,
-    backgroundColor: generateColor()
+    backgroundColor: COLORS[3]
   }
 }))
 
