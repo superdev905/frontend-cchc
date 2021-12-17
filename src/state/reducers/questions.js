@@ -12,7 +12,8 @@ const initialState = {
     size: 30
   },
   uiFilters: {},
-  selectedList: []
+  selectedList: [],
+  assignationStats: []
 }
 
 const questionsReducer = (state = initialState, { type, payload }) => {
@@ -35,6 +36,8 @@ const questionsReducer = (state = initialState, { type, payload }) => {
       return { ...state, uiFilters: payload }
     case questionTypes.UPDATE_SELECTED_LIST:
       return { ...state, selectedList: payload }
+    case questionTypes.GET_ASSIGNATION_STATS:
+      return { ...state, assignationStats: payload }
 
     default:
       return state
