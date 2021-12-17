@@ -41,6 +41,18 @@ const getEmployeeDetails = (id) => (dispatch) =>
       })
   })
 
+const updateEmployee = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.employee}/public/employee/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const createQuestion = (values) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.question}/employee/questions`, values)
@@ -125,6 +137,7 @@ const getQuestionDetails = (id) => (dispatch) =>
 const questionEmployeeActions = {
   validateRut,
   getEmployeeDetails,
+  updateEmployee,
   logOutEmployee,
   createQuestion,
   getQuestions,
