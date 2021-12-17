@@ -54,16 +54,19 @@ const MigrateModal = ({ open, onClose }) => {
         formData.responseId = parseInt(pollStatus[0].responseId, 10)
         formData.period = parseInt(formData.period, 10)
         console.log({ formData })
-        dispatch(migrantsActions.createMigration(formData)).then((response) => {
-          if (response.employeeId) {
-            dispatch(migrantsActions.getMigrants()).then(() => {
-              enqueueSnackbar('Registro de Migración Ingresado Exitosamente', {
-                variant: 'success'
-              })
+        dispatch(migrantsActions.createMigration(formData))
+          .then(() => {
+            enqueueSnackbar('Registro de Migración Ingresado Exitosamente', {
+              variant: 'success'
             })
-          }
-          onClose()
-        })
+            dispatch(migrantsActions.getMigrants())
+            onClose()
+          })
+          .catch((err) => {
+            enqueueSnackbar(err, {
+              variant: 'error'
+            })
+          })
       } catch (error) {
         enqueueSnackbar(error, {
           variant: 'error'

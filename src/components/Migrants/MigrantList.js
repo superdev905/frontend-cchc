@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid } from '@material-ui/core'
-import { Button, Wrapper, SearchInput } from '../UI'
+import { Button, Wrapper, SearchInput, ActionsTable } from '../UI'
 import { DataTable } from '../Shared'
 import { formatDate, formatSearchWithRut, formatQuery } from '../../formatters'
 import migrantsActions from '../../state/actions/migrants'
 import MigrateModal from './MigrateModal'
+import DetailsDrawer from './Details'
+import { useToggle } from '../../hooks'
 
 const MigrantList = () => {
   const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [current, setCurrent] = useState(null)
   const { migrantsList, totalDocs, filters } = useSelector(
     (state) => state.migrants
   )
+  const { open: openDetails, toggleOpen: toggleOpenDetails } = useToggle()
 
   const openModal = () => {
     setOpen(true)
@@ -32,6 +36,10 @@ const MigrantList = () => {
       .catch(() => {
         setLoading(false)
       })
+  }
+
+  const updateFilters = (values) => {
+    dispatch(migrantsActions.setFilters(values))
   }
 
   const onSearchChange = (e) => {
@@ -63,9 +71,7 @@ const MigrantList = () => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <Box display="flex" justifyContent="flex-end">
-                  <Button onClick={openModal}>
-                    Registrar Trabajador Como Migrante
-                  </Button>
+                  <Button onClick={openModal}>Registrar</Button>
                 </Box>
               </Grid>
             </Grid>
@@ -84,7 +90,7 @@ const MigrantList = () => {
               sortable: true
             },
             {
-              name: 'Nombre',
+              name: 'Nombres y apellidos',
               selector: (row) => row.employee.fullName
             },
             {
@@ -95,6 +101,18 @@ const MigrantList = () => {
               name: 'Fecha de Ingreso a Chile',
               selector: (row) => formatDate(row.entryDate),
               hide: 'md'
+            },
+            {
+              name: '',
+              right: true,
+              selector: (row) => (
+                <ActionsTable
+                  onView={() => {
+                    setCurrent(row)
+                    toggleOpenDetails()
+                  }}
+                />
+              )
             }
           ]}
           data={migrantsList}
@@ -102,9 +120,24 @@ const MigrantList = () => {
           paginationRowsPerPageOptions={[30, 40]}
           paginationServer={true}
           paginationTotalRows={totalDocs}
+          paginationPerPage={filters.size}
+          paginationServer={true}
+          onChangeRowsPerPage={(limit) => {
+            updateFilters({ ...filters, size: limit })
+          }}
+          onChangePage={(page) => {
+            updateFilters({ ...filters, page })
+          }}
         />
       </Wrapper>
       <MigrateModal open={open} onClose={closeModal} />
+      {openDetails && current && (
+        <DetailsDrawer
+          open={openDetails}
+          onClose={toggleOpenDetails}
+          migrantId={current.id}
+        />
+      )}
     </Box>
   )
 }

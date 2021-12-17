@@ -541,6 +541,7 @@ const routes = [
       />
     )
   },
-  ...SocialCaseRoutes
+  ...SocialCaseRoutes,
+  ...MigrantRoutes
 ]
 export default routes

@@ -26,6 +26,19 @@ const getMigrants =
         })
     })
 
+const getMigrantDetails = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.migrant}/migrants/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: migrantsTypes.GET_MIGRANT_DETAILS, payload: data })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const createMigration = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.migrant}/migrants`, values)
@@ -44,5 +57,6 @@ const setFilters = (value) => (dispatch) =>
 export default {
   getMigrants,
   createMigration,
-  setFilters
+  setFilters,
+  getMigrantDetails
 }

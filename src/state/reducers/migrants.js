@@ -20,6 +20,8 @@ const migrantsReducer = (state = initialState, { type, payload }) => {
       return { ...state, totalDocs: payload }
     case migrantsTypes.SET_FILTERS:
       return { ...state, filters: payload }
+    case migrantsTypes.GET_MIGRANT_DETAILS:
+      return { ...state, migrant: payload }
     default:
       return state
   }
