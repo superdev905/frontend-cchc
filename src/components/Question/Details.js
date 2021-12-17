@@ -48,6 +48,7 @@ const Details = ({ question, handler }) => {
           <AnswerForm
             submitFunction={answerQuestion}
             successFunction={handler}
+            defaultAreaId={question.areaId}
           />
         )}
       </Box>

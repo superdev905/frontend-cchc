@@ -53,7 +53,6 @@ const MigrateModal = ({ open, onClose }) => {
         formData.pollId = parseInt(pollStatus[0].id, 10)
         formData.responseId = parseInt(pollStatus[0].responseId, 10)
         formData.period = parseInt(formData.period, 10)
-        console.log({ formData })
         dispatch(migrantsActions.createMigration(formData))
           .then(() => {
             enqueueSnackbar('Registro de Migración Ingresado Exitosamente', {

@@ -27,13 +27,9 @@ const AssignationTable = () => {
             center: true
           },
           {
-            name: '%',
-            selector: (row) => `${row.answered / row.assigned}`,
-            center: true
-          },
-          {
-            name: 'Tiempo promedio',
-            selector: (row) => row.assigned,
+            name: '(%) Porcentaje de respuestas',
+            selector: (row) =>
+              `${((row.answered / row.assigned) * 100).toFixed(2)}%`,
             center: true
           }
         ]}
