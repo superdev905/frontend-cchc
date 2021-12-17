@@ -7,7 +7,8 @@ const modulesList = [
   'CURSOS',
   'BENEFICIOS',
   'PROGRAMACIÓN',
-  'VIVIENDA'
+  'VIVIENDA',
+  'MIGRANTES'
 ]
 
 export default {
