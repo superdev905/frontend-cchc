@@ -54,7 +54,7 @@ const Employee = () => {
               <Typography className={classes.subHeading}>
                 Detalles de trabajador
               </Typography>
-              <EmployeeDetailsForm loading={loading} />
+              <EmployeeDetailsForm loading={loading} data={employee} />
             </Box>
           </Box>
           <Box mt={2}>

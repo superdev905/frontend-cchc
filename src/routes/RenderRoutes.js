@@ -28,7 +28,7 @@ function RenderRoutes() {
     if (isAuthenticated) {
       authenticateUser()
     } else if (!isAuthenticated) {
-      window.localStorage.clear()
+      window.localStorage.removeItem('token')
     }
   }, [isAuthenticated])
 

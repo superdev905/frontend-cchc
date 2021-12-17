@@ -67,7 +67,7 @@ const services = {
     testing: `${BASEURL[env]}:5196/api/v1`,
     production: `${BASEURL[env]}:5113/api/v1`
   },
-  questionWeb: {
+  question: {
     development: `${BASEURL[env]}:5197/api/v1`,
     testing: `${BASEURL[env]}:5196/api/v1`,
     production: `${BASEURL[env]}:5114/api/v1`
@@ -88,7 +88,7 @@ const config = {
     schedule: services.schedule[env],
     housing: services.housing[env],
     socialCase: services.socialCase[env],
-    questionWeb: services.questionWeb[env]
+    question: services.question[env]
   }
 }
 

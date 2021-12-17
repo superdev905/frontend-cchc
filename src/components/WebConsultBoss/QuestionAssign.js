@@ -1,44 +1,51 @@
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useEffect, useState } from 'react'
 import { Box, Grid, Typography } from '@material-ui/core'
+import { formatDate, formatHours } from '../../formatters'
 import { Dialog, DataTable } from '../Shared'
 import { useSuccess } from '../../hooks'
-import { Select, SubmitButton, Button } from '../UI'
+import { Select, SubmitButton, Button, ActionsTable } from '../UI'
+import commonActions from '../../state/actions/common'
+import usersActions from '../../state/actions/users'
+import questionActions from '../../state/actions/questions'
 
 const validationSchema = Yup.object().shape({
-  departament: Yup.string().required('Selecciona Departamento'),
-  professional: Yup.string().required('Seleccione Profesional')
+  department: Yup.string().required('Selecciona Departamento'),
+  assignedUserId: Yup.number().required(),
+  bossId: Yup.number()
 })
 
 const QuestionAssign = ({
   open,
   onClose,
-  type,
-  data,
   submitFunction,
   successMessage,
   successFunction
 }) => {
   const { enqueueSnackbar } = useSnackbar()
+  const dispatch = useDispatch()
+  const [userList, setUserList] = useState([])
+  const { regions } = useSelector((state) => state.common)
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
+  const { selectedList } = useSelector((state) => state.questions)
 
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      departament: type === 'UPDATE' ? data.departament : '',
-      professional: type === 'UPDATE' ? data.professional : '',
-      is_mandatory:
-        type === 'UPDATE' ? `${data.is_mandatory ? 'SI' : 'NO'}` : ''
+      department: '',
+      assignedUserId: '',
+      bossId: ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction({
         ...values,
-        is_mandatory: values.is_mandatory === 'SI'
+        date: new Date().toISOString(),
+        questions: selectedList.map((item) => ({ number: item.number }))
       })
         .then((result) => {
           formik.setSubmitting(false)
@@ -64,71 +71,127 @@ const QuestionAssign = ({
   useEffect(() => {
     if (open) {
       formik.resetForm()
+      dispatch(commonActions.getRegions())
+      dispatch(usersActions.getSocialAssistanceList()).then((response) => {
+        setUserList(response)
+      })
     }
   }, [open])
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth={'lg'}
+      fullScreen={isMobile}
+    >
       <Box>
-        <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
+        <Typography
+          variant="h6"
+          align="center"
+          style={{ fontWeight: 'bold', marginBottom: 10 }}
+        >
           Asignar Preguntas
         </Typography>
-        <Box p={6}>
+        <Box>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <Select
                 label="Departamento"
-                name="departament"
+                name="department"
                 required
                 onChange={formik.handleChange}
-                value={formik.values.departament}
+                value={formik.values.department}
                 error={
-                  formik.touched.departament &&
-                  Boolean(formik.errors.departament)
+                  formik.touched.department && Boolean(formik.errors.department)
                 }
                 helperText={
-                  formik.touched.departament && formik.errors.departament
+                  formik.touched.department && formik.errors.department
                 }
               >
                 <option value="">Seleccione Departamento</option>
+                {regions.map((item) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
               </Select>
             </Grid>
             <Grid item xs={12} md={6}>
               <Select
                 label="Profesional"
-                name="professional"
+                name="assignedUserId"
                 required
                 onChange={formik.handleChange}
-                value={formik.values.professional}
+                value={formik.values.assignedUserId}
                 error={
-                  formik.touched.professional &&
-                  Boolean(formik.errors.professional)
+                  formik.touched.assignedUserId &&
+                  Boolean(formik.errors.assignedUserId)
                 }
                 helperText={
-                  formik.touched.professional && formik.errors.professional
+                  formik.touched.assignedUserId && formik.errors.assignedUserId
                 }
               >
                 <option value="">Seleccione Profesional</option>
+                {userList.map((item) => (
+                  <option value={item.id}>
+                    {`${item.names} ${item.paternal_surname}`.toUpperCase()}
+                  </option>
+                ))}
               </Select>
             </Grid>
             <DataTable
+              data={selectedList}
               emptyMessage={'No existen Preguntas'}
               columns={[
                 {
                   name: 'N°',
-                  selector: (row) => row.number
+                  selector: (row) => row.number,
+                  width: '80px',
+                  sortable: true,
+                  compact: true,
+                  center: true
                 },
                 {
                   name: 'Fecha',
-                  selector: (row) => row.date
+                  selector: (row) =>
+                    `${formatDate(row.createdDate, {})} - ${formatHours(
+                      row.createdDate
+                    )}`,
+                  compact: true
                 },
                 {
-                  name: 'Area',
-                  selector: (row) => row.area
+                  name: 'Rut Beneficiario',
+                  selector: (row) => row.employeeRut,
+                  sortable: true,
+                  compact: true
                 },
                 {
                   name: 'Beneficiario',
-                  selector: (row) => row.beneficiario
+                  selector: (row) => row.employeeNames,
+                  sortable: true,
+                  compact: true
+                },
+                {
+                  name: 'Area',
+                  selector: (row) => row.areaName,
+                  compact: true,
+                  maxWidth: '100px'
+                },
+                {
+                  name: '',
+                  right: true,
+                  selector: (row) => (
+                    <ActionsTable
+                      onDelete={() => {
+                        const updatedList = selectedList.filter(
+                          (item) => item.number !== row.number
+                        )
+                        dispatch(
+                          questionActions.updateSelectedList(updatedList)
+                        )
+                      }}
+                    />
+                  )
                 }
               ]}
             />
@@ -139,8 +202,8 @@ const QuestionAssign = ({
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
-              disabled={!formik.isValid || formik.isSubmitting}
               loading={formik.isSubmitting}
+              disabled={!formik.isValid || selectedList.length === 0}
               success={success}
             >
               Asignar

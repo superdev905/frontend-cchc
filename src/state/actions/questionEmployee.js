@@ -1,3 +1,4 @@
+import queryString from 'query-string'
 import Axios from '../../Axios'
 import config from '../../config'
 import questionEmpTypes from '../types/questionEmployee'
@@ -40,15 +41,92 @@ const getEmployeeDetails = (id) => (dispatch) =>
       })
   })
 
-const createQuestion = (id) => (dispatch) =>
+const updateEmployee = (id, values) => () =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.questionWeb}/public/employee/${id}`)
+    Axios.put(`${config.services.employee}/public/employee/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const createQuestion = (values) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.question}/employee/questions`, values)
       .then((response) => {
         const { data } = response
         dispatch({
-          type: questionEmpTypes.QE_GET_EMPLOYEE_DETAILS,
+          type: questionEmpTypes.QE_ADD_QUESTION,
           payload: data
         })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getQuestions = (query) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.question}/employee/questions?${queryString.stringify(
+        query
+      )}`
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: questionEmpTypes.QE_GET_QUESTIONS,
+          payload: data.items
+        })
+        dispatch({
+          type: questionEmpTypes.QE_SET_TOTAL_QUESTIONS,
+          payload: data.total
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getHistoryQuestions = (query) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${
+        config.services.question
+      }/employee/questions/history?${queryString.stringify(query)}`
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: questionEmpTypes.QE_GET_HISTORY_QUESTIONS,
+          payload: data.items
+        })
+        dispatch({
+          type: questionEmpTypes.QE_SET_HISTORY_TOTAL_QUESTIONS,
+          payload: data.total
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getQuestionDetails = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.question}/employee/questions/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: questionEmpTypes.QE_GET_QUESTION_DETAILS,
+          payload: data
+        })
+
         resolve(data)
       })
       .catch((err) => {
@@ -59,8 +137,12 @@ const createQuestion = (id) => (dispatch) =>
 const questionEmployeeActions = {
   validateRut,
   getEmployeeDetails,
+  updateEmployee,
   logOutEmployee,
-  createQuestion
+  createQuestion,
+  getQuestions,
+  getQuestionDetails,
+  getHistoryQuestions
 }
 
 export default questionEmployeeActions
