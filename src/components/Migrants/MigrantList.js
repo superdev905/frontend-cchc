@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid } from '@material-ui/core'
-import { Button, Wrapper, SearchInput, ActionsTable } from '../UI'
+import { Button, Wrapper, SearchInput, ActionsTable, Select } from '../UI'
 import { DataTable } from '../Shared'
 import { formatDate, formatSearchWithRut, formatQuery } from '../../formatters'
 import migrantsActions from '../../state/actions/migrants'
@@ -12,6 +12,7 @@ import { useToggle } from '../../hooks'
 const MigrantList = () => {
   const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
+  const [years, setYears] = useState([])
   const [loading, setLoading] = useState(false)
   const [current, setCurrent] = useState(null)
   const { migrantsList, totalDocs, filters } = useSelector(
@@ -19,12 +20,32 @@ const MigrantList = () => {
   )
   const { open: openDetails, toggleOpen: toggleOpenDetails } = useToggle()
 
+  const getYears = () => {
+    const currentYear = new Date().getFullYear()
+    const minYear = currentYear - 6
+    const yearsList = []
+    for (let i = currentYear; i >= minYear; i -= 1) {
+      yearsList.push(i)
+    }
+    return yearsList
+  }
+
   const openModal = () => {
     setOpen(true)
   }
 
   const closeModal = () => {
     setOpen(false)
+  }
+
+  const handleChange = (event) => {
+    const { value } = event.target
+    dispatch(
+      migrantsActions.setFilters({
+        ...filters,
+        period: value
+      })
+    )
   }
 
   const fetchMigrants = () => {
@@ -56,6 +77,9 @@ const MigrantList = () => {
   useEffect(() => {
     fetchMigrants()
   }, [filters])
+  useEffect(() => {
+    setYears(getYears)
+  }, [])
   return (
     <Box>
       <Wrapper>
@@ -70,7 +94,19 @@ const MigrantList = () => {
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                <Box display="flex" justifyContent="flex-end">
+                <Box
+                  display="flex"
+                  justifyContent="flex-end"
+                  alignItems="center"
+                >
+                  <Select onChange={handleChange}>
+                    <option value="">Todos</option>
+                    {years.map((item) => (
+                      <option key={`option-period-${item}`} value={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </Select>
                   <Button onClick={openModal}>Registrar</Button>
                 </Box>
               </Grid>
