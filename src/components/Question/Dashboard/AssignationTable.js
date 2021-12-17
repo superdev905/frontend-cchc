@@ -7,6 +7,14 @@ import { DataTable } from '../../Shared'
 const AssignationTable = () => {
   const dispatch = useDispatch()
   const { assignationStats } = useSelector((state) => state.questions)
+
+  const getPercentage = (row) => {
+    if (row.assigned === 0) {
+      return 0
+    }
+    return (row.answered / row.assigned) * 100
+  }
+
   useEffect(() => {
     dispatch(questionActions.getAssignationByAssistance())
   }, [])
@@ -28,8 +36,7 @@ const AssignationTable = () => {
           },
           {
             name: '(%) Porcentaje de respuestas',
-            selector: (row) =>
-              `${((row.answered / row.assigned) * 100).toFixed(2)}%`,
+            selector: (row) => `${getPercentage(row).toFixed(2)}%`,
             center: true
           }
         ]}
