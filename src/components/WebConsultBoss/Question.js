@@ -7,6 +7,7 @@ import questionActions from '../../state/actions/questions'
 import QuestionAssign from './QuestionAssign'
 import { formatSearchWithRut } from '../../formatters'
 import FiltersMenu from './FiltersMenu'
+import Can from '../Can'
 
 const Question = () => {
   const dispatch = useDispatch()
@@ -69,13 +70,18 @@ const Question = () => {
         </Grid>
         <Grid item xs={12} md={6} lg={7}>
           <Box textAlign="right">
-            <Button onClick={handleOpen}>Filtros</Button>
-            <Button
-              disabled={selectedList.length === 0}
-              onClick={toggleOpenAssign}
-            >
-              Asignar
-            </Button>
+            <Can
+              availableTo={['ADMIN', 'JEFATURA']}
+              yes={() => (
+                <Button
+                  onClick={handleOpen}
+                  disabled={selectedList.length === 0}
+                >
+                  Filtros
+                </Button>
+              )}
+              no={() => null}
+            />
           </Box>
         </Grid>
       </Grid>

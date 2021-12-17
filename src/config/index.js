@@ -71,6 +71,11 @@ const services = {
     development: `${BASEURL[env]}:5197/api/v1`,
     testing: `${BASEURL[env]}:5196/api/v1`,
     production: `${BASEURL[env]}:5114/api/v1`
+  },
+  migrant: {
+    development: `${BASEURL[env]}:5198/api/v1`,
+    testing: `${BASEURL[env]}:5115/api/v1`,
+    production: `${BASEURL[env]}:5115/api/v1`
   }
 }
 
@@ -88,7 +93,8 @@ const config = {
     schedule: services.schedule[env],
     housing: services.housing[env],
     socialCase: services.socialCase[env],
-    question: services.question[env]
+    question: services.question[env],
+    migrant: services.migrant[env]
   }
 }
 

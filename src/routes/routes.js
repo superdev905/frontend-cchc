@@ -7,6 +7,7 @@ import employeeRoutes from './employee'
 import Forbidden from '../pages/Forbidden'
 import coursesRoutes from './courses'
 import SocialCaseRoutes from './SocialCase'
+import MigrantRoutes from './Migrant'
 // import houseRoutes from './house'
 import webQuestionEmployee from './webEmployee'
 
@@ -540,6 +541,7 @@ const routes = [
       />
     )
   },
-  ...SocialCaseRoutes
+  ...SocialCaseRoutes,
+  ...MigrantRoutes
 ]
 export default routes

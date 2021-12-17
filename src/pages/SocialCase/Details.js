@@ -16,7 +16,7 @@ const SocialCaseDetails = () => {
 
   useEffect(() => {
     dispatch(socialCasesActions.getSocialCaseById(socialCaseId))
-  }, [])
+  }, [socialCaseId])
   return (
     <Box>
       <Wrapper>
