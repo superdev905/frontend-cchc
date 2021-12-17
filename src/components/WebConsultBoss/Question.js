@@ -30,6 +30,7 @@ const Question = () => {
   }
 
   const getQuestions = () => {
+    dispatch(questionActions.updateSelectedList([]))
     const formattedQuery = { ...query, professionalId: user.id }
     if (user.role.key === 'ADMIN' || user.role.key === 'JEFATURA') {
       delete formattedQuery.professionalId

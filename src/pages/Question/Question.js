@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { useParams } from 'react-router-dom'
-import QuestionActions from '../../state/actions/questions'
+import questionActions from '../../state/actions/questions'
 import {
   Button,
   EmptyState,
@@ -12,11 +12,8 @@ import {
   Wrapper
 } from '../../components/UI'
 import { HeadingWithButton } from '../../components/Shared'
-import {
-  QuestionAssignModal,
-  QuestionDetails,
-  QuestionLoader
-} from '../../components/Question'
+import { QuestionDetails, QuestionLoader } from '../../components/Question'
+import QuestionAssignModal from '../../components/WebConsultBoss/QuestionAssign'
 import { formatDate, formatHours } from '../../formatters'
 import { UserCard } from '../../components/Users'
 import Can from '../../components/Can'
@@ -46,13 +43,26 @@ const Question = () => {
   const { questionNumber } = useParams()
   const [loading, setLoading] = useState(false)
   const { question } = useSelector((state) => state.questions)
+  const { user } = useSelector((state) => state.auth)
   const { open: openAssign, toggleOpen: toggleOpenAssign } = useToggle()
 
   const fetchData = () => {
     setLoading(true)
-    dispatch(QuestionActions.getQuestionDetails(questionNumber)).then(() => {
+    dispatch(questionActions.getQuestionDetails(questionNumber)).then(() => {
       setLoading(false)
     })
+  }
+
+  const handleAssignQuestion = () => {
+    toggleOpenAssign()
+    dispatch(questionActions.updateSelectedList([{ ...question }]))
+  }
+  const assignQuestion = (values) => {
+    const data = {
+      ...values,
+      bossId: user.id
+    }
+    return dispatch(questionActions.questionAssign(data))
   }
 
   useEffect(() => {
@@ -80,7 +90,7 @@ const Question = () => {
                   question?.status === 'ASIGNADA' ||
                   question?.status === 'RESPONDIDA'
                 }
-                onClick={toggleOpenAssign}
+                onClick={handleAssignQuestion}
               >
                 Asignar
               </Button>
@@ -90,7 +100,12 @@ const Question = () => {
         </Box>
       </Box>
       {openAssign && (
-        <QuestionAssignModal open={openAssign} onClose={toggleOpenAssign} />
+        <QuestionAssignModal
+          open={openAssign}
+          onClose={toggleOpenAssign}
+          submitFunction={assignQuestion}
+          successFunction={fetchData}
+        />
       )}
 
       <Box px={2}>
