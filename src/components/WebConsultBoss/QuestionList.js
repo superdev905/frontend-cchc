@@ -13,20 +13,29 @@ const QuestionList = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const [loading, setLoading] = useState(false)
-  const [query, setQuery] = useState({ page: 1, size: 30 })
+  const { user } = useSelector((state) => state.auth)
+  const { query } = useSelector((state) => state.questions)
 
   const { questions, totalQuestions: totalDocs } = useSelector(
     (state) => state.questions
   )
 
+  const handleUpdateQuery = (values) => {
+    dispatch(questionActions.updateQuery(values))
+  }
+
   const getQuestions = () => {
     setLoading(true)
-    dispatch(questionActions.getQuestions(query)).then(() => {
+    const formattedQuery = { ...query, professionalId: user.id }
+    if (user.role.key === 'ADMIN' || user.role.key === 'JEFATURA') {
+      delete formattedQuery.professionalId
+    }
+    dispatch(questionActions.getQuestions(formattedQuery)).then(() => {
       setLoading(false)
     })
   }
   const handleSelectedRows = ({ selectedRows }) => {
-    console.log(selectedRows)
+    dispatch(questionActions.updateSelectedList(selectedRows))
   }
 
   useEffect(() => {
@@ -35,12 +44,14 @@ const QuestionList = () => {
 
   return (
     <Box>
-      <Box mt={2}>
+      <Box mt={2} width="100%">
         <DataTable
           data={questions}
           selectableRows
           onSelectedRowsChange={handleSelectedRows}
-          selectableRowDisabled={(row) => row.status === 'ASIGNADA'}
+          selectableRowDisabled={(row) =>
+            row.status === 'ASIGNADA' || row.status === 'RESPONDIDA'
+          }
           columns={[
             {
               name: 'N°',
@@ -51,11 +62,12 @@ const QuestionList = () => {
             },
             {
               name: 'Estado',
-              selector: (row) => <Chip label={row.status} siz="small" />,
+              selector: (row) => (
+                <Chip color="primary" label={row.status} siz="small" />
+              ),
               compact: true,
-              maxWidth: '100px'
+              maxWidth: '120px'
             },
-
             {
               name: 'Título',
               selector: (row) => row.title
@@ -68,19 +80,23 @@ const QuestionList = () => {
                 )}`,
               compact: true
             },
+
             {
-              name: 'Area',
-              selector: (row) => row.areaName,
-              compact: true,
-              hide: 'md',
-              maxWidth: '100px'
+              name: 'Rut Trabajador',
+              selector: (row) => row.employeeRut,
+              sortable: true
             },
             {
               name: 'Trabajador',
               selector: (row) => row.employeeNames,
               sortable: true,
+              compact: true
+            },
+            {
+              name: 'Area',
+              selector: (row) => row.areaName,
               compact: true,
-              hide: 'md'
+              maxWidth: '100px'
             },
             {
               name: '',
@@ -91,7 +107,7 @@ const QuestionList = () => {
                     {
                       icon: <NextIcon />,
                       onClick: () => {
-                        history.push(`/question/${row.number}`)
+                        history.push(`/question/list/${row.number}`)
                       }
                     }
                   ]}
@@ -105,10 +121,10 @@ const QuestionList = () => {
           paginationPerPage={query.size}
           paginationServer={true}
           onChangeRowsPerPage={(limit) => {
-            setQuery({ ...query, size: limit })
+            handleUpdateQuery({ ...query, size: limit })
           }}
           onChangePage={(page) => {
-            setQuery({ ...query, page })
+            handleUpdateQuery({ ...query, page })
           }}
           paginationTotalRows={totalDocs}
           expandableRows

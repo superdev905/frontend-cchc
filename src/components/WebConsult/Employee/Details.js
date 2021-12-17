@@ -9,7 +9,7 @@ const Details = ({ loading }) => {
     <Box>
       {!loading && question && (
         <QuestionCard asCard={false} question={question}>
-          <Answer />
+          {question?.answer && <Answer answer={question.answer} />}
         </QuestionCard>
       )}
     </Box>

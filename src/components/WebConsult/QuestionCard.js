@@ -107,12 +107,16 @@ const Loader = ({ asCard }) => {
   )
 }
 
-const QuestionCard = ({ question, asCard, children, hideNumber }) => {
+const QuestionCard = ({ question, asCard, children, hideNumber, onClick }) => {
   const classes = useStyles({ asCard })
   const history = useHistory()
 
   const handleClick = (number) => {
-    history.push(`/consultas-web/preguntas/${number}`)
+    if (onClick) {
+      onClick()
+    } else {
+      history.push(`/consultas-web/preguntas/${number}`)
+    }
   }
 
   return (

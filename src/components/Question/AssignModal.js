@@ -4,23 +4,22 @@ import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { formatDate, formatHours } from '../../formatters'
 import { Dialog, DataTable } from '../Shared'
 import { useSuccess } from '../../hooks'
-import { Select, SubmitButton, Button, ActionsTable } from '../UI'
+import { Select, SubmitButton, Button } from '../UI'
 import commonActions from '../../state/actions/common'
 import usersActions from '../../state/actions/users'
-import questionActions from '../../state/actions/questions'
 
 const validationSchema = Yup.object().shape({
   department: Yup.string().required('Selecciona Departamento'),
-  assignedUserId: Yup.number().required(),
-  bossId: Yup.number()
+  assignedUserNames: Yup.string().required('Seleccione Profesional')
 })
 
 const QuestionAssign = ({
   open,
   onClose,
+  type,
+  data,
   submitFunction,
   successMessage,
   successFunction
@@ -31,21 +30,18 @@ const QuestionAssign = ({
   const { regions } = useSelector((state) => state.common)
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
-  const { selectedList } = useSelector((state) => state.questions)
 
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      department: '',
-      assignedUserId: '',
-      bossId: ''
+      department: type === 'UPDATE' ? data.department : '',
+      assignedUserNames: type === 'UPDATE' ? data.assignedUserNames : ''
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction({
         ...values,
-        date: new Date().toISOString(),
-        questions: selectedList.map((item) => ({ number: item.number }))
+        is_mandatory: values.is_mandatory === 'NO'
       })
         .then((result) => {
           formik.setSubmitting(false)
@@ -72,27 +68,21 @@ const QuestionAssign = ({
     if (open) {
       formik.resetForm()
       dispatch(commonActions.getRegions())
-      dispatch(usersActions.getSocialAssistanceList()).then((response) => {
+      dispatch(usersActions.getFoundationUsers()).then((response) => {
         setUserList(response)
       })
     }
   }, [open])
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      maxWidth={'lg'}
-      fullScreen={isMobile}
-    >
+    <Dialog open={open} onClose={onClose} maxWidth={'md'} fullScreen={isMobile}>
       <Box>
         <Typography
           variant="h6"
           align="center"
           style={{ fontWeight: 'bold', marginBottom: 10 }}
         >
-          Asignar Preguntas
+          Asignar pregunta
         </Typography>
         <Box>
           <Grid container spacing={2}>
@@ -119,16 +109,17 @@ const QuestionAssign = ({
             <Grid item xs={12} md={6}>
               <Select
                 label="Profesional"
-                name="assignedUserId"
+                name="assignedUserNames"
                 required
                 onChange={formik.handleChange}
-                value={formik.values.assignedUserId}
+                value={formik.values.assignedUserNames}
                 error={
-                  formik.touched.assignedUserId &&
-                  Boolean(formik.errors.assignedUserId)
+                  formik.touched.assignedUserNames &&
+                  Boolean(formik.errors.assignedUserNames)
                 }
                 helperText={
-                  formik.touched.assignedUserId && formik.errors.assignedUserId
+                  formik.touched.assignedUserNames &&
+                  formik.errors.assignedUserNames
                 }
               >
                 <option value="">Seleccione Profesional</option>
@@ -140,58 +131,23 @@ const QuestionAssign = ({
               </Select>
             </Grid>
             <DataTable
-              data={selectedList}
               emptyMessage={'No existen Preguntas'}
               columns={[
                 {
                   name: 'N°',
-                  selector: (row) => row.number,
-                  width: '80px',
-                  sortable: true,
-                  compact: true,
-                  center: true
+                  selector: (row) => row.number
                 },
                 {
                   name: 'Fecha',
-                  selector: (row) =>
-                    `${formatDate(row.createdDate, {})} - ${formatHours(
-                      row.createdDate
-                    )}`,
-                  compact: true
-                },
-                {
-                  name: 'Rut Beneficiario',
-                  selector: (row) => row.employeeRut,
-                  sortable: true,
-                  compact: true
-                },
-                {
-                  name: 'Beneficiario',
-                  selector: (row) => row.employeeNames,
-                  sortable: true,
-                  compact: true
+                  selector: (row) => row.date
                 },
                 {
                   name: 'Area',
-                  selector: (row) => row.areaName,
-                  compact: true,
-                  maxWidth: '100px'
+                  selector: (row) => row.area
                 },
                 {
-                  name: '',
-                  right: true,
-                  selector: (row) => (
-                    <ActionsTable
-                      onDelete={() => {
-                        const updatedList = selectedList.filter(
-                          (item) => item.number !== row.number
-                        )
-                        dispatch(
-                          questionActions.updateSelectedList(updatedList)
-                        )
-                      }}
-                    />
-                  )
+                  name: 'Beneficiario',
+                  selector: (row) => row.beneficiario
                 }
               ]}
             />
@@ -203,7 +159,6 @@ const QuestionAssign = ({
             <SubmitButton
               onClick={formik.handleSubmit}
               loading={formik.isSubmitting}
-              disabled={!formik.isValid || selectedList.length === 0}
               success={success}
             >
               Asignar

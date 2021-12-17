@@ -46,15 +46,15 @@ const Answer = ({ answer }) => {
           </Typography>
         </Box>
         <Box my={1}>
-          <Typography>{answer.content}</Typography>
+          <Typography>{answer.answer}</Typography>
         </Box>
         <Box mt={2} className={classes.footer}>
           <Box display="flex" alignItems="center">
             <Avatar className={classes.avatar}>
-              {answer.professional.names.charAt(0)}
+              {answer.professional.userNames.charAt(0)}
             </Avatar>
             <Typography className={classes.user}>
-              {answer.professional.names}
+              {answer.professional.userNames}
             </Typography>
           </Box>
           <Typography>
@@ -68,7 +68,7 @@ const Answer = ({ answer }) => {
 
 Answer.defaultProps = {
   answer: {
-    content: `It is a long established fact that a reader will be distracted by
+    answer: `It is a long established fact that a reader will be distracted by
             the readable content of a page when looking at its layout. The point
             of using Lorem Ipsum is that it has a more-or-less normal
             distribution of letters, as opposed to using 'Content here, content

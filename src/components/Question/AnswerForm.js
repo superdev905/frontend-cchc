@@ -42,6 +42,8 @@ const Answer = ({
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
+    validateOnBlur: true,
+    validateOnChange: true,
     initialValues: {
       areaId: type === 'UPDATE' ? data.areaId : '',
       topicId: type === 'UPDATE' ? data.topicId : '',
@@ -51,12 +53,11 @@ const Answer = ({
     onSubmit: (values, { resetForm }) => {
       submitFunction({
         ...values,
-        areaName: areas.find(
-          (item) => item.id === parseInt(values.areaId, 10).name
-        ),
+        areaName: areas.find((item) => item.id === parseInt(values.areaId, 10))
+          .name,
         topicName: topics.find(
-          (item) => item.id === parseInt(values.areaId, 10).name
-        ),
+          (item) => item.id === parseInt(values.topicId, 10)
+        ).name,
         date: new Date().toISOString()
       })
         .then((result) => {
@@ -88,11 +89,17 @@ const Answer = ({
         setTopics(area?.topics || [])
         formik.setFieldValue('areaId', area?.id || '')
         formik.setFieldValue('topicId', '')
+        setTimeout(() => {
+          formik.setFieldTouched('areaId', 'topicId')
+        }, 500)
         break
       }
       case 'topic': {
         const topic = topics.find((item) => item.id === parseInt(value, 10))
-        formik.setFieldValue('topicId', topic.id)
+        formik.setFieldValue('topicId', topic?.id || '')
+        setTimeout(() => {
+          formik.setFieldTouched('topicId')
+        }, 500)
         break
       }
       default:
@@ -125,6 +132,7 @@ const Answer = ({
               name="area"
               required
               onChange={handleSelectChange}
+              onBlur={formik.handleBlur}
               value={formik.values.areaId}
               error={formik.touched.areaId && Boolean(formik.errors.areaId)}
               helperText={formik.touched.areaId && formik.errors.areaId}
@@ -143,6 +151,7 @@ const Answer = ({
               name="topic"
               required
               onChange={handleSelectChange}
+              onBlur={formik.handleBlur}
               value={formik.values.topicId}
               error={formik.touched.topicId && Boolean(formik.errors.topicId)}
               helperText={formik.touched.topicId && formik.errors.topicId}
@@ -161,6 +170,7 @@ const Answer = ({
               name="channel"
               required
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.channel}
               error={formik.touched.channel && Boolean(formik.errors.channel)}
               helperText={formik.touched.channel && formik.errors.channel}
@@ -179,6 +189,7 @@ const Answer = ({
               name="answer"
               required
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.answer}
               error={formik.touched.answer && Boolean(formik.errors.answer)}
               helperText={formik.touched.answer && formik.errors.answer}

@@ -3,7 +3,8 @@ import { COLORS } from '../../../utils/generateColor'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.gray.gray100
+    backgroundColor: theme.palette.gray.gray100,
+    borderRadius: theme.spacing(1)
   },
   title: {
     fontSize: 18,
@@ -29,6 +30,15 @@ const useStyles = makeStyles((theme) => ({
   },
   professional: {
     fontWeight: 'bold'
+  },
+  center: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  lockedIcon: {
+    fontSize: 40,
+    color: theme.palette.error.main
   }
 }))
 
