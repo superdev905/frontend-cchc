@@ -1,4 +1,11 @@
-const modulesList = ['TRABAJADORES', 'USUARIOS', 'VISITAS', 'EMPRESAS', 'OBRAS']
+const modulesList = [
+  'TRABAJADORES',
+  'USUARIOS',
+  'VISITAS',
+  'EMPRESAS',
+  'OBRAS',
+  'MIGRANTES'
+]
 
 export default {
   modulesList
