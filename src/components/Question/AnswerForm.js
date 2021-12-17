@@ -30,7 +30,8 @@ const Answer = ({
   data,
   submitFunction,
   successMessage,
-  successFunction
+  successFunction,
+  defaultAreaId
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -45,7 +46,7 @@ const Answer = ({
     validateOnBlur: true,
     validateOnChange: true,
     initialValues: {
-      areaId: type === 'UPDATE' ? data.areaId : '',
+      areaId: type === 'UPDATE' ? data.areaId : defaultAreaId || '',
       topicId: type === 'UPDATE' ? data.topicId : '',
       channel: type === 'UPDATE' ? data.channel : '',
       answer: type === 'UPDATE' ? data.answer : ''
