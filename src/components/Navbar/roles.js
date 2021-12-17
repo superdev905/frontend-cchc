@@ -13,6 +13,7 @@ import {
   WatchLater as ScheduleIcon,
   Home as HousingIcon
 } from '@material-ui/icons'
+import LanguageIcon from '@material-ui/icons/Language'
 
 const modulesByRole = {
   COMMON: [{ title: 'Home', path: '/home', icon: <DashboardIcon /> }],
@@ -61,11 +62,17 @@ const modulesByRole = {
     },
     { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
     {
+      title: 'Consultas Web',
+      path: '/question/dashboard',
+      icon: <LanguageIcon />
+    },
+    {
       index: 5,
       title: 'Usuarios',
       path: '/users',
       icon: <UserIcon />
     },
+
     {
       title: 'Configuración',
       path: '/settings',
@@ -109,6 +116,16 @@ const modulesByRole = {
       title: 'Caso Social',
       path: '/social-case',
       icon: <BookIcon />
+    },
+    {
+      title: 'Consultas Web',
+      path: '/question/dashboard',
+      icon: <LanguageIcon />
+    },
+    {
+      title: 'Vivienda',
+      path: '/housing',
+      icon: <HousingIcon />
     }
   ],
   PROJECTS: [

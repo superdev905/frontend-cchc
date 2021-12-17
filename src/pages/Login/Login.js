@@ -6,38 +6,15 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
-import Logo from '../../assets/media/logo_cchc.svg'
 import authActions from '../../state/actions/auth'
 import { SubmitButton, TextField } from '../../components/UI'
+import AuthForm from '../../components/Auth/Form'
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: theme.palette.common.white,
-    [theme.breakpoints.up('md')]: {
-      backgroundColor: 'transparent'
-    }
-  },
-  logo: {
-    maxWidth: '250px'
-  },
+const useStyles = makeStyles(() => ({
   title: {
     fontSize: '20px',
     marginBottom: '20px',
     fontWeight: 'bold'
-  },
-  loginForm: {
-    borderRadius: 10,
-    backgroundColor: theme.palette.common.white,
-    [theme.breakpoints.up('sm')]: {
-      maxWidth: '70%'
-    },
-    [theme.breakpoints.up('md')]: {
-      maxWidth: '450px'
-    }
   },
   actions: {
     marginTop: '10px',
@@ -102,58 +79,54 @@ const Login = () => {
   return isAuthenticated ? (
     <Redirect to="/" />
   ) : (
-    <Box className={classes.root}>
-      <Box p={3} className={classes.loginForm}>
-        <Box p={4} textAlign="center">
-          <img
-            className={classes.logo}
-            src={Logo}
-            alt="Fundacion CCHC's logo"
-          />
-        </Box>
-        <Typography className={classes.title} align="center">
-          Iniciar sesión
-        </Typography>
-        <Box marginBottom="10px">
-          {error && <Alert severity="error">{error}</Alert>}
-        </Box>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              label="Correo"
-              name="email"
-              value={formik.values.email}
-              onBlur={formik.handleBlur}
-              onChange={handleEmailChange}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              type="password"
-              label="Contraseña"
-              name="password"
-              value={formik.values.password}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-              onKeyDown={handlePasswordKeyDown}
-            />
-          </Grid>
-        </Grid>
-        <Box className={classes.actions}>
-          <SubmitButton
-            disabled={!formik.isValid || formik.isSubmitting}
-            loading={formik.isSubmitting}
-            onClick={formik.handleSubmit}
-          >
-            Iniciar sesión
-          </SubmitButton>
-        </Box>
+    <AuthForm>
+      <Typography className={classes.title} align="center">
+        Iniciar sesión
+      </Typography>
+      <Box marginBottom="10px">
+        {error && <Alert severity="error">{error}</Alert>}
       </Box>
-    </Box>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <TextField
+            label="Correo"
+            name="email"
+            value={formik.values.email}
+            onBlur={formik.handleBlur}
+            onChange={handleEmailChange}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            type="password"
+            label="Contraseña"
+            name="password"
+            value={formik.values.password}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
+            onKeyDown={handlePasswordKeyDown}
+          />
+        </Grid>
+      </Grid>
+      <Box my={1} textAlign="center">
+        <a href="/consultas-web" target="_blank">
+          Ver consultas web
+        </a>
+      </Box>
+      <Box className={classes.actions}>
+        <SubmitButton
+          disabled={!formik.isValid || formik.isSubmitting}
+          loading={formik.isSubmitting}
+          onClick={formik.handleSubmit}
+        >
+          Iniciar sesión
+        </SubmitButton>
+      </Box>
+    </AuthForm>
   )
 }
 

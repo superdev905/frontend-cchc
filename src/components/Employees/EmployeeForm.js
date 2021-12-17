@@ -24,6 +24,7 @@ import {
 } from '../UI'
 import { isPollListAnswered, rutValidation } from '../../validations'
 import commonActions from '../../state/actions/common'
+import commonPublic from '../../state/actions/commonPublic'
 import pollActions from '../../state/actions/poll'
 import { decisionList } from '../../config'
 import { PollsModule } from '../Polls'
@@ -85,7 +86,8 @@ const EmployeeModal = ({
   data,
   submitFunction,
   successMessage,
-  successFunction
+  successFunction,
+  heading
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -97,7 +99,7 @@ const EmployeeModal = ({
     useSelector((state) => state.common)
   const { moduleResponse } = useSelector((state) => state.poll)
   const { module: currentModule } = useSelector((state) => state.ui)
-
+  const { user } = useSelector((state) => state.auth)
   const formik = useFormik({
     validateOnMount: true,
     validationSchema: hasDisability
@@ -203,11 +205,19 @@ const EmployeeModal = ({
   }, [formik.values.bank_id, formik.values.account_type])
 
   useEffect(() => {
-    dispatch(commonActions.getMaritalStatuses())
-    dispatch(commonActions.getNationalities())
-    dispatch(commonActions.getScholarship())
-    dispatch(commonActions.getBanks())
-    dispatch(commonActions.getRSH())
+    if (user) {
+      dispatch(commonActions.getMaritalStatuses())
+      dispatch(commonActions.getNationalities())
+      dispatch(commonActions.getScholarship())
+      dispatch(commonActions.getBanks())
+      dispatch(commonActions.getRSH())
+    } else {
+      dispatch(commonPublic.getMaritalStatuses())
+      dispatch(commonPublic.getNationalities())
+      dispatch(commonPublic.getScholarship())
+      dispatch(commonPublic.getBanks())
+      dispatch(commonPublic.getRSH())
+    }
   }, [])
 
   useEffect(() => {
@@ -223,7 +233,9 @@ const EmployeeModal = ({
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
       <Box>
         <Typography variant="h6" align="center">
-          {`${type === 'UPDATE' ? 'Actualizar' : 'Nuevo'} trabajador`}
+          {heading || (
+            <> {`${type === 'UPDATE' ? 'Actualizar' : 'Nuevo'} trabajador`}</>
+          )}
         </Typography>
         <Box p={2}>
           <Box>
@@ -234,6 +246,7 @@ const EmployeeModal = ({
                   label="Run"
                   name="run"
                   required
+                  disabled={type === 'UPDATE'}
                   value={formik.values.run}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}

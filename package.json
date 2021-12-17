@@ -12,6 +12,8 @@
     "@material-ui/lab": "4.0.0-alpha.57",
     "@material-ui/styles": "^4.11.4",
     "@mikecousins/react-pdf": "^5.5.1",
+    "@nivo/bar": "^0.74.1",
+    "@nivo/core": "^0.74.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",

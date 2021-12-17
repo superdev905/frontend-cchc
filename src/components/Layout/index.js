@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 2,
+    maxWidth: '100%',
     position: 'relative',
     padding: theme.spacing(1),
     [theme.breakpoints.up('md')]: {

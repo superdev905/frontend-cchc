@@ -142,18 +142,14 @@ const ListEmployees = () => {
             },
             {
               name: 'Apellidos',
-              selector: (row) => row.last_name,
-              hide: 'md'
+              selector: (row) => row.last_name
             },
             {
               name: 'Fecha de nacimiento',
-              selector: (row) => row.born_date,
-              hide: 'md'
+              selector: (row) => row.born_date
             },
             {
               name: 'Estado',
-              hide: 'md',
-
               cell: (row) => (
                 <StatusChip
                   label={`${row.state === 'DELETED' ? 'Eliminado' : 'Activo'} `}
