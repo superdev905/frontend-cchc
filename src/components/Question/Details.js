@@ -1,6 +1,10 @@
+import { useParams } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { Box, Chip, makeStyles, Typography } from '@material-ui/core'
 import AnswerForm from './AnswerForm'
 import AnswerFilled from './Answer/Filled'
+import AnswerEmpty from './Answer/Empty'
+import questionActions from '../../state/actions/questions'
 
 const useStyles = makeStyles(() => ({
   chip: {
@@ -13,8 +17,14 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const Details = ({ question }) => {
+const Details = ({ question, handler }) => {
   const classes = useStyles()
+  const { questionNumber } = useParams()
+  const dispatch = useDispatch()
+
+  const answerQuestion = (values) =>
+    dispatch(questionActions.answerQuestion(questionNumber, values))
+
   return (
     <Box>
       <Typography className={classes.title}>{question?.title}</Typography>
@@ -34,11 +44,19 @@ const Details = ({ question }) => {
         />
       </Box>
       <Box>
-        <AnswerForm />
+        {question.status === 'ASIGNADA' && (
+          <AnswerForm
+            submitFunction={answerQuestion}
+            successFunction={handler}
+          />
+        )}
       </Box>
       <Box>
-        <AnswerFilled />
+        {question.status === 'RESPONDIDA' && (
+          <AnswerFilled answer={question.answer} />
+        )}
       </Box>
+      <Box>{question.status === 'INGRESADO' && <AnswerEmpty />}</Box>
     </Box>
   )
 }

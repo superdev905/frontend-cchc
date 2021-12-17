@@ -47,5 +47,8 @@ export default makeStyles((theme) => ({
   menuItem: {
     padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
     fontSize: 15
+  },
+  nested: {
+    paddingLeft: theme.spacing(4)
   }
 }))

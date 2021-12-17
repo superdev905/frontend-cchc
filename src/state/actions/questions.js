@@ -3,6 +3,12 @@ import Axios from '../../Axios'
 import questionsTypes from '../types/questions'
 import config from '../../config'
 
+const updateQuery = (values) => (dispatch) =>
+  dispatch({ type: questionsTypes.UPDATE_QUERY, payload: values })
+
+const updateUIFilters = (values) => (dispatch) =>
+  dispatch({ type: questionsTypes.UPDATE_UI_FILTERS, payload: values })
+
 const questionAssign = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.question}/questions/assignation`, values)
@@ -49,11 +55,77 @@ const getQuestions = (query) => (dispatch) =>
       })
   })
 
+const answerQuestion = (number, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.question}/questions/${number}/answer`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const getDistributionStats = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.question}/stats/distribution`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: questionsTypes.GET_DISTRIBUTION_STATS, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+const getLastQuestions = (query) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.question}/questions/last?${queryString.stringify(
+        query
+      )}`
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: questionsTypes.GET_LAST_QUESTIONS, payload: data })
+
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const getStats = (query) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.question}/stats/general?${queryString.stringify(
+        query
+      )}`
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: questionsTypes.GET_GENERAL_STATS, payload: data })
+
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
 const questionActions = {
+  updateQuery,
+  updateUIFilters,
   getQuestions,
   questionAssign,
   getQuestionDetails,
-  toggleCreateModal
+  toggleCreateModal,
+  answerQuestion,
+  getDistributionStats,
+  getLastQuestions,
+  getStats
 }
 
 export default questionActions

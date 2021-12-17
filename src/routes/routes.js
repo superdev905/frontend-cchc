@@ -40,6 +40,7 @@ const Agreement = lazy(() => import('../pages/Agreement'))
 const AgreementEmployee = lazy(() => import('../pages/AgreementEmployee'))
 const QuestionPage = lazy(() => import('../pages/WebConsultBoss'))
 const Question = lazy(() => import('../pages/Question'))
+const QuestionDashboard = lazy(() => import('../pages/QuestionDashboard'))
 
 const routes = [
   {
@@ -479,7 +480,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
         yes={() => (
           <Layout>
             <AgreementEmployee />
@@ -492,12 +493,12 @@ const routes = [
   ...coursesRoutes,
   ...webQuestionEmployee,
   {
-    path: '/question',
+    path: '/question/list',
     key: 'WEB-CONSULT',
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
         yes={() => (
           <Layout>
             <QuestionPage />
@@ -508,15 +509,31 @@ const routes = [
     )
   },
   {
-    path: `/question/:questionNumber`,
+    path: `/question/list/:questionNumber`,
     key: 'Question',
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
         yes={() => (
           <Layout>
             <Question />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: `/question/dashboard`,
+    key: 'Question',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
+        yes={() => (
+          <Layout>
+            <QuestionDashboard />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}

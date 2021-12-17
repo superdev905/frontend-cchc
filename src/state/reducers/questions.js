@@ -3,7 +3,20 @@ import questionTypes from '../types/questions'
 const initialState = {
   questions: [],
   totalQuestions: 0,
-  question: null
+  question: null,
+  distribution: [],
+  lastQuestions: [],
+  stats: {},
+  query: {
+    page: 1,
+    size: 30
+  },
+  uiFilters: {
+    status: {
+      label: 'Estado',
+      value: 'RESPONDIDO'
+    }
+  }
 }
 
 const questionsReducer = (state = initialState, { type, payload }) => {
@@ -14,6 +27,16 @@ const questionsReducer = (state = initialState, { type, payload }) => {
       return { ...state, totalQuestions: payload }
     case questionTypes.GET_QUESTION_DETAILS:
       return { ...state, question: payload }
+    case questionTypes.GET_DISTRIBUTION_STATS:
+      return { ...state, distribution: payload }
+    case questionTypes.GET_LAST_QUESTIONS:
+      return { ...state, lastQuestions: payload }
+    case questionTypes.GET_GENERAL_STATS:
+      return { ...state, stats: payload }
+    case questionTypes.UPDATE_QUERY:
+      return { ...state, query: payload }
+    case questionTypes.UPDATE_UI_FILTERS:
+      return { ...state, uiFilters: payload }
 
     default:
       return state

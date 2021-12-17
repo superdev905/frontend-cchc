@@ -11,11 +11,16 @@ import {
   Text,
   Wrapper
 } from '../../components/UI'
-import Answer from '../../components/WebConsultBoss/Answer'
 import { HeadingWithButton } from '../../components/Shared'
-import { QuestionDetails, QuestionLoader } from '../../components/Question'
+import {
+  QuestionAssignModal,
+  QuestionDetails,
+  QuestionLoader
+} from '../../components/Question'
 import { formatDate, formatHours } from '../../formatters'
 import { UserCard } from '../../components/Users'
+import Can from '../../components/Can'
+import { useToggle } from '../../hooks'
 
 const useStyles = makeStyles((theme) => ({
   head: {
@@ -30,7 +35,8 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginBottom: theme.spacing(1)
   }
 }))
 
@@ -40,6 +46,7 @@ const Question = () => {
   const { questionNumber } = useParams()
   const [loading, setLoading] = useState(false)
   const { question } = useSelector((state) => state.questions)
+  const { open: openAssign, toggleOpen: toggleOpenAssign } = useToggle()
 
   const fetchData = () => {
     setLoading(true)
@@ -56,21 +63,36 @@ const Question = () => {
     <Wrapper>
       <Box className={classes.head}>
         <Box display="flex">
-          <Box>
-            <HeadingWithButton
-              title={`Pregunta N ${questionNumber}`}
-              loading={loading}
-              timeAgo={`el ${formatDate(question?.createdDate)} - ${formatHours(
-                question?.createdDate
-              )}`}
-            />
-            <Answer />
-          </Box>
+          <HeadingWithButton
+            title={`Pregunta N ${questionNumber}`}
+            loading={loading}
+            timeAgo={`el ${formatDate(question?.createdDate)} - ${formatHours(
+              question?.createdDate
+            )}`}
+          />
         </Box>
         <Box>
-          <Button>Asignar</Button>
+          <Can
+            availableTo={['ADMIN', 'JEFATURA']}
+            yes={() => (
+              <Button
+                disabled={
+                  question?.status === 'ASIGNADA' ||
+                  question?.status === 'RESPONDIDA'
+                }
+                onClick={toggleOpenAssign}
+              >
+                Asignar
+              </Button>
+            )}
+            no={() => null}
+          />
         </Box>
       </Box>
+      {openAssign && (
+        <QuestionAssignModal open={openAssign} onClose={toggleOpenAssign} />
+      )}
+
       <Box px={2}>
         <Grid container spacing={2}>
           <Grid item xs={12} lg={7}>
@@ -79,7 +101,11 @@ const Question = () => {
                 <QuestionLoader />
               </>
             ) : (
-              <QuestionDetails question={question} />
+              <>
+                {question && (
+                  <QuestionDetails question={question} handler={fetchData} />
+                )}
+              </>
             )}
           </Grid>
           <Grid item xs={12} lg={5}>
@@ -88,9 +114,24 @@ const Question = () => {
                 <Typography className={classes.title}>
                   Detalles de trabajador
                 </Typography>
-                <Box mt={1}></Box>
+                <Box mt={1}>
+                  <LabeledRow label="Rut:">
+                    <Text loading={loading}>{question?.employee?.run}</Text>
+                  </LabeledRow>
+                  <LabeledRow label="Nombres:">
+                    <Text loading={loading}>{question?.employee?.names}</Text>
+                  </LabeledRow>
+                  <LabeledRow label="Apelidos:">
+                    <Text loading={loading}>
+                      {`${question?.employee?.paternalSurname} ${question?.employee?.maternalSurname}`}
+                    </Text>
+                  </LabeledRow>
+                  <LabeledRow label="Sexo:">
+                    <Text loading={loading}>{question?.employee?.gender}</Text>
+                  </LabeledRow>
+                </Box>
               </Box>
-              <Box>
+              <Box mt={2}>
                 <Typography className={classes.title}>
                   Detalles de asignación
                 </Typography>

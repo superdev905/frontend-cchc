@@ -40,10 +40,9 @@ const QuestionModal = ({ open, onClose }) => {
           areaName: areas.find(
             (item) => item.id === parseInt(values.areaId, 10)
           ).name,
+          delegation: values.delegation.toUpperCase(),
           employeeId: employee.id,
           employeeRut: employee.run,
-          delegation: 'ANTOFAGASTA',
-          zone: 'ANTOFAGASTA',
           employeeNames: `${employee.names} ${employee.paternal_surname}`
             .trim()
             .toUpperCase()
@@ -116,7 +115,7 @@ const QuestionModal = ({ open, onClose }) => {
               >
                 <option value="">SELECCIONA DELEGACIÓN</option>
                 {regions.map((item) => (
-                  <option key={`area-${item.id}`} value={item.id}>
+                  <option key={`area-${item.id}`} value={item.name}>
                     {item.name}
                   </option>
                 ))}

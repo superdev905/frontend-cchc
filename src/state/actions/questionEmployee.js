@@ -81,6 +81,30 @@ const getQuestions = (query) => (dispatch) =>
       })
   })
 
+const getHistoryQuestions = (query) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${
+        config.services.question
+      }/employee/questions/history?${queryString.stringify(query)}`
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: questionEmpTypes.QE_GET_HISTORY_QUESTIONS,
+          payload: data.items
+        })
+        dispatch({
+          type: questionEmpTypes.QE_SET_HISTORY_TOTAL_QUESTIONS,
+          payload: data.total
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const getQuestionDetails = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.question}/employee/questions/${id}`)
@@ -104,7 +128,8 @@ const questionEmployeeActions = {
   logOutEmployee,
   createQuestion,
   getQuestions,
-  getQuestionDetails
+  getQuestionDetails,
+  getHistoryQuestions
 }
 
 export default questionEmployeeActions
