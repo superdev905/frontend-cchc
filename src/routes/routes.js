@@ -41,6 +41,7 @@ const AgreementEmployee = lazy(() => import('../pages/AgreementEmployee'))
 const QuestionPage = lazy(() => import('../pages/WebConsultBoss'))
 const Question = lazy(() => import('../pages/Question'))
 const QuestionDashboard = lazy(() => import('../pages/QuestionDashboard'))
+const InclusivePage = lazy(() => import('../pages/InclusivePage'))
 
 const routes = [
   {
@@ -534,6 +535,22 @@ const routes = [
         yes={() => (
           <Layout>
             <QuestionDashboard />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/inclusive',
+    key: 'INCLUSIVE',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
+        yes={() => (
+          <Layout>
+            <InclusivePage />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}
