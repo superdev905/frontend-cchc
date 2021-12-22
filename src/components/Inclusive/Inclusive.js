@@ -21,7 +21,7 @@ const Inclusive = () => {
         <InclusiveCreate
           open={openInclusive}
           onClose={toggleOpenInclusive}
-          successMessage="Caso de Inclusión Creado Correctamente"
+          successMessage="Caso Creado Correctamente"
         />
       )}
     </Box>
