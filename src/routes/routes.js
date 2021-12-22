@@ -10,6 +10,7 @@ import SocialCaseRoutes from './SocialCase'
 import MigrantRoutes from './Migrant'
 // import houseRoutes from './house'
 import webQuestionEmployee from './webEmployee'
+import UnemployedRoutes from './Unemployed'
 
 const Login = lazy(() => import('../pages/Login'))
 const Home = lazy(() => import('../pages/Home'))
@@ -542,6 +543,7 @@ const routes = [
     )
   },
   ...SocialCaseRoutes,
-  ...MigrantRoutes
+  ...MigrantRoutes,
+  ...UnemployedRoutes
 ]
 export default routes
