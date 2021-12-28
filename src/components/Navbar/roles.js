@@ -11,7 +11,8 @@ import {
   Book as BookIcon,
   Favorite as BenefitIcon,
   WatchLater as ScheduleIcon,
-  Home as HousingIcon
+  Home as HousingIcon,
+  Accessible as AccessibleIcon
 } from '@material-ui/icons'
 import LanguageIcon from '@material-ui/icons/Language'
 
@@ -59,6 +60,11 @@ const modulesByRole = {
       title: 'Caso Social',
       path: '/social-case',
       icon: <BookIcon />
+    },
+    {
+      title: 'Inclusión',
+      path: '/inclusive',
+      icon: <AccessibleIcon />
     },
     { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
     {
@@ -116,6 +122,11 @@ const modulesByRole = {
       title: 'Caso Social',
       path: '/social-case',
       icon: <BookIcon />
+    },
+    {
+      title: 'Inclusión',
+      path: '/inclusive',
+      icon: <AccessibleIcon />
     },
     {
       title: 'Consultas Web',

@@ -7,11 +7,14 @@ import { useParams } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import companiesActions from '../../state/actions/companies'
-import { Dialog } from '../Shared'
+import { Dialog, FilePostulation } from '../Shared'
 import { Select, RutTextField, TextField, SubmitButton, Button } from '../UI'
 import { useToggle, useSuccess } from '../../hooks'
 import FacturationModal from '../Companies/Create/ParentBusiness'
 import { buildTreeData, searchFromTree } from '../../utils/buildTreeData'
+import inclusiveActions from '../../state/actions/inclusive'
+import filesActions from '../../state/actions/files'
+import SearchCompany from '../Companies/SearchCompany'
 
 const validationSchema = Yup.object({
   boss_id: Yup.number().required('Ingrese nombre de Jefatura'),
@@ -32,6 +35,7 @@ const validationSchema = Yup.object({
 const InclusiveCreate = ({
   open,
   onClose,
+  data,
   selectClient,
   type,
   submitFunction,
@@ -39,33 +43,39 @@ const InclusiveCreate = ({
   successFunction
 }) => {
   const dispatch = useDispatch()
+  const [chargeList, setChargeList] = useState([])
+  const [companies, setCompanies] = useState([])
+  const { constructions: constructionsList } = useSelector(
+    (state) => state.companies
+  )
   const { enqueueSnackbar } = useSnackbar()
   const { idCompany } = useParams()
   const [treeData, setTreeData] = useState([])
   const { isMobile } = useSelector((state) => state.ui)
-  const { companies, setCompanies } = useState([])
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [companyBill, setCompanyBill] = useState(null)
   const { success, changeSuccess } = useSuccess()
   const { open: openFact, toggleOpen: toggleOpenFact } = useToggle()
 
+  const [attachments, setAttachments] = useState([])
+
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      bossId: '',
-      delegation: '',
-      authorizingChargeId: '',
-      authorizingUser: '',
-      interlocutorId: '',
-      constructionName: '',
-      constructionId: '',
-      businessName: '',
-      businessId: '',
-      businessRut: '',
-      employeeNames: '',
-      employeeId: '',
-      employeeRut: ''
+      bossId: type === 'UPDATE' ? data.bossId : '',
+      delegation: type === 'UPDATE' ? data.delegation : '',
+      authorizingChargeId: type === 'UPDATE' ? data.authorizingChargeId : '',
+      authorizingUser: type === 'UPDATE' ? data.authorizingUser : '',
+      interlocutorId: type === 'UPDATE' ? data.interlocutorId : '',
+      constructionName: type === 'UPDATE' ? data.constructionName : '',
+      constructionId: type === 'UPDATE' ? data.constructionId : '',
+      businessName: type === 'UPDATE' ? data.businessName : '',
+      businessId: type === 'UPDATE' ? data.businessId : '',
+      businessRut: type === 'UPDATE' ? data.businessRut : '',
+      employeeNames: type === 'UPDATE' ? data.employeeNames : '',
+      employeeId: type === 'UPDATE' ? data.employeeId : '',
+      employeeRut: type === 'UPDATE' ? data.employeeRut : ''
     },
     onSubmit: (values) => {
       submitFunction({
@@ -107,6 +117,44 @@ const InclusiveCreate = ({
     formik.setFieldTouched('business_selected_id')
   }
 
+  const handleUploadFile = async (file, key) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const response = await dispatch(filesActions.uploadFile(formData))
+    const newAttachment = attachments.map((item) =>
+      item.name === key
+        ? {
+            ...item,
+            fileName: response.file_name,
+            fileKey: response.file_key,
+            fileUrl: response.file_url,
+            fileSize: response.file_size,
+            uploadDate: response.upload_date
+          }
+        : item
+    )
+
+    setAttachments(newAttachment)
+  }
+  const handleDeleteFile = async (key) => {
+    if (type !== 'UPDATE') {
+      await dispatch(filesActions.deleteFile())
+    }
+    const newAttachment = attachments.map((item) =>
+      item.name === key
+        ? {
+            ...item,
+            fileName: '',
+            fileKey: '',
+            fileUrl: '',
+            fileSize: '',
+            uploadDate: ''
+          }
+        : item
+    )
+    setAttachments(newAttachment)
+  }
+
   useEffect(() => {
     if (formik.values.billing_business_id && companies.length > 0) {
       setCompanyBill(
@@ -138,6 +186,14 @@ const InclusiveCreate = ({
 
   useEffect(() => {
     if (open) {
+      dispatch(inclusiveActions.getChargeMethods()).then((response) => {
+        setChargeList(response)
+      })
+    }
+  }, [open])
+
+  useEffect(() => {
+    if (open) {
       setCompanyBill(null)
       dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
         (list) => {
@@ -147,6 +203,14 @@ const InclusiveCreate = ({
       )
     }
   }, [open, type, selectClient])
+
+  useEffect(() => {
+    if (selectedCompany) {
+      dispatch(
+        companiesActions.getConstructions({ business_id: selectedCompany.id })
+      )
+    }
+  }, [selectedCompany])
 
   return (
     <Dialog
@@ -179,6 +243,9 @@ const InclusiveCreate = ({
             <Grid item xs={6} md={4}>
               <Select label="Modalidad" name="modalidad" required>
                 <option value="">Modalidad</option>
+                {chargeList.map((item) => (
+                  <option value={item.id}>{`${item.name}`}</option>
+                ))}
               </Select>
             </Grid>
           </Grid>
@@ -195,7 +262,7 @@ const InclusiveCreate = ({
           </Typography>
           <Grid container spacing={2}>
             {selectClient && (
-              <Grid item xs={6} md={4}>
+              <Grid item xs={6} md={4} lg={4}>
                 <Autocomplete
                   options={companies}
                   value={selectedCompany || ''}
@@ -220,12 +287,24 @@ const InclusiveCreate = ({
                 />
               </Grid>
             )}
-            <Grid item xs={6} md={4}>
+            <Grid item xs={6} md={4} lg={4}>
+              <SearchCompany
+                onSelected={(value) => {
+                  setSelectedCompany(value)
+                  console.log(value)
+                }}
+                onDelete={() => {
+                  setSelectedCompany(null)
+                }}
+              />
               <Select label="Obra" name="obra" required>
                 <option value="">Obra</option>
+                {constructionsList.map((construction) => (
+                  <option>{construction.name}</option>
+                ))}
               </Select>
             </Grid>
-            <Grid item xs={6} md={4}>
+            <Grid item xs={6} md={4} lg={4}>
               <RutTextField
                 onClick={toggleOpenFact}
                 label="Empresa facturadora"
@@ -271,6 +350,20 @@ const InclusiveCreate = ({
               >
                 <option value="">Cargo de Autorizacion de Cobro</option>
               </Select>
+            </Grid>
+            <Grid container>
+              {attachments.map((item, index) => (
+                <Grid item xs={12} md={6} key={index}>
+                  <FilePostulation
+                    onDelete={() => handleDeleteFile(item.name)}
+                    fileKey={item.fileKey}
+                    id={`${item.key}-${index}`}
+                    onChangeImage={(e) => {
+                      handleUploadFile(e, item.name)
+                    }}
+                  />
+                </Grid>
+              ))}
             </Grid>
           </Grid>
           <Box textAlign="center" marginTop="15px">
