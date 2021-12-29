@@ -1,19 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-/* import { useDispatch } from 'react-redux' */
+import { useDispatch, useSelector } from 'react-redux'
 import { Box, IconButton } from '@material-ui/core'
 import { ArrowBack as ArrowBackIcon } from '@material-ui/icons'
 import { PageHeading, Text } from '../../components/UI'
-/* import uiActions from '../../state/actions/ui' */
+import unemployedActions from '../../state/actions/unemployed'
 import Details from '../../components/Unemployed/Details'
 
 const UnemployedDetails = () => {
+  const dispatch = useDispatch()
   const { idUnemployed } = useParams()
   const history = useHistory()
-  /* const dispatch = useDispatch() */
-  /* useEffect(() => {
-    dispatch(uiActions.setCurrentModule('NAME'))
-  }, []) */
+  const { unemployed } = useSelector((state) => state.unemployed)
+
+  useEffect(() => {
+    dispatch(unemployedActions.getUnemployedById(idUnemployed))
+  }, [])
 
   const goBack = () => {
     history.push('/unemployed')
@@ -27,11 +29,15 @@ const UnemployedDetails = () => {
             <ArrowBackIcon />
           </IconButton>
           <Text>
-            <PageHeading>Nombre cesante {idUnemployed}</PageHeading>
+            <PageHeading>
+              {unemployed
+                ? `${unemployed.employee.names} ${unemployed.employee.paternalSurname} ${unemployed.employee.maternalSurname}`
+                : null}
+            </PageHeading>
           </Text>
         </Box>
       </Box>
-      <Details />
+      {unemployed ? <Details /> : null}
     </Box>
   )
 }

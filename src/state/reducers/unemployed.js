@@ -4,6 +4,11 @@ const initialState = {
   unemployedList: [],
   benefitsHistoryList: [],
   unemployed: null,
+  queryUnemployed: {
+    search: '',
+    page: 1,
+    size: 50
+  },
   query: {
     page: 1,
     size: 30
@@ -25,6 +30,8 @@ const unemployedReducer = (state = initialState, { type, payload }) => {
       return { ...state, totalBenefitsHistory: payload }
     case unemployedTypes.GET_UNEMPLOYED:
       return { ...state, unemployed: payload }
+    case unemployedTypes.SET_QUERY_UNEMPLOYED:
+      return { ...state, queryUnemployed: payload }
     case unemployedTypes.SET_FILTERS:
       return { ...state, filters: payload }
     case unemployedTypes.SET_QUERY:

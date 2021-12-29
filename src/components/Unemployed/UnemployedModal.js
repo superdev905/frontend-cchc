@@ -16,8 +16,9 @@ import EmployeeRow from '../Scholarships/Create/EmployeeRow'
 import { Dialog, FilePicker } from '../Shared'
 import { formatSearchWithRut } from '../../formatters'
 import generateColor from '../../utils/generateColor'
-import employeesActions from '../../state/actions/employees'
 import commonActions from '../../state/actions/common'
+import filesActions from '../../state/actions/files'
+import unemployedActions from '../../state/actions/unemployed'
 
 const useStyles = makeStyles(() => ({
   boxInput: {
@@ -46,24 +47,51 @@ const UnemployedModal = ({ open, onClose }) => {
 
   const formik = useFormik({
     initialValues: {
-      oficine: '',
-      period: ''
+      employeeId: '',
+      date: new Date().toISOString(),
+      office: '',
+      period: '',
+      delegation: '',
+      dismissalFile: {
+        fileName: '',
+        fileKey: '',
+        fileUrl: '',
+        fileSize: '',
+        uploadDate: ''
+      }
     },
     validationSchema: Yup.object({
-      oficine: Yup.string().required('Seleccione La Oficina'),
+      office: Yup.string().required('Seleccione La Oficina'),
       period: Yup.string().required('Seleccione El Periodo')
     }),
-    onSubmit: (formData) => {
-      console.log(formData)
-      if (uploadFile) {
-        enqueueSnackbar('test', {
-          variant: 'success'
+    onSubmit: async (formData) => {
+      try {
+        if (uploadFile) {
+          formData.employeeId = selectedEmployee.id
+          formData.delegation = formData.office
+          const formFile = new FormData()
+          formFile.append('file', uploadFile)
+          const response = await dispatch(filesActions.uploadFile(formFile))
+          formData.dismissalFile.fileName = response.file_name
+          formData.dismissalFile.fileKey = response.file_key
+          formData.dismissalFile.fileUrl = response.file_url
+          formData.dismissalFile.fileSize = response.file_size
+          formData.dismissalFile.uploadDate = response.upload_date
+          dispatch(unemployedActions.createUnemployed(formData)).then(() => {
+            dispatch(unemployedActions.getUnemployed()).then(() => {
+              enqueueSnackbar('Cesante Registrado Correctamente', {
+                variant: 'success'
+              })
+            })
+          })
+        }
+      } catch (error) {
+        console.error(error)
+        enqueueSnackbar('Error al Registrar Cesante', {
+          variant: 'error'
         })
       }
 
-      enqueueSnackbar('test', {
-        variant: 'error'
-      })
       onClose()
     }
   })
@@ -84,16 +112,18 @@ const UnemployedModal = ({ open, onClose }) => {
 
   useEffect(() => {
     if (searchRut) {
-      dispatch(
-        employeesActions.getEmployees(
-          { state: 'CREATED', search: searchRut },
-          false
-        )
-      ).then((list) => {
-        setSearchList(
-          list.map((item) => ({ ...item, avatarBg: generateColor() }))
-        )
-      })
+      dispatch(unemployedActions.getEmployeesNonAddedByRut(searchRut)).then(
+        (list) => {
+          setSearchList(
+            list
+              .filter((item) => item.isAdded === false)
+              .map((employee) => ({
+                ...employee,
+                avatarBg: generateColor()
+              }))
+          )
+        }
+      )
     } else {
       setSearchList([])
     }
@@ -104,6 +134,7 @@ const UnemployedModal = ({ open, onClose }) => {
       formik.resetForm()
       setSearchRut('')
       setSearchList([])
+      setUploadFile(null)
       setSelectedEmployee(null)
       setYears(getYears)
     }
@@ -182,13 +213,13 @@ const UnemployedModal = ({ open, onClose }) => {
                 <Box className={classes.boxInput}>
                   <Select
                     label="Oficina *"
-                    name="oficine"
-                    value={formik.values.oficine}
+                    name="office"
+                    value={formik.values.office}
                     onChange={formik.handleChange}
                     error={
-                      formik.touched.oficine && Boolean(formik.errors.oficine)
+                      formik.touched.office && Boolean(formik.errors.office)
                     }
-                    helperText={formik.touched.oficine && formik.errors.oficine}
+                    helperText={formik.touched.office && formik.errors.office}
                   >
                     <option value="">-Seleccione-</option>
                     {regions.map((item) => (

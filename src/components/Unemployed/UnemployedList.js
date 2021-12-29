@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/styles'
 import { Box, Grid } from '@material-ui/core'
 import { Button, Wrapper, SearchInput } from '../UI'
 import { DataTable } from '../Shared'
+import { formatQuery, formatSearchWithRut } from '../../formatters'
 import UnemployedModal from './UnemployedModal'
+import unemployedActions from '../../state/actions/unemployed'
 
 const useStyles = makeStyles(() => ({
   main: {}
@@ -12,31 +15,21 @@ const useStyles = makeStyles(() => ({
 
 const UnemployedList = () => {
   const history = useHistory()
-  const filters = { Page: 1, Size: 50 }
+  const dispatch = useDispatch()
+  const { queryUnemployed, unemployedList, totalUnemployed } = useSelector(
+    (state) => state.unemployed
+  )
   const classes = useStyles()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const unemployed = [
-    {
-      id: 1,
-      run: '24.150.582-0',
-      names: 'test',
-      oficine: 'Arica',
-      period: '2021',
-      status: 'pendiente'
-    }
-  ]
 
   const fetchUnemployed = () => {
     setLoading(true)
-    /* dispatch(migrantsActions.getMigrants(formatQuery(filters)))
-      .then(() => {
-        setLoading(false)
-      })
-      .catch(() => {
-        setLoading(false)
-      }) */
-    console.log('fetch')
+    dispatch(
+      unemployedActions.getUnemployed(formatQuery(queryUnemployed))
+    ).then(() => {
+      setLoading(false)
+    })
   }
 
   const onRowClick = (row) => {
@@ -45,14 +38,12 @@ const UnemployedList = () => {
 
   const onSearchChange = (e) => {
     const { value } = e.target
-    console.log(value)
-
-    /* dispatch(
-      migrantsActions.setFilters({
-        ...filters,
+    dispatch(
+      unemployedActions.setQueryUnemployed({
+        ...queryUnemployed,
         search: formatSearchWithRut(value.toString())
       })
-    ) */
+    )
   }
 
   const updateFilters = (values) => {
@@ -63,7 +54,7 @@ const UnemployedList = () => {
   useEffect(() => {
     fetchUnemployed()
     setLoading(false)
-  }, [filters])
+  }, [queryUnemployed])
 
   return (
     <Box className={classes.main}>
@@ -73,7 +64,7 @@ const UnemployedList = () => {
             <Grid container spacing={1}>
               <Grid item xs={12} md={6}>
                 <SearchInput
-                  value={'vacio'}
+                  value={queryUnemployed?.search || ''}
                   onChange={onSearchChange}
                   placeholder="Buscar por: RUT O NOMBRE DE TRABAJADOR"
                 />
@@ -99,27 +90,27 @@ const UnemployedList = () => {
           columns={[
             {
               name: 'Run',
-              selector: (row) => row.run,
+              selector: (row) => row.employeeRut,
               sortable: true
             },
             {
               name: 'Nombres y apellidos',
-              selector: (row) => row.names
+              selector: (row) => row.employeeNames
             },
             {
               name: 'Oficina',
-              selector: (row) => row.oficine
+              selector: (row) => row.office
             },
             {
               name: 'Periodo',
               selector: (row) => row.period
-            },
-            {
+            }
+            /* {
               name: 'Estado de Solicitud',
               selector: (row) => row.status
-            }
+            } */
           ]}
-          data={unemployed}
+          data={unemployedList}
           pagination
           onRowClicked={onRowClick}
           paginationRowsPerPageOptions={[30, 40]}
@@ -127,11 +118,12 @@ const UnemployedList = () => {
           paginationTotalRows={10}
           paginationPerPage={50}
           paginationServer={true}
+          paginationTotalRows={totalUnemployed}
           onChangeRowsPerPage={(limit) => {
-            updateFilters({ ...filters, size: limit })
+            updateFilters({ ...queryUnemployed, size: limit })
           }}
           onChangePage={(page) => {
-            updateFilters({ ...filters, page })
+            updateFilters({ ...queryUnemployed, page })
           }}
         />
       </Wrapper>
