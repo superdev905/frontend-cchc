@@ -11,7 +11,7 @@ import {
 import { FiUpload } from 'react-icons/fi'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { TextField, EmptyState, Select, Button } from '../UI'
+import { TextField, EmptyState, Select, Button, SubmitButton } from '../UI'
 import EmployeeRow from '../Scholarships/Create/EmployeeRow'
 import { Dialog, FilePicker } from '../Shared'
 import { formatSearchWithRut } from '../../formatters'
@@ -78,16 +78,16 @@ const UnemployedModal = ({ open, onClose }) => {
           formData.dismissalFile.fileSize = response.file_size
           formData.dismissalFile.uploadDate = response.upload_date
           dispatch(unemployedActions.createUnemployed(formData)).then(() => {
-            dispatch(unemployedActions.getUnemployed()).then(() => {
-              enqueueSnackbar('Cesante Registrado Correctamente', {
-                variant: 'success'
-              })
+            formik.setSubmitting(false)
+            enqueueSnackbar('Cesante Registrado Correctamente', {
+              variant: 'success'
             })
+            dispatch(unemployedActions.getUnemployed())
           })
         }
       } catch (error) {
-        console.error(error)
-        enqueueSnackbar('Error al Registrar Cesante', {
+        formik.setSubmitting(false)
+        enqueueSnackbar(error, {
           variant: 'error'
         })
       }
@@ -265,9 +265,13 @@ const UnemployedModal = ({ open, onClose }) => {
                 />
               </Box>
               <Box textAlign="center" marginTop="10px">
-                <Button disabled={!uploadFile} type="submit">
+                <SubmitButton
+                  disabled={!uploadFile}
+                  loading={formik.isSubmitting}
+                  onClick={formik.handleSubmit}
+                >
                   Guardar
-                </Button>
+                </SubmitButton>
               </Box>
             </form>
           </Box>

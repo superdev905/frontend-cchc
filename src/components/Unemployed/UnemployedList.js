@@ -53,7 +53,6 @@ const UnemployedList = () => {
 
   useEffect(() => {
     fetchUnemployed()
-    setLoading(false)
   }, [queryUnemployed])
 
   return (
