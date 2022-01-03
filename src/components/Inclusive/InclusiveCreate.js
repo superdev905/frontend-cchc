@@ -13,8 +13,12 @@ import { useToggle, useSuccess } from '../../hooks'
 import FacturationModal from '../Companies/Create/ParentBusiness'
 import { buildTreeData, searchFromTree } from '../../utils/buildTreeData'
 import inclusiveActions from '../../state/actions/inclusive'
+import userActions from '../../state/actions/users'
+import commonActions from '../../state/actions/common'
 import filesActions from '../../state/actions/files'
+import employeeActions from '../../state/actions/employees'
 import SearchCompany from '../Companies/SearchCompany'
+import EmployeeRow from '../Scholarships/Create/EmployeeRow'
 
 const validationSchema = Yup.object({
   boss_id: Yup.number().required('Ingrese nombre de Jefatura'),
@@ -44,10 +48,14 @@ const InclusiveCreate = ({
 }) => {
   const dispatch = useDispatch()
   const [chargeList, setChargeList] = useState([])
+  const [bossesList, setBossesList] = useState([])
   const [companies, setCompanies] = useState([])
   const { constructions: constructionsList } = useSelector(
     (state) => state.companies
   )
+  const [employees, setEmployees] = useState([])
+  const [searchEmployee, setSearchEmployee] = useState('')
+  const { regions } = useSelector((state) => state.common)
   const { enqueueSnackbar } = useSnackbar()
   const { idCompany } = useParams()
   const [treeData, setTreeData] = useState([])
@@ -175,6 +183,22 @@ const InclusiveCreate = ({
   }, [idCompany, companies])
 
   useEffect(() => {
+    if (searchEmployee) {
+      dispatch(
+        employeeActions.getEmployees(
+          {
+            state: 'CREATED',
+            search: searchEmployee
+          },
+          false
+        )
+      ).then((list) => {
+        setEmployees(list)
+      })
+    }
+  }, [searchEmployee])
+
+  useEffect(() => {
     if (selectedCompany) {
       const mainId =
         type === 'UPDATE'
@@ -189,6 +213,10 @@ const InclusiveCreate = ({
       dispatch(inclusiveActions.getChargeMethods()).then((response) => {
         setChargeList(response)
       })
+      dispatch(userActions.getBosses()).then((response) => {
+        setBossesList(response)
+      })
+      dispatch(commonActions.getRegions())
     }
   }, [open])
 
@@ -232,12 +260,23 @@ const InclusiveCreate = ({
           <Grid container spacing={2}>
             <Grid item xs={6} md={4}>
               <Select label="Jefatura" name="jefatura" required>
-                <option value="">Jefatura</option>
+                <option value="">Seleccione jefatura</option>
+                {bossesList.map((item) => (
+                  <option
+                    key={`boss-${item.id}`}
+                    value={item.id}
+                  >{`${item.names} ${item.paternal_surname}`}</option>
+                ))}
               </Select>
             </Grid>
             <Grid item xs={6} md={4}>
               <Select label="Delegacion" name="delegacion" required>
                 <option value="">Delegación</option>
+                {regions.map((item) => (
+                  <option key={`region-${item.id}`} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
               </Select>
             </Grid>
             <Grid item xs={6} md={4}>
@@ -253,8 +292,28 @@ const InclusiveCreate = ({
             Detalle del Trabajador
           </Typography>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6} lg={4}>
-              <RutTextField label="Run" name="run" required />
+            <Grid item xs={12}>
+              <RutTextField
+                label="Run"
+                name="run"
+                required
+                onChange={(e) => {
+                  setSearchEmployee(e.target.value)
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              {employees.map((item) => (
+                <EmployeeRow
+                  key={`employee-row-${item.id}`}
+                  option={item}
+                  selectable
+                  onClick={() => {
+                    console.log(item)
+                  }}
+                />
+              ))}
             </Grid>
           </Grid>
           <Typography variant="h7" align="left" style={{ fontWeight: 'bold' }}>
