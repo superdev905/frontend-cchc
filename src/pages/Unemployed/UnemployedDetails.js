@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, IconButton } from '@material-ui/core'
@@ -9,12 +9,16 @@ import Details from '../../components/Unemployed/Details'
 
 const UnemployedDetails = () => {
   const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
   const { idUnemployed } = useParams()
   const history = useHistory()
   const { unemployed } = useSelector((state) => state.unemployed)
 
   useEffect(() => {
-    dispatch(unemployedActions.getUnemployedById(idUnemployed))
+    setLoading(true)
+    dispatch(unemployedActions.getUnemployedById(idUnemployed)).then(() => {
+      setLoading(false)
+    })
   }, [])
 
   const goBack = () => {
@@ -30,14 +34,14 @@ const UnemployedDetails = () => {
           </IconButton>
           <Text>
             <PageHeading>
-              {unemployed
-                ? `${unemployed.employee.names} ${unemployed.employee.paternalSurname} ${unemployed.employee.maternalSurname}`
-                : null}
+              {`${unemployed?.employee?.names} 
+              ${unemployed?.employee.paternalSurname} 
+              ${unemployed?.employee?.maternalSurname}`}
             </PageHeading>
           </Text>
         </Box>
       </Box>
-      {unemployed ? <Details /> : null}
+      <Details loading={loading} />
     </Box>
   )
 }
