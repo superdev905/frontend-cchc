@@ -39,6 +39,12 @@ const useStyles = makeStyles((theme) => ({
   lockedIcon: {
     fontSize: 40,
     color: theme.palette.error.main
+  },
+  answer: {
+    '& p': {
+      fontSize: 16,
+      margin: '2px 0px'
+    }
   }
 }))
 

@@ -53,7 +53,7 @@ const Questions = () => {
             </>
           ) : (
             <>
-              {loading && questions.length === 0 ? (
+              {!loading && questions.length === 0 ? (
                 <Grid item xs={12}>
                   <EmptyState message="No tienes preguntas" />
                 </Grid>

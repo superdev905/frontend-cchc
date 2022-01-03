@@ -164,6 +164,11 @@ const Question = () => {
                             {formatDate(question?.assignation?.date)}
                           </Text>
                         </LabeledRow>
+                        <LabeledRow label="Departamento:">
+                          <Text loading={loading}>
+                            {question?.assignation?.department}
+                          </Text>
+                        </LabeledRow>
                         {question?.assignation?.assignedUser && (
                           <Box mt={2}>
                             <InputLabel>Assistente</InputLabel>
