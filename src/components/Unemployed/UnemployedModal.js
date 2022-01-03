@@ -115,12 +115,10 @@ const UnemployedModal = ({ open, onClose }) => {
       dispatch(unemployedActions.getEmployeesNonAddedByRut(searchRut)).then(
         (list) => {
           setSearchList(
-            list
-              .filter((item) => item.isAdded === false)
-              .map((employee) => ({
-                ...employee,
-                avatarBg: generateColor()
-              }))
+            list.map((employee) => ({
+              ...employee,
+              avatarBg: generateColor()
+            }))
           )
         }
       )

@@ -53,16 +53,16 @@ const Details = () => {
                   Datos del Trabajador
                 </Typography>
                 <LabeledRow label={'Run'}>
-                  <Text>{unemployed.employee.run}</Text>
+                  <Text>{unemployed?.employee?.run}</Text>
                 </LabeledRow>
                 <LabeledRow label={'Nombres'}>
-                  <Text>{unemployed.employee.names}</Text>
+                  <Text>{unemployed?.employee?.names}</Text>
                 </LabeledRow>
                 <LabeledRow label={'Apellido paterno'}>
-                  <Text>{unemployed.employee.paternalSurname}</Text>
+                  <Text>{unemployed?.employee?.paternalSurname}</Text>
                 </LabeledRow>
                 <LabeledRow label={'Apellido materno'}>
-                  <Text>{unemployed.employee.maternalSurname}</Text>
+                  <Text>{unemployed?.employee?.maternalSurname}</Text>
                 </LabeledRow>
               </Grid>
               <Grid item xs={12} md={6}>
