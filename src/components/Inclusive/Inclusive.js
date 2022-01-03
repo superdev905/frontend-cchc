@@ -8,7 +8,6 @@ const Inclusive = () => {
   const { open: openInclusive, toggleOpen: toggleOpenInclusive } = useToggle()
 
   const { open, anchorEl, handleClose, handleOpen } = useMenu()
-
   return (
     <Box>
       <Grid container alignItems="center">

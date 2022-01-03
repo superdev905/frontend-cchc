@@ -24,5 +24,17 @@ const getChargeMethods =
           reject(err.response.data.detail)
         })
     })
+const createCase = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.inclusive}/inclusion-case`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+const inclusionActions = { getChargeMethods, createCase }
 
-export default { getChargeMethods }
+export default inclusionActions
