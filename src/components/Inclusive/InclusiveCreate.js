@@ -21,19 +21,16 @@ import SearchCompany from '../Companies/SearchCompany'
 import EmployeeRow from '../Scholarships/Create/EmployeeRow'
 
 const validationSchema = Yup.object({
-  boss_id: Yup.number().required('Ingrese nombre de Jefatura'),
+  bossId: Yup.number().required('Ingrese nombre de Jefatura'),
   delegation: Yup.string(),
-  authorizing_charge_id: Yup.number(),
-  authorizing_user: Yup.string().required('Nombre autorizacion de cobro'),
-  interlocutor_id: Yup.number(),
-  construction_name: Yup.string().required('Ingrese Delegacion'),
-  construction_id: Yup.number(),
-  business_name: Yup.string().required('Ingrese Empresa'),
-  business_id: Yup.number(),
-  business_rut: Yup.string(),
-  employee_names: Yup.string(),
-  employee_id: Yup.number(),
-  employee_rut: Yup.string().required('Rut Trabajador')
+  authorizingChargeId: Yup.number().required('Seleccione cargo'),
+  authorizingUser: Yup.string().required('Nombre autorizacion de cobro'),
+  interlocutorId: Yup.number(),
+  constructionName: Yup.string().required('Ingrese Delegacion'),
+  constructionId: Yup.number().required('Seleccione obra'),
+  businessName: Yup.string().required('Ingrese Empresa'),
+  businessId: Yup.number(),
+  employeeId: Yup.number()
 })
 
 const InclusiveCreate = ({
@@ -55,7 +52,7 @@ const InclusiveCreate = ({
   )
   const [employees, setEmployees] = useState([])
   const [searchEmployee, setSearchEmployee] = useState('')
-  const { regions } = useSelector((state) => state.common)
+  const { regions, charges } = useSelector((state) => state.common)
   const { enqueueSnackbar } = useSnackbar()
   const { idCompany } = useParams()
   const [treeData, setTreeData] = useState([])
@@ -70,6 +67,7 @@ const InclusiveCreate = ({
   const formik = useFormik({
     validateOnMount: true,
     validationSchema,
+    validateOnChange: true,
     initialValues: {
       bossId: type === 'UPDATE' ? data.bossId : '',
       delegation: type === 'UPDATE' ? data.delegation : '',
@@ -217,6 +215,7 @@ const InclusiveCreate = ({
         setBossesList(response)
       })
       dispatch(commonActions.getRegions())
+      dispatch(commonActions.getCharges())
     }
   }, [open])
 
@@ -231,6 +230,8 @@ const InclusiveCreate = ({
       )
     }
   }, [open, type, selectClient])
+
+  console.log(formik.errors)
 
   useEffect(() => {
     if (selectedCompany) {
@@ -393,21 +394,34 @@ const InclusiveCreate = ({
               </Select>
             </Grid>
             <Grid item xs={6} md={4}>
-              <Select
+              <TextField
                 label="Nombre Autorizacion de Cobro"
                 name="nombre autorizacion de cobro"
                 required
-              >
-                <option value="">Nombre autorizacion de Cobro</option>
-              </Select>
+              />
             </Grid>
             <Grid item xs={6} md={4}>
               <Select
                 label="Cargo de autorizacion de Cobro"
-                name="cargo de autorizacion de cobro"
+                name="authorizingChargeId"
                 required
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.authorizingChargeId &&
+                  Boolean(formik.errors.authorizingChargeId)
+                }
+                helperText={
+                  formik.touched.authorizingChargeId &&
+                  formik.errors.authorizingChargeId
+                }
               >
                 <option value="">Cargo de Autorizacion de Cobro</option>
+                {charges.map((item) => (
+                  <option key={`charge-${item.id}`} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
               </Select>
             </Grid>
             <Grid container>
@@ -431,11 +445,11 @@ const InclusiveCreate = ({
             </Button>
             <SubmitButton
               loading={formik.isSubmitting}
-              disabled={formik.isSubmitting}
+              disabled={!formik.isValid}
               onClick={formik.handleSubmit}
               success={success}
             >
-              OK
+              Guardar
             </SubmitButton>
           </Box>
         </Box>
