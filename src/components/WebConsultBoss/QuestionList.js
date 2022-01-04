@@ -38,6 +38,16 @@ const QuestionList = () => {
     dispatch(questionActions.updateSelectedList(selectedRows))
   }
 
+  const bgColor = (status) => {
+    if (status === 'RESPONDIDA') return 'tranparent'
+    if (status === 'ASIGNADA') {
+      if (user.role.key === 'ADMIN' || user.role.key === 'JEFATURA')
+        return '#FFFAF0'
+      return '#FFF5F5'
+    }
+    return '#FFF5F5'
+  }
+
   useEffect(() => {
     getQuestions()
   }, [query])
@@ -52,6 +62,15 @@ const QuestionList = () => {
           selectableRowDisabled={(row) =>
             row.status === 'ASIGNADA' || row.status === 'RESPONDIDA'
           }
+          conditionalRowStyles={[
+            {
+              when: (row) =>
+                row.status === 'ASIGNADA' || row.status === 'INGRESADO',
+              style: (row) => ({
+                backgroundColor: bgColor(row.status)
+              })
+            }
+          ]}
           columns={[
             {
               name: 'N°',

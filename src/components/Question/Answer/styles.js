@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.error.main
   },
   answer: {
+    backgroundColor: theme.palette.common.white,
+    padding: `5px ${theme.spacing(1)}px`,
+    borderRadius: 5,
     '& p': {
       fontSize: 16,
       margin: '2px 0px'

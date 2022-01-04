@@ -5,10 +5,9 @@ import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import 'react-quill/dist/quill.bubble.css'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { useSuccess } from '../../hooks'
-import { Select, SubmitButton, TextArea } from '../UI'
+import { Select, SubmitButton } from '../UI'
 import commonActions from '../../state/actions/common'
 
 const useStyles = makeStyles((theme) => ({
@@ -233,19 +232,6 @@ const Answer = ({
               onChange={(e) => {
                 formik.setFieldValue('answer', e)
               }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextArea
-              label="Respuesta"
-              name="answer"
-              required
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.answer}
-              error={formik.touched.answer && Boolean(formik.errors.answer)}
-              helperText={formik.touched.answer && formik.errors.answer}
-              maxLength={800}
             />
           </Grid>
         </Grid>
