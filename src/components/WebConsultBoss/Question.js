@@ -70,14 +70,15 @@ const Question = () => {
         </Grid>
         <Grid item xs={12} md={6} lg={7}>
           <Box textAlign="right">
+            <Button onClick={handleOpen}>Filtros</Button>
             <Can
               availableTo={['ADMIN', 'JEFATURA']}
               yes={() => (
                 <Button
-                  onClick={handleOpen}
+                  onClick={toggleOpenAssign}
                   disabled={selectedList.length === 0}
                 >
-                  Filtros
+                  Asignar
                 </Button>
               )}
               no={() => null}
