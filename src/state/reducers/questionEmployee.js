@@ -10,7 +10,8 @@ const initialState = {
   totalQuestions: 0,
   question: null,
   historyQuestions: [],
-  historyTotal: 0
+  historyTotal: 0,
+  employeeContact: null
 }
 
 const questionEmployeeReducer = (state = initialState, { type, payload }) => {
@@ -31,6 +32,8 @@ const questionEmployeeReducer = (state = initialState, { type, payload }) => {
       return { ...state, historyQuestions: payload }
     case questionTypes.QE_SET_HISTORY_TOTAL_QUESTIONS:
       return { ...state, historyTotal: payload }
+    case questionTypes.QE_GET_EMPLOYEE_CONTACT:
+      return { ...state, employeeContact: payload }
     default:
       return state
   }
