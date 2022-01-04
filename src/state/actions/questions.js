@@ -118,6 +118,24 @@ const getStats = (query) => (dispatch) =>
       })
   })
 
+const getAssignationByAssistance = (query) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.question}/stats/assignation?${queryString.stringify(
+        query
+      )}`
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: questionsTypes.GET_ASSIGNATION_STATS, payload: data })
+
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
 const questionActions = {
   updateQuery,
   updateUIFilters,
@@ -129,7 +147,8 @@ const questionActions = {
   answerQuestion,
   getDistributionStats,
   getLastQuestions,
-  getStats
+  getStats,
+  getAssignationByAssistance
 }
 
 export default questionActions
