@@ -43,6 +43,7 @@ const Question = lazy(() => import('../pages/Question'))
 const QuestionDashboard = lazy(() => import('../pages/QuestionDashboard'))
 const InclusivePage = lazy(() => import('../pages/InclusivePage'))
 const InclusiveDetails = lazy(() => import('../pages/InclusiveDetails'))
+const InclusiveCases = lazy(() => import('../pages/InclusionCases'))
 
 const routes = [
   {
@@ -585,6 +586,22 @@ const routes = [
         yes={() => (
           <Layout>
             <InclusiveDetails />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/inclusion-cases',
+    key: 'INCLUSION-CASES',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
+        yes={() => (
+          <Layout>
+            <InclusiveCases />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}

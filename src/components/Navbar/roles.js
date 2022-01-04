@@ -63,7 +63,7 @@ const modulesByRole = {
     },
     {
       title: 'Inclusión',
-      path: '/inclusive',
+      path: '/inclusion-cases',
       icon: <AccessibleIcon />
     },
     { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
@@ -125,7 +125,7 @@ const modulesByRole = {
     },
     {
       title: 'Inclusión',
-      path: '/inclusive',
+      path: '/inclusion-cases',
       icon: <AccessibleIcon />
     },
     {
