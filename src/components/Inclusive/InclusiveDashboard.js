@@ -1,4 +1,7 @@
 import { makeStyles, Typography, Box, Grid } from '@material-ui/core'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import inclusionActions from '../../state/actions/inclusive'
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -25,12 +28,24 @@ const InclusiveCard = ({ data, label }) => {
   )
 }
 
-const InclusiveDashboard = () => (
-  <Grid container spacing={1}>
-    <Grid item xs={6} md={4} lg={2}>
-      <InclusiveCard />
+const InclusiveDashboard = () => {
+  const dispatch = useDispatch()
+
+  const getDashboard = () => {
+    dispatch(inclusionActions.getDashboard())
+  }
+
+  useEffect(() => {
+    getDashboard()
+  })
+
+  return (
+    <Grid container spacing={1}>
+      <Grid item xs={6} md={4} lg={2}>
+        <InclusiveCard />
+      </Grid>
     </Grid>
-  </Grid>
-)
+  )
+}
 
 export default InclusiveDashboard

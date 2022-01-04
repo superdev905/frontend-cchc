@@ -231,7 +231,7 @@ const searchCompanies = (query) => () =>
       })
   })
 
-export default {
+const companiesActions = {
   toggleCreateModal,
   updateFilters,
   updateCreate,
@@ -252,3 +252,5 @@ export default {
   getRelatedCompanies,
   searchCompanies
 }
+
+export default companiesActions

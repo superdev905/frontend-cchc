@@ -216,6 +216,7 @@ const InclusiveCreate = ({
       })
       dispatch(commonActions.getRegions())
       dispatch(commonActions.getCharges())
+      dispatch(companiesActions.getConstructions())
     }
   }, [open])
 
@@ -293,7 +294,7 @@ const InclusiveCreate = ({
             Detalle del Trabajador
           </Typography>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} md={4}>
               <RutTextField
                 label="Run"
                 name="run"
@@ -357,12 +358,6 @@ const InclusiveCreate = ({
                   setSelectedCompany(null)
                 }}
               />
-              <Select label="Obra" name="obra" required>
-                <option value="">Obra</option>
-                {constructionsList.map((construction) => (
-                  <option>{construction.name}</option>
-                ))}
-              </Select>
             </Grid>
             <Grid item xs={6} md={4} lg={4}>
               <RutTextField
@@ -382,21 +377,35 @@ const InclusiveCreate = ({
                 }}
               />
             </Grid>
+            <Grid item xs={6} md={4}>
+              <Select label="Obra" name="obra" required>
+                <option value="">Obra</option>
+                {constructionsList.map((constructions) => (
+                  <option>{constructions.name}</option>
+                ))}
+              </Select>
+            </Grid>
           </Grid>
           <Grid container spacing={2}>
             <Grid item xs={6} md={4}>
-              <Select
+              <TextField
                 label="Interlocutor de Empresa"
-                name="interlocutor de empresa"
+                name="interlocutorId"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.interlocutorId}
                 requiered
               >
                 <option value="">Interlocutor de Empresa</option>
-              </Select>
+              </TextField>
             </Grid>
             <Grid item xs={6} md={4}>
               <TextField
                 label="Nombre Autorizacion de Cobro"
-                name="nombre autorizacion de cobro"
+                name="authorizingUser"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.authorizingUser}
                 required
               />
             </Grid>

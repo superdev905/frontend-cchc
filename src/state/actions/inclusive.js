@@ -35,6 +35,23 @@ const createCase = (values) => () =>
         reject(err.response.data.detail)
       })
   })
-const inclusionActions = { getChargeMethods, createCase }
+const getDashboard = (query) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.inclusive}/dashboard/stats?${queryString.stringify(
+        query
+      )}`
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: inclusiveTypes.GET_DASHBOARD_STATS, payload: data })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const inclusionActions = { getChargeMethods, createCase, getDashboard }
 
 export default inclusionActions
