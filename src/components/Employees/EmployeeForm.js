@@ -87,7 +87,8 @@ const EmployeeModal = ({
   submitFunction,
   successMessage,
   successFunction,
-  heading
+  heading,
+  disabledNames = false
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -258,6 +259,7 @@ const EmployeeModal = ({
                 <TextField
                   label="Nombres"
                   name="names"
+                  disabled={disabledNames}
                   required
                   value={formik.values.names}
                   onChange={formik.handleChange}
@@ -270,6 +272,7 @@ const EmployeeModal = ({
                 <TextField
                   label="Apellido paterno"
                   name="paternal_surname"
+                  disabled={disabledNames}
                   required
                   value={formik.values.paternal_surname}
                   onChange={formik.handleChange}
@@ -288,6 +291,7 @@ const EmployeeModal = ({
                 <TextField
                   label="Apellido materno"
                   name="maternal_surname"
+                  disabled={disabledNames}
                   value={formik.values.maternal_surname}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}

@@ -8,6 +8,7 @@ import questionActions from '../../state/actions/questions'
 import { DataTable } from '../Shared'
 import { ActionsTable } from '../UI'
 import { QuestionPreview } from '../Question'
+import LinearProgress from '../Question/Dashboard/LinearProgress'
 
 const QuestionList = () => {
   const dispatch = useDispatch()
@@ -116,6 +117,16 @@ const QuestionList = () => {
               selector: (row) => row.areaName,
               compact: true,
               maxWidth: '100px'
+            },
+            {
+              name: 'Progreso Para poder Responder',
+              cell: (row) => (
+                <Box width={'100%'}>
+                  {row.status !== 'RESPONDIDA' ? (
+                    <LinearProgress question={row} />
+                  ) : null}
+                </Box>
+              )
             },
             {
               name: '',

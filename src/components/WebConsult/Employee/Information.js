@@ -78,6 +78,7 @@ const Information = () => {
           successFunction={() => {
             dispatch(questionEmployeeActions.getEmployeeDetails(employeeId))
           }}
+          disabledNames={true}
         />
       )}
       <Box mt={2}>
