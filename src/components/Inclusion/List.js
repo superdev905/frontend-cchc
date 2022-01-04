@@ -1,11 +1,45 @@
-import { Box, Grid } from '@material-ui/core'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { Box, Chip, Grid } from '@material-ui/core'
 import InclusionDialog from './Dialog'
 import { useToggle } from '../../hooks'
 import { DataTable } from '../Shared'
 import { Button, SearchInput } from '../UI'
+import inclusionActions from '../../state/actions/inclusion'
+import { formatDate } from '../../formatters'
 
 const List = () => {
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const { user } = useSelector((state) => state.auth)
+  const [loading, setLoading] = useState(false)
+  const { inclusionCases } = useSelector((state) => state.inclusion)
   const { open: openCreate, toggleOpen: toggleOpenCreate } = useToggle()
+
+  const onCreateCase = (values) =>
+    dispatch(
+      inclusionActions.createCase({
+        ...values,
+        date: new Date().toISOString(),
+        assistanceId: user.id
+      })
+    )
+
+  const getCases = () => {
+    setLoading(true)
+    dispatch(inclusionActions.getCases())
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+  useEffect(() => {
+    getCases()
+  }, [])
+
   return (
     <Box>
       <Box mt={2}>
@@ -23,39 +57,65 @@ const List = () => {
       </Box>
       <Box>
         <DataTable
-          selectableRows
+          data={inclusionCases}
+          progressPending={loading}
           columns={[
             {
               name: 'N°',
               width: '80px',
               sortable: true,
-              compact: true
+              center: true,
+              selector: (row) => row.number
             },
             {
               name: 'Estado',
               compact: true,
-              maxWidth: '120px'
+              selector: (row) => <Chip color="primary" label={row.status} />
+            },
+            {
+              name: 'Rut de trabajador',
+              compact: true,
+              selector: (row) => row.employeeRut
+            },
+            {
+              name: 'Trabajador',
+              compact: true,
+              selector: (row) => row.employeeNames
             },
             {
               name: 'Fecha',
-              sortable: true,
-              compact: true
+              compact: true,
+              selector: (row) => formatDate(row.date, {})
             },
             {
-              name: 'Profesional',
-              sortable: true,
-              compact: true
+              name: 'Rut de empresa',
+              compact: true,
+              selector: (row) => row.businessRut
+            },
+            {
+              name: 'Empresa',
+              compact: true,
+              selector: (row) => row.businessName
+            },
+            {
+              name: 'Metodo cobro',
+              compact: true,
+              selector: (row) => row.chargeMethod.name
             }
           ]}
+          onRowClicked={(row) => {
+            history.push(`/inclusion-cases/${row.number}`)
+          }}
           pagination
-          expandableRows
-          expandOnRowClicked
-          expandableRowsHideExpander
           selectableRowsHighlight
         />
       </Box>
       {openCreate && (
-        <InclusionDialog open={openCreate} onClose={toggleOpenCreate} />
+        <InclusionDialog
+          open={openCreate}
+          onClose={toggleOpenCreate}
+          submitFunction={onCreateCase}
+        />
       )}
     </Box>
   )

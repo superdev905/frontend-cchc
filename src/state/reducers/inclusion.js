@@ -1,7 +1,7 @@
 import inclusionTypes from '../types/inclusion'
 
 const initialState = {
-  list: [],
+  inclusionCases: [],
   chargeMethods: [],
   totalPages: 0,
   inclusionCaseDetails: null
@@ -9,6 +9,8 @@ const initialState = {
 
 const inclusionReducer = (state = initialState, { type, payload }) => {
   switch (type) {
+    case inclusionTypes.GET_INCLUSION_CASES:
+      return { ...state, inclusionCases: payload }
     case inclusionTypes.GET_INCLUSIONCASE_DETAILS:
       return { ...state, inclusionCaseDetails: payload }
     case inclusionTypes.GET_CHARGE_METHODS:

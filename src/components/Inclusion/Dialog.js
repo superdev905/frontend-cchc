@@ -3,41 +3,39 @@ import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { useParams } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
+import { useSuccess } from '../../hooks'
 import companiesActions from '../../state/actions/companies'
-import { Dialog, FilePostulation } from '../Shared'
-import { Select, RutTextField, TextField, SubmitButton, Button } from '../UI'
-import { useToggle, useSuccess } from '../../hooks'
-import FacturationModal from '../Companies/Create/ParentBusiness'
-import { buildTreeData, searchFromTree } from '../../utils/buildTreeData'
 import inclusionActions from '../../state/actions/inclusion'
 import userActions from '../../state/actions/users'
 import commonActions from '../../state/actions/common'
 import filesActions from '../../state/actions/files'
 import employeeActions from '../../state/actions/employees'
+import { CompanyRow, Dialog, FilePostulation } from '../Shared'
+import { Select, RutTextField, TextField, SubmitButton, Button } from '../UI'
 import SearchCompany from '../Companies/SearchCompany'
 import EmployeeRow from '../Scholarships/Create/EmployeeRow'
+import { COLORS } from '../../utils/generateColor'
+import ContactCard from '../Schedule/ContactCard'
 
 const validationSchema = Yup.object({
-  bossId: Yup.number().required('Ingrese nombre de Jefatura'),
-  delegation: Yup.string(),
+  bossId: Yup.number().required('Seleccione jefatura'),
+  delegation: Yup.string().required('Seleccione una delegación'),
   authorizingChargeId: Yup.number().required('Seleccione cargo'),
   authorizingUser: Yup.string().required('Nombre autorizacion de cobro'),
   interlocutorId: Yup.number(),
-  constructionName: Yup.string().required('Ingrese Delegacion'),
   constructionId: Yup.number().required('Seleccione obra'),
-  businessName: Yup.string().required('Ingrese Empresa'),
-  businessId: Yup.number(),
-  employeeId: Yup.number()
+  businessId: Yup.number().required('Selecciona una empresa'),
+  billingBusinessId: Yup.number().required('Selecciona una obra'),
+  employeeId: Yup.number(),
+  chargeMethodId: Yup.number().required('Seleccione modalidad')
 })
 
 const InclusiveCreate = ({
   open,
   onClose,
   data,
-  selectClient,
   type,
   submitFunction,
   successMessage,
@@ -46,21 +44,22 @@ const InclusiveCreate = ({
   const dispatch = useDispatch()
   const [chargeList, setChargeList] = useState([])
   const [bossesList, setBossesList] = useState([])
-  const [companies, setCompanies] = useState([])
+
   const { constructions: constructionsList } = useSelector(
     (state) => state.companies
   )
   const [employees, setEmployees] = useState([])
+  const [companyDetails, setCompanyDetails] = useState(null)
+  const [selectedEmployee, setSelectedEmployee] = useState(null)
   const [searchEmployee, setSearchEmployee] = useState('')
   const { regions, charges } = useSelector((state) => state.common)
   const { enqueueSnackbar } = useSnackbar()
-  const { idCompany } = useParams()
-  const [treeData, setTreeData] = useState([])
+
   const { isMobile } = useSelector((state) => state.ui)
   const [selectedCompany, setSelectedCompany] = useState(null)
-  const [companyBill, setCompanyBill] = useState(null)
+  const [selectedConstruction, setSelectedConstruction] = useState(null)
+  const [billingCompany, setBillingCompany] = useState(null)
   const { success, changeSuccess } = useSuccess()
-  const { open: openFact, toggleOpen: toggleOpenFact } = useToggle()
 
   const [attachments, setAttachments] = useState([])
 
@@ -74,19 +73,16 @@ const InclusiveCreate = ({
       authorizingChargeId: type === 'UPDATE' ? data.authorizingChargeId : '',
       authorizingUser: type === 'UPDATE' ? data.authorizingUser : '',
       interlocutorId: type === 'UPDATE' ? data.interlocutorId : '',
-      constructionName: type === 'UPDATE' ? data.constructionName : '',
       constructionId: type === 'UPDATE' ? data.constructionId : '',
-      businessName: type === 'UPDATE' ? data.businessName : '',
       businessId: type === 'UPDATE' ? data.businessId : '',
-      businessRut: type === 'UPDATE' ? data.businessRut : '',
-      employeeNames: type === 'UPDATE' ? data.employeeNames : '',
       employeeId: type === 'UPDATE' ? data.employeeId : '',
-      employeeRut: type === 'UPDATE' ? data.employeeRut : ''
+      chargeMethodId: type === 'UPDATE' ? data.chargeMethodId : '',
+      billingBusinessId: type === 'UPDATE' ? data.billingBusinessId : ''
     },
     onSubmit: (values) => {
       submitFunction({
         ...values,
-        date: new Date().toISOString()
+        authorizingUser: values.authorizingUser.toUpperCase()
       })
         .then((result) => {
           formik.setSubmitting(false)
@@ -109,19 +105,6 @@ const InclusiveCreate = ({
         })
     }
   })
-
-  const updateTreeData = (mainId) => {
-    const treeList = treeData.map((item) =>
-      searchFromTree(item, item, parseInt(mainId, 10))
-    )
-    setTreeData(treeList.filter((item) => item))
-  }
-
-  const onCompanySelect = (__, values) => {
-    setSelectedCompany(values)
-    formik.setFieldValue('business_selected_id', values ? values.id : '')
-    formik.setFieldTouched('business_selected_id')
-  }
 
   const handleUploadFile = async (file, key) => {
     const formData = new FormData()
@@ -162,25 +145,6 @@ const InclusiveCreate = ({
   }
 
   useEffect(() => {
-    if (formik.values.billing_business_id && companies.length > 0) {
-      setCompanyBill(
-        companies.find(
-          (item) => item.id === parseInt(formik.values.billing_business_id, 10)
-        )
-      )
-    }
-  }, [formik.values.billing_business_id, companies])
-
-  useEffect(() => {
-    if (idCompany && companies.length > 0) {
-      formik.setFieldValue('business_selected_id', idCompany)
-      setSelectedCompany(
-        companies.find((item) => item.id === parseInt(idCompany, 10))
-      )
-    }
-  }, [idCompany, companies])
-
-  useEffect(() => {
     if (searchEmployee) {
       dispatch(
         employeeActions.getEmployees(
@@ -197,16 +161,6 @@ const InclusiveCreate = ({
   }, [searchEmployee])
 
   useEffect(() => {
-    if (selectedCompany) {
-      const mainId =
-        type === 'UPDATE'
-          ? selectedCompany.id
-          : formik.values.business_selected_id
-      updateTreeData(mainId)
-    }
-  }, [formik.values.business_selected_id, type, selectedCompany])
-
-  useEffect(() => {
     if (open) {
       dispatch(inclusionActions.getChargeMethods()).then((response) => {
         setChargeList(response)
@@ -221,21 +175,35 @@ const InclusiveCreate = ({
   }, [open])
 
   useEffect(() => {
-    if (open) {
-      setCompanyBill(null)
-      dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
-        (list) => {
-          setCompanies(list)
-          setTreeData(buildTreeData(list))
-        }
+    if (selectedConstruction) {
+      formik.setFieldValue('constructionId', selectedConstruction.id)
+      dispatch(
+        companiesActions.getCompany(selectedConstruction.billing_business_id)
       )
+        .then((res) => {
+          formik.setFieldValue(
+            'billingBusinessId',
+            selectedConstruction.billing_business_id
+          )
+          setBillingCompany(res)
+        })
+        .catch((err) => {
+          enqueueSnackbar(err, { variant: 'error' })
+        })
     }
-  }, [open, type, selectClient])
-
-  console.log(formik.errors)
+  }, [selectedConstruction])
 
   useEffect(() => {
     if (selectedCompany) {
+      formik.setFieldValue('businessId', selectedCompany.id)
+      dispatch(companiesActions.getCompany(selectedCompany.id, false)).then(
+        (res) => {
+          setCompanyDetails(res)
+          if (res.interlocutor.id) {
+            formik.setFieldValue('interlocutorId', res.interlocutor.id)
+          }
+        }
+      )
       dispatch(
         companiesActions.getConstructions({ business_id: selectedCompany.id })
       )
@@ -261,8 +229,16 @@ const InclusiveCreate = ({
         <Box>
           <Grid container spacing={2}>
             <Grid item xs={6} md={4}>
-              <Select label="Jefatura" name="jefatura" required>
-                <option value="">Seleccione jefatura</option>
+              <Select
+                label="Jefatura"
+                name="bossId"
+                required
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.bossId && Boolean(formik.errors.bossId)}
+                helperText={formik.touched.bossId && formik.errors.bossId}
+              >
+                <option value="">SELECCIONE JEFATURA</option>
                 {bossesList.map((item) => (
                   <option
                     key={`boss-${item.id}`}
@@ -272,8 +248,20 @@ const InclusiveCreate = ({
               </Select>
             </Grid>
             <Grid item xs={6} md={4}>
-              <Select label="Delegacion" name="delegacion" required>
-                <option value="">Delegación</option>
+              <Select
+                label="Delegacion"
+                name="delegation"
+                required
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.delegation && Boolean(formik.errors.delegation)
+                }
+                helperText={
+                  formik.touched.delegation && formik.errors.delegation
+                }
+              >
+                <option value="">SELECCIONE DELEGACIÓN</option>
                 {regions.map((item) => (
                   <option key={`region-${item.id}`} value={item.id}>
                     {item.name}
@@ -282,122 +270,144 @@ const InclusiveCreate = ({
               </Select>
             </Grid>
             <Grid item xs={6} md={4}>
-              <Select label="Modalidad" name="modalidad" required>
-                <option value="">Modalidad</option>
+              <Select
+                label="Modalidad de cobro"
+                name="chargeMethodId"
+                required
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.chargeMethodId &&
+                  Boolean(formik.errors.chargeMethodId)
+                }
+                helperText={
+                  formik.touched.chargeMethodId && formik.errors.chargeMethodId
+                }
+              >
+                <option value="">SELECCIONE MODALIDAD</option>
                 {chargeList.map((item) => (
                   <option value={item.id}>{`${item.name}`}</option>
                 ))}
               </Select>
             </Grid>
           </Grid>
-          <Typography variant="h7" align="left" style={{ fontWeight: 'bold' }}>
-            Detalle del Trabajador
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
-              <RutTextField
-                label="Run"
-                name="run"
-                required
-                onChange={(e) => {
-                  setSearchEmployee(e.target.value)
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              {employees.map((item) => (
-                <EmployeeRow
-                  key={`employee-row-${item.id}`}
-                  option={item}
-                  selectable
-                  onClick={() => {
-                    console.log(item)
+          <Box mt={2}>
+            <Typography
+              variant="h7"
+              align="left"
+              style={{ fontWeight: 'bold' }}
+            >
+              Trabajador
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={4}>
+                <RutTextField
+                  label="Run"
+                  name="run"
+                  required
+                  onChange={(e) => {
+                    setSearchEmployee(e.target.value)
                   }}
                 />
-              ))}
-            </Grid>
-          </Grid>
-          <Typography variant="h7" align="left" style={{ fontWeight: 'bold' }}>
-            Detalle de la Empresa
-          </Typography>
-          <Grid container spacing={2}>
-            {selectClient && (
-              <Grid item xs={6} md={4} lg={4}>
-                <Autocomplete
-                  options={companies}
-                  value={selectedCompany || ''}
-                  getOptionLabel={(option) => option.business_name || ''}
-                  onChange={onCompanySelect}
-                  renderOption={(option) => (
-                    <Box>
-                      <Typography>
-                        {`Razón social: `}
-                        <strong>{option.business_name}</strong>
-                      </Typography>
-                      <Typography>{`Rut: ${option.rut}`}</Typography>
-                    </Box>
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Selecciona empresa"
-                      placeholder="Empresa"
-                    />
-                  )}
-                />
               </Grid>
-            )}
-            <Grid item xs={6} md={4} lg={4}>
+
+              <Grid item xs={12}>
+                {selectedEmployee ? (
+                  <EmployeeRow option={selectedEmployee} />
+                ) : (
+                  <>
+                    {employees.map((item) => (
+                      <EmployeeRow
+                        key={`employee-row-${item.id}`}
+                        option={item}
+                        selectable
+                        onClick={() => {
+                          formik.setFieldValue('employeeId', item.id)
+                          setSelectedEmployee(item)
+                        }}
+                      />
+                    ))}
+                  </>
+                )}
+              </Grid>
+            </Grid>
+          </Box>
+
+          <Box mt={2}>
+            <Typography
+              variant="h7"
+              align="left"
+              style={{ fontWeight: 'bold' }}
+            >
+              Detalle de la Empresa
+            </Typography>
+          </Box>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
               <SearchCompany
                 onSelected={(value) => {
                   setSelectedCompany(value)
-                  console.log(value)
                 }}
                 onDelete={() => {
                   setSelectedCompany(null)
                 }}
               />
             </Grid>
-            <Grid item xs={6} md={4} lg={4}>
-              <RutTextField
-                onClick={toggleOpenFact}
-                label="Empresa facturadora"
-                disabled
-                value={companyBill?.business_name || ''}
-              />
-              <FacturationModal
-                type="FACTURATION"
-                open={openFact}
-                onClose={toggleOpenFact}
-                data={treeData}
-                selectedId={formik.values.billing_business_id}
-                onChange={(id) => {
-                  formik.setFieldValue('billing_business_id', id)
-                }}
-              />
+
+            <Grid item xs={12}>
+              {selectedConstruction ? (
+                <>
+                  <Typography>Obra seleccionada</Typography>
+                  <CompanyRow
+                    type="CONSTRUCTION"
+                    company={selectedConstruction}
+                    onDelete={() => {
+                      setSelectedConstruction(null)
+                      setBillingCompany(null)
+                      formik.setFieldValue('billingBusinessId', '')
+                    }}
+                  />
+                </>
+              ) : (
+                <>
+                  <Autocomplete
+                    options={constructionsList}
+                    value={selectedConstruction || ''}
+                    getOptionLabel={(option) => option.name || ''}
+                    onChange={(__, value) => {
+                      setSelectedConstruction(value)
+                    }}
+                    renderOption={(option) => (
+                      <CompanyRow.Autocomplete
+                        type="CONSTRUCTION"
+                        company={option}
+                      />
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Selecciona empresa"
+                        placeholder="BUSCA UNA OBRA"
+                      />
+                    )}
+                  />
+                </>
+              )}
             </Grid>
-            <Grid item xs={6} md={4}>
-              <Select label="Obra" name="obra" required>
-                <option value="">Obra</option>
-                {constructionsList.map((constructions) => (
-                  <option>{constructions.name}</option>
-                ))}
-              </Select>
+            <Grid item xs={12}>
+              {billingCompany && (
+                <>
+                  <Typography>Empresa facturadora</Typography>
+                  <CompanyRow iconColor={COLORS[3]} company={billingCompany} />
+                </>
+              )}
             </Grid>
           </Grid>
           <Grid container spacing={2}>
-            <Grid item xs={6} md={4}>
-              <TextField
-                label="Interlocutor de Empresa"
-                name="interlocutorId"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.interlocutorId}
-                requiered
-              >
-                <option value="">Interlocutor de Empresa</option>
-              </TextField>
+            <Grid item xs={12}>
+              <Typography>Interlocutor de empresa</Typography>
+              <ContactCard contact={companyDetails?.interlocutor} />
             </Grid>
             <Grid item xs={6} md={4}>
               <TextField
@@ -458,7 +468,7 @@ const InclusiveCreate = ({
               onClick={formik.handleSubmit}
               success={success}
             >
-              Guardar
+              Crear caso
             </SubmitButton>
           </Box>
         </Box>

@@ -3,6 +3,28 @@ import Axios from '../../Axios'
 import config from '../../config'
 import inclusionTypes from '../types/inclusion'
 
+const getCases =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.inclusion}/inclusion-cases?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: inclusionTypes.GET_INCLUSION_CASES,
+            payload: data.items
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const getCaseDetails = (caseId) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.inclusion}/inclusion-cases/${caseId}`)
@@ -42,7 +64,7 @@ const getChargeMethods =
     })
 const createCase = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${config.services.inclusion}/inclusion-case`, values)
+    Axios.post(`${config.services.inclusion}/inclusion-cases`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -51,6 +73,11 @@ const createCase = (values) => () =>
         reject(err.response.data.detail)
       })
   })
-const inclusionActions = { getCaseDetails, getChargeMethods, createCase }
+const inclusionActions = {
+  getCases,
+  getCaseDetails,
+  getChargeMethods,
+  createCase
+}
 
 export default inclusionActions
