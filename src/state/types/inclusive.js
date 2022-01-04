@@ -1,0 +1,3 @@
+export default {
+  GET_CHARGE_METHODS: 'GET_CHARGE_METHODS'
+}
