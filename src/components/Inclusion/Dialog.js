@@ -82,7 +82,10 @@ const InclusiveCreate = ({
     onSubmit: (values) => {
       submitFunction({
         ...values,
-        authorizingUser: values.authorizingUser.toUpperCase()
+        authorizingUser: values.authorizingUser.toUpperCase(),
+        delegation: regions
+          .find((item) => item.id === parseInt(values.delegation, 10))
+          .name.toUpperCase()
       })
         .then((result) => {
           formik.setSubmitting(false)

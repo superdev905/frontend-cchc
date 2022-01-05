@@ -73,11 +73,26 @@ const createCase = (values) => () =>
         reject(err.response.data.detail)
       })
   })
+const approveCase = (number, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.inclusion}/inclusion-cases/${number}/approve`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 const inclusionActions = {
   getCases,
   getCaseDetails,
   getChargeMethods,
-  createCase
+  createCase,
+  approveCase
 }
 
 export default inclusionActions
