@@ -1,6 +1,6 @@
 import { makeStyles, Typography, Box, Grid } from '@material-ui/core'
 import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import inclusionActions from '../../state/actions/inclusive'
 
 const useStyles = makeStyles((theme) => ({
@@ -30,6 +30,7 @@ const InclusiveCard = ({ data, label }) => {
 
 const InclusiveDashboard = () => {
   const dispatch = useDispatch()
+  const { stats } = useSelector((state) => state.inclusive)
 
   const getDashboard = () => {
     dispatch(inclusionActions.getDashboard())
@@ -41,9 +42,11 @@ const InclusiveDashboard = () => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={6} md={4} lg={2}>
-        <InclusiveCard />
-      </Grid>
+      {Object.keys(stats).map((key) => (
+        <Grid item xs={6} md={4} lg={2} key={`card-stats-${key}`}>
+          <InclusiveCard label={stats[key].label} data={stats[key].value} />
+        </Grid>
+      ))}
     </Grid>
   )
 }
