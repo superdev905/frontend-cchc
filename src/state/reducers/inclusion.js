@@ -4,6 +4,8 @@ const initialState = {
   inclusionCases: [],
   chargeMethods: [],
   totalPages: 0,
+  approbation: null,
+  rejection: null,
   inclusionCaseDetails: null
 }
 
@@ -15,7 +17,10 @@ const inclusionReducer = (state = initialState, { type, payload }) => {
       return { ...state, inclusionCaseDetails: payload }
     case inclusionTypes.GET_CHARGE_METHODS:
       return { ...state, chargeMethods: payload }
-
+    case inclusionTypes.GET_CASE_APPROBATION_DETAILS:
+      return { ...state, approbation: payload }
+    case inclusionTypes.GET_CASE_REJECTION_DETAILS:
+      return { ...state, rejection: payload }
     default:
       return state
   }

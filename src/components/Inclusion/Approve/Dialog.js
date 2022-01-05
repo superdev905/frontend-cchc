@@ -142,6 +142,7 @@ const ApproveDialog = ({ open, onClose, submitFunction }) => {
                   required
                   label={'Comentarios'}
                   name="comments"
+                  maxLength={800}
                   value={formik.values.comments}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}

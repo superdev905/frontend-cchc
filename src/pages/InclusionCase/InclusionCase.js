@@ -3,8 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { Alert } from '@material-ui/lab'
 import { Box, Chip, Grid, makeStyles, Typography } from '@material-ui/core'
-import { Button, LabeledRow, Text, Wrapper } from '../../components/UI'
-import { CompanyRow, HeadingWithButton } from '../../components/Shared'
 import inclusionActions from '../../state/actions/inclusion'
 import CompanyCard from '../../components/Company/CompanyCard'
 import ContactCard from '../../components/Schedule/ContactCard'
@@ -12,8 +10,13 @@ import { UserCard } from '../../components/Users'
 import { formatDate } from '../../formatters'
 import { COLORS } from '../../utils/generateColor'
 import { useToggle } from '../../hooks'
+import Can from '../../components/Can'
+import { CompanyRow, HeadingWithButton } from '../../components/Shared'
+import { Button, LabeledRow, Text, Wrapper } from '../../components/UI'
 import {
   InclusionApproveDialog,
+  InclusionCloseDialog,
+  InclusionRejectDialog,
   InclusionStatus
 } from '../../components/Inclusion'
 
@@ -33,6 +36,8 @@ const InclusiveDetails = () => {
     (state) => state.inclusion
   )
   const { open: openApprove, toggleOpen: toggleOpenApprove } = useToggle()
+  const { open: openReject, toggleOpen: toggleOpenReject } = useToggle()
+  const { open: openClose, toggleOpen: toggleOpenClose } = useToggle()
 
   const fetchCaseDetails = () => {
     setLoading(true)
@@ -48,6 +53,33 @@ const InclusiveDetails = () => {
         date: new Date().toISOString()
       })
     )
+  const rejectCase = (values) =>
+    dispatch(
+      inclusionActions.rejectCase(caseNumber, {
+        ...values,
+        date: new Date().toISOString()
+      })
+    )
+
+  const closeCase = (values) =>
+    dispatch(
+      inclusionActions.closeCase(caseNumber, {
+        ...values,
+        date: new Date().toISOString()
+      })
+    )
+  const availableOptions = (action, value) => {
+    if (action === 'reject' || action === 'approve') {
+      if (value?.status === 'RECHAZADA') return true
+      if (value?.status === 'APROBADA') return true
+      if (value?.status === 'CERRADO') return true
+    }
+    if (action === 'close') {
+      if (value?.status === 'RECHAZADA') return true
+      if (value?.status === 'CERRADO') return true
+    }
+    return false
+  }
 
   useEffect(() => {
     fetchCaseDetails()
@@ -62,14 +94,39 @@ const InclusiveDetails = () => {
             title={`CASO N° ${caseNumber}: ${details?.employee?.names} ${details?.employee?.paternalSurname}`}
           />
           <Box display="flex" justifyContent="flex-end">
-            <Button>Rechazar</Button>
-            <Button
-              disabled={details?.status === 'APROBADA'}
-              onClick={toggleOpenApprove}
-            >
-              Approbar
-            </Button>
-            <Button>Aprobar cierre </Button>
+            <Can
+              availableTo={['ADMIN', 'JEFATURA', 'ANALISTA_CASOS']}
+              yes={() => (
+                <>
+                  <Button
+                    disabled={availableOptions('reject', details)}
+                    danger
+                    onClick={toggleOpenReject}
+                  >
+                    Rechazar
+                  </Button>
+                  <Button
+                    disabled={availableOptions('approve', details)}
+                    onClick={toggleOpenApprove}
+                  >
+                    Approbar
+                  </Button>
+                </>
+              )}
+              no={() => null}
+            />
+            <Can
+              availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
+              yes={() => (
+                <Button
+                  disabled={availableOptions('close', details)}
+                  onClick={toggleOpenClose}
+                >
+                  Aprobar cierre
+                </Button>
+              )}
+              no={() => null}
+            />
           </Box>
         </Box>
         <Box px={1}>
@@ -85,29 +142,34 @@ const InclusiveDetails = () => {
               <Grid item xs={12} lg={6}>
                 <Typography>Detalles de trabajador</Typography>
                 <LabeledRow label={'Rut de trabajador'}>
-                  <Text loaderWidth={'30%'}>{details?.employee.run}</Text>
+                  <Text loading={loading} loaderWidth={'30%'}>
+                    {details?.employee.run}
+                  </Text>
                 </LabeledRow>
                 <LabeledRow label={'Nombres'}>
-                  <Text loaderWidth={'30%'}>{details?.employee.names}</Text>
+                  <Text loading={loading} loaderWidth={'40%'}>
+                    {details?.employee.names}
+                  </Text>
                 </LabeledRow>
                 <LabeledRow label={'Apellidos'}>
                   <Text
-                    loaderWidth={'30%'}
-                  >{`${details?.employee.paternalSurname} ${details?.employee.maternalSurname}`}</Text>
+                    loading={loading}
+                    loaderWidth={'70%'}
+                  >{`${details?.employee?.paternalSurname} ${details?.employee?.maternalSurname}`}</Text>
                 </LabeledRow>
               </Grid>
               <Grid item xs={12} lg={6}>
                 <Box className={classes.caseDetails} p={2}>
                   <Typography>Detalles de Caso</Typography>
                   <LabeledRow label={'Estado'}>
-                    <Text loaderWidth={'40%'}>
+                    <Text loading={loading} loaderWidth={'40%'}>
                       {details && (
                         <Chip color="primary" label={details.status} />
                       )}
                     </Text>
                   </LabeledRow>
                   <LabeledRow label={'Fecha'}>
-                    <Text loaderWidth={'20%'}>
+                    <Text loading={loading} loaderWidth={'20%'}>
                       {details && formatDate(details?.date)}
                     </Text>
                   </LabeledRow>
@@ -176,6 +238,20 @@ const InclusiveDetails = () => {
             open={openApprove}
             onClose={toggleOpenApprove}
             submitFunction={approveCase}
+          />
+        )}
+        {openReject && (
+          <InclusionRejectDialog
+            open={openReject}
+            onClose={toggleOpenReject}
+            submitFunction={rejectCase}
+          />
+        )}
+        {openClose && (
+          <InclusionCloseDialog
+            open={openClose}
+            onClose={toggleOpenClose}
+            submitFunction={closeCase}
           />
         )}
       </Box>

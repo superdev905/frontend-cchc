@@ -87,12 +87,79 @@ const approveCase = (number, values) => () =>
         reject(err.response.data.detail)
       })
   })
+
+const getApprobationDetails = (number) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.inclusion}/inclusion-cases/${number}/approve`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: inclusionTypes.GET_CASE_APPROBATION_DETAILS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const rejectCase = (number, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.inclusion}/inclusion-cases/${number}/reject`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getRejectionDetails = (number) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.inclusion}/inclusion-cases/${number}/reject`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: inclusionTypes.GET_CASE_REJECTION_DETAILS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const closeCase = (number, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.inclusion}/inclusion-cases/${number}/close`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const inclusionActions = {
   getCases,
   getCaseDetails,
   getChargeMethods,
   createCase,
-  approveCase
+  approveCase,
+  getApprobationDetails,
+  rejectCase,
+  getRejectionDetails,
+  closeCase
 }
 
 export default inclusionActions
