@@ -17,7 +17,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const Details = ({ caseNumber }) => {
+const Details = ({ caseNumber, socialCaseNumber }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
@@ -51,6 +51,17 @@ const Details = ({ caseNumber }) => {
                     <LabeledRow label={'Fecha: '}>
                       <Text loading={loading}>
                         {formatDate(approbation.date)}
+                      </Text>
+                    </LabeledRow>
+
+                    <LabeledRow label={'Caso social: '}>
+                      <Text loading={loading}>
+                        <a
+                          href={`/social-case/${socialCaseNumber}/details`}
+                          target="_blank"
+                        >
+                          {`Caso ${socialCaseNumber}`}
+                        </a>
                       </Text>
                     </LabeledRow>
                     <LabeledRow label={'Comentarios: '}>

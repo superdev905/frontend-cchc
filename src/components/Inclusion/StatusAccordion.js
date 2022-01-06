@@ -53,7 +53,10 @@ const StatusAccordion = () => {
           </AccordionSummary>
           <AccordionDetails>
             <Box width={'100%'}>
-              <ApproveDetails caseNumber={details.number} />
+              <ApproveDetails
+                caseNumber={details.number}
+                socialCaseNumber={details?.socialCaseNumber}
+              />
             </Box>
           </AccordionDetails>
         </Accordion>

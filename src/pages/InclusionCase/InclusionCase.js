@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { Alert } from '@material-ui/lab'
 import { Box, Chip, Grid, makeStyles, Typography } from '@material-ui/core'
 import inclusionActions from '../../state/actions/inclusion'
+import socialCaseActions from '../../state/actions/socialCase'
 import CompanyCard from '../../components/Company/CompanyCard'
 import ContactCard from '../../components/Schedule/ContactCard'
 import { UserCard } from '../../components/Users'
@@ -11,7 +12,12 @@ import { formatDate } from '../../formatters'
 import { COLORS } from '../../utils/generateColor'
 import { useToggle } from '../../hooks'
 import Can from '../../components/Can'
-import { CompanyRow, HeadingWithButton } from '../../components/Shared'
+import {
+  CompanyRow,
+  FileThumbnail,
+  FileVisor,
+  HeadingWithButton
+} from '../../components/Shared'
 import { Button, LabeledRow, Text, Wrapper } from '../../components/UI'
 import {
   InclusionApproveDialog,
@@ -38,6 +44,32 @@ const InclusiveDetails = () => {
   const { open: openApprove, toggleOpen: toggleOpenApprove } = useToggle()
   const { open: openReject, toggleOpen: toggleOpenReject } = useToggle()
   const { open: openClose, toggleOpen: toggleOpenClose } = useToggle()
+  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
+
+  const createSocialCase = () => {
+    dispatch(
+      socialCaseActions.createSocialCase({
+        date: new Date(),
+        businessId: details.businessId,
+        businessName: details.businessName,
+        assistanceId: details.assistanceId,
+        employeeRut: details.employeeRut,
+        employeeId: details.employeeId,
+        employeeNames: details.employeeNames.toUpperCase(),
+        office: details.delegation,
+        delegation: details.delegation,
+        zone: details.delegation,
+        professionalId: details.assistanceId,
+        areaId: 1
+      })
+    ).then((res) => {
+      dispatch(
+        inclusionActions.updateCase(caseNumber, {
+          socialCaseNumber: res.id
+        })
+      )
+    })
+  }
 
   const fetchCaseDetails = () => {
     setLoading(true)
@@ -194,6 +226,26 @@ const InclusiveDetails = () => {
                       />
                     </>
                   )}
+                  {details?.attachment && (
+                    <>
+                      <Typography>Archivo adjunto</Typography>
+                      <FileThumbnail
+                        bgWhite
+                        fileName={details?.attachment?.fileName}
+                        date={details?.attachment?.uploadDate}
+                        fileSize={details?.attachment?.fileSize}
+                        onView={toggleOpenVisor}
+                      />
+                      {openVisor && (
+                        <FileVisor
+                          open={openVisor}
+                          onClose={toggleOpenVisor}
+                          src={details?.attachment?.fileUrl}
+                          filename={details?.attachment?.fileName}
+                        />
+                      )}
+                    </>
+                  )}
                 </Box>
               </Grid>
             </Grid>
@@ -238,7 +290,10 @@ const InclusiveDetails = () => {
             open={openApprove}
             onClose={toggleOpenApprove}
             submitFunction={approveCase}
-            successFunction={fetchCaseDetails}
+            successFunction={() => {
+              createSocialCase()
+              fetchCaseDetails()
+            }}
           />
         )}
         {openReject && (

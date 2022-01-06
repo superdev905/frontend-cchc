@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { Box, Grid, Typography } from '@material-ui/core'
-import { Autocomplete } from '@material-ui/lab'
+import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
+import { Autocomplete, Skeleton } from '@material-ui/lab'
 import { useSuccess } from '../../hooks'
 import companiesActions from '../../state/actions/companies'
 import inclusionActions from '../../state/actions/inclusion'
@@ -12,12 +12,27 @@ import userActions from '../../state/actions/users'
 import commonActions from '../../state/actions/common'
 import filesActions from '../../state/actions/files'
 import employeeActions from '../../state/actions/employees'
-import { CompanyRow, Dialog, FilePostulation } from '../Shared'
-import { Select, RutTextField, TextField, SubmitButton, Button } from '../UI'
+import { CompanyRow, Dialog, FilePicker } from '../Shared'
+import {
+  Select,
+  RutTextField,
+  TextField,
+  SubmitButton,
+  Button,
+  EmptyState
+} from '../UI'
 import SearchCompany from '../Companies/SearchCompany'
 import EmployeeRow from '../Scholarships/Create/EmployeeRow'
 import { COLORS } from '../../utils/generateColor'
 import ContactCard from '../Schedule/ContactCard'
+
+const useStyles = makeStyles(() => ({
+  heading: {
+    fontWeight: 'bold',
+    marginBottom: 15,
+    fontSize: 18
+  }
+}))
 
 const validationSchema = Yup.object({
   bossId: Yup.number().required('Seleccione jefatura'),
@@ -41,7 +56,9 @@ const InclusiveCreate = ({
   successMessage,
   successFunction
 }) => {
+  const classes = useStyles()
   const dispatch = useDispatch()
+  const [searching, setSearching] = useState(false)
   const [chargeList, setChargeList] = useState([])
   const [bossesList, setBossesList] = useState([])
 
@@ -61,7 +78,20 @@ const InclusiveCreate = ({
   const [billingCompany, setBillingCompany] = useState(null)
   const { success, changeSuccess } = useSuccess()
 
-  const [attachments, setAttachments] = useState([])
+  const [attachment, setAttachment] = useState(null)
+
+  const handleUploadFile = async (file) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const response = await dispatch(filesActions.uploadFile(formData))
+    return {
+      fileName: response.file_name,
+      fileKey: response.file_key,
+      fileUrl: response.file_url,
+      fileSize: response.file_size,
+      uploadDate: response.upload_date
+    }
+  }
 
   const formik = useFormik({
     validateOnMount: true,
@@ -79,23 +109,35 @@ const InclusiveCreate = ({
       chargeMethodId: type === 'UPDATE' ? data.chargeMethodId : '',
       billingBusinessId: type === 'UPDATE' ? data.billingBusinessId : ''
     },
-    onSubmit: (values) => {
-      submitFunction({
+    onSubmit: async (values) => {
+      let uploadAttach = null
+
+      if (attachment) {
+        uploadAttach = await handleUploadFile(attachment)
+      }
+      const body = {
         ...values,
         authorizingUser: values.authorizingUser.toUpperCase(),
         delegation: regions
           .find((item) => item.id === parseInt(values.delegation, 10))
           .name.toUpperCase()
-      })
+      }
+
+      if (uploadAttach) {
+        body.attachment = uploadAttach
+      }
+
+      submitFunction(body)
         .then((result) => {
           formik.setSubmitting(false)
+          enqueueSnackbar(successMessage, {
+            variant: 'success'
+          })
           changeSuccess(true)
           if (successFunction) {
             successFunction()
           }
-          enqueueSnackbar(successMessage, {
-            variant: 'success'
-          })
+
           onClose()
           if (successFunction) {
             successFunction(result)
@@ -109,46 +151,19 @@ const InclusiveCreate = ({
     }
   })
 
-  const handleUploadFile = async (file, key) => {
-    const formData = new FormData()
-    formData.append('file', file)
-    const response = await dispatch(filesActions.uploadFile(formData))
-    const newAttachment = attachments.map((item) =>
-      item.name === key
-        ? {
-            ...item,
-            fileName: response.file_name,
-            fileKey: response.file_key,
-            fileUrl: response.file_url,
-            fileSize: response.file_size,
-            uploadDate: response.upload_date
-          }
-        : item
-    )
-
-    setAttachments(newAttachment)
-  }
-  const handleDeleteFile = async (key) => {
-    if (type !== 'UPDATE') {
-      await dispatch(filesActions.deleteFile())
-    }
-    const newAttachment = attachments.map((item) =>
-      item.name === key
-        ? {
-            ...item,
-            fileName: '',
-            fileKey: '',
-            fileUrl: '',
-            fileSize: '',
-            uploadDate: ''
-          }
-        : item
-    )
-    setAttachments(newAttachment)
+  const fetchCompanyDetails = (company) => {
+    formik.setFieldValue('businessId', company.id)
+    dispatch(companiesActions.getCompany(company.id, false)).then((res) => {
+      setCompanyDetails(res)
+      if (res?.interlocutor?.id) {
+        formik.setFieldValue('interlocutorId', res.interlocutor.id)
+      }
+    })
   }
 
   useEffect(() => {
     if (searchEmployee) {
+      setSearching(true)
       dispatch(
         employeeActions.getEmployees(
           {
@@ -158,6 +173,7 @@ const InclusiveCreate = ({
           false
         )
       ).then((list) => {
+        setSearching(false)
         setEmployees(list)
       })
     }
@@ -198,15 +214,7 @@ const InclusiveCreate = ({
 
   useEffect(() => {
     if (selectedCompany) {
-      formik.setFieldValue('businessId', selectedCompany.id)
-      dispatch(companiesActions.getCompany(selectedCompany.id, false)).then(
-        (res) => {
-          setCompanyDetails(res)
-          if (res.interlocutor.id) {
-            formik.setFieldValue('interlocutorId', res.interlocutor.id)
-          }
-        }
-      )
+      fetchCompanyDetails(selectedCompany)
       dispatch(
         companiesActions.getConstructions({ business_id: selectedCompany.id })
       )
@@ -222,11 +230,7 @@ const InclusiveCreate = ({
       fullScreen={isMobile}
     >
       <Box>
-        <Typography
-          variant="h6"
-          align="center"
-          style={{ fontWeight: 'bold', marginBottom: 10 }}
-        >
+        <Typography variant="h6" align="center" className={classes.heading}>
           Nuevo Caso de Ley de Inclusión
         </Typography>
         <Box>
@@ -295,41 +299,69 @@ const InclusiveCreate = ({
             </Grid>
           </Grid>
           <Box mt={2}>
-            <Typography
-              variant="h7"
-              align="left"
-              style={{ fontWeight: 'bold' }}
-            >
+            <Typography variant="h7" align="left" className={classes.heading}>
               Trabajador
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={4}>
-                <RutTextField
-                  label="Run"
-                  name="run"
-                  required
-                  onChange={(e) => {
-                    setSearchEmployee(e.target.value)
-                  }}
-                />
-              </Grid>
+              {!selectedEmployee && (
+                <Grid item xs={12} md={4}>
+                  <RutTextField
+                    label="Rut"
+                    value={searchEmployee}
+                    required
+                    onChange={(e) => {
+                      setSearchEmployee(e.target.value)
+                    }}
+                  />
+                </Grid>
+              )}
 
               <Grid item xs={12}>
-                {selectedEmployee ? (
-                  <EmployeeRow option={selectedEmployee} />
+                {searching ? (
+                  <>
+                    <Skeleton height={'80px'}></Skeleton>
+                    <Skeleton height={'80px'}></Skeleton>
+                  </>
                 ) : (
                   <>
-                    {employees.map((item) => (
+                    {selectedEmployee ? (
                       <EmployeeRow
-                        key={`employee-row-${item.id}`}
-                        option={item}
-                        selectable
-                        onClick={() => {
-                          formik.setFieldValue('employeeId', item.id)
-                          setSelectedEmployee(item)
+                        option={selectedEmployee}
+                        onDelete={() => {
+                          setSelectedEmployee(null)
+                          formik.setFieldValue('employeeId', '')
+                          setSearchEmployee('')
+                          setEmployees([])
                         }}
                       />
-                    ))}
+                    ) : (
+                      <>
+                        {employees.length === 0 ? (
+                          <EmptyState
+                            message={
+                              !searchEmployee
+                                ? `Busca un trabajador`
+                                : `No se encontró resultados para: ${searchEmployee}`
+                            }
+                          />
+                        ) : (
+                          <>
+                            {' '}
+                            {employees.map((item) => (
+                              <EmployeeRow
+                                key={`employee-row-${item.id}`}
+                                option={item}
+                                selectable
+                                onClick={() => {
+                                  formik.setFieldValue('employeeId', item.id)
+                                  setSelectedEmployee(item)
+                                }}
+                              />
+                            ))}
+                          </>
+                        )}
+                      </>
+                    )}
                   </>
                 )}
               </Grid>
@@ -337,11 +369,7 @@ const InclusiveCreate = ({
           </Box>
 
           <Box mt={2}>
-            <Typography
-              variant="h7"
-              align="left"
-              style={{ fontWeight: 'bold' }}
-            >
+            <Typography variant="h7" align="left" className={classes.heading}>
               Detalle de la Empresa
             </Typography>
           </Box>
@@ -390,7 +418,7 @@ const InclusiveCreate = ({
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Selecciona empresa"
+                        label="Selecciona una obra"
                         placeholder="BUSCA UNA OBRA"
                       />
                     )}
@@ -408,11 +436,17 @@ const InclusiveCreate = ({
             </Grid>
           </Grid>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography>Interlocutor de empresa</Typography>
-              <ContactCard contact={companyDetails?.interlocutor} />
-            </Grid>
-            <Grid item xs={6} md={4}>
+            {companyDetails && (
+              <Grid item xs={12}>
+                <Typography>Interlocutor de empresa</Typography>
+                <ContactCard
+                  businessId={companyDetails.id}
+                  contact={companyDetails?.interlocutor}
+                  onSuccessFunction={() => fetchCompanyDetails(selectedCompany)}
+                />
+              </Grid>
+            )}
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Nombre Autorizacion de Cobro"
                 name="authorizingUser"
@@ -422,7 +456,7 @@ const InclusiveCreate = ({
                 required
               />
             </Grid>
-            <Grid item xs={6} md={4}>
+            <Grid item xs={12} md={6}>
               <Select
                 label="Cargo de autorizacion de Cobro"
                 name="authorizingChargeId"
@@ -446,19 +480,17 @@ const InclusiveCreate = ({
                 ))}
               </Select>
             </Grid>
-            <Grid container>
-              {attachments.map((item, index) => (
-                <Grid item xs={12} md={6} key={index}>
-                  <FilePostulation
-                    onDelete={() => handleDeleteFile(item.name)}
-                    fileKey={item.fileKey}
-                    id={`${item.key}-${index}`}
-                    onChangeImage={(e) => {
-                      handleUploadFile(e, item.name)
-                    }}
-                  />
-                </Grid>
-              ))}
+            <Grid item xs={12}>
+              <Typography style={{ marginBottom: 5 }}>
+                Archivo adjunto
+              </Typography>
+              <FilePicker
+                onDelete={() => setAttachment(null)}
+                id={`attachment-case`}
+                onChange={(file) => {
+                  setAttachment(file)
+                }}
+              />
             </Grid>
           </Grid>
           <Box textAlign="center" marginTop="15px">

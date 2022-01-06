@@ -166,6 +166,19 @@ const getDashboard = (query) => (dispatch) =>
       })
   })
 
+const updateCase = (caseId, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.inclusion}/inclusion-cases/${caseId}`, values)
+      .then((response) => {
+        const { data } = response
+
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const inclusionActions = {
   getCases,
   getCaseDetails,
@@ -176,7 +189,8 @@ const inclusionActions = {
   rejectCase,
   getRejectionDetails,
   closeCase,
-  getDashboard
+  getDashboard,
+  updateCase
 }
 
 export default inclusionActions
