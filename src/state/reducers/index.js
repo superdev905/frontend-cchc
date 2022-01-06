@@ -22,6 +22,7 @@ import socialCase from './socialCase'
 import commonPublic from './commonPublic'
 import questions from './questions'
 import migrants from './migrants'
+import unemployed from './unemployed',
 import inclusion from './inclusion'
 
 const reducers = (history) =>
@@ -48,6 +49,7 @@ const reducers = (history) =>
     commonPublic,
     questions,
     migrants,
+    unemployed,
     inclusion,
     router: connectRouter(history)
   })

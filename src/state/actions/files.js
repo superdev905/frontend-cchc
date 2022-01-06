@@ -46,7 +46,6 @@ const uploadFile = (formData) => () =>
     Axios.post(`${config.services.parameters}/file/upload`, formData)
       .then((response) => {
         const { data } = response
-
         resolve(data)
       })
       .catch((err) => {

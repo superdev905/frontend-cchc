@@ -32,6 +32,11 @@ const modulesByRole = {
       icon: <EmployeeIcon />
     },
     {
+      title: 'Cesantes',
+      path: '/unemployed',
+      icon: <EmployeeIcon />
+    },
+    {
       title: 'Visitas',
       path: '/visits',
       icon: <AssistanceIcon />
