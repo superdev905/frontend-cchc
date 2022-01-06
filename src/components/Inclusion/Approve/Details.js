@@ -8,6 +8,7 @@ import { LabeledRow, Text } from '../../UI'
 import { formatDate } from '../../../formatters'
 import { FileThumbnail, FileVisor } from '../../Shared'
 import { useToggle } from '../../../hooks'
+import Can from '../../Can'
 
 const useStyles = makeStyles(() => ({
   label: {
@@ -53,17 +54,23 @@ const Details = ({ caseNumber, socialCaseNumber }) => {
                         {formatDate(approbation.date)}
                       </Text>
                     </LabeledRow>
+                    <Can
+                      availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
+                      yes={() => (
+                        <LabeledRow label={'Caso social: '}>
+                          <Text loading={loading}>
+                            <a
+                              href={`/social-case/${socialCaseNumber}/details`}
+                              target="_blank"
+                            >
+                              {`Caso ${socialCaseNumber}`}
+                            </a>
+                          </Text>
+                        </LabeledRow>
+                      )}
+                      no={() => null}
+                    />
 
-                    <LabeledRow label={'Caso social: '}>
-                      <Text loading={loading}>
-                        <a
-                          href={`/social-case/${socialCaseNumber}/details`}
-                          target="_blank"
-                        >
-                          {`Caso ${socialCaseNumber}`}
-                        </a>
-                      </Text>
-                    </LabeledRow>
                     <LabeledRow label={'Comentarios: '}>
                       <Text loading={loading}>{approbation.comments}</Text>
                     </LabeledRow>

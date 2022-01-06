@@ -162,6 +162,13 @@ const modulesByRole = {
       path: '/courses',
       icon: <BookIcon />
     }
+  ],
+  ANALISTA_CASOS: [
+    {
+      title: 'Inclusión',
+      path: '/inclusion-cases',
+      icon: <AccessibleIcon />
+    }
   ]
 }
 
