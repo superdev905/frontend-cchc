@@ -49,7 +49,6 @@ const List = () => {
           </Grid>
           <Grid item xs={12} md={6} lg={7}>
             <Box textAlign="right">
-              <Button>Filtros</Button>
               <Button onClick={toggleOpenCreate}>Nuevo</Button>
             </Box>
           </Grid>
@@ -129,6 +128,7 @@ const List = () => {
           open={openCreate}
           onClose={toggleOpenCreate}
           submitFunction={onCreateCase}
+          successFunction={getCases}
         />
       )}
     </Box>

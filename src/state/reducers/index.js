@@ -22,7 +22,7 @@ import socialCase from './socialCase'
 import commonPublic from './commonPublic'
 import questions from './questions'
 import migrants from './migrants'
-import unemployed from './unemployed',
+import unemployed from './unemployed'
 import inclusion from './inclusion'
 
 const reducers = (history) =>
