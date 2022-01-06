@@ -6,7 +6,8 @@ import inclusionActions from '../../../state/actions/inclusion'
 import { UserCard } from '../../Users'
 import { LabeledRow, Text } from '../../UI'
 import { formatDate } from '../../../formatters'
-import { FileThumbnail } from '../../Shared'
+import { FileThumbnail, FileVisor } from '../../Shared'
+import { useToggle } from '../../../hooks'
 
 const useStyles = makeStyles(() => ({
   label: {
@@ -18,10 +19,11 @@ const useStyles = makeStyles(() => ({
 
 const Details = ({ caseNumber }) => {
   const classes = useStyles()
-  const [loading, setLoading] = useState(false)
-  const { approbation } = useSelector((state) => state.inclusion)
   const dispatch = useDispatch()
-
+  const [loading, setLoading] = useState(false)
+  const [currentFile, setCurrentFile] = useState(null)
+  const { approbation } = useSelector((state) => state.inclusion)
+  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
   const fetchApprobationDetails = () => {
     setLoading(true)
     dispatch(inclusionActions.getApprobationDetails(caseNumber)).then(() => {
@@ -73,6 +75,10 @@ const Details = ({ caseNumber }) => {
                             fileName={item.attachment.fileName}
                             date={item.attachment.uploadDate}
                             fileSize={item.attachment.fileSize}
+                            onView={() => {
+                              setCurrentFile(item.attachment)
+                              toggleOpenVisor()
+                            }}
                           />
                         </Box>
                       </>
@@ -90,6 +96,14 @@ const Details = ({ caseNumber }) => {
             </>
           )}
         </Box>
+      )}
+      {openVisor && currentFile && (
+        <FileVisor
+          open={openVisor}
+          onClose={toggleOpenVisor}
+          src={currentFile.fileUrl}
+          filename={currentFile.fileName}
+        />
       )}
     </Box>
   )

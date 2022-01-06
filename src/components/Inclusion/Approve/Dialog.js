@@ -15,7 +15,7 @@ const validationSchema = Yup.object().shape({
   analystId: Yup.number().required('Analista de casos requeridos')
 })
 
-const ApproveDialog = ({ open, onClose, submitFunction }) => {
+const ApproveDialog = ({ open, onClose, submitFunction, successFunction }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
@@ -53,7 +53,11 @@ const ApproveDialog = ({ open, onClose, submitFunction }) => {
     },
     onSubmit: async (values) => {
       const uploadFiles = await uploadAttachments(attachments)
-      submitFunction({ ...values, attachments: uploadFiles })
+      submitFunction({
+        ...values,
+        comments: values.comments.toUpperCase(),
+        attachments: uploadFiles
+      })
         .then(() => {
           formik.setSubmitting(false)
           changeSuccess(true, () => {
@@ -61,6 +65,9 @@ const ApproveDialog = ({ open, onClose, submitFunction }) => {
               variant: 'success'
             })
             onClose()
+            if (successFunction) {
+              successFunction()
+            }
           })
         })
         .catch((err) => {

@@ -5,7 +5,7 @@ import { Box, Chip, Grid } from '@material-ui/core'
 import InclusionDialog from './Dialog'
 import { useToggle } from '../../hooks'
 import { DataTable } from '../Shared'
-import { Button, SearchInput } from '../UI'
+import { ActionsTable, Button, SearchInput } from '../UI'
 import inclusionActions from '../../state/actions/inclusion'
 import { formatDate } from '../../formatters'
 
@@ -101,12 +101,26 @@ const List = () => {
               name: 'Metodo cobro',
               compact: true,
               selector: (row) => row.chargeMethod.name
+            },
+            {
+              name: '',
+              right: true,
+              compact: true,
+              selector: (row) => (
+                <ActionsTable
+                  onView={() => {
+                    history.push(`/inclusion-cases/${row.number}`)
+                  }}
+                />
+              )
             }
           ]}
           onRowClicked={(row) => {
             history.push(`/inclusion-cases/${row.number}`)
           }}
           pagination
+          highlightOnHover
+          pointerOnHover
           selectableRowsHighlight
         />
       </Box>

@@ -238,6 +238,7 @@ const InclusiveDetails = () => {
             open={openApprove}
             onClose={toggleOpenApprove}
             submitFunction={approveCase}
+            successFunction={fetchCaseDetails}
           />
         )}
         {openReject && (
@@ -245,6 +246,7 @@ const InclusiveDetails = () => {
             open={openReject}
             onClose={toggleOpenReject}
             submitFunction={rejectCase}
+            successFunction={fetchCaseDetails}
           />
         )}
         {openClose && (
@@ -252,6 +254,7 @@ const InclusiveDetails = () => {
             open={openClose}
             onClose={toggleOpenClose}
             submitFunction={closeCase}
+            successFunction={fetchCaseDetails}
           />
         )}
       </Box>

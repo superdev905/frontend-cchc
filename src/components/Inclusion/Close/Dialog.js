@@ -15,7 +15,7 @@ const validationSchema = Yup.object().shape({
   assistanceId: Yup.number().required('Analista de casos requeridos')
 })
 
-const CloseDialog = ({ open, onClose, submitFunction }) => {
+const CloseDialog = ({ open, onClose, submitFunction, successFunction }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
@@ -31,7 +31,7 @@ const CloseDialog = ({ open, onClose, submitFunction }) => {
       assistanceId: user?.id
     },
     onSubmit: (values) => {
-      submitFunction(values)
+      submitFunction({ ...values, comments: values.comments.toUpperCase() })
         .then(() => {
           formik.setSubmitting(false)
           changeSuccess(true, () => {
@@ -39,6 +39,9 @@ const CloseDialog = ({ open, onClose, submitFunction }) => {
               variant: 'success'
             })
             onClose()
+            if (successFunction) {
+              successFunction()
+            }
           })
         })
         .catch((err) => {

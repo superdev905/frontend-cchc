@@ -10,7 +10,7 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ApproveDetails from './Approve/Details'
 import RejectDetails from './Reject/Details'
-import { LabeledRow, Text } from '../UI'
+import { EmptyState, LabeledRow, Text } from '../UI'
 import { formatDate } from '../../formatters'
 import { UserCard } from '../Users'
 
@@ -98,6 +98,9 @@ const StatusAccordion = () => {
             </Box>
           </AccordionDetails>
         </Accordion>
+      )}
+      {!details?.approbation && !details?.rejection && !details?.close && (
+        <EmptyState message={`Este caso esta en estado: ${details?.status}`} />
       )}
     </Box>
   )
