@@ -1,6 +1,7 @@
 import inclusionTypes from '../types/inclusion'
 
 const initialState = {
+  stats: {},
   inclusionCases: [],
   chargeMethods: [],
   totalPages: 0,
@@ -21,6 +22,8 @@ const inclusionReducer = (state = initialState, { type, payload }) => {
       return { ...state, approbation: payload }
     case inclusionTypes.GET_CASE_REJECTION_DETAILS:
       return { ...state, rejection: payload }
+    case inclusionTypes.GET_DASHBOARD_STATS:
+      return { ...state, stats: payload }
     default:
       return state
   }
