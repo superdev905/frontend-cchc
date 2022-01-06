@@ -26,6 +26,24 @@ const getMigrants =
         })
     })
 
+const searchMigrants =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.migrant}/migrants/search?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const getMigrantDetails = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.migrant}/migrants/${id}`)
@@ -58,5 +76,6 @@ export default {
   getMigrants,
   createMigration,
   setFilters,
-  getMigrantDetails
+  getMigrantDetails,
+  searchMigrants
 }

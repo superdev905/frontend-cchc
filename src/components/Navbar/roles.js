@@ -12,7 +12,9 @@ import {
   Favorite as BenefitIcon,
   WatchLater as ScheduleIcon,
   Home as HousingIcon,
-  Accessible as AccessibleIcon
+  Accessible as AccessibleIcon,
+  ContactMail as MigrantIcon,
+  WorkOff as UnemployedIcon
 } from '@material-ui/icons'
 import LanguageIcon from '@material-ui/icons/Language'
 
@@ -29,12 +31,12 @@ const modulesByRole = {
     {
       title: 'Migrantes',
       path: '/migrants',
-      icon: <EmployeeIcon />
+      icon: <MigrantIcon />
     },
     {
       title: 'Cesantes',
       path: '/unemployed',
-      icon: <EmployeeIcon />
+      icon: <UnemployedIcon />
     },
     {
       title: 'Visitas',
@@ -102,6 +104,16 @@ const modulesByRole = {
       title: 'Trabajadores',
       path: '/employees',
       icon: <EmployeeIcon />
+    },
+    {
+      title: 'Migrantes',
+      path: '/migrants',
+      icon: <MigrantIcon />
+    },
+    {
+      title: 'Cesantes',
+      path: '/unemployed',
+      icon: <UnemployedIcon />
     },
     {
       title: 'Visitas',
