@@ -7,11 +7,12 @@ import { useToggle } from '../../hooks'
 import { DataTable } from '../Shared'
 import { ActionsTable, Button, SearchInput } from '../UI'
 import inclusionActions from '../../state/actions/inclusion'
-import { formatDate } from '../../formatters'
+import { formatDate, formatSearchWithRut } from '../../formatters'
 
 const List = () => {
   const dispatch = useDispatch()
   const history = useHistory()
+  const [query, setQuery] = useState({ search: '' })
   const { user } = useSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
   const { inclusionCases } = useSelector((state) => state.inclusion)
@@ -28,7 +29,7 @@ const List = () => {
 
   const getCases = () => {
     setLoading(true)
-    dispatch(inclusionActions.getCases())
+    dispatch(inclusionActions.getCases(query))
       .then(() => {
         setLoading(false)
       })
@@ -38,14 +39,23 @@ const List = () => {
   }
   useEffect(() => {
     getCases()
-  }, [])
+  }, [query])
 
   return (
     <Box>
       <Box mt={2}>
         <Grid container alignItems="center">
           <Grid item xs={12} md={6} lg={5}>
-            <SearchInput placeholder="Buscar..." />
+            <SearchInput
+              placeholder="Buscar por: Rut de trabajador"
+              value={query.search}
+              onChange={(e) => {
+                setQuery({
+                  ...query,
+                  search: formatSearchWithRut(e.target.value)
+                })
+              }}
+            />
           </Grid>
           <Grid item xs={12} md={6} lg={7}>
             <Box textAlign="right">
