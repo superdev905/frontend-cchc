@@ -14,16 +14,16 @@ const useStyles = makeStyles((theme) => ({
   info: {
     fontSize: 14
   },
-  avatar: {
+  avatar: ({ avatarColor }) => ({
     marginRight: '10px',
     width: 55,
     height: 55,
-    backgroundColor: COLORS[3]
-  }
+    backgroundColor: avatarColor
+  })
 }))
 
-const Card = ({ user }) => {
-  const classes = useStyles()
+const Card = ({ user, avatarColor = COLORS[3] }) => {
+  const classes = useStyles({ avatarColor })
   return (
     <Box p={2} className={classes.root}>
       <Box display="flex" alignItems="center">
