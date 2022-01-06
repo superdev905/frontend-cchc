@@ -91,7 +91,7 @@ const RejectDialog = ({ open, onClose, submitFunction, successFunction }) => {
                 loading={formik.isSubmitting}
                 onClick={formik.handleSubmit}
               >
-                Aprobar caso
+                Rechazar caso
               </SubmitButton>
             </Box>
           </Box>
