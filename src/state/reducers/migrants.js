@@ -9,7 +9,8 @@ const initialState = {
     period: '',
     page: 1,
     size: 50
-  }
+  },
+  benefits: []
 }
 
 const migrantsReducer = (state = initialState, { type, payload }) => {
@@ -22,6 +23,8 @@ const migrantsReducer = (state = initialState, { type, payload }) => {
       return { ...state, filters: payload }
     case migrantsTypes.GET_MIGRANT_DETAILS:
       return { ...state, migrant: payload }
+    case migrantsTypes.GET_MIGRANT_BENEFITS:
+      return { ...state, benefits: payload }
     default:
       return state
   }

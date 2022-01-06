@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Box, Typography, Grid } from '@material-ui/core'
+import { FiCheck as DoneIcon } from 'react-icons/fi'
 import { Skeleton } from '@material-ui/lab'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { TextField, EmptyState, Select, Button } from '../UI'
 import EmployeeRow from '../Scholarships/Create/EmployeeRow'
-import { Dialog, DatePicker } from '../Shared'
+import { Dialog, DatePicker, DataTable } from '../Shared'
 import { formatSearchWithRut } from '../../formatters'
 import generateColor from '../../utils/generateColor'
 import migrantsActions from '../../state/actions/migrants'
@@ -18,7 +19,9 @@ const MigrateModal = ({ open, onClose }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
   const { moduleResponse } = useSelector((state) => state.poll)
+  const { benefits: benefitsList } = useSelector((state) => state.migrants)
   const [searchRut, setSearchRut] = useState('')
+  const [benefits, setBenefits] = useState([])
   const [loading, setLoading] = useState(false)
   const [years, setYears] = useState([])
   const [searchList, setSearchList] = useState([])
@@ -40,7 +43,15 @@ const MigrateModal = ({ open, onClose }) => {
         formData.pollId = parseInt(pollStatus[0].id, 10)
         formData.responseId = parseInt(pollStatus[0].responseId, 10)
         formData.period = parseInt(formData.period, 10)
-        dispatch(migrantsActions.createMigration(formData))
+        dispatch(
+          migrantsActions.createMigration({
+            ...formData,
+            benefits: benefits.map((item) => ({
+              date: item.date,
+              benefitId: item.id
+            }))
+          })
+        )
           .then(() => {
             enqueueSnackbar('Registro de Migración Ingresado Exitosamente', {
               variant: 'success'
@@ -72,6 +83,10 @@ const MigrateModal = ({ open, onClose }) => {
   }
 
   useEffect(() => {
+    setBenefits(benefitsList.map((item) => ({ ...item, date: null })))
+  }, [benefitsList])
+
+  useEffect(() => {
     if (searchRut && formik.values.period) {
       setLoading(true)
       dispatch(
@@ -92,6 +107,7 @@ const MigrateModal = ({ open, onClose }) => {
 
   useEffect(() => {
     if (open) {
+      dispatch(migrantsActions.getBenefits())
       formik.resetForm()
       setSearchRut('')
       setSearchList([])
@@ -104,7 +120,7 @@ const MigrateModal = ({ open, onClose }) => {
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="md"
+      maxWidth="lg"
       fullWidth
       fullScreen={isMobile}
     >
@@ -222,6 +238,46 @@ const MigrateModal = ({ open, onClose }) => {
                 />
               </Grid>
             )}
+            <Grid item xs={12}>
+              <Typography>Beneficios</Typography>
+              <DataTable
+                data={benefits}
+                columns={[
+                  {
+                    name: 'Fecha',
+                    selector: (row) => (
+                      <Box>
+                        <DatePicker
+                          value={row.date}
+                          onChange={(e) => {
+                            const updatedList = benefits.map((item) =>
+                              item.id === row.id ? { ...item, date: e } : item
+                            )
+                            setBenefits(updatedList)
+                          }}
+                        />
+                      </Box>
+                    )
+                  },
+                  {
+                    name: 'Tipo beneficio',
+                    selector: (row) => row.name
+                  },
+                  {
+                    name: '',
+                    right: true,
+                    maxWidth: '50px',
+                    selector: (row) => (
+                      <>
+                        {row.date && (
+                          <DoneIcon fontSize={'24px'} color="green" />
+                        )}
+                      </>
+                    )
+                  }
+                ]}
+              />
+            </Grid>
           </Grid>
         </Box>
 
@@ -233,7 +289,9 @@ const MigrateModal = ({ open, onClose }) => {
             <Button variant={'outlined'}>Cancelar</Button>
             <Button
               onClick={formik.handleSubmit}
-              disabled={!moduleResponse?.pollStatus[0]?.isAnswered}
+              disabled={
+                !moduleResponse?.pollStatus[0]?.isAnswered || !formik.isValid
+              }
             >
               Guardar
             </Button>
