@@ -8,6 +8,7 @@ import questionActions from '../../state/actions/questions'
 import { DataTable } from '../Shared'
 import { ActionsTable } from '../UI'
 import { QuestionPreview } from '../Question'
+import LinearProgress from '../Question/Dashboard/LinearProgress'
 
 const QuestionList = () => {
   const dispatch = useDispatch()
@@ -38,6 +39,16 @@ const QuestionList = () => {
     dispatch(questionActions.updateSelectedList(selectedRows))
   }
 
+  const bgColor = (status) => {
+    if (status === 'RESPONDIDA') return 'tranparent'
+    if (status === 'ASIGNADA') {
+      if (user.role.key === 'ADMIN' || user.role.key === 'JEFATURA')
+        return '#FFFAF0'
+      return '#FFF5F5'
+    }
+    return '#FFF5F5'
+  }
+
   useEffect(() => {
     getQuestions()
   }, [query])
@@ -52,6 +63,15 @@ const QuestionList = () => {
           selectableRowDisabled={(row) =>
             row.status === 'ASIGNADA' || row.status === 'RESPONDIDA'
           }
+          conditionalRowStyles={[
+            {
+              when: (row) =>
+                row.status === 'ASIGNADA' || row.status === 'INGRESADO',
+              style: (row) => ({
+                backgroundColor: bgColor(row.status)
+              })
+            }
+          ]}
           columns={[
             {
               name: 'N°',
@@ -97,6 +117,16 @@ const QuestionList = () => {
               selector: (row) => row.areaName,
               compact: true,
               maxWidth: '100px'
+            },
+            {
+              name: 'Progreso Para poder Responder',
+              cell: (row) => (
+                <Box width={'100%'}>
+                  {row.status !== 'RESPONDIDA' ? (
+                    <LinearProgress question={row} />
+                  ) : null}
+                </Box>
+              )
             },
             {
               name: '',

@@ -45,6 +45,9 @@ const QuestionAssign = ({
       submitFunction({
         ...values,
         date: new Date().toISOString(),
+        department: regions.find(
+          (item) => item.id === parseInt(values.department, 10)
+        ).name,
         questions: selectedList.map((item) => ({ number: item.number }))
       })
         .then((result) => {
@@ -54,6 +57,7 @@ const QuestionAssign = ({
           })
           changeSuccess(true, () => {
             onClose()
+            dispatch(questionActions.updateSelectedList([]))
             resetForm()
             if (successFunction) {
               successFunction(result.id)

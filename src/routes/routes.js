@@ -578,6 +578,7 @@ const routes = [
         no={() => (authenticated ? <Forbidden /> : <Login />)}
       />
     )
-  }
+  },
+  ...SocialCaseRoutes
 ]
 export default routes

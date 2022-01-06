@@ -136,6 +136,32 @@ const getAssignationByAssistance = (query) => (dispatch) =>
       })
   })
 
+const getMaxHours = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.question}/general`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: questionsTypes.GET_MAX_HOURS, payload: data.maxHours })
+
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const setMaxHours = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.question}/general`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
 const questionActions = {
   updateQuery,
   updateUIFilters,
@@ -148,7 +174,9 @@ const questionActions = {
   getDistributionStats,
   getLastQuestions,
   getStats,
-  getAssignationByAssistance
+  getAssignationByAssistance,
+  getMaxHours,
+  setMaxHours
 }
 
 export default questionActions
