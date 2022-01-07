@@ -86,27 +86,30 @@ const MigrantList = () => {
         <Box px={2} pt={1}>
           <Grid container spacing={2} alignItems="center">
             <Grid container spacing={1}>
-              <Grid item xs={12} md={6}>
-                <SearchInput
-                  value={filters.search}
-                  onChange={onSearchChange}
-                  placeholder="Buscar por: RUT O NOMBRE DE TRABAJADOR"
-                />
+              <Grid item xs={12} md={7}>
+                <Grid container spacing={1}>
+                  <Grid item xs={6} md={4}>
+                    {' '}
+                    <Select onChange={handleChange}>
+                      <option value="">Todos</option>
+                      {years.map((item) => (
+                        <option key={`option-period-${item}`} value={item}>
+                          {item}
+                        </option>
+                      ))}
+                    </Select>
+                  </Grid>
+                  <Grid item xs={6} md={8}>
+                    <SearchInput
+                      value={filters.search}
+                      onChange={onSearchChange}
+                      placeholder="Buscar por: RUT O NOMBRE DE TRABAJADOR"
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid item xs={12} md={6}>
-                <Box
-                  display="flex"
-                  justifyContent="flex-end"
-                  alignItems="center"
-                >
-                  <Select onChange={handleChange}>
-                    <option value="">Todos</option>
-                    {years.map((item) => (
-                      <option key={`option-period-${item}`} value={item}>
-                        {item}
-                      </option>
-                    ))}
-                  </Select>
+              <Grid item xs={12} md={5}>
+                <Box display={'flex'} justifyContent={'flex-end'}>
                   <Button onClick={openModal}>Registrar</Button>
                 </Box>
               </Grid>
@@ -152,6 +155,10 @@ const MigrantList = () => {
             }
           ]}
           data={migrantsList}
+          onRowClicked={(row) => {
+            setCurrent(row)
+            toggleOpenDetails()
+          }}
           pagination
           paginationRowsPerPageOptions={[30, 40]}
           paginationServer={true}

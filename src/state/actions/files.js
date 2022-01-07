@@ -1,14 +1,16 @@
+import axios from 'axios'
 import Axios from '../../Axios'
 import config from '../../config'
 
 const downloadFile = (fileUrl, originalFileName) => () =>
   new Promise((resolve, reject) => {
     const fileName = originalFileName || fileUrl.split('/').pop()
-    const instance = Axios.create()
+    const instance = axios.create()
     delete instance.defaults.headers.common.Authorization
-    Axios.get(fileUrl, {
-      responseType: 'blob'
-    })
+    axios
+      .get(fileUrl, {
+        responseType: 'blob'
+      })
       .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]))
         const link = document.createElement('a')

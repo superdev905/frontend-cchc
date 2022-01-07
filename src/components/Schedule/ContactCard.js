@@ -100,7 +100,7 @@ const ContactCard = ({
             <Grid item xs={3}>
               <Box display="flex" justifyContent="center">
                 <Avatar className={classes.avatar}>
-                  {contact.full_name.charAt(0)}
+                  {contact.full_name.charAt(0).toUpperCase()}
                 </Avatar>
               </Box>
             </Grid>

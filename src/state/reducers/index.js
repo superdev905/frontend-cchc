@@ -23,6 +23,7 @@ import commonPublic from './commonPublic'
 import questions from './questions'
 import migrants from './migrants'
 import unemployed from './unemployed'
+import inclusion from './inclusion'
 
 const reducers = (history) =>
   combineReducers({
@@ -49,6 +50,7 @@ const reducers = (history) =>
     questions,
     migrants,
     unemployed,
+    inclusion,
     router: connectRouter(history)
   })
 

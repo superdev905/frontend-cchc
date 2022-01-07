@@ -29,7 +29,11 @@ const EmployeeTabs = () => {
       <Tabs
         fullWidth
         value={getValue()}
-        tabs={['Información', 'Preguntas', 'Historial']}
+        tabs={[
+          'Información',
+          'Preguntas Ingresadas sin Respuesta',
+          'Historial de Preguntas Respondidas'
+        ]}
         onChange={(__, valueTarget) => handleChange(valueTarget)}
       >
         {tabs[getValue()].component}

@@ -26,6 +26,24 @@ const getMigrants =
         })
     })
 
+const searchMigrants =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.migrant}/migrants/search?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const getMigrantDetails = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.migrant}/migrants/${id}`)
@@ -54,9 +72,30 @@ const createMigration = (values) => () =>
 const setFilters = (value) => (dispatch) =>
   dispatch({ type: migrantsTypes.SET_FILTERS, payload: value })
 
+const getBenefits =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.migrant}/benefits?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: migrantsTypes.GET_MIGRANT_BENEFITS,
+            payload: data.items
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
 export default {
   getMigrants,
   createMigration,
   setFilters,
-  getMigrantDetails
+  getMigrantDetails,
+  searchMigrants,
+  getBenefits
 }

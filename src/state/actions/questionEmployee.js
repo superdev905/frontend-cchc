@@ -41,9 +41,45 @@ const getEmployeeDetails = (id) => (dispatch) =>
       })
   })
 
+const getEmployeeContact =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.employee
+        }/public/employee-contact?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: questionEmpTypes.QE_GET_EMPLOYEE_CONTACT,
+            payload: data
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const updateEmployee = (id, values) => () =>
   new Promise((resolve, reject) => {
     Axios.put(`${config.services.employee}/public/employee/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+const updateEmployeeContact = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(
+      `${config.services.employee}/public/employee-contact/${id}`,
+      values
+    )
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -142,7 +178,9 @@ const questionEmployeeActions = {
   createQuestion,
   getQuestions,
   getQuestionDetails,
-  getHistoryQuestions
+  getHistoryQuestions,
+  getEmployeeContact,
+  updateEmployeeContact
 }
 
 export default questionEmployeeActions

@@ -8,7 +8,9 @@ const CompanyCard = ({ company, loading }) => (
     </LabeledRow>
     <LabeledRow label="Razón social: ">
       <Text loading={loading}>
-        {company?.business_name || company?.businessName}
+        <a href={`/company/${company?.id}/details`} target={'_blank'}>
+          {company?.business_name || company?.businessName}
+        </a>
       </Text>
     </LabeledRow>
     <LabeledRow label="Dirección: ">

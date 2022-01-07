@@ -29,8 +29,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const EmployeeRow = ({ option, onClick, selectable, onDelete }) => {
-  const classes = useStyles({ selectable, option })
+const EmployeeRow = ({
+  option,
+  onClick,
+  selectable,
+  onDelete,
+  customComponent
+}) => {
+  const classes = useStyles({ selectable })
   return (
     <Box
       p={1}
@@ -63,9 +69,14 @@ const EmployeeRow = ({ option, onClick, selectable, onDelete }) => {
           Seleccionar
         </Button>
       ) : (
-        <IconButton onClick={onDelete}>
-          <IconDelete className={classes.deleteIcon} />
-        </IconButton>
+        <>
+          {onDelete && (
+            <IconButton onClick={onDelete}>
+              <IconDelete className={classes.deleteIcon} />
+            </IconButton>
+          )}
+          {customComponent}
+        </>
       )}
     </Box>
   )

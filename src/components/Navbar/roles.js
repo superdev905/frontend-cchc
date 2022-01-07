@@ -11,7 +11,10 @@ import {
   Book as BookIcon,
   Favorite as BenefitIcon,
   WatchLater as ScheduleIcon,
-  Home as HousingIcon
+  Home as HousingIcon,
+  Accessible as AccessibleIcon,
+  ContactMail as MigrantIcon,
+  WorkOff as UnemployedIcon
 } from '@material-ui/icons'
 import LanguageIcon from '@material-ui/icons/Language'
 
@@ -28,12 +31,12 @@ const modulesByRole = {
     {
       title: 'Migrantes',
       path: '/migrants',
-      icon: <EmployeeIcon />
+      icon: <MigrantIcon />
     },
     {
       title: 'Cesantes',
       path: '/unemployed',
-      icon: <EmployeeIcon />
+      icon: <UnemployedIcon />
     },
     {
       title: 'Visitas',
@@ -69,6 +72,11 @@ const modulesByRole = {
       title: 'Caso Social',
       path: '/social-case',
       icon: <BookIcon />
+    },
+    {
+      title: 'Inclusión',
+      path: '/inclusion-cases',
+      icon: <AccessibleIcon />
     },
     { title: 'Encuestas', path: '/polls', icon: <BorderColorIcon /> },
     {
@@ -98,6 +106,16 @@ const modulesByRole = {
       icon: <EmployeeIcon />
     },
     {
+      title: 'Migrantes',
+      path: '/migrants',
+      icon: <MigrantIcon />
+    },
+    {
+      title: 'Cesantes',
+      path: '/unemployed',
+      icon: <UnemployedIcon />
+    },
+    {
       title: 'Visitas',
       path: '/visits',
       icon: <AssistanceIcon />
@@ -128,6 +146,11 @@ const modulesByRole = {
       icon: <BookIcon />
     },
     {
+      title: 'Inclusión',
+      path: '/inclusion-cases',
+      icon: <AccessibleIcon />
+    },
+    {
       title: 'Consultas Web',
       path: '/question/dashboard',
       icon: <LanguageIcon />
@@ -150,6 +173,13 @@ const modulesByRole = {
       title: 'Cursos',
       path: '/courses',
       icon: <BookIcon />
+    }
+  ],
+  ANALISTA_CASOS: [
+    {
+      title: 'Inclusión',
+      path: '/inclusion-cases',
+      icon: <AccessibleIcon />
     }
   ]
 }
