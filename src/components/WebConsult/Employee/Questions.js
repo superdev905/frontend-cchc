@@ -53,18 +53,17 @@ const Questions = () => {
             </>
           ) : (
             <>
-              {!loading && questions.length === 0 ? (
+              {questions.length === 0 ? (
                 <Grid item xs={12}>
                   <EmptyState message="No tienes preguntas" />
                 </Grid>
               ) : (
                 <>
-                  {!loading &&
-                    questions.map((item) => (
-                      <Grid item xs={12} key={`card-item-${item.id}`}>
-                        <QuestionCard question={item} />
-                      </Grid>
-                    ))}
+                  {questions.map((item) => (
+                    <Grid item xs={12} key={`card-item-${item.id}`}>
+                      <QuestionCard question={item} />
+                    </Grid>
+                  ))}
                 </>
               )}
             </>
