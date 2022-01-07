@@ -36,7 +36,7 @@ const EmployeeRow = ({
   onDelete,
   customComponent
 }) => {
-  const classes = useStyles({ selectable })
+  const classes = useStyles({ selectable, option })
   return (
     <Box
       p={1}
