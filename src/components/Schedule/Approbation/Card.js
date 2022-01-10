@@ -10,7 +10,7 @@ import {
 import files from '../../../state/actions/files'
 import { formatDate } from '../../../formatters'
 import { useToggle } from '../../../hooks'
-import { FileThumbnail } from '../../Shared'
+import { FileThumbnail, FileVisor } from '../../Shared'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -94,10 +94,11 @@ const Card = ({ data, onEdit }) => {
               </Typography>
             </Box>
           </Grid>
-          <Box>
+          <Box mt={1}>
             {data?.attachment && (
               <FileThumbnail
-                ileName={data.attachment.fileName}
+                bgWhite
+                fileName={data.attachment.fileName}
                 date={data.attachment.uploadDate}
                 fileSize={data.attachment.fileSize}
                 label={data.attachment.module}

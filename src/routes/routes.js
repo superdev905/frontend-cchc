@@ -7,6 +7,7 @@ import employeeRoutes from './employee'
 import Forbidden from '../pages/Forbidden'
 import coursesRoutes from './courses'
 import SocialCaseRoutes from './SocialCase'
+import MigrantRoutes from './Migrant'
 // import houseRoutes from './house'
 import webQuestionEmployee from './webEmployee'
 
@@ -543,6 +544,7 @@ const routes = [
       />
     )
   },
+<<<<<<< HEAD
   {
     path: '/inclusive',
     key: 'INCLUSIVE',
@@ -609,5 +611,9 @@ const routes = [
       />
     )
   }
+=======
+  ...SocialCaseRoutes,
+  ...MigrantRoutes
+>>>>>>> 2897dd59db0e4f12a6a20209a57bf7aa15fc3f19
 ]
 export default routes

@@ -72,10 +72,17 @@ const services = {
     testing: `${BASEURL[env]}:5196/api/v1`,
     production: `${BASEURL[env]}:5114/api/v1`
   },
+<<<<<<< HEAD
   inclusion: {
     development: `${BASEURL[env]}:5115/api/v1`,
     testing: `${BASEURL[env]}:5196/api/v1`,
     production: `${BASEURL[env]}:5116/api/v1`
+=======
+  migrant: {
+    development: `${BASEURL[env]}:5198/api/v1`,
+    testing: `${BASEURL[env]}:5115/api/v1`,
+    production: `${BASEURL[env]}:5115/api/v1`
+>>>>>>> 2897dd59db0e4f12a6a20209a57bf7aa15fc3f19
   }
 }
 
@@ -94,7 +101,11 @@ const config = {
     housing: services.housing[env],
     socialCase: services.socialCase[env],
     question: services.question[env],
+<<<<<<< HEAD
     inclusion: services.inclusion[env]
+=======
+    migrant: services.migrant[env]
+>>>>>>> 2897dd59db0e4f12a6a20209a57bf7aa15fc3f19
   }
 }
 

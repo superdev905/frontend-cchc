@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useHistory, withRouter } from 'react-router-dom'
 import { Box, Grid } from '@material-ui/core'
 import { Button, PageHeading, SearchInput, Select, Wrapper } from '../UI'
+import { formatDate } from '../../formatters'
 import { formatSearchWithRut } from '../../formatters'
 import scholarshipsActions from '../../state/actions/scholarships'
 import CreateDialog from './Create/CreateDialog'
@@ -128,6 +129,16 @@ const PostulationList = () => {
           {
             name: 'Empresa',
             selector: (row) => row.businessName,
+            hide: 'md'
+          },
+          {
+            name: 'Fecha de inicio',
+            selector: (row) => formatDate(row.startDate, {}),
+            hide: 'md'
+          },
+          {
+            name: 'Fecha de fin',
+            selector: (row) => formatDate(row.endDate, {}),
             hide: 'md'
           },
           {

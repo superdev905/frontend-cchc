@@ -35,7 +35,9 @@ const SavingDialog = ({
   const { enqueueSnackbar } = useSnackbar()
   const { employee } = useSelector((state) => state.employees)
 
-  const { rshList, communes } = useSelector((state) => state.common)
+  const { rshList, communes, maritalStatus } = useSelector(
+    (state) => state.common
+  )
 
   const formik = useFormik({
     validationSchema,
@@ -50,7 +52,15 @@ const SavingDialog = ({
       targetSubsidy: type === 'UPDATE' ? data.targetSubsidy : '',
       atc: type === 'UPDATE' ? data.atc : '',
       disability: type === 'UPDATE' ? data.disability : employee?.disability,
-      salary: type === 'UPDATE' ? data.salary : employee?.current_job?.salary
+      salary: type === 'UPDATE' ? data.salary : employee?.current_job?.salary,
+      maritalStatusId:
+        type === 'UPDATE'
+          ? data.maritalStatusId
+          : employee?.marital_status?.id || '',
+      contractType:
+        type === 'UPDATE'
+          ? data.contractType
+          : employee?.current_job?.contract_type || ''
     },
     onSubmit: (values) => {
       const formData = {
@@ -59,9 +69,7 @@ const SavingDialog = ({
           .description,
         commune: communes.find(
           (item) => item.id === parseInt(values.communeId, 10)
-        ).name,
-        maritalStatusId: employee?.marital_status_id,
-        contractType: employee?.current_job.contract_type
+        ).name
       }
       submitFunction(formData)
         .then(() => {
@@ -229,28 +237,60 @@ const SavingDialog = ({
               </Select>
             </Grid>
             <Grid item xs={12} lg={6}>
-              <TextField
+              <Select
                 label="Estado civil"
                 required
-                value={employee?.marital_status.description}
-                inputProps={{ readOnly: true }}
-              />
+                value={formik.values.maritalStatusId}
+                error={
+                  formik.touched.maritalStatusId &&
+                  Boolean(formik.errors.maritalStatusId)
+                }
+                helperText={
+                  formik.touched.maritalStatusId &&
+                  formik.errors.maritalStatusId
+                }
+              >
+                <option value="">Selecciona opción</option>
+                {maritalStatus.map((item) => (
+                  <option key={`option-atc-${item.id}`} value={item.id}>
+                    {item.description}
+                  </option>
+                ))}
+              </Select>
             </Grid>
             <Grid item xs={12} lg={6}>
               <CurrencyTextField
                 label="Renta"
+                name="salary"
                 required
-                value={employee?.current_job?.salary}
-                inputProps={{ readOnly: true }}
+                value={formik.values.salary}
+                onChange={formik.handleChange}
+                error={formik.touched.salary && Boolean(formik.errors.salary)}
+                helperText={formik.touched.salary && formik.errors.salary}
               />
             </Grid>
             <Grid item xs={12} lg={6}>
-              <TextField
+              <Select
                 label="Tipo de contrato"
+                name="contractType"
+                onChange={formik.handleChange}
+                value={formik.values.contractType}
                 required
-                value={employee?.current_job?.contract_type}
-                inputProps={{ readOnly: true }}
-              />
+                error={
+                  formik.touched.contractType &&
+                  Boolean(formik.errors.contractType)
+                }
+                helperText={
+                  formik.touched.contractType && formik.errors.contractType
+                }
+              >
+                <option value="">SELECCIONE OPCIÓN</option>
+                {['EMPRESA', 'SUB CONTRATRO', 'CESANTE'].map((item, index) => (
+                  <option key={`contract-type--${index}`} value={`${item}`}>
+                    {item}
+                  </option>
+                ))}
+              </Select>
             </Grid>
           </Grid>
           <Box textAlign="center">

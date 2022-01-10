@@ -13,7 +13,6 @@ import companyActions from '../../../state/actions/companies'
 import socialCaseActions from '../../../state/actions/socialCase'
 
 const useStyles = makeStyles(() => ({
-  main: {},
   title: {
     fontWeight: 'bold',
     marginBottom: '20px'
