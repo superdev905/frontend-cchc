@@ -12,12 +12,17 @@ import { Dialog, DatePicker, DataTable } from '../Shared'
 import { formatSearchWithRut } from '../../formatters'
 import generateColor from '../../utils/generateColor'
 import migrantsActions from '../../state/actions/migrants'
+import employeesActions from '../../state/actions/employees'
+import uiActions from '../../state/actions/ui'
 import { PollsModule } from '../Polls'
+import { useToggle } from '../../hooks'
+import { EmployeeForm } from '../Employees'
 
 const MigrateModal = ({ open, onClose }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
+  const { user } = useSelector((state) => state.auth)
   const { moduleResponse } = useSelector((state) => state.poll)
   const { benefits: benefitsList } = useSelector((state) => state.migrants)
   const [searchRut, setSearchRut] = useState('')
@@ -26,6 +31,14 @@ const MigrateModal = ({ open, onClose }) => {
   const [years, setYears] = useState([])
   const [searchList, setSearchList] = useState([])
   const [selectedEmployee, setSelectedEmployee] = useState(null)
+
+  const { open: openEmployeeForm, toggleOpen: toggleOpenJEmployeeForm } =
+    useToggle()
+
+  const onCreateEmployee = (values) =>
+    dispatch(
+      employeesActions.createEmployee({ ...values, created_by: user.id })
+    )
 
   const formik = useFormik({
     initialValues: {
@@ -89,6 +102,8 @@ const MigrateModal = ({ open, onClose }) => {
   useEffect(() => {
     if (searchRut && formik.values.period) {
       setLoading(true)
+      setSelectedEmployee(null)
+      setSearchList([])
       dispatch(
         migrantsActions.searchMigrants(
           { rut: searchRut, period: formik.values.period },
@@ -102,6 +117,7 @@ const MigrateModal = ({ open, onClose }) => {
       })
     } else {
       setSearchList([])
+      setSelectedEmployee(null)
     }
   }, [searchRut, formik.values.period])
 
@@ -180,47 +196,66 @@ const MigrateModal = ({ open, onClose }) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    {loading && (
+                    {loading ? (
                       <>
                         <Skeleton height={'80px'}></Skeleton>
                         <Skeleton height={'80px'}></Skeleton>
-                      </>
-                    )}
-                    {searchList.length === 0 ? (
-                      <>
-                        <EmptyState
-                          message={`${
-                            searchRut
-                              ? `No se encontraron resultados para: ${searchRut}`
-                              : 'Ingrese el rut del trabajador'
-                          }`}
-                        />
                       </>
                     ) : (
                       <>
-                        {searchList.map((item) => (
-                          <EmployeeRow
-                            key={item}
-                            selectable={!item.isAdded}
-                            option={item}
-                            onClick={() => {
-                              if (!item.isAdded) {
-                                setSelectedEmployee(item)
-                              }
-                            }}
-                            customComponent={
-                              item.isAdded && (
-                                <Box textAlign={'center'}>
-                                  <Box>
-                                    <Typography variant="caption1">
-                                      Trabajador agregado en este periodo
-                                    </Typography>
-                                  </Box>
-                                </Box>
-                              )
-                            }
-                          />
-                        ))}
+                        {searchList.length === 0 ? (
+                          <>
+                            <EmptyState
+                              message={`${
+                                searchRut
+                                  ? `No se encontraron resultados para: ${searchRut}`
+                                  : 'Ingrese el rut del trabajador'
+                              }`}
+                              actionMessage="Crear trabajador"
+                              event={searchRut && toggleOpenJEmployeeForm}
+                            />
+                            {openEmployeeForm && (
+                              <EmployeeForm
+                                open={openEmployeeForm}
+                                type={'CREATE'}
+                                onClose={toggleOpenJEmployeeForm}
+                                submitFunction={onCreateEmployee}
+                                successMessage={'Trabajador creado'}
+                                successFunction={() => {
+                                  dispatch(
+                                    uiActions.setCurrentModule('MIGRANTES')
+                                  )
+                                }}
+                              />
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            {searchList.map((item) => (
+                              <EmployeeRow
+                                key={`employee-${item.id}`}
+                                selectable={!item.isAdded}
+                                option={item}
+                                onClick={() => {
+                                  if (!item.isAdded) {
+                                    setSelectedEmployee(item)
+                                  }
+                                }}
+                                customComponent={
+                                  item.isAdded && (
+                                    <Box textAlign={'center'}>
+                                      <Box>
+                                        <Typography variant="caption1">
+                                          Trabajador agregado en este periodo
+                                        </Typography>
+                                      </Box>
+                                    </Box>
+                                  )
+                                }
+                              />
+                            ))}
+                          </>
+                        )}
                       </>
                     )}
                   </Grid>
