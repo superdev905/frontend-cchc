@@ -112,7 +112,7 @@ const PostulationList = () => {
         emptyMessage={
           filters.search
             ? `No se encontraron resultados para: ${filters.search}`
-            : 'Aún no hay postulaciones'
+            : 'no hay postulaciones'
         }
         highlightOnHover
         pointerOnHover
