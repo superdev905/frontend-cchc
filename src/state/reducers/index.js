@@ -21,11 +21,8 @@ import questionEmployee from './questionEmployee'
 import socialCase from './socialCase'
 import commonPublic from './commonPublic'
 import questions from './questions'
-<<<<<<< HEAD
 import inclusion from './inclusion'
-=======
 import migrants from './migrants'
->>>>>>> 2897dd59db0e4f12a6a20209a57bf7aa15fc3f19
 
 const reducers = (history) =>
   combineReducers({
@@ -50,11 +47,8 @@ const reducers = (history) =>
     socialCase,
     commonPublic,
     questions,
-<<<<<<< HEAD
     inclusion,
-=======
     migrants,
->>>>>>> 2897dd59db0e4f12a6a20209a57bf7aa15fc3f19
     router: connectRouter(history)
   })
 

@@ -14,7 +14,7 @@ import generateColor from '../../../utils/generateColor'
 import EmployeeRow from './EmployeeRow'
 import RowAutocomplete from './RowAutocomplete'
 import { formatSearchWithRut } from '../../../formatters'
-import { CompanyRow } from '../../Shared'
+import { CompanyRow, DatePicker } from '../../Shared'
 import validationSchema from './schemas'
 
 const StepOne = ({ onClose, data }) => {

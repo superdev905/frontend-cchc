@@ -139,8 +139,6 @@ const StepOne = () => {
     return !isPollListAnswered(moduleResponse)
   }
 
-  const relatedCompanyValidation = () => {}
-
   useEffect(() => {
     if (formik.values.parent_business_id && listCompanies.length > 0) {
       setParentCompany(

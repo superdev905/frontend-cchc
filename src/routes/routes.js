@@ -544,7 +544,6 @@ const routes = [
       />
     )
   },
-<<<<<<< HEAD
   {
     path: '/inclusive',
     key: 'INCLUSIVE',
@@ -577,8 +576,6 @@ const routes = [
       />
     )
   },
-  ...SocialCaseRoutes,
-
   {
     path: '/inclusion-cases',
     key: 'INCLUSION-CASES',
@@ -610,10 +607,8 @@ const routes = [
         no={() => (authenticated ? <Forbidden /> : <Login />)}
       />
     )
-  }
-=======
+  },
   ...SocialCaseRoutes,
   ...MigrantRoutes
->>>>>>> 2897dd59db0e4f12a6a20209a57bf7aa15fc3f19
 ]
 export default routes
