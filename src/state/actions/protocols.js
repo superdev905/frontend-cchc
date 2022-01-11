@@ -14,7 +14,7 @@ const getProtocols =
           const { data } = response
           dispatch({
             type: protocolsTypes.GET_PROTOCOLS,
-            payloda: data.items
+            payload: data.items
           })
           resolve(data)
         })

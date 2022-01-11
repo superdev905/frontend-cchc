@@ -83,6 +83,7 @@ const services = {
     production: `${BASEURL[env]}:5115/api/v1`
   },
   protocols: {
+    development: `${BASEURL[env]}:5119/api/v1`,
     production: `${BASEURL[env]}:5120/api/v1`
   }
 }

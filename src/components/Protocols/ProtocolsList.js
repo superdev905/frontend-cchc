@@ -1,11 +1,20 @@
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Box, Grid } from '@material-ui/core'
-import protocolsActions from '../../state/actions/Protocols'
+import { FiDownload as DownloadIcon } from 'react-icons/fi'
+import { Box, Chip, Grid } from '@material-ui/core'
+import protocolsActions from '../../state/actions/protocols'
+import filesActions from '../../state/actions/files'
 import { DataTable } from '../Shared'
 import Can from '../Can'
-import { SearchInput, Button, Wrapper, Select } from '../UI'
+import {
+  SearchInput,
+  Button,
+  Wrapper,
+  Select,
+  StatusChip,
+  ActionsTable
+} from '../UI'
 import { formatDate } from '../../formatters'
 
 const ProtocolsList = () => {
@@ -18,6 +27,7 @@ const ProtocolsList = () => {
     search: '',
     status: ''
   })
+  const { list } = useSelector((state) => state.protocols)
 
   const handleStatusChange = (e) => {
     setFilters({ ...filters, status: e.target.value })
@@ -29,10 +39,17 @@ const ProtocolsList = () => {
 
   const fetchProtocols = () => {
     setLoading(true)
+    const query = { ...filters }
+
+    if (query.status) {
+      query.validity = query.status === 'VIGENTE'
+      delete query.status
+    }
+    delete query.status
     dispatch(
       protocolsActions.getProtocols({
-        ...filters,
-        search: filters.search.trim()
+        ...query,
+        search: query.search.trim()
       })
     ).then(() => {
       setLoading(false)
@@ -50,12 +67,23 @@ const ProtocolsList = () => {
           <Grid item xs={12} md={2}>
             <Select name="status" onChange={handleStatusChange}>
               <option value="">Todos</option>
+              {[
+                { name: 'VIGENTE', index: 'VIGENTE' },
+                { name: 'NO VIGENTE', index: 'NO_VIGENTE' }
+              ].map((item) => (
+                <option key={`option-valid-${item.index}`} value={item.index}>
+                  {item.name}
+                </option>
+              ))}
             </Select>
           </Grid>
           <Grid item xs={12} md={4}>
             <SearchInput
               value={filters.search}
               placeholder="Buscar Por Nombre"
+              onChange={(e) => {
+                setFilters({ ...filters, search: e.target.value })
+              }}
             />
           </Grid>
           <Grid item xs={12} md={6}>
@@ -70,6 +98,7 @@ const ProtocolsList = () => {
         </Grid>
       </Box>
       <DataTable
+        data={list}
         progressPending={loading}
         emptyMessage={
           filters.search
@@ -81,31 +110,58 @@ const ProtocolsList = () => {
         columns={[
           {
             name: 'Titulo',
-            selector: (row) => row.title
+            selector: (row) => row.title,
+            sortable: true
           },
-          {
-            name: 'Modulos',
-            selector: (row) => row.modules,
-            hide: 'md'
-          },
+
           {
             name: 'Fecha de inicio',
-            selector: (row) => formatDate(row.startDate, {}),
-            hide: 'md'
+            selector: (row) => formatDate(row.startDate, {})
           },
           {
             name: 'Fecha de fin',
-            selector: (row) => formatDate(row.endDate, {}),
-            hide: 'md'
+            selector: (row) => formatDate(row.endDate, {})
           },
           {
-            name: 'Vigente',
-            selector: (row) => row.isActive
+            name: 'Estado',
+            selector: (row) => (
+              <StatusChip
+                label={row.isValid ? 'Vigente' : 'No vigente'}
+                success={row.isValid}
+                error={!row.isValid}
+              />
+            )
           },
           {
-            name: 'Archivo',
-            selector: (row) => row.file,
-            hide: 'md'
+            name: 'Modulos',
+            selector: (row) => (
+              <>
+                {row.modules.map((item) => (
+                  <Chip
+                    key={`${row.title}-chip-${item.id}`}
+                    color="primary"
+                    label={item.module.name}
+                  />
+                ))}
+              </>
+            )
+          },
+          {
+            name: 'Opciones',
+            right: true,
+            selector: (row) => (
+              <ActionsTable
+                onView={() => {}}
+                moreOptions={[
+                  {
+                    icon: <DownloadIcon color="primary" />,
+                    onClick: () => {
+                      dispatch(filesActions.downloadFile(row.file.fileUrl))
+                    }
+                  }
+                ]}
+              />
+            )
           }
         ]}
         pagination
