@@ -13,7 +13,8 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Toolbar
+  Toolbar,
+  Typography
 } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
@@ -22,6 +23,7 @@ import authActions from '../../state/actions/auth'
 import useStyles from './styles'
 import useMenu from '../../hooks/useMenu'
 import LeftDrawer from './LeftDrawer'
+import { ProtocolWidget } from '../Widgets'
 
 const ResponsiveDrawer = ({ ...props }) => {
   const { window } = props
@@ -76,15 +78,34 @@ const ResponsiveDrawer = ({ ...props }) => {
             width="100%"
             alignItems="center"
           >
-            {user &&
-              (user.profilePicture !== '' ? (
-                <Avatar src={user.profilePicture}></Avatar>
-              ) : (
-                <Avatar> {user.name.charAt(0)}</Avatar>
-              ))}
-            <IconButton onClick={handleOpen}>
-              <ExpandMoreIcon />
-            </IconButton>
+            <ProtocolWidget />
+            <Box display={'flex'}>
+              {user &&
+                (user.profilePicture !== '' ? (
+                  <Avatar
+                    className={classes.avatar}
+                    src={user.profilePicture}
+                  ></Avatar>
+                ) : (
+                  <Avatar className={classes.avatar}>
+                    {user.name.charAt(0)}
+                  </Avatar>
+                ))}
+              {user && (
+                <Box ml={1}>
+                  <Typography
+                    className={classes.name}
+                  >{`${user.names} ${user.paternal_surname}`}</Typography>
+                  <Typography className={classes.role}>
+                    {user.role.name}
+                  </Typography>
+                </Box>
+              )}
+
+              <IconButton onClick={handleOpen}>
+                <ExpandMoreIcon />
+              </IconButton>
+            </Box>
           </Box>
           <Menu
             id="menu-profile"

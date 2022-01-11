@@ -1,4 +1,4 @@
-import { FiDownload as DownloadIcon } from 'react-icons/fi'
+import { FiDownload as DownloadIcon, FiEye as ViewIcon } from 'react-icons/fi'
 import { Box, IconButton, makeStyles, Typography } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
@@ -44,7 +44,7 @@ const ProtocolCard = ({ protocol }) => {
             <DownloadIcon />
           </IconButton>
           <IconButton color="primary">
-            <DownloadIcon />
+            <ViewIcon />
           </IconButton>
         </Box>
       </Box>
@@ -53,8 +53,7 @@ const ProtocolCard = ({ protocol }) => {
 }
 
 ProtocolCard.defaultProps = {
-  title: 'Protocolo 1',
-  classification: 'Classificación'
+  protocol: { title: 'Protocolo 1', classification: 'Classificación' }
 }
 
 export default ProtocolCard

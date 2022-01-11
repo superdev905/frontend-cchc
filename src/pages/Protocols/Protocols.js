@@ -1,5 +1,5 @@
 import { Box } from '@material-ui/core'
-import ProtocolsList from '../../components/Protocols/ProtocolsList'
+import { ProtocolsList } from '../../components/Protocols'
 import { PageHeading } from '../../components/UI'
 
 const Protocols = () => (
