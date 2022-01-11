@@ -12,7 +12,8 @@ import {
   Favorite as BenefitIcon,
   WatchLater as ScheduleIcon,
   Home as HousingIcon,
-  Accessible as AccessibleIcon
+  Accessible as AccessibleIcon,
+  Help as HelpIcon
 } from '@material-ui/icons'
 import LanguageIcon from '@material-ui/icons/Language'
 
@@ -88,6 +89,11 @@ const modulesByRole = {
       title: 'Configuración',
       path: '/settings',
       icon: <SettingsIcon />
+    },
+    {
+      title: 'Protocolos',
+      path: '/protocols',
+      icon: <HelpIcon />
     }
   ],
   SOCIAL_ASSISTANCE: [
@@ -142,6 +148,11 @@ const modulesByRole = {
       title: 'Vivienda',
       path: '/housing',
       icon: <HousingIcon />
+    },
+    {
+      title: 'Protocolos',
+      path: '/protocols',
+      icon: <HelpIcon />
     }
   ],
   PROJECTS: [
