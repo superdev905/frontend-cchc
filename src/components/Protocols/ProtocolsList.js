@@ -166,14 +166,14 @@ const ProtocolsList = () => {
         ]}
         pagination
         onRowClicked={onRowClick}
-        paginationRowsPerPageOptions={[15]}
+        paginationRowsPerPageOptions={[30, 40]}
         paginationPerPage={filters.size}
         paginationServer={true}
         onChangeRowsPerPage={(limit) => {
           setFilters({ ...filters, size: limit })
         }}
         onChangePage={(page) => {
-          setFilters({ ...filters, skip: page })
+          setFilters({ ...filters, page })
         }}
       />
     </Wrapper>
