@@ -33,7 +33,6 @@ import benefitsActions from '../../../state/actions/benefits'
 import useStyles from './styles'
 import { validationSchema, caseAdditionalSchema } from './schema'
 import socialCasesActions from '../../../state/actions/socialCase'
-import CaseAdditionalForm from './CaseAdditionalForm'
 
 const attentionPlaces = ['OFICINA', 'TERRENO', 'VIRTUAL']
 
@@ -124,6 +123,7 @@ const WorkerInterventionRecord = ({
       case_id: type === 'UPDATE' ? data.case_id : defaultCaseId || '',
       task_id: type === 'UPDATE' ? data.task_id : defaultTaskId || '',
       assigned_id: type === 'UPDATE' ? data.assigned_id : '',
+      typeRequest: type === 'UPDATE' ? data.typeRequest : '',
       observation: type === 'UPDATE' ? data.observation : '',
       attached_url: type === 'UPDATE' ? data.attached_url : '',
       attached_key: type === 'UPDATE' ? data.attached_url : ''
@@ -710,12 +710,23 @@ const WorkerInterventionRecord = ({
                   </Grid>
                 </Grid>
                 {formik.values.case_id === 'NEW' && (
-                  <CaseAdditionalForm
-                    formik={caseFormik}
-                    onReset={() => {
-                      formik.setFieldValue('case_id', '')
-                    }}
-                  />
+                  <Grid item xs={12} md={12} lg={12}>
+                    <TextArea
+                      rowsMin={4}
+                      label="Tipo de Solicitud"
+                      name="Tipo de Solicitud"
+                      value={formik.values.typeRequest}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={
+                        formik.touched.typeRequest &&
+                        Boolean(formik.errors.typeRequest)
+                      }
+                      helperText={
+                        formik.touched.typeRequest && formik.errors.typeRequest
+                      }
+                    />
+                  </Grid>
                 )}
               </Box>
             </Grid>
