@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { FiArrowLeft as ArrowBack } from 'react-icons/fi'
 import { useSelector } from 'react-redux'
-import { Box, Chip, Drawer, IconButton } from '@material-ui/core'
+import { Box, Chip, Drawer, IconButton, makeStyles } from '@material-ui/core'
 import { LabeledRow, Text } from '../UI'
+import { formatDate } from '../../formatters'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,9 +26,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const DetailsDraw = ({ open, onclose, protocolId }) => {
+const DetailsDraw = ({ open, onClose, protocol }) => {
+  const classes = useStyles()
   const { isMobile } = useSelector((state) => state.ui)
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
 
   return (
     <Drawer
@@ -56,7 +58,8 @@ const DetailsDraw = ({ open, onclose, protocolId }) => {
           <LabeledRow loaderWidth="5%" label={'Fecha de Fin'}>
             <Text loading={loading}>{formatDate(protocol?.endDate)}</Text>
           </LabeledRow>
-          <Chip color="primary" label={item.module.name} />
+
+          <Chip color="primary" label={protocol.modules.length} />
         </Box>
       </Box>
     </Drawer>

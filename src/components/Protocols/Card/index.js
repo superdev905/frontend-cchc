@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const ProtocolCard = ({ protocol }) => {
+const ProtocolCard = ({ protocol, onDownload, onView }) => {
   const classes = useStyles()
   return (
     <Box p={2} className={classes.root}>
@@ -40,10 +40,10 @@ const ProtocolCard = ({ protocol }) => {
           </Box>
         </Box>
         <Box>
-          <IconButton color="primary">
+          <IconButton color="primary" onClick={onDownload}>
             <DownloadIcon />
           </IconButton>
-          <IconButton color="primary">
+          <IconButton color="primary" onClick={onView}>
             <ViewIcon />
           </IconButton>
         </Box>

@@ -61,6 +61,6 @@ export default makeStyles((theme) => ({
     opacity: 0.6
   },
   avatar: {
-    backgroundColor: COLORS[3]
+    backgroundColor: COLORS[2]
   }
 }))

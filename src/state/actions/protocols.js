@@ -23,8 +23,31 @@ const getProtocols =
         })
     })
 
+const getModuleProtocols =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.protocols}/protocols/modules?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: protocolsTypes.GET_MODULE_PROTOCOLS,
+            payload: data
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const protocolsActions = {
-  getProtocols
+  getProtocols,
+  getModuleProtocols
 }
 
 export default protocolsActions

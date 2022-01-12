@@ -19,7 +19,6 @@ import { formatDate } from '../../formatters'
 import DetailsDraw from './Details'
 import { useToggle } from '../../hooks'
 
-
 const ProtocolsList = () => {
   const dispatch = useDispatch()
   const history = useHistory()
@@ -33,7 +32,6 @@ const ProtocolsList = () => {
   })
   const { list } = useSelector((state) => state.protocols)
   const { open: openDetails, toggleOpen: toggleOpenDetails } = useToggle()
-
 
   const handleStatusChange = (e) => {
     setFilters({ ...filters, status: e.target.value })
@@ -195,13 +193,10 @@ const ProtocolsList = () => {
           setFilters({ ...filters, page })
         }}
       />
+      {openDetails && current && (
+        <DetailsDraw open={openDetails} onClose={toggleOpenDetails} />
+      )}
     </Wrapper>
-    {openDetails && current && (
-      <DetailsDraw
-        open={openDetails}
-        onClose={toggleOpenDetails}
-      />
-    )}
   )
 }
 
