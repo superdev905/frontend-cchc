@@ -55,7 +55,7 @@ const RevisionDialog = ({ open, onClose, successFunction }) => {
   const getAction = (type) => {
     const actions = {
       APPROVE: scholarshipsActions.postulationApprove,
-      REJECT: scholarshipsActions.postulationApprove,
+      REJECT: scholarshipsActions.postulationReject,
       REVIEW: scholarshipsActions.postulationRevision
     }
     return actions[type]
