@@ -4,10 +4,11 @@ import { useHistory, useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/styles'
 import { Box, Typography, Grid } from '@material-ui/core'
 
+import files from '../../state/actions/files'
+import { formatDate } from '../../formatters'
 import { LabeledRow, Text, Wrapper, Button } from '../UI'
 import { FileThumbnail, FileVisor } from '../Shared'
-import { formatDate } from '../../formatters'
-import files from '../../state/actions/files'
+import PaymentsList from './PaymentsList'
 
 const useStyles = makeStyles(() => ({
   heading: {
@@ -109,20 +110,22 @@ const Details = ({ loading }) => {
             </Grid>
             <Grid item xs={12} md={6}>
               <LabeledRow label={'Finiquito'}>
-                <FileThumbnail
-                  fileName={unemployed?.dismissalFile?.fileName}
-                  date={formatDate(unemployed?.dismissalFile?.uploadDate)}
-                  fileSize={unemployed?.dismissalFile?.fileSize}
-                  onView={() => setOpen(true)}
-                  onDownload={() => {
-                    dispatch(
-                      files.downloadFile(
-                        unemployed?.dismissalFile?.fileUrl,
-                        unemployed?.dismissalFile?.fileName
+                {unemployed?.file && (
+                  <FileThumbnail
+                    fileName={unemployed?.dismissalFile?.fileName}
+                    date={formatDate(unemployed?.dismissalFile?.uploadDate)}
+                    fileSize={unemployed?.dismissalFile?.fileSize}
+                    onView={() => setOpen(true)}
+                    onDownload={() => {
+                      dispatch(
+                        files.downloadFile(
+                          unemployed?.dismissalFile?.fileUrl,
+                          unemployed?.dismissalFile?.fileName
+                        )
                       )
-                    )
-                  }}
-                />
+                    }}
+                  />
+                )}
               </LabeledRow>
               <Grid item xs={12} md={12}>
                 <Box display="flex" justifyContent="flex-end" width={1}>
@@ -133,7 +136,7 @@ const Details = ({ loading }) => {
               </Grid>
             </Grid>
 
-            {open && (
+            {open && unemployed.dismissalFile && (
               <FileVisor
                 open={open}
                 onClose={() => setOpen(false)}
@@ -142,6 +145,19 @@ const Details = ({ loading }) => {
               />
             )}
           </Grid>
+          <Box mt={2}>
+            <Box
+              display={'flex'}
+              justifyContent={'space-between'}
+              alignItems={'center'}
+            >
+              <Typography className={classes.heading}>
+                Historial de pagos
+              </Typography>
+              <Button>Registrar pago</Button>
+            </Box>
+            <PaymentsList />
+          </Box>
         </Box>
       </Box>
     </Wrapper>

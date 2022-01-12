@@ -83,6 +83,22 @@ const createUnemployed = (values) => () =>
       })
   })
 
+const getUnemployedBenefits =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.benefits}/benefits?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data.items)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 export default {
   setQueryUnemployed,
   setFilters,
@@ -90,5 +106,6 @@ export default {
   getUnemployed,
   getUnemployedById,
   createUnemployed,
-  getEmployeesNonAddedByRut
+  getEmployeesNonAddedByRut,
+  getUnemployedBenefits
 }
