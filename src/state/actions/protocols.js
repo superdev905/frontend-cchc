@@ -51,10 +51,78 @@ const toggleCreateModal = (value) => (dispatch) =>
     payload: !value
   })
 
+const createProtocol = (values) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.protocols}/protocols`, values)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: protocolsTypes.CREATE_PROTOCOL,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateProtocol = (id, values) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.protocols}/protocols/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: protocolsTypes.UPDATE_PROTOCOL,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getProtocolDetails = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.protocols}/protocols/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: protocolsTypes.GET_PROTOCOL_DETAILS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const deleteProtocol = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`${config.services.protocols}/protocols/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: protocolsTypes.DELETE_PROTOCOL,
+          payload: id
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const protocolsActions = {
   getProtocols,
   getModuleProtocols,
-  toggleCreateModal
+  toggleCreateModal,
+  createProtocol,
+  getProtocolDetails,
+  updateProtocol,
+  deleteProtocol
 }
 
 export default protocolsActions

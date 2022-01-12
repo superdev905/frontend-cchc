@@ -620,7 +620,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
+        availableTo={['ADMIN', 'JEFATURA']}
         yes={() => (
           <Layout>
             <Protocols />

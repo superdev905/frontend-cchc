@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
 import { FiDownload as DownloadIcon } from 'react-icons/fi'
 import { Box, Chip, Grid } from '@material-ui/core'
 import protocolsActions from '../../state/actions/protocols'
 import filesActions from '../../state/actions/files'
+import { useToggle } from '../../hooks'
+import { formatDate } from '../../formatters'
 import { DataTable } from '../Shared'
 import Can from '../Can'
 import {
@@ -15,13 +16,11 @@ import {
   StatusChip,
   ActionsTable
 } from '../UI'
-import { formatDate } from '../../formatters'
 import DetailsDraw from './Details'
-import { useToggle } from '../../hooks'
+import ProtocolDialog from './Dialog'
 
 const ProtocolsList = () => {
   const dispatch = useDispatch()
-  const history = useHistory()
   const [loading, setLoading] = useState(false)
   const [current, setCurrent] = useState(null)
   const [filters, setFilters] = useState({
@@ -30,20 +29,16 @@ const ProtocolsList = () => {
     search: '',
     status: ''
   })
-  const { list, showCreateModal } = useSelector((state) => state.protocols)
+  const { list } = useSelector((state) => state.protocols)
   const { open: openDetails, toggleOpen: toggleOpenDetails } = useToggle()
+  const { open: openCreate, toggleOpen: toggleOpenCreate } = useToggle()
 
   const handleStatusChange = (e) => {
     setFilters({ ...filters, status: e.target.value })
   }
 
-  const onRowClick = (row) => {
-    history.push(`/protocols/${row.id}`)
-  }
-
-  const addButtonClick = () => {
-    dispatch(protocolsActions.toggleCreateModal(showCreateModal))
-  }
+  const createProtocol = (values) =>
+    dispatch(protocolsActions.createProtocol(values))
 
   const fetchProtocols = () => {
     setLoading(true)
@@ -100,7 +95,7 @@ const ProtocolsList = () => {
                 <Can
                   availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
                   yes={() => (
-                    <Button onClick={addButtonClick}>Nuevo Protocolo</Button>
+                    <Button onClick={toggleOpenCreate}>Nuevo Protocolo</Button>
                   )}
                   no={() => null}
                 />
@@ -115,7 +110,7 @@ const ProtocolsList = () => {
           emptyMessage={
             filters.search
               ? `No se encontraron resultados para: ${filters.search}`
-              : 'no hay postulaciones'
+              : 'No hay datos por mostrar'
           }
           highlightOnHover
           pointerOnHover
@@ -169,9 +164,14 @@ const ProtocolsList = () => {
                   }}
                   moreOptions={[
                     {
-                      icon: <DownloadIcon color="primary" />,
+                      icon: <DownloadIcon />,
                       onClick: () => {
-                        dispatch(filesActions.downloadFile(row.file.fileUrl))
+                        dispatch(
+                          filesActions.downloadFile(
+                            row.file.fileUrl,
+                            row.file.fileName
+                          )
+                        )
                       }
                     }
                   ]}
@@ -180,7 +180,10 @@ const ProtocolsList = () => {
             }
           ]}
           pagination
-          onRowClicked={onRowClick}
+          onRowClicked={(row) => {
+            setCurrent(row)
+            toggleOpenDetails()
+          }}
           paginationRowsPerPageOptions={[30, 40]}
           paginationPerPage={filters.size}
           paginationServer={true}
@@ -191,8 +194,19 @@ const ProtocolsList = () => {
             setFilters({ ...filters, page })
           }}
         />
+        {openCreate && (
+          <ProtocolDialog
+            open={openCreate}
+            onClose={toggleOpenCreate}
+            submitFunction={createProtocol}
+          />
+        )}
         {openDetails && current && (
-          <DetailsDraw open={openDetails} onClose={toggleOpenDetails} />
+          <DetailsDraw
+            protocolId={current.id}
+            open={openDetails}
+            onClose={toggleOpenDetails}
+          />
         )}
       </Wrapper>
     </Box>

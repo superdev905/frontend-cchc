@@ -32,6 +32,7 @@ const ActionGroup = ({
     <Box className={classes.root}>
       {moreOptions.map((item, index) => (
         <IconButton
+          color="primary"
           disabled={item.disabled || false}
           key={`more-table-option-${index}`}
           onClick={item.onClick}

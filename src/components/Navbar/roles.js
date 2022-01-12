@@ -86,6 +86,11 @@ const modulesByRole = {
       icon: <LanguageIcon />
     },
     {
+      title: 'Protocolos',
+      path: '/protocols',
+      icon: <HelpIcon />
+    },
+    {
       index: 5,
       title: 'Usuarios',
       path: '/users',
@@ -96,11 +101,6 @@ const modulesByRole = {
       title: 'Configuración',
       path: '/settings',
       icon: <SettingsIcon />
-    },
-    {
-      title: 'Protocolos',
-      path: '/protocols',
-      icon: <HelpIcon />
     }
   ],
   SOCIAL_ASSISTANCE: [
@@ -165,11 +165,6 @@ const modulesByRole = {
       title: 'Vivienda',
       path: '/housing',
       icon: <HousingIcon />
-    },
-    {
-      title: 'Protocolos',
-      path: '/protocols',
-      icon: <HelpIcon />
     }
   ],
   PROJECTS: [
