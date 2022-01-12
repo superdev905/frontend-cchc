@@ -1,14 +1,20 @@
 const modulesList = [
-  'TRABAJADORES',
-  'USUARIOS',
-  'VISITAS',
   'EMPRESAS',
   'OBRAS',
+  'TRABAJADORES',
+  'MIGRANTES',
+  'CESANTES',
+  'VISITAS',
   'CURSOS',
   'BENEFICIOS',
   'PROGRAMACIÓN',
   'VIVIENDA',
-  'MIGRANTES'
+  'CASO SOCIAL',
+  'INCLUSIÓN',
+  'ENCUESTA',
+  'CONSULTAS WEB',
+  'PROTOCOLOS',
+  'USUARIOS'
 ]
 
 export default {
