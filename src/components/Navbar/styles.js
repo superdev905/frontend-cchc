@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core'
+import { COLORS } from '../../utils/generateColor'
 
 export default makeStyles((theme) => ({
   root: {
@@ -50,5 +51,16 @@ export default makeStyles((theme) => ({
   },
   nested: {
     paddingLeft: theme.spacing(4)
+  },
+  name: {
+    fontSize: 14,
+    fontWeight: 'bold'
+  },
+  role: {
+    fontSize: 12,
+    opacity: 0.6
+  },
+  avatar: {
+    backgroundColor: COLORS[3]
   }
 }))
