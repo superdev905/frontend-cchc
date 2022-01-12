@@ -16,11 +16,15 @@ import {
   ActionsTable
 } from '../UI'
 import { formatDate } from '../../formatters'
+import DetailsDraw from './Details'
+import { useToggle } from '../../hooks'
+
 
 const ProtocolsList = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const [loading, setLoading] = useState(false)
+  const [current, setCurrent] = useState(null)
   const [filters, setFilters] = useState({
     page: 1,
     size: 30,
@@ -28,6 +32,8 @@ const ProtocolsList = () => {
     status: ''
   })
   const { list } = useSelector((state) => state.protocols)
+  const { open: openDetails, toggleOpen: toggleOpenDetails } = useToggle()
+
 
   const handleStatusChange = (e) => {
     setFilters({ ...filters, status: e.target.value })
@@ -97,6 +103,7 @@ const ProtocolsList = () => {
           </Grid>
         </Grid>
       </Box>
+
       <DataTable
         data={list}
         progressPending={loading}
@@ -162,6 +169,18 @@ const ProtocolsList = () => {
                 ]}
               />
             )
+          },
+          {
+            name: '',
+            right: true,
+            selector: (row) => (
+              <ActionsTable
+                onView={() => {
+                  setCurrent(row)
+                  toggleOpenDetails()
+                }}
+              />
+            )
           }
         ]}
         pagination
@@ -177,6 +196,12 @@ const ProtocolsList = () => {
         }}
       />
     </Wrapper>
+    {openDetails && current && (
+      <DetailsDraw
+        open={openDetails}
+        onClose={toggleOpenDetails}
+      />
+    )}
   )
 }
 
