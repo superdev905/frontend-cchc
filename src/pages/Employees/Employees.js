@@ -1,4 +1,5 @@
 import { ListEmployees } from '../../components/Employees'
+import { ModuleIndicator } from '../../components/Shared'
 import { PageHeading } from '../../components/UI'
 
 const Employees = () => (
