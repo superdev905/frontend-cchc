@@ -13,15 +13,14 @@ import { useSuccess } from '../../../hooks'
 const validationSchema = Yup.object().shape({
   areaId: Yup.number().required('Seleccione area'),
   title: Yup.string().required('Ingrese título'),
-  question: Yup.string().required('Ingrese consulta'),
-  delegation: Yup.string().required('Seleeciona delegación')
+  question: Yup.string().required('Ingrese consulta')
 })
 
 const QuestionModal = ({ open, onClose }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
-  const { areas, regions } = useSelector((state) => state.commonPublic)
+  const { areas } = useSelector((state) => state.commonPublic)
   const { employee } = useSelector((state) => state.questionEmployee)
   const { success, changeSuccess } = useSuccess()
   const formik = useFormik({
@@ -40,7 +39,6 @@ const QuestionModal = ({ open, onClose }) => {
           areaName: areas.find(
             (item) => item.id === parseInt(values.areaId, 10)
           ).name,
-          delegation: values.delegation.toUpperCase(),
           employeeId: employee.id,
           employeeRut: employee.run,
           employeeNames: `${employee.names} ${employee.paternal_surname}`
@@ -65,7 +63,6 @@ const QuestionModal = ({ open, onClose }) => {
   useEffect(() => {
     if (open) {
       dispatch(commonPublicActions.getAreas())
-      dispatch(commonPublicActions.getRegions())
     }
   }, [open])
   return (
@@ -78,7 +75,7 @@ const QuestionModal = ({ open, onClose }) => {
         </Box>
         <Box>
           <Grid container spacing={2}>
-            <Grid item xs={12} lg={6}>
+            <Grid item xs={12}>
               <Select
                 required
                 label="Area"
@@ -98,29 +95,6 @@ const QuestionModal = ({ open, onClose }) => {
               </Select>
             </Grid>
 
-            <Grid item xs={12} lg={6}>
-              <Select
-                required
-                label="Delegación"
-                name="delegation"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.delegation}
-                error={
-                  formik.touched.delegation && Boolean(formik.errors.delegation)
-                }
-                helperText={
-                  formik.touched.delegation && formik.errors.delegation
-                }
-              >
-                <option value="">SELECCIONA DELEGACIÓN</option>
-                {regions.map((item) => (
-                  <option key={`area-${item.id}`} value={item.name}>
-                    {item.name}
-                  </option>
-                ))}
-              </Select>
-            </Grid>
             <Grid item xs={12}>
               <TextArea
                 label="Título"

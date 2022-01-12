@@ -21,6 +21,7 @@ import questionEmployee from './questionEmployee'
 import socialCase from './socialCase'
 import commonPublic from './commonPublic'
 import questions from './questions'
+import unemployed from './unemployed'
 import inclusion from './inclusion'
 import migrants from './migrants'
 import protocols from './protocols'
@@ -48,6 +49,7 @@ const reducers = (history) =>
     socialCase,
     commonPublic,
     questions,
+    unemployed,
     inclusion,
     migrants,
     protocols,

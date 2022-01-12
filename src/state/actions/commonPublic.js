@@ -21,7 +21,7 @@ const getRegions = () => (dispatch) =>
     Axios.get(`${config.services.parameters}/public/regions`)
       .then((response) => {
         const { data } = response
-        dispatch({ type: publicTypes.PUBLIC_GET_REGIONS, payload: data })
+        dispatch({ type: commonTypes.GET_REGIONS, payload: data })
         resolve()
       })
       .catch((err) => {

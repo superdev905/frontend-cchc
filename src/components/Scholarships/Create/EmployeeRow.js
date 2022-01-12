@@ -29,7 +29,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const EmployeeRow = ({ option, onClick, selectable, onDelete }) => {
+const EmployeeRow = ({
+  option,
+  onClick,
+  selectable,
+  onDelete,
+  customComponent
+}) => {
   const classes = useStyles({ selectable })
   return (
     <Box p={1} className={classes.root} onClick={onClick}>
@@ -42,20 +48,31 @@ const EmployeeRow = ({ option, onClick, selectable, onDelete }) => {
             style={{
               fontWeight: 'bold'
             }}
-          >{`${option.names} ${option.paternal_surname} ${option.maternal_surname}`}</Typography>
+          >{`${option.names} ${
+            option?.paternal_surname || option?.paternalSurname
+          } ${option.maternal_surname || option.maternalSurname}`}</Typography>
           <Typography style={{ fontSize: 14 }}>{`Rut: ${
             option.run || 'Sin rut'
           }`}</Typography>
         </Box>
       </Box>
       {selectable ? (
-        <Button size="small" startIcon={<IconCheck />}>
+        <Button
+          size="small"
+          startIcon={<IconCheck />}
+          disabled={option.isAdded}
+        >
           Seleccionar
         </Button>
       ) : (
-        <IconButton onClick={onDelete}>
-          <IconDelete className={classes.deleteIcon} />
-        </IconButton>
+        <>
+          {onDelete && (
+            <IconButton onClick={onDelete}>
+              <IconDelete className={classes.deleteIcon} />
+            </IconButton>
+          )}
+          {customComponent}
+        </>
       )}
     </Box>
   )

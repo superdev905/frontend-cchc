@@ -10,6 +10,7 @@ import SocialCaseRoutes from './SocialCase'
 import MigrantRoutes from './Migrant'
 // import houseRoutes from './house'
 import webQuestionEmployee from './webEmployee'
+import UnemployedRoutes from './Unemployed'
 
 const Login = lazy(() => import('../pages/Login'))
 const Home = lazy(() => import('../pages/Home'))
@@ -42,7 +43,6 @@ const AgreementEmployee = lazy(() => import('../pages/AgreementEmployee'))
 const QuestionPage = lazy(() => import('../pages/WebConsultBoss'))
 const Question = lazy(() => import('../pages/Question'))
 const QuestionDashboard = lazy(() => import('../pages/QuestionDashboard'))
-const InclusivePage = lazy(() => import('../pages/InclusivePage'))
 const InclusionCase = lazy(() => import('../pages/InclusionCase'))
 const InclusiveCases = lazy(() => import('../pages/InclusionCases'))
 const Protocols = lazy(() => import('../pages/Protocols'))
@@ -67,7 +67,14 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'PROJECTS', 'SOCIAL_ASSISTANCE', 'OTEC']}
+        availableTo={[
+          'ADMIN',
+          'PROJECTS',
+          'SOCIAL_ASSISTANCE',
+          'OTEC',
+          'JEFATURA',
+          'ANALISTA_CASOS'
+        ]}
         yes={() => (
           <Layout>
             <Home />
@@ -545,22 +552,9 @@ const routes = [
       />
     )
   },
-  {
-    path: '/inclusive',
-    key: 'INCLUSIVE',
-    exact: true,
-    component: ({ authenticated }) => (
-      <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
-        yes={() => (
-          <Layout>
-            <InclusivePage />
-          </Layout>
-        )}
-        no={() => (authenticated ? <Forbidden /> : <Login />)}
-      />
-    )
-  },
+  ...SocialCaseRoutes,
+  ...MigrantRoutes,
+  ...UnemployedRoutes,
   {
     path: '/inclusive',
     key: 'INCLUSIVE',
@@ -583,7 +577,12 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
+        availableTo={[
+          'ADMIN',
+          'SOCIAL_ASSISTANCE',
+          'JEFATURA',
+          'ANALISTA_CASOS'
+        ]}
         yes={() => (
           <Layout>
             <InclusiveCases />
@@ -599,7 +598,12 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
+        availableTo={[
+          'ADMIN',
+          'SOCIAL_ASSISTANCE',
+          'JEFATURA',
+          'ANALISTA_CASOS'
+        ]}
         yes={() => (
           <Layout>
             <InclusionCase />
@@ -609,6 +613,7 @@ const routes = [
       />
     )
   },
+  ...SocialCaseRoutes,
   {
     path: '/protocols',
     key: 'PROTOCOLS',

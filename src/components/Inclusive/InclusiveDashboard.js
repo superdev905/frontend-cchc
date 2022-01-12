@@ -38,7 +38,7 @@ const InclusiveDashboard = () => {
 
   useEffect(() => {
     getDashboard()
-  })
+  }, [])
 
   return (
     <Grid container spacing={1}>

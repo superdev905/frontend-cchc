@@ -32,6 +32,15 @@ const useStyles = makeStyles((theme) => ({
   },
   user: {
     fontWeight: 'bold'
+  },
+  answer: {
+    backgroundColor: theme.palette.common.white,
+    padding: `5px ${theme.spacing(1)}px`,
+    borderRadius: 5,
+    '& p': {
+      fontSize: 16,
+      margin: '2px 0px'
+    }
   }
 }))
 const Answer = ({ answer }) => {
@@ -46,7 +55,10 @@ const Answer = ({ answer }) => {
           </Typography>
         </Box>
         <Box my={1}>
-          <Typography>{answer.answer}</Typography>
+          <div
+            className={classes.answer}
+            dangerouslySetInnerHTML={{ __html: answer.answer }}
+          ></div>
         </Box>
         <Box mt={2} className={classes.footer}>
           <Box display="flex" alignItems="center">

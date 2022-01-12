@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import {
   Box,
   Grid,
@@ -8,6 +9,7 @@ import {
 } from '@material-ui/core'
 import { addHours, differenceInHours } from 'date-fns'
 import { formatDate, formatHours } from '../../formatters'
+import questionsActions from '../../state/actions/questions'
 
 const useStyles = makeStyles((theme) => ({
   targetDate: {
@@ -31,8 +33,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const PreviewQuestion = ({ question }) => {
-  const getValue = (hours) => 100 - (hours / 48) * 100
-  const [targetDate] = useState(addHours(new Date(question.createdDate), 48))
+  const dispatch = useDispatch()
+  const { maxHours } = useSelector((state) => state.questions)
+  const getValue = (hours) => 100 - (hours / maxHours) * 100
+  const [targetDate] = useState(
+    addHours(new Date(question.createdDate), maxHours)
+  )
   const [diff] = useState(differenceInHours(targetDate, new Date()))
   const [percentage] = useState(getValue(diff))
 
@@ -46,6 +52,12 @@ const PreviewQuestion = ({ question }) => {
     return '#b00a1b'
   }
   const classes = useStyles({ bg: getBgColor(percentage) })
+
+  useEffect(() => {
+    if (!maxHours) {
+      dispatch(questionsActions.getMaxHours())
+    }
+  }, [])
 
   return (
     <Box px={2} py={3}>
@@ -61,11 +73,15 @@ const PreviewQuestion = ({ question }) => {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Typography>
-                Estado de tiempo de respuesta {`${percentage.toFixed(2)}%`}
+                Ha transcurrido un{' '}
+                {percentage <= 100
+                  ? `${Math.round(percentage.toFixed(2))}%`
+                  : '100%'}{' '}
+                del Tiempo Disponible para poder Responder a esta pregunta
               </Typography>
               <Box my={1}>
                 <LinearProgress
-                  value={percentage}
+                  value={percentage > 100 ? 100 : percentage}
                   color="primary"
                   variant="determinate"
                   className={classes.linearBar}
@@ -74,12 +90,22 @@ const PreviewQuestion = ({ question }) => {
               </Box>
             </Grid>
             <Grid item xs={6}>
-              <Typography align="center">Responser antes de:</Typography>
-              <Box my={1} textAlign="center">
-                <Typography className={classes.targetDate}>{`${formatDate(
-                  new Date(targetDate)
-                )}-${formatHours(new Date(targetDate))}`}</Typography>
-              </Box>
+              {percentage < 100 ? (
+                <Box>
+                  <Typography align="center">Responser antes de:</Typography>
+                  <Box my={1} textAlign="center">
+                    <Typography className={classes.targetDate}>{`${formatDate(
+                      new Date(targetDate)
+                    )}-${formatHours(new Date(targetDate))}`}</Typography>
+                  </Box>
+                </Box>
+              ) : (
+                <Box>
+                  <Typography align="center">
+                    Pregunta no Respondida a Tiempo
+                  </Typography>
+                </Box>
+              )}
             </Grid>
           </Grid>
         </Box>

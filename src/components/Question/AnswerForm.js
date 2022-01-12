@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { useSuccess } from '../../hooks'
-import { Select, SubmitButton, TextArea } from '../UI'
+import { Select, SubmitButton } from '../UI'
 import commonActions from '../../state/actions/common'
 
 const useStyles = makeStyles((theme) => ({
@@ -15,6 +17,11 @@ const useStyles = makeStyles((theme) => ({
   title: {
     fontSize: 18,
     fontWeight: 'bold'
+  },
+  editor: {
+    width: '100%',
+    minHeight: 200,
+    border: `1px solid ${theme.palette.gray700}`
   }
 }))
 
@@ -35,10 +42,39 @@ const Answer = ({
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const editor = useRef(null)
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { areas } = useSelector((state) => state.common)
   const [topics, setTopics] = useState([])
+
+  const modules = {
+    toolbar: [
+      [{ font: [] }],
+      [{ header: [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ align: [] }],
+      ['link', 'code-block'],
+      [{ color: [] }, { background: [] }],
+      ['clean']
+    ]
+  }
+
+  const formats = [
+    'header',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'link',
+    'code-block',
+    'color',
+    'background',
+    'clean',
+    'align',
+    'font'
+  ]
 
   const formik = useFormik({
     validateOnMount: true,
@@ -185,16 +221,17 @@ const Answer = ({
             </Select>
           </Grid>
           <Grid item xs={12}>
-            <TextArea
-              label="Respuesta"
-              name="answer"
-              required
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.answer}
-              error={formik.touched.answer && Boolean(formik.errors.answer)}
-              helperText={formik.touched.answer && formik.errors.answer}
-              maxLength={800}
+            <ReactQuill
+              ref={editor}
+              className={classes.editor}
+              theme={'snow'}
+              placeholder="Respuesta..."
+              preserveWhitespace
+              modules={modules}
+              formats={formats}
+              onChange={(e) => {
+                formik.setFieldValue('answer', e)
+              }}
             />
           </Grid>
         </Grid>

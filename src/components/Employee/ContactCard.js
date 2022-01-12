@@ -48,16 +48,22 @@ const ContactCard = ({ contact, loading, onEdit, onDelete, index }) => {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography className={classes.title}>
-                Informacion de contacto #{index}
-              </Typography>
+              {index && (
+                <Typography className={classes.title}>
+                  Informacion de contacto #{index}
+                </Typography>
+              )}
               <Box>
-                <IconButton onClick={onEdit}>
-                  <Edit />
-                </IconButton>
-                <IconButton onClick={onDelete}>
-                  <Delete />
-                </IconButton>
+                {onEdit && (
+                  <IconButton onClick={onEdit}>
+                    <Edit />
+                  </IconButton>
+                )}
+                {onDelete && (
+                  <IconButton onClick={onDelete}>
+                    <Delete />
+                  </IconButton>
+                )}
               </Box>
             </Box>
             <CardContent>

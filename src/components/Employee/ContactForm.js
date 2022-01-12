@@ -15,6 +15,7 @@ import { Alert } from '@material-ui/lab'
 import { Dialog, Map } from '../Shared'
 import { Button, InputLabel, Select, SubmitButton, TextField } from '../UI'
 import commonActions from '../../state/actions/common'
+import commonPublicActions from '../../state/actions/commonPublic'
 import AddressAutocomplete from '../Shared/AddressAutoComplete'
 import { phoneValidator } from '../../validations'
 import { useSuccess } from '../../hooks'
@@ -60,7 +61,8 @@ const EmployeeModal = ({
   data,
   submitFunction,
   successMessage,
-  successFunction
+  successFunction,
+  alertConfirmation
 }) => {
   const dispatch = useDispatch()
   const [communes, setCommunes] = useState([])
@@ -69,6 +71,7 @@ const EmployeeModal = ({
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
   const { regions } = useSelector((state) => state.common)
+  const { user } = useSelector((state) => state.auth)
 
   const getValidValidation = (form) => {
     if (form.mobile_phone) return true
@@ -157,7 +160,11 @@ const EmployeeModal = ({
 
   useEffect(() => {
     if (open) {
-      dispatch(commonActions.getRegions())
+      if (user) {
+        dispatch(commonActions.getRegions())
+      } else {
+        dispatch(commonPublicActions.getRegions())
+      }
     }
 
     setConfirmDate(
@@ -166,15 +173,6 @@ const EmployeeModal = ({
         : new Date(addMonths(new Date(), 1))
     )
   }, [open, type, data])
-
-  useEffect(() => {
-    if (formik.touched.email) {
-      enqueueSnackbar('Debes ingresar al menos un numero de contacto', {
-        autoHideDuration: 3500,
-        variant: 'info'
-      })
-    }
-  }, [formik.touched.email])
 
   useEffect(() => {
     if (formik.isSubmitting && !formik.isValid) {
@@ -190,7 +188,7 @@ const EmployeeModal = ({
       <Box>
         <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
           {`${
-            type === 'Registrar' ? 'Actualizar' : 'Crear'
+            type === 'UPDATE' ? 'Actualizar' : 'Crear'
           } información de contacto`}
         </Typography>
         <Box p={2}>
@@ -418,31 +416,35 @@ const EmployeeModal = ({
                     Debes escribir al menos un número de contacto
                   </InputLabel>
                 </Grid>
-                <Grid item xs={12} md={12}>
-                  <Alert severity="info">
-                    <Typography>
-                      Próxima fecha de confirmación de teléfono:{' '}
-                      <strong>{confirmDate && formatDate(confirmDate)}</strong>
-                    </Typography>
-                    <Box>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            color="primary"
-                            checked={formik.values.is_confirmed}
-                            onChange={(e) => {
-                              formik.setFieldValue(
-                                'is_confirmed',
-                                e.target.checked
-                              )
-                            }}
-                          />
-                        }
-                        label="Confirmar teléfono"
-                      />
-                    </Box>
-                  </Alert>
-                </Grid>
+                {alertConfirmation && (
+                  <Grid item xs={12} md={12}>
+                    <Alert severity="info">
+                      <Typography>
+                        Próxima fecha de confirmación de teléfono:{' '}
+                        <strong>
+                          {confirmDate && formatDate(confirmDate)}
+                        </strong>
+                      </Typography>
+                      <Box>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              color="primary"
+                              checked={formik.values.is_confirmed}
+                              onChange={(e) => {
+                                formik.setFieldValue(
+                                  'is_confirmed',
+                                  e.target.checked
+                                )
+                              }}
+                            />
+                          }
+                          label="Confirmar teléfono"
+                        />
+                      </Box>
+                    </Alert>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
             <Grid item xs={12} lg={4}>
@@ -496,7 +498,8 @@ const EmployeeModal = ({
 }
 
 EmployeeModal.defaultProps = {
-  type: 'CREATE'
+  type: 'CREATE',
+  alertConfirmation: true
 }
 
 export default EmployeeModal

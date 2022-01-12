@@ -12,7 +12,10 @@ const Filled = ({ answer }) => {
         <Typography className={classes.title}>Respuesta</Typography>
       </Box>
       <Box my={2}>
-        <Typography>{answer.answer}</Typography>
+        <div
+          className={classes.answer}
+          dangerouslySetInnerHTML={{ __html: answer.answer }}
+        ></div>
       </Box>
       <Box my={1}>
         <Chip

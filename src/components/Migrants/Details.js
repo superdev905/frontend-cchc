@@ -12,6 +12,7 @@ import migrants from '../../state/actions/migrants'
 import { Button, InputLabel, LabeledRow, Text } from '../UI'
 import { formatDate } from '../../formatters'
 import UserCard from '../Users/Card'
+import { DataTable } from '../Shared'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
       width: '80%'
     },
     [theme.breakpoints.up('lg')]: {
-      width: 600
+      width: 800
     }
   },
   title: {
@@ -111,10 +112,30 @@ const DetailsDrawer = ({ open, onClose, migrantId }) => {
             </Text>
           </LabeledRow>
         </Box>
+        <Box mt={1}>
+          <Typography className={classes.heading}>Beneficios</Typography>
+          <DataTable
+            data={migrant?.benefits}
+            emptyMessage={'Este trabajador no tiene beneficios'}
+            columns={[
+              {
+                name: 'Fecha',
+                selector: (row) => (
+                  <Box>{row?.date ? formatDate(row.date) : 'Sin fecha'}</Box>
+                )
+              },
+              {
+                name: 'Tipo beneficio',
+                selector: (row) => row.benefit.name
+              }
+            ]}
+          />
+        </Box>
         <Box mt={3}>
           <InputLabel>Registrado por: </InputLabel>
           {!loading && migrant?.author && <UserCard user={migrant.author} />}
         </Box>
+
         <Box textAlign="right" my={2}>
           <Button onClick={onClose}>Aceptar</Button>
         </Box>

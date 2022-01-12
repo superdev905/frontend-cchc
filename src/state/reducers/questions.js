@@ -13,7 +13,8 @@ const initialState = {
   },
   uiFilters: {},
   selectedList: [],
-  assignationStats: []
+  assignationStats: [],
+  maxHours: null
 }
 
 const questionsReducer = (state = initialState, { type, payload }) => {
@@ -38,6 +39,8 @@ const questionsReducer = (state = initialState, { type, payload }) => {
       return { ...state, selectedList: payload }
     case questionTypes.GET_ASSIGNATION_STATS:
       return { ...state, assignationStats: payload }
+    case questionTypes.GET_MAX_HOURS:
+      return { ...state, maxHours: payload }
 
     default:
       return state

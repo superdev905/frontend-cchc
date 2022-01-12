@@ -27,8 +27,10 @@ const Details = ({ question, handler }) => {
 
   return (
     <Box>
-      <Typography className={classes.title}>{question?.title}</Typography>
-      <Typography>{question?.question}</Typography>
+      <Typography className={classes.title}>
+        Titulo: {question?.title}
+      </Typography>
+      <Typography>Consulta: {question?.question}</Typography>
       <Box my={2}>
         <Chip
           className={classes.chip}

@@ -72,7 +72,7 @@ const createSocialCase = (values) => () =>
     Axios.post(`${config.services.socialCase}/social-cases`, values)
       .then((response) => {
         const { data } = response
-        resolve(data.items)
+        resolve(data)
       })
       .catch((err) => {
         reject(err.response.data.detail)

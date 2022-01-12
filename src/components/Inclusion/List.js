@@ -5,13 +5,14 @@ import { Box, Chip, Grid } from '@material-ui/core'
 import InclusionDialog from './Dialog'
 import { useToggle } from '../../hooks'
 import { DataTable } from '../Shared'
-import { Button, SearchInput } from '../UI'
+import { ActionsTable, Button, SearchInput, Select } from '../UI'
 import inclusionActions from '../../state/actions/inclusion'
-import { formatDate } from '../../formatters'
+import { formatDate, formatSearchWithRut } from '../../formatters'
 
 const List = () => {
   const dispatch = useDispatch()
   const history = useHistory()
+  const [query, setQuery] = useState({ search: '', status: '' })
   const { user } = useSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
   const { inclusionCases } = useSelector((state) => state.inclusion)
@@ -28,7 +29,7 @@ const List = () => {
 
   const getCases = () => {
     setLoading(true)
-    dispatch(inclusionActions.getCases())
+    dispatch(inclusionActions.getCases(query))
       .then(() => {
         setLoading(false)
       })
@@ -38,18 +39,45 @@ const List = () => {
   }
   useEffect(() => {
     getCases()
-  }, [])
+  }, [query])
 
   return (
     <Box>
       <Box mt={2}>
         <Grid container alignItems="center">
-          <Grid item xs={12} md={6} lg={5}>
-            <SearchInput placeholder="Buscar..." />
-          </Grid>
           <Grid item xs={12} md={6} lg={7}>
+            <Grid container spacing={2}>
+              <Grid item xs={4}>
+                <Select
+                  value={query.status}
+                  onChange={(e) =>
+                    setQuery({ ...query, status: e.target.value })
+                  }
+                >
+                  <option value="">TODOS</option>
+                  {['INGRESADA', 'APROBADA', 'CERRADO'].map((item) => (
+                    <option key={`option-${item}`} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </Select>
+              </Grid>
+              <Grid item xs={8}>
+                <SearchInput
+                  placeholder="Buscar por: Rut de trabajador"
+                  value={query.search}
+                  onChange={(e) => {
+                    setQuery({
+                      ...query,
+                      search: formatSearchWithRut(e.target.value)
+                    })
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item xs={12} md={6} lg={5}>
             <Box textAlign="right">
-              <Button>Filtros</Button>
               <Button onClick={toggleOpenCreate}>Nuevo</Button>
             </Box>
           </Grid>
@@ -101,12 +129,26 @@ const List = () => {
               name: 'Metodo cobro',
               compact: true,
               selector: (row) => row.chargeMethod.name
+            },
+            {
+              name: '',
+              right: true,
+              compact: true,
+              selector: (row) => (
+                <ActionsTable
+                  onView={() => {
+                    history.push(`/inclusion-cases/${row.number}`)
+                  }}
+                />
+              )
             }
           ]}
           onRowClicked={(row) => {
             history.push(`/inclusion-cases/${row.number}`)
           }}
           pagination
+          highlightOnHover
+          pointerOnHover
           selectableRowsHighlight
         />
       </Box>
@@ -115,6 +157,8 @@ const List = () => {
           open={openCreate}
           onClose={toggleOpenCreate}
           submitFunction={onCreateCase}
+          successFunction={getCases}
+          successMessage={'Caso creado'}
         />
       )}
     </Box>

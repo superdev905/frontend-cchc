@@ -45,9 +45,16 @@ const getModuleProtocols =
         })
     })
 
+const toggleCreateModal = (value) => (dispatch) =>
+  dispatch({
+    type: protocolsTypes.PROTOCOLS_TOGGLE_CREATE,
+    payload: !value
+  })
+
 const protocolsActions = {
   getProtocols,
-  getModuleProtocols
+  getModuleProtocols,
+  toggleCreateModal
 }
 
 export default protocolsActions

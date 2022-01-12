@@ -2,7 +2,8 @@ import protocolsTypes from '../types/protocols'
 
 const initialState = {
   list: [],
-  moduleList: []
+  moduleList: [],
+  showCreateModal: false
 }
 
 const protocolsReducer = (state = initialState, { type, payload }) => {
@@ -11,6 +12,8 @@ const protocolsReducer = (state = initialState, { type, payload }) => {
       return { ...state, list: payload }
     case protocolsTypes.GET_MODULE_PROTOCOLS:
       return { ...state, moduleList: payload }
+    case protocolsTypes.PROTOCOLS_TOGGLE_CREATE:
+      return { ...state, showCreateModal: payload }
 
     default:
       return state
