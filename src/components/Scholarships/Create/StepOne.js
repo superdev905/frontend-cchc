@@ -374,6 +374,27 @@ const StepOne = ({ onClose, data }) => {
                       }}
                     />
                   </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Select
+                      label="Selecciona Empresa"
+                      name="businessName"
+                      required
+                      value={formik.values.businessName}
+                      onChange={formik.handleChange}
+                      error={Boolean(formik.errors.businessName)}
+                      helperText={formik.errors.businessName}
+                    >
+                      <option value="">Seleccione Empresa</option>
+                      {companies.map((item) => (
+                        <option
+                          key={`business-name-${item.id}`}
+                          value={item.id}
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                    </Select>
+                  </Grid>
                   <Grid item xs={12}>
                     {companies.length === 0 ? (
                       <>
