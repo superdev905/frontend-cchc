@@ -1,12 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Autocomplete } from '@material-ui/lab'
 import { Box, Grid, Typography } from '@material-ui/core'
+import { useSuccess, useToggle } from '../../../hooks'
+import filesActions from '../../../state/actions/files'
+import protocolsActions from '../../../state/actions/protocols'
 import { moduleConfig } from '../../../config'
-import { Button, InputLabel, SubmitButton, TextField } from '../../UI'
+import { Button, InputLabel, Select, SubmitButton, TextField } from '../../UI'
 import {
   Dialog,
   DatePicker,
@@ -14,12 +17,11 @@ import {
   FileThumbnail,
   FileVisor
 } from '../../Shared'
-import { useSuccess, useToggle } from '../../../hooks'
-import filesActions from '../../../state/actions/files'
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required('Ingrese nombre de protocolo'),
-  classification: Yup.string().required('Ingrese clasificación'),
+  classificationId: Yup.number().required('Seleccione clasificación'),
+  areaId: Yup.number().required('Seleccione area'),
   startDate: Yup.date().required('Seleccione fecha de inicio').nullable(),
   endDate: Yup.date().required('Seleccione fecha de fin').nullable(),
   modules: Yup.array()
@@ -41,6 +43,7 @@ const CreateProtocol = ({
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
+  const { areas, classifications } = useSelector((state) => state.protocols)
   const { success, changeSuccess } = useSuccess()
   const [protocolFile, setProtocolFile] = useState(
     type === 'UPDATE' ? data.file : null
@@ -57,7 +60,8 @@ const CreateProtocol = ({
       title: type === 'UPDATE' ? data.title : '',
       startDate: type === 'UPDATE' ? data.startDate : null,
       endDate: type === 'UPDATE' ? data.endDate : null,
-      classification: type === 'UPDATE' ? data.classification : '',
+      classificationId: type === 'UPDATE' ? data.classificationId : '',
+      areaId: type === 'UPDATE' ? data.areaId : '',
       modules:
         type === 'UPDATE' ? data.modules.map((item) => item.module.name) : [],
       file: type === 'UPDATE' ? data.file : null
@@ -98,6 +102,13 @@ const CreateProtocol = ({
     }
   })
 
+  useEffect(() => {
+    if (open) {
+      dispatch(protocolsActions.getClassifications())
+      dispatch(protocolsActions.getAreas())
+    }
+  }, [open])
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
       <Box>
@@ -123,21 +134,51 @@ const CreateProtocol = ({
             />
           </Grid>
           <Grid item xs={12} md={12}>
-            <TextField
+            <Select
               label="Clasificación"
-              name="classification"
+              name="classificationId"
               required
-              value={formik.values.classification}
+              value={formik.values.classificationId}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={
-                formik.touched.classification &&
-                Boolean(formik.errors.classification)
+                formik.touched.classificationId &&
+                Boolean(formik.errors.classificationId)
               }
               helperText={
-                formik.touched.classification && formik.errors.classification
+                formik.touched.classificationId &&
+                formik.errors.classificationId
               }
-            />
+            >
+              <option value="">SELECCIONE AREA</option>
+              {classifications.map((item) => (
+                <option
+                  key={`classification-option-${item.id}`}
+                  value={item.id}
+                >
+                  {item.name}
+                </option>
+              ))}
+            </Select>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <Select
+              label="Área"
+              name="areaId"
+              required
+              value={formik.values.areaId}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.areaId && Boolean(formik.errors.areaId)}
+              helperText={formik.touched.areaId && formik.errors.areaId}
+            >
+              <option value="">SELECCIONE AREA</option>
+              {areas.map((item) => (
+                <option key={`area-option-${item.id}`} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </Select>
           </Grid>
           <Grid item xs={12} md={6}>
             <DatePicker
@@ -147,10 +188,12 @@ const CreateProtocol = ({
               disabledFuture={false}
               value={formik.values.startDate}
               onChange={(date) => {
-                formik.setFieldTouched('startDate')
-                formik.setFieldTouched('endDate')
                 formik.setFieldValue('startDate', date)
                 formik.setFieldValue('endDate', null)
+                setTimeout(() => {
+                  formik.setFieldTouched('startDate')
+                  formik.setFieldTouched('endDate')
+                }, 500)
               }}
               error={
                 formik.touched.startDate && Boolean(formik.errors.startDate)

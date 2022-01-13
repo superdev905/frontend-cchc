@@ -122,22 +122,27 @@ const DetailsDraw = ({ open, onClose, protocolId }) => {
           </Box>
         </Box>
         <Box my={2}>
-          <LabeledRow label={'Clasificación'}>
-            <Text loading={loading} loaderWidth={'60%'}>
-              {protocol?.classification}
+          <LabeledRow label={'Clasificación:'}>
+            <Text loading={loading} loaderWidth={'35%'}>
+              {protocol?.classification.name}
             </Text>
           </LabeledRow>
-          <LabeledRow label={'Fecha de Inicio'}>
+          <LabeledRow label={'Area:'}>
+            <Text loading={loading} loaderWidth={'30%'}>
+              {protocol?.area.name}
+            </Text>
+          </LabeledRow>
+          <LabeledRow label={'Fecha de Inicio:'}>
             <Text loading={loading} loaderWidth="45%">
               {formatDate(protocol?.startDate)}
             </Text>
           </LabeledRow>
-          <LabeledRow label={'Fecha de Fin'}>
+          <LabeledRow label={'Fecha de Fin:'}>
             <Text loading={loading} loaderWidth="45%">
               {formatDate(protocol?.endDate)}
             </Text>
           </LabeledRow>
-          <LabeledRow label={'Estado'}>
+          <LabeledRow label={'Estado:'}>
             <Text loading={loading} loaderWidth="75%">
               <StatusChip
                 label={protocol?.isValid ? 'Vigente' : 'No vigente'}
