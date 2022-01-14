@@ -17,7 +17,8 @@ const initialState = {
   totalUnemployed: 0,
   totalBenefitsHistory: 0,
   payments: [],
-  payment: null
+  payment: null,
+  benefits: []
 }
 
 const unemployedReducer = (state = initialState, { type, payload }) => {
@@ -42,6 +43,8 @@ const unemployedReducer = (state = initialState, { type, payload }) => {
       return { ...state, payments: payload }
     case unemployedTypes.GET_UNEMPLOYED_PAYMENT_DETAILS:
       return { ...state, payment: payload }
+    case unemployedTypes.GET_UNEMPLOYED_BENEFITS:
+      return { ...state, benefits: payload }
     default:
       return state
   }

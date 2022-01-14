@@ -177,6 +177,37 @@ const registerMultiplePayment = (values) => () =>
         reject(err.response.data.detail)
       })
   })
+const getBenefits =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.unemployed}/benefits?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: unemployedTypes.GET_UNEMPLOYED_BENEFITS,
+            payload: data.items
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const updateDeliveredBenefit = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.unemployed}/unemployed/benefit/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 const unemployedActions = {
   setQueryUnemployed,
@@ -191,7 +222,9 @@ const unemployedActions = {
   getPayments,
   getPayment,
   getWIthoutPayments,
-  registerMultiplePayment
+  registerMultiplePayment,
+  getBenefits,
+  updateDeliveredBenefit
 }
 
 export default unemployedActions

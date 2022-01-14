@@ -58,7 +58,9 @@ const PaymentsList = () => {
         justifyContent={'space-between'}
         alignItems={'center'}
       >
-        <Typography>Historial de pagos</Typography>
+        <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>
+          Historial de pagos
+        </Typography>
         <Button onClick={toggleOpenAdd}>Registrar pago</Button>
       </Box>
       <DataTable

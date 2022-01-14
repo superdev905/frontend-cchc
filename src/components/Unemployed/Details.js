@@ -7,6 +7,7 @@ import { FileThumbnail, FileVisor } from '../Shared'
 import PaymentsList from './Payment/List'
 import { UserCard } from '../Users'
 import { useToggle } from '../../hooks'
+import BenefitsList from './BenefitsList'
 
 const useStyles = makeStyles((theme) => ({
   heading: {
@@ -114,6 +115,10 @@ const Details = ({ loading }) => {
             </Box>
           </Grid>
         </Grid>
+
+        <Box mt={2}>
+          <BenefitsList benefits={unemployed?.benefits} />
+        </Box>
 
         <Box mt={2}>
           <PaymentsList />

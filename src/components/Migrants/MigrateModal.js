@@ -13,10 +13,12 @@ import { formatSearchWithRut } from '../../formatters'
 import generateColor from '../../utils/generateColor'
 import migrantsActions from '../../state/actions/migrants'
 import employeesActions from '../../state/actions/employees'
+import assistanceActions from '../../state/actions/assistance'
 import uiActions from '../../state/actions/ui'
 import { PollsModule } from '../Polls'
 import { useToggle } from '../../hooks'
 import { EmployeeForm } from '../Employees'
+import AssistanceDialog from '../Assistance/Dialog'
 
 const MigrateModal = ({ open, onClose }) => {
   const dispatch = useDispatch()
@@ -31,9 +33,9 @@ const MigrateModal = ({ open, onClose }) => {
   const [years, setYears] = useState([])
   const [searchList, setSearchList] = useState([])
   const [selectedEmployee, setSelectedEmployee] = useState(null)
-
   const { open: openEmployeeForm, toggleOpen: toggleOpenJEmployeeForm } =
     useToggle()
+  const { open: openAttention, toggleOpen: toggleOpenAttention } = useToggle()
 
   const onCreateEmployee = (values) =>
     dispatch(
@@ -94,6 +96,16 @@ const MigrateModal = ({ open, onClose }) => {
     }
     return yearsList
   }
+  const createAttention = (values) =>
+    dispatch(
+      assistanceActions.createAssistance({
+        ...values,
+        employee_id: selectedEmployee.id,
+        employee_name: selectedEmployee.names,
+        employee_lastname: `${selectedEmployee.paternal_surname}`,
+        employee_rut: selectedEmployee.run
+      })
+    )
 
   useEffect(() => {
     setBenefits(benefitsList.map((item) => ({ ...item, date: null })))
@@ -282,15 +294,19 @@ const MigrateModal = ({ open, onClose }) => {
                     name: 'Fecha',
                     selector: (row) => (
                       <Box>
-                        <DatePicker
-                          value={row.date}
-                          onChange={(e) => {
-                            const updatedList = benefits.map((item) =>
-                              item.id === row.id ? { ...item, date: e } : item
-                            )
-                            setBenefits(updatedList)
-                          }}
-                        />
+                        {row.name.includes('ATENCIÓN SOCIAL') ? (
+                          <Button onClick={toggleOpenAttention}>Atender</Button>
+                        ) : (
+                          <DatePicker
+                            value={row.date}
+                            onChange={(e) => {
+                              const updatedList = benefits.map((item) =>
+                                item.id === row.id ? { ...item, date: e } : item
+                              )
+                              setBenefits(updatedList)
+                            }}
+                          />
+                        )}
                       </Box>
                     )
                   },
@@ -312,6 +328,27 @@ const MigrateModal = ({ open, onClose }) => {
                   }
                 ]}
               />
+              {openAttention && (
+                <AssistanceDialog
+                  sourceSystem={'MIGRANTES'}
+                  onClose={toggleOpenAttention}
+                  open={openAttention}
+                  employee={selectedEmployee}
+                  visitShift={''}
+                  submitFunction={createAttention}
+                  company={{ business_name: '' }}
+                  construction={{ name: '' }}
+                  successFunction={() => {
+                    const list = benefits.map((item) =>
+                      item.name.includes('ATENCIÓN SOCIAL')
+                        ? { ...item, date: new Date() }
+                        : item
+                    )
+                    setBenefits(list)
+                  }}
+                  successMessage="Atención creada con éxito"
+                />
+              )}
             </Grid>
           </Grid>
         </Box>
@@ -321,7 +358,9 @@ const MigrateModal = ({ open, onClose }) => {
             <PollsModule />
           </Box>
           <Box textAlign="center" marginTop="10px">
-            <Button variant={'outlined'}>Cancelar</Button>
+            <Button onClick={onClose} variant={'outlined'}>
+              Cancelar
+            </Button>
             <Button
               onClick={formik.handleSubmit}
               disabled={
