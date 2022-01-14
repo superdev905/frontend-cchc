@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
+import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
 import { Autocomplete } from '@material-ui/lab'
 import {
@@ -10,10 +11,11 @@ import {
   makeStyles,
   FormHelperText
 } from '@material-ui/core'
-import unemployedActions from '../../state/actions/unemployed'
-import { months } from '../../config'
-import { Dialog } from '../Shared'
-import { Button, Select, SubmitButton, TextField } from '../UI'
+import unemployedActions from '../../../state/actions/unemployed'
+import { months } from '../../../config'
+import { Dialog } from '../../Shared'
+import { Button, Select, SubmitButton, TextField } from '../../UI'
+import { useSuccess } from '../../../hooks'
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -28,34 +30,49 @@ const validationSchema = Yup.object().shape({
   benefitId: Yup.number().required('Seleccione benefit')
 })
 
-const PaymentDialog = ({ open, onClose }) => {
+const PaymentDialog = ({
+  open,
+  onClose,
+  submitFunction,
+  successMessage,
+  successFunction
+}) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
-  const [periods, setPeriods] = useState([])
+  const [currentDate] = useState(new Date())
   const [benefits, setBenefits] = useState([])
   const [selectedBenefit, setSelectedBenefit] = useState(null)
+  const { success, changeSuccess } = useSuccess()
 
   const formik = useFormik({
     validationSchema,
     validateOnChange: true,
     validateOnMount: true,
     initialValues: {
-      period: '',
+      period: currentDate.getFullYear(),
       month: '',
       benefitId: ''
+    },
+    onSubmit: (values) => {
+      submitFunction(values)
+        .then(() => {
+          formik.setSubmitting(false)
+          changeSuccess(true, () => {
+            enqueueSnackbar(successMessage, { variant: 'success' })
+            onClose()
+            if (successFunction) {
+              successFunction()
+            }
+          })
+        })
+        .catch((err) => {
+          formik.setSubmitting(false)
+          enqueueSnackbar(err, { variant: 'error' })
+        })
     }
   })
-
-  const getPeriods = () => {
-    const currentYear = new Date().getFullYear()
-    const minYear = currentYear - 1
-    const yearsList = []
-    for (let i = currentYear; i >= minYear; i -= 1) {
-      yearsList.push(i)
-    }
-    return yearsList
-  }
 
   const getBenefitsList = () => {
     dispatch(unemployedActions.getUnemployedBenefits()).then((res) => {
@@ -66,7 +83,6 @@ const PaymentDialog = ({ open, onClose }) => {
   useEffect(() => {
     if (open) {
       getBenefitsList()
-      setPeriods(getPeriods())
     }
   }, [open])
 
@@ -87,7 +103,9 @@ const PaymentDialog = ({ open, onClose }) => {
                 onChange={(__, value) => {
                   setSelectedBenefit(value || null)
                   formik.setFieldValue('benefitId', value?.id || '')
-                  formik.setFieldTouched('benefitId')
+                  setTimeout(() => {
+                    formik.setFieldTouched('benefitId')
+                  }, 500)
                 }}
                 renderOption={(option) => (
                   <Box>
@@ -118,34 +136,36 @@ const PaymentDialog = ({ open, onClose }) => {
               >
                 <option value="">SELECCIONE MES</option>
                 {months.map((item) => (
-                  <option key={`month-option-${item.index}`} value={item.index}>
+                  <option
+                    key={`month-option-${item.index}`}
+                    value={item.index}
+                    disabled={item.index > currentDate.getMonth() + 1}
+                  >
                     {item.name.toUpperCase()}
                   </option>
                 ))}
               </Select>
             </Grid>
             <Grid item xs={6}>
-              <Select
-                label={'Periodo'}
-                name="period"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                required
-                error={formik.touched.period && Boolean(formik.errors.period)}
-                helperText={formik.touched.period && formik.errors.period}
-              >
-                <option value="">SELECCIONE PERIODO</option>
-                {periods.map((item) => (
-                  <option key={`period-option-${item}`}>{item}</option>
-                ))}
-              </Select>
+              <TextField
+                label="Período"
+                value={currentDate.getFullYear()}
+                inputProps={{ readOnly: true }}
+              />
             </Grid>
           </Grid>
           <Box mt={2} textAlign="center">
             <Button variant="outlined" onClick={onClose}>
               Cancelar
             </Button>
-            <SubmitButton>Guardar</SubmitButton>
+            <SubmitButton
+              onClick={formik.handleSubmit}
+              loading={formik.isSubmitting}
+              disabled={!formik.isValid}
+              success={success}
+            >
+              Guardar
+            </SubmitButton>
           </Box>
         </Box>
       </Box>
@@ -153,6 +173,8 @@ const PaymentDialog = ({ open, onClose }) => {
   )
 }
 
-PaymentDialog.propTypes = {}
+PaymentDialog.defaultProps = {
+  successMessage: 'Pago registrado!'
+}
 
 export default PaymentDialog

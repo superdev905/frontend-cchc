@@ -15,7 +15,9 @@ const initialState = {
   },
   filters: {},
   totalUnemployed: 0,
-  totalBenefitsHistory: 0
+  totalBenefitsHistory: 0,
+  payments: [],
+  payment: null
 }
 
 const unemployedReducer = (state = initialState, { type, payload }) => {
@@ -36,7 +38,10 @@ const unemployedReducer = (state = initialState, { type, payload }) => {
       return { ...state, filters: payload }
     case unemployedTypes.SET_QUERY:
       return { ...state, query: payload }
-
+    case unemployedTypes.GET_UNEMPLOYED_PAYMENTS:
+      return { ...state, payments: payload }
+    case unemployedTypes.GET_UNEMPLOYED_PAYMENT_DETAILS:
+      return { ...state, payment: payload }
     default:
       return state
   }

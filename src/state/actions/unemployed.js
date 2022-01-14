@@ -99,7 +99,86 @@ const getUnemployedBenefits =
         })
     })
 
-export default {
+const getWIthoutPayments =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.unemployed
+        }/unemployed/without-payment?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const registerPayment = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.unemployed}/payments`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getPayments =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.unemployed}/payments?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: unemployedTypes.GET_UNEMPLOYED_PAYMENTS,
+            payload: data.items
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const getPayment = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.unemployed}/payments/${id}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: unemployedTypes.GET_UNEMPLOYED_PAYMENT_DETAILS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const registerMultiplePayment = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.unemployed}/payments/multiple`, values)
+      .then((response) => {
+        const { data } = response
+
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const unemployedActions = {
   setQueryUnemployed,
   setFilters,
   setQuery,
@@ -107,5 +186,12 @@ export default {
   getUnemployedById,
   createUnemployed,
   getEmployeesNonAddedByRut,
-  getUnemployedBenefits
+  getUnemployedBenefits,
+  registerPayment,
+  getPayments,
+  getPayment,
+  getWIthoutPayments,
+  registerMultiplePayment
 }
+
+export default unemployedActions
