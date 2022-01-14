@@ -82,7 +82,7 @@ const Details = ({ loading }) => {
                   <FileThumbnail
                     bgWhite
                     fileName={unemployed?.dismissalFile?.fileName}
-                    date={formatDate(unemployed?.dismissalFile?.uploadDate)}
+                    date={unemployed?.dismissalFile?.uploadDate}
                     fileSize={unemployed?.dismissalFile?.fileSize}
                     onView={toggleOpen}
                     onDownload={() => {
