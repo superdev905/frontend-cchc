@@ -1,49 +1,35 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { FiUpload, FiCheck as DoneIcon } from 'react-icons/fi'
 import { useSnackbar } from 'notistack'
-import {
-  Box,
-  Typography,
-  Grid,
-  makeStyles,
-  InputLabel
-} from '@material-ui/core'
-import { FiUpload } from 'react-icons/fi'
+import { Box, Typography, Grid, InputLabel } from '@material-ui/core'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { TextField, EmptyState, Select, Button, SubmitButton } from '../UI'
 import EmployeeRow from '../Scholarships/Create/EmployeeRow'
-import { Dialog, FilePicker } from '../Shared'
+import { DataTable, DatePicker, Dialog, FilePicker } from '../Shared'
+import commonActions from '../../state/actions/common'
+import assistanceActions from '../../state/actions/assistance'
 import { formatSearchWithRut } from '../../formatters'
 import generateColor from '../../utils/generateColor'
-import commonActions from '../../state/actions/common'
 import filesActions from '../../state/actions/files'
 import unemployedActions from '../../state/actions/unemployed'
-
-const useStyles = makeStyles(() => ({
-  boxInput: {
-    width: '100%'
-  },
-  boxHorizontal: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: '20px'
-  }
-}))
+import { useToggle } from '../../hooks'
+import AssistanceDialog from '../Assistance/Dialog'
 
 const UnemployedModal = ({ open, onClose }) => {
-  const classes = useStyles()
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
   const { regions } = useSelector((state) => state.common)
+  const { benefits: initialBenefits } = useSelector((state) => state.unemployed)
   const [searchRut, setSearchRut] = useState('')
   const [uploadFile, setUploadFile] = useState(null)
   const [years, setYears] = useState([])
   const [searchList, setSearchList] = useState([])
   const [selectedEmployee, setSelectedEmployee] = useState(null)
+  const [benefits, setBenefits] = useState([])
+  const { open: openAttention, toggleOpen: toggleOpenAttention } = useToggle()
 
   const formik = useFormik({
     initialValues: {
@@ -52,17 +38,12 @@ const UnemployedModal = ({ open, onClose }) => {
       office: '',
       period: '',
       delegation: '',
-      dismissalFile: {
-        fileName: '',
-        fileKey: '',
-        fileUrl: '',
-        fileSize: '',
-        uploadDate: ''
-      }
+      dismissalFile: null
     },
     validationSchema: Yup.object({
       office: Yup.string().required('Seleccione La Oficina'),
-      period: Yup.string().required('Seleccione El Periodo')
+      period: Yup.string().required('Seleccione El Periodo'),
+      dismissalFile: Yup.mixed().required('').nullable()
     }),
     onSubmit: async (formData) => {
       try {
@@ -77,6 +58,11 @@ const UnemployedModal = ({ open, onClose }) => {
           formData.dismissalFile.fileUrl = response.file_url
           formData.dismissalFile.fileSize = response.file_size
           formData.dismissalFile.uploadDate = response.upload_date
+          formData.benefits = benefits.map((item) => ({
+            date: item.date,
+            id: item.id,
+            isCompleted: item.isCompleted
+          }))
           dispatch(unemployedActions.createUnemployed(formData)).then(() => {
             formik.setSubmitting(false)
             enqueueSnackbar('Cesante Registrado Correctamente', {
@@ -100,6 +86,17 @@ const UnemployedModal = ({ open, onClose }) => {
     dispatch(commonActions.getRegions())
   }
 
+  const createAttention = (values) =>
+    dispatch(
+      assistanceActions.createAssistance({
+        ...values,
+        employee_id: selectedEmployee.id,
+        employee_name: selectedEmployee.names,
+        employee_lastname: `${selectedEmployee.paternal_surname}`,
+        employee_rut: selectedEmployee.run
+      })
+    )
+
   const getYears = () => {
     const currentYear = new Date().getFullYear()
     const minYear = currentYear - 6
@@ -109,6 +106,15 @@ const UnemployedModal = ({ open, onClose }) => {
     }
     return yearsList
   }
+  useEffect(() => {
+    setBenefits(
+      initialBenefits.map((item) => ({
+        ...item,
+        date: null,
+        isCompleted: false
+      }))
+    )
+  }, [initialBenefits])
 
   useEffect(() => {
     if (searchRut) {
@@ -135,18 +141,16 @@ const UnemployedModal = ({ open, onClose }) => {
       setUploadFile(null)
       setSelectedEmployee(null)
       setYears(getYears)
+      fetchRegions()
+      dispatch(unemployedActions.getBenefits())
     }
   }, [open])
-
-  useEffect(() => {
-    fetchRegions()
-  }, [])
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="md"
+      maxWidth="lg"
       fullWidth
       fullScreen={isMobile}
     >
@@ -207,8 +211,8 @@ const UnemployedModal = ({ open, onClose }) => {
               }}
             />
             <form onSubmit={formik.handleSubmit}>
-              <Box className={classes.boxHorizontal}>
-                <Box className={classes.boxInput}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
                   <Select
                     label="Oficina *"
                     name="office"
@@ -229,8 +233,8 @@ const UnemployedModal = ({ open, onClose }) => {
                       </option>
                     ))}
                   </Select>
-                </Box>
-                <Box className={classes.boxInput}>
+                </Grid>
+                <Grid item xs={12} md={6}>
                   <Select
                     label="Periodo *"
                     name="period"
@@ -248,31 +252,117 @@ const UnemployedModal = ({ open, onClose }) => {
                       </option>
                     ))}
                   </Select>
-                </Box>
-              </Box>
-              <br />
-              <Box>
-                <InputLabel style={{ fontSize: '15px', marginBottom: '10px' }}>
-                  Finiquito *
-                </InputLabel>
-                <FilePicker
-                  acceptedFiles={['.pdf']}
-                  onChange={(e) => {
-                    setUploadFile(e)
-                  }}
-                  onDelete={() => setUploadFile(null)}
-                  icon={<FiUpload fontSize="24px" />}
-                />
-              </Box>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Box>
+                    <InputLabel
+                      style={{ fontSize: '15px', marginBottom: '10px' }}
+                    >
+                      Finiquito *
+                    </InputLabel>
+                    <FilePicker
+                      acceptedFiles={['.pdf']}
+                      onChange={(e) => {
+                        setUploadFile(e)
+                        formik.setFieldValue('dismissalFile', e)
+                      }}
+                      onDelete={() => {
+                        setUploadFile(null)
+                        formik.setFieldValue('dismissalFile', null)
+                      }}
+                      icon={<FiUpload fontSize="24px" />}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <DataTable
+                    data={benefits}
+                    columns={[
+                      {
+                        name: 'Fecha',
+                        selector: (row) => (
+                          <Box>
+                            {row.name.includes('ATENCIÓN SOCIAL') ? (
+                              <>
+                                {row.isCompleted ? (
+                                  'Completado'
+                                ) : (
+                                  <Button
+                                    onClick={toggleOpenAttention}
+                                    size={'small'}
+                                  >
+                                    Atender
+                                  </Button>
+                                )}
+                              </>
+                            ) : (
+                              <DatePicker
+                                value={row.date}
+                                onChange={(e) => {
+                                  const updatedList = benefits.map((item) =>
+                                    item.id === row.id
+                                      ? { ...item, date: e, isCompleted: true }
+                                      : item
+                                  )
+                                  setBenefits(updatedList)
+                                }}
+                              />
+                            )}
+                          </Box>
+                        )
+                      },
+                      {
+                        name: 'Tipo beneficio',
+                        selector: (row) => row.name
+                      },
+                      {
+                        name: '',
+                        right: true,
+                        maxWidth: '50px',
+                        selector: (row) => (
+                          <>
+                            {row.date && (
+                              <DoneIcon fontSize={'24px'} color="green" />
+                            )}
+                          </>
+                        )
+                      }
+                    ]}
+                  />
+                </Grid>
+              </Grid>
+
               <Box textAlign="center" marginTop="10px">
                 <SubmitButton
-                  disabled={!uploadFile}
+                  disabled={!uploadFile || !formik.isValid}
                   loading={formik.isSubmitting}
                   onClick={formik.handleSubmit}
                 >
                   Guardar
                 </SubmitButton>
               </Box>
+              {openAttention && (
+                <AssistanceDialog
+                  sourceSystem={'CENSANTES'}
+                  onClose={toggleOpenAttention}
+                  open={openAttention}
+                  employee={selectedEmployee}
+                  visitShift={''}
+                  submitFunction={createAttention}
+                  company={{ business_name: '' }}
+                  construction={{ name: '' }}
+                  successFunction={() => {
+                    const list = benefits.map((item) =>
+                      item.name.includes('TENCIÓN SOCIAL')
+                        ? { ...item, isCompleted: true }
+                        : item
+                    )
+                    setBenefits(list)
+                  }}
+                  successMessage="Atención creada con éxito"
+                />
+              )}
             </form>
           </Box>
         )}

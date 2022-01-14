@@ -23,6 +23,7 @@ import {
   TextField
 } from '../UI'
 import { isPollListAnswered, rutValidation } from '../../validations'
+import uiActions from '../../state/actions/ui'
 import commonActions from '../../state/actions/common'
 import commonPublic from '../../state/actions/commonPublic'
 import pollActions from '../../state/actions/poll'
@@ -222,6 +223,12 @@ const EmployeeModal = ({
   }, [])
 
   useEffect(() => {
+    if (open) {
+      dispatch(uiActions.setCurrentModule('EMPLOYEES'))
+    }
+  }, [open])
+
+  useEffect(() => {
     if (formik.isSubmitting && !formik.isValid) {
       enqueueSnackbar('Completa los campos requeridos', {
         autoHideDuration: 2000,
@@ -246,7 +253,7 @@ const EmployeeModal = ({
                 <RutTextField
                   label="Run"
                   name="run"
-                  required
+                  reqActionsred
                   disabled={type === 'UPDATE'}
                   value={formik.values.run}
                   onChange={formik.handleChange}
@@ -260,7 +267,7 @@ const EmployeeModal = ({
                   label="Nombres"
                   name="names"
                   disabled={disabledNames}
-                  required
+                  reqActionsred
                   value={formik.values.names}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
