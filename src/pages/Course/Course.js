@@ -10,6 +10,7 @@ import { ConfirmDelete, HeadingWithButton } from '../../components/Shared'
 import { Button, Wrapper } from '../../components/UI'
 import CreateCourse from '../../components/Courses/CreateCourse'
 import { useSuccess, useToggle } from '../../hooks'
+import UpdateCourse from '../../components/Courses/UpdateCourse'
 
 const Course = ({ children }) => {
   const dispatch = useDispatch()
@@ -22,6 +23,8 @@ const Course = ({ children }) => {
   const { success, changeSuccess } = useSuccess()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const { open: openUpdateCourse, toggleOpen: toggleOpenUpdateCourse } =
+    useToggle()
 
   const updateCourse = (values) =>
     dispatch(
@@ -81,6 +84,13 @@ const Course = ({ children }) => {
         />
         <Box>
           <Button
+            variant="outlined"
+            onClick={toggleOpenUpdateCourse}
+            disabled={course?.state === 'DELETED'}
+          >
+            Actualizar Curso
+          </Button>
+          <Button
             danger
             onClick={toggleOpenDelete}
             disabled={course?.state === 'DELETED'}
@@ -129,6 +139,13 @@ const Course = ({ children }) => {
           }
           loading={deleting}
           success={success}
+        />
+      )}
+
+      {course && openUpdateCourse && (
+        <UpdateCourse
+          open={openUpdateCourse}
+          onClose={toggleOpenUpdateCourse}
         />
       )}
     </Wrapper>
