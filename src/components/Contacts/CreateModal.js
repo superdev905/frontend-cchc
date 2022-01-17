@@ -166,7 +166,7 @@ const ContactModal = ({
       <Box className={classes.form} p={2}>
         <Box>
           <Heading align="center">
-            {`${type === 'UPDATE' ? 'Editar' : 'Nuevo'} Contacto`}
+            {`${type === 'UPDATE' ? 'Editar' : 'Nuevo'} Interlocutor`}
           </Heading>
         </Box>
         <Box>
@@ -313,7 +313,7 @@ ContactModal.defaultProps = {
   type: 'CREATE',
   includeInterlocutor: false,
   interlocutorAsDefault: false,
-  successMessage: 'Contacto creado!'
+  successMessage: 'Interlocutor creado!'
 }
 
 export default ContactModal
