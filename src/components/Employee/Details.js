@@ -77,6 +77,9 @@ const Details = ({ loading }) => {
                   {employee?.scholarship?.description}
                 </Text>
               </LabeledRow>
+              <LabeledRow label={'Etnia'}>
+                <Text loading={loading}>{employee?.etnia}</Text>
+              </LabeledRow>
               <LabeledRow width={170} label={'Fecha de nacimiento'}>
                 <Text loading={loading}>{formatDate(employee?.born_date)}</Text>
               </LabeledRow>

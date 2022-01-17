@@ -77,6 +77,7 @@ const validationSchema = Yup.object().shape({
   account_number: Yup.string('Seleccione número de cuenta'),
   rsh: Yup.string('SELECCIONE OPCIÓN'),
   rsh_percentage: Yup.string('SELECCIONE OPCIÓN'),
+  etnia: Yup.string('Ingrese etnia'),
   comments: Yup.string('Ingrese comentarios')
 })
 
@@ -131,6 +132,7 @@ const EmployeeModal = ({
       rsh: type === 'UPDATE' ? data.rsh : '',
       rsh_percentage: type === 'UPDATE' ? data.rsh_percentage : '',
       rsh_status: type === 'UPDATE' ? data.rsh_status : '',
+      etnia: type === 'UPDATE' ? data.etnia : '',
       comments: type === 'UPDATE' ? data.comments : ''
     },
     onSubmit: (values) => {
@@ -420,6 +422,16 @@ const EmployeeModal = ({
                     </option>
                   ))}
                 </Select>
+              </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <TextField
+                  label="Etnia"
+                  name="etnia"
+                  value={formik.values.etnia}
+                  onChange={formik.handleChange}
+                  error={formik.touched.etnia && Boolean(formik.errors.etnia)}
+                  helperText={formik.touched.etnia && formik.errors.etnia}
+                />
               </Grid>
             </Grid>
 
