@@ -10,7 +10,7 @@ import { ConfirmDelete, HeadingWithButton } from '../../components/Shared'
 import { Button, Wrapper } from '../../components/UI'
 import CreateCourse from '../../components/Courses/CreateCourse'
 import { useSuccess, useToggle } from '../../hooks'
-import UpdateCourse from '../../components/Courses/UpdateCourse'
+import UpdateCourse from '../../components/Courses/UpdateStatus'
 
 const Course = ({ children }) => {
   const dispatch = useDispatch()
