@@ -87,6 +87,9 @@ const StepOne = () => {
 
         ...values
       }
+      if (!data.parent_business_id) {
+        data.parent_business_id = null
+      }
       if (create.type === 'CREATE') {
         dispatch(companiesActions.createCompany(data))
           .then((result) => {
