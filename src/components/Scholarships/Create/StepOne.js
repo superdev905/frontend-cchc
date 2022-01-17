@@ -432,22 +432,26 @@ const StepOne = ({ onClose, data }) => {
                     iconColor="#BD52F2"
                   />
                 ) : (
-                  <Autocomplete
-                    required
-                    options={relatedList}
-                    value={''}
-                    getOptionLabel={(option) => option.business_name || ''}
-                    onChange={(__, option) => {
-                      setSelectedRelated(option)
-                    }}
-                    renderOption={(option) => (
-                      <CompanyRow.Autocomplete
-                        company={option}
-                        iconColor="#BD52F2"
-                      />
-                    )}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
+                  <>
+                    <Autocomplete
+                      required
+                      options={relatedList}
+                      value={''}
+                      getOptionLabel={(option) => option.business_name || ''}
+                      onChange={(__, option) => {
+                        setSelectedRelated(option)
+                      }}
+                      renderOption={(option) => (
+                        <CompanyRow.Autocomplete
+                          company={option}
+                          iconColor="#BD52F2"
+                        />
+                      )}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                    <Typography>Obra</Typography>
+                    <Select name="obra"></Select>
+                  </>
                 )}
               </Box>
             </Box>

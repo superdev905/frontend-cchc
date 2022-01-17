@@ -94,6 +94,25 @@ const PostulationDetails = ({ loading }) => {
                 <Text loading={loading}>{application?.business.email}</Text>
               </LabeledRow>
             </Box>
+            <Box>
+              <Typography className={classes.heading}>
+                Detalles de obra
+              </Typography>
+              <LabeledRow label="Razón social:">
+                <Text loading={loading}>
+                  {application?.business.businessName}
+                </Text>
+              </LabeledRow>
+              <LabeledRow label="Dirección:">
+                <Text loading={loading}>{application?.business.address}</Text>
+              </LabeledRow>
+              <LabeledRow label="Correo:">
+                <Text loading={loading}>{application?.business.email}</Text>
+              </LabeledRow>
+              <LabeledRow label="Contacto obra:">
+                <Text loading={loading}>un contacto</Text>
+              </LabeledRow>
+            </Box>
             {application && application.relatedBusiness && (
               <Box mt={2}>
                 <Typography className={classes.heading}>
