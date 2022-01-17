@@ -22,6 +22,7 @@ import { ConfirmDelete } from '../../components/Shared'
 import useStyles from './styles'
 import './custom.css'
 import { formatHours } from '../../formatters'
+import Cards from '../../components/Calendar/CalendarResume'
 import socialCasesActions from '../../state/actions/socialCase'
 
 const EventsCalendar = () => {
@@ -281,6 +282,9 @@ const EventsCalendar = () => {
 
   return (
     <div>
+      <Box mt={1} mb={2}>
+        <Cards />
+      </Box>
       <Wrapper>
         <Box miHeight="600px">
           <FullCalendar
