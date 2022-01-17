@@ -3,7 +3,8 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid, Typography, TextField } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 import { CurrencyTextField, DatePicker, Dialog } from '../Shared'
 import { Button, Select, SubmitButton } from '../UI'
 import companiesActions from '../../state/actions/companies'
@@ -87,7 +88,7 @@ const HousingForm = ({
     }
   })
 
-  const handleCompanyChange = (e) => {
+  /* const handleCompanyChange = (e) => {
     const { value } = e.target
     if (value === '') {
       formik.setFieldValue('business_id', value)
@@ -104,6 +105,35 @@ const HousingForm = ({
       formik.setFieldValue('business_name', currentCompany.business_name)
       formik.setFieldValue('construction_id', '')
       formik.setFieldValue('construction_name', '')
+    }
+  } */
+
+  const onCompanieSelect = (__, value) => {
+    if (value) {
+      const currentCompany = companies
+        .filter(
+          (item) => item.status !== 'NO_VIGENTE' && item.state !== 'DELETED'
+        )
+        .find((construction) => construction.id === parseInt(value.id, 10))
+
+      setConstructions(currentCompany.constructions)
+
+      formik.setFieldValue('business_id', value.id)
+      formik.setFieldValue('business_name', currentCompany.business_name)
+    }
+    if (!value) {
+      formik.setFieldValue('business_id', '')
+      formik.setFieldValue('business_name', '')
+      formik.setFieldValue('construction_id', '')
+      formik.setFieldValue('construction_name', '')
+      setConstructions([])
+    }
+  }
+
+  const onConstructionSelect = (__, value) => {
+    if (value) {
+      formik.setFieldValue('construction_id', value.id)
+      formik.setFieldValue('construction_name', value.name)
     }
   }
 
@@ -160,6 +190,7 @@ const HousingForm = ({
       dispatch(companiesActions.getAvailableCompanies()).then((list) => {
         setCompanies(list)
       })
+      console.log({ companies })
     }
   }, [open])
 
@@ -189,56 +220,65 @@ const HousingForm = ({
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <Select
-                label="Empresa"
-                name="business_id"
-                onChange={handleCompanyChange}
-                value={formik.values.business_id}
+              <Autocomplete
+                options={companies}
+                value={
+                  companies[
+                    companies.findIndex(
+                      (item) => item.id === formik.values.business_id
+                    )
+                  ] || ''
+                }
+                getOptionSelected={(option, value) => option.id === value.id}
+                getOptionLabel={(option) => option.business_name}
+                onChange={onCompanieSelect}
                 required
-                error={
-                  formik.touched.business_id &&
-                  Boolean(formik.errors.business_id)
-                }
-                helperText={
-                  formik.touched.business_id && formik.errors.business_id
-                }
-              >
-                <option value="">SELECCIONE OPCIÓN</option>
-                {companies.map((item, index) => (
-                  <option key={`type-home--${index}`} value={`${item.id}`}>
-                    {`${item.business_name}`}
-                  </option>
-                ))}
-              </Select>
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Empresa *"
+                    placeholder="SELECCIONE EMPRESA"
+                    error={
+                      formik.touched.business_id &&
+                      Boolean(formik.errors.business_id)
+                    }
+                    helperText={
+                      formik.touched.business_id && formik.errors.business_id
+                    }
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={12} md={6}>
-              <Select
-                label="Obra"
-                name="construction_id"
-                onChange={formik.handleChange}
-                value={formik.values.construction_id}
+              <Autocomplete
+                options={constructions}
+                value={
+                  constructions[
+                    constructions.findIndex(
+                      (item) => item.id === formik.values.construction_id
+                    )
+                  ] || ''
+                }
+                getOptionSelected={(option, value) => option.id === value.id}
+                getOptionLabel={(option) => option.name}
+                onChange={onConstructionSelect}
                 required
-                error={
-                  formik.touched.construction_id &&
-                  Boolean(formik.errors.construction_id)
-                }
-                helperText={
-                  formik.touched.construction_id &&
-                  formik.errors.construction_id
-                }
-              >
-                <option value="">SELECCIONE OPCIÓN</option>
-                {constructions
-                  .filter(
-                    (item) =>
-                      item.status !== 'NO_VIGENTE' && item.state !== 'DELETED'
-                  )
-                  .map((item, index) => (
-                    <option key={`type-home--${index}`} value={`${item.id}`}>
-                      {`${item.name}`}
-                    </option>
-                  ))}
-              </Select>
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Obra *"
+                    placeholder="SELECCIONE OBRA"
+                    error={
+                      formik.touched.construction_id &&
+                      Boolean(formik.errors.construction_id)
+                    }
+                    helperText={
+                      formik.touched.construction_id &&
+                      formik.errors.construction_id
+                    }
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={12} md={6}>
               <Select
