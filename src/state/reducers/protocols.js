@@ -4,11 +4,17 @@ const initialState = {
   list: [],
   moduleList: [],
   showCreateModal: false,
-  protocol: null
+  protocol: null,
+  classifications: [],
+  areas: []
 }
 
 const protocolsReducer = (state = initialState, { type, payload }) => {
   switch (type) {
+    case protocolsTypes.GET_PROTOCOL_CLASSIFICATIONS:
+      return { ...state, classifications: payload }
+    case protocolsTypes.GET_PROTOCOL_AREAS:
+      return { ...state, areas: payload }
     case protocolsTypes.GET_PROTOCOLS:
       return { ...state, list: payload }
     case protocolsTypes.GET_MODULE_PROTOCOLS:

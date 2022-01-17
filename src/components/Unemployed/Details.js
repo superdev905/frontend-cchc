@@ -1,149 +1,130 @@
-import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useHistory, useParams } from 'react-router-dom'
-import { makeStyles } from '@material-ui/styles'
-import { Box, Typography, Grid } from '@material-ui/core'
-import { LabeledRow, Text, Wrapper, Button } from '../UI'
-import { FileThumbnail, FileVisor } from '../Shared'
-import { formatDate } from '../../formatters'
+import { Box, Typography, Grid, makeStyles } from '@material-ui/core'
 import files from '../../state/actions/files'
+import { formatDate } from '../../formatters'
+import { LabeledRow, Text } from '../UI'
+import { FileThumbnail, FileVisor } from '../Shared'
+import PaymentsList from './Payment/List'
+import { UserCard } from '../Users'
+import { useToggle } from '../../hooks'
+import BenefitsList from './BenefitsList'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   heading: {
     fontSize: '17px',
     fontWeight: 'bold',
-    marginTop: '10px'
+    marginBottom: '10px'
   },
   boxList: {
     background: 'rgb(245, 246, 248)',
     overflowY: 'scroll',
     height: '200px'
+  },
+  bgGray: {
+    backgroundColor: theme.palette.gray.gray100,
+    borderRadius: theme.spacing(1)
   }
 }))
 
-const Details = () => {
+const Details = ({ loading }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const history = useHistory()
   const { unemployed } = useSelector((state) => state.unemployed)
-  const { idUnemployed } = useParams()
-  const [open, setOpen] = useState(false)
-
-  const redirectHistory = () => {
-    history.push(`/unemployed/${idUnemployed}/details/Benefits-history`)
-  }
+  const { open, toggleOpen } = useToggle()
 
   return (
-    <Wrapper>
-      {idUnemployed ? (
-        <Box>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
-              Detalle Registro de Cesantia
-            </Typography>
-          </Box>
-          <Box p={2}>
-            <Grid container>
-              <Grid item xs={12} md={6}>
-                <Typography className={classes.heading}>
-                  Datos del Trabajador
+    <Box px={1}>
+      <Box>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <Box>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
+                  Información de cesantes
                 </Typography>
-                <LabeledRow label={'Run'}>
-                  <Text>{unemployed?.employee?.run}</Text>
-                </LabeledRow>
-                <LabeledRow label={'Nombres'}>
-                  <Text>{unemployed?.employee?.names}</Text>
-                </LabeledRow>
-                <LabeledRow label={'Apellido paterno'}>
-                  <Text>{unemployed?.employee?.paternalSurname}</Text>
-                </LabeledRow>
-                <LabeledRow label={'Apellido materno'}>
-                  <Text>{unemployed?.employee?.maternalSurname}</Text>
-                </LabeledRow>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Typography className={classes.heading}>
-                  Asistente Social
-                </Typography>
-                <LabeledRow label={'Nombre'}>
-                  <Text>{unemployed.assistance.names}</Text>
-                </LabeledRow>
-                <LabeledRow label={'Apellidos'}>
-                  <Text>{`${unemployed.assistance.paternalSurname} ${unemployed.assistance.maternalSurname}`}</Text>
-                </LabeledRow>
-                <LabeledRow label={'Email'}>
-                  <Text>{unemployed.assistance.email}</Text>
-                </LabeledRow>
-              </Grid>
-            </Grid>
-
-            <Grid container>
-              <Grid item xs={12} md={6}>
-                <Typography className={classes.heading}>
-                  Datos Adicionales del Registro
-                </Typography>
-                <LabeledRow label={'Fecha de Registro'}>
-                  <Text>{formatDate(unemployed.date)}</Text>
-                </LabeledRow>
-                <LabeledRow label={'Oficina'}>
-                  <Text>{unemployed.office}</Text>
-                </LabeledRow>
-                <LabeledRow label={'Periodo'}>
-                  <Text>{unemployed.period}</Text>
-                </LabeledRow>
-                <LabeledRow label={'Listado de Beneficios'}>
-                  <Box className={classes.boxList}>
-                    <ol>
-                      {[1, 2, 3, 4].map(() => (
-                        <li>test</li>
-                      ))}
-                    </ol>
-                  </Box>
-                </LabeledRow>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <LabeledRow label={'Finiquito'}>
+              </Box>
+              <LabeledRow label={'Run'}>
+                <Text loading={loading}>{unemployed?.employee?.run}</Text>
+              </LabeledRow>
+              <LabeledRow label={'Nombres'}>
+                <Text loading={loading}>{unemployed?.employee?.names}</Text>
+              </LabeledRow>
+              <LabeledRow label={'Apellido paterno'}>
+                <Text loading={loading}>
+                  {unemployed?.employee?.paternalSurname}
+                </Text>
+              </LabeledRow>
+              <LabeledRow label={'Apellido materno'}>
+                <Text loading={loading}>
+                  {unemployed?.employee?.maternalSurname}
+                </Text>
+              </LabeledRow>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box className={classes.bgGray} p={2}>
+              <LabeledRow label={'Fecha de Registro'}>
+                <Text loading={loading}>{formatDate(unemployed?.date)}</Text>
+              </LabeledRow>
+              <LabeledRow label={'Oficina'}>
+                <Text loading={loading}>{unemployed?.office}</Text>
+              </LabeledRow>
+              <LabeledRow label={'Periodo'}>
+                <Text loading={loading}>{unemployed?.period}</Text>
+              </LabeledRow>
+              <Box mt={2}>
+                <Typography className={classes.heading}>Finiquito</Typography>
+                {unemployed?.dismissalFile && (
                   <FileThumbnail
-                    fileName={unemployed.dismissalFile.fileName}
-                    date={formatDate(unemployed.dismissalFile.uploadDate)}
-                    fileSize={unemployed.dismissalFile.fileSize}
-                    onView={() => setOpen(true)}
+                    bgWhite
+                    fileName={unemployed?.dismissalFile?.fileName}
+                    date={unemployed?.dismissalFile?.uploadDate}
+                    fileSize={unemployed?.dismissalFile?.fileSize}
+                    onView={toggleOpen}
                     onDownload={() => {
                       dispatch(
                         files.downloadFile(
-                          unemployed.dismissalFile.fileUrl,
-                          unemployed.dismissalFile.fileName
+                          unemployed?.dismissalFile?.fileUrl,
+                          unemployed?.dismissalFile?.fileName
                         )
                       )
                     }}
                   />
-                </LabeledRow>
-                <Grid item xs={12} md={12}>
-                  <Box display="flex" justifyContent="flex-end" width={1}>
-                    <Button onClick={redirectHistory}>
-                      Ver Historial de Beneficios
-                    </Button>
-                  </Box>
-                </Grid>
-              </Grid>
+                )}
+                {open && unemployed.dismissalFile && (
+                  <FileVisor
+                    open={open}
+                    onClose={toggleOpen}
+                    src={unemployed.dismissalFile.fileUrl}
+                    filename={unemployed.dismissalFile.fileName}
+                  />
+                )}
+              </Box>
+              <Box mt={2}>
+                <Typography className={classes.heading}>
+                  Asistente Social
+                </Typography>
+                {unemployed?.assistance && (
+                  <UserCard user={unemployed.assistance} />
+                )}
+              </Box>
+            </Box>
+          </Grid>
+        </Grid>
 
-              {open && (
-                <FileVisor
-                  open={open}
-                  onClose={() => setOpen(false)}
-                  src={unemployed.dismissalFile.fileUrl}
-                  filename={unemployed.dismissalFile.fileName}
-                />
-              )}
-            </Grid>
-          </Box>
+        <Box mt={2}>
+          <BenefitsList benefits={unemployed?.benefits} />
         </Box>
-      ) : null}
-    </Wrapper>
+
+        <Box mt={2}>
+          <PaymentsList />
+        </Box>
+      </Box>
+    </Box>
   )
 }
 

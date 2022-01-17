@@ -3,6 +3,50 @@ import Axios from '../../Axios'
 import protocolsTypes from '../types/protocols'
 import config from '../../config'
 
+const getClassifications =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.protocols
+        }/protocol-classifications?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: protocolsTypes.GET_PROTOCOL_CLASSIFICATIONS,
+            payload: data.items
+          })
+          resolve()
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const getAreas =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.protocols}/protocol-areas?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: protocolsTypes.GET_PROTOCOL_AREAS,
+            payload: data.items
+          })
+          resolve()
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const getProtocols =
   (query = {}) =>
   (dispatch) =>
@@ -122,7 +166,9 @@ const protocolsActions = {
   createProtocol,
   getProtocolDetails,
   updateProtocol,
-  deleteProtocol
+  deleteProtocol,
+  getClassifications,
+  getAreas
 }
 
 export default protocolsActions
