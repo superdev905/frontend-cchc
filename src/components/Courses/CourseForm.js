@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
-import { CompanyRow } from '../Shared'
-import { InputLabel, Select, TextArea, TextField } from '../UI'
+import { courseConfig } from '../../config'
 import commonActions from '../../state/actions/common'
 import usersActions from '../../state/actions/users'
+import { CompanyRow } from '../Shared'
+import { InputLabel, Select, TextArea, TextField } from '../UI'
 
 const CreateForm = ({ type, data, formik }) => {
   const dispatch = useDispatch()
@@ -84,7 +85,7 @@ const CreateForm = ({ type, data, formik }) => {
             />
           )}
         </Grid>
-        <Grid item xs={12} md={12}>
+        <Grid item xs={12} md={6}>
           <Select
             label="Relator"
             required
@@ -104,6 +105,25 @@ const CreateForm = ({ type, data, formik }) => {
               <option
                 value={item.id}
               >{`${item.names} ${item.paternal_surname} ${item.maternal_surname}`}</option>
+            ))}
+          </Select>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Select
+            label="Estado"
+            required
+            name="status"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.status}
+            helperText={formik.touched.status && formik.errors.status}
+            error={formik.touched.status && Boolean(formik.errors.status)}
+          >
+            <option value="">SELECCIONE ESTADO </option>
+            {courseConfig.statusList.map((item) => (
+              <option value={item} disabled={item !== 'CONVOCATORIA'}>
+                {item}
+              </option>
             ))}
           </Select>
         </Grid>
