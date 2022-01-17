@@ -101,7 +101,7 @@ const PensionSituation = ({
           <Grid container spacing={1}>
             <Grid item xs={12} md={6}>
               <Select
-                label="ISAPRE/FONASA"
+                label="Nombre ISAPRE/Tramo FONASA"
                 name="isapre_fonasa_id"
                 onChange={formik.handleChange}
                 value={formik.values.isapre_fonasa_id}

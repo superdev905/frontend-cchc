@@ -43,7 +43,7 @@ const CardSituation = ({ data, onEdit, onDelete }) => {
             <Typography>AFP/ISP: {data.afp_isp.description}</Typography>
 
             <Typography>
-              ISAPRE/FONASA: {data.isapre_fonasa.description}
+              Nombre ISAPRE/Tramo FONASA: {data.isapre_fonasa.description}
             </Typography>
             <Typography>
               Nombre ISP / Tramo Fonasa: {data.isapre_fonasa_name}
