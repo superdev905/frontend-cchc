@@ -27,12 +27,21 @@ const List = () => {
   const { interventionPlans: list, totalInterventions: totalDocs } =
     useSelector((state) => state.socialCase)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const { success, changeSuccess } = useSuccess()
 
   const createTask = (values) =>
     dispatch(
       socialCasesActions.createInterventionTask({ ...values, socialCaseId })
+    )
+
+  const editTask = (values) =>
+    dispatch(
+      socialCasesActions.updateInterventionTask(currentTask.id, {
+        ...values,
+        socialCaseId
+      })
     )
 
   const deleteTask = () => {
@@ -128,8 +137,13 @@ const List = () => {
           },
           {
             right: true,
-            cell: (row) => (
+            selector: (row) => (
               <ActionsTable
+                disableEdit={row.isCompleted === true}
+                onEdit={() => {
+                  toggleOpenEdit()
+                  setCurrentTask(row)
+                }}
                 onDelete={() => {
                   setCurrentTask(row)
                   toggleOpenDelete()
@@ -157,6 +171,16 @@ const List = () => {
           onClose={toggleOpenAdd}
           successMessage="Tarea creada exitosamente"
           submitFunction={createTask}
+        />
+      )}
+      {openEdit && currentTask && (
+        <PlanDialog
+          type="UPDATE"
+          data={currentTask}
+          open={openEdit}
+          onClose={toggleOpenEdit}
+          successMessage="Tarea actualizada exitosamente"
+          submitFunction={editTask}
         />
       )}
       {openDelete && currentTask && (
