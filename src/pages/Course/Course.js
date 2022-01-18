@@ -9,6 +9,7 @@ import { CourseDetails, CourseTab } from '../../components/Course'
 import { ConfirmDelete, HeadingWithButton } from '../../components/Shared'
 import { Button, Wrapper } from '../../components/UI'
 import CreateCourse from '../../components/Courses/CreateCourse'
+import { AssistanceDialog } from '../../components/Course/Attendance'
 import { useSuccess, useToggle } from '../../hooks'
 
 const Course = ({ children }) => {
@@ -22,6 +23,7 @@ const Course = ({ children }) => {
   const { success, changeSuccess } = useSuccess()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const { open: openAssistance, toggleOpen: toggleOpenAssistance } = useToggle()
 
   const updateCourse = (values) =>
     dispatch(
@@ -93,6 +95,7 @@ const Course = ({ children }) => {
           >
             Editar
           </Button>
+          <Button onClick={toggleOpenAssistance}>Registrar asistencia</Button>
         </Box>
       </Box>
       <CourseDetails loading={loading} />
@@ -129,6 +132,13 @@ const Course = ({ children }) => {
           }
           loading={deleting}
           success={success}
+        />
+      )}
+      {openAssistance && (
+        <AssistanceDialog
+          open={openAssistance}
+          onClose={toggleOpenAssistance}
+          idCourse={idCourse}
         />
       )}
     </Wrapper>
