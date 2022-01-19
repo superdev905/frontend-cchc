@@ -22,7 +22,8 @@ const PostulationList = () => {
     status: ''
   })
   const { showCreateModal } = useSelector((state) => state.scholarships)
-  const { total, applicationsList } = useSelector((state) => state.scholarships)
+  /* const { applicationsList } = useSelector((state) => state.scholarships) */
+  const [applicationsListFiltered, setApplicationsListFiltered] = useState([])
 
   const toggleCreateModal = () => {
     dispatch(scholarshipsActions.toggleCreateModal(showCreateModal))
@@ -41,6 +42,7 @@ const PostulationList = () => {
       page: 1
     })
   }
+
   const handleStatusChange = (e) => {
     setFilters({ ...filters, status: e.target.value })
   }
@@ -56,7 +58,11 @@ const PostulationList = () => {
         ...filters,
         search: filters.search.trim()
       })
-    ).then(() => {
+    ).then((response) => {
+      const ListFiltered = response.items.filter(
+        (item) => item.status !== 'APROBADA'
+      )
+      setApplicationsListFiltered(ListFiltered)
       setLoading(false)
     })
   }
@@ -137,7 +143,7 @@ const PostulationList = () => {
             )
           }
         ]}
-        data={applicationsList}
+        data={applicationsListFiltered}
         pagination
         onRowClicked={onRowClick}
         paginationRowsPerPageOptions={[30, 40]}
@@ -149,7 +155,7 @@ const PostulationList = () => {
         onChangePage={(page) => {
           setFilters({ ...filters, skip: page })
         }}
-        paginationTotalRows={total}
+        paginationTotalRows={applicationsListFiltered.length}
       />
 
       <CreateDialog open={showCreateModal} onClose={toggleCreateModal} />
