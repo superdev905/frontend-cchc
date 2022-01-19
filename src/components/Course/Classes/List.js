@@ -67,7 +67,7 @@ const ClassesTab = () => {
           {list.length === 0 ? (
             <EmptyState
               message="Este curso aún no tiene clases"
-              actionMessage="Nueva clase"
+              actionMessage="Nueva clasedd"
               event={toggleOpenAdd}
             />
           ) : (

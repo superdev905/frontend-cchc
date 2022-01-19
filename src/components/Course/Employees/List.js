@@ -13,7 +13,6 @@ import benefitsActions from '../../../state/actions/benefits'
 import coursesActions from '../../../state/actions/courses'
 import WorkerRegistration from './WorkerRegistration'
 import EmployeeDialog from './Dialog'
-import { AssistanceDialog } from '../Attendance'
 
 const EmployeesRegistrationList = () => {
   const dispatch = useDispatch()
@@ -29,7 +28,6 @@ const EmployeesRegistrationList = () => {
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const { open: openView, toggleOpen: toggleOpenView } = useToggle()
-  const { open: openAssistance, toggleOpen: toggleOpenAssistance } = useToggle()
 
   const fetchEmployees = () => {
     setLoading(true)
@@ -109,9 +107,6 @@ const EmployeesRegistrationList = () => {
                 availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
                 yes={() => (
                   <Box>
-                    <Button onClick={toggleOpenAssistance}>
-                      Registrar asistencia
-                    </Button>
                     <Button
                       disabled={
                         benefit?.usersQuantity === studentsCourse.length
@@ -200,13 +195,6 @@ const EmployeesRegistrationList = () => {
           open={openView}
           onClose={toggleOpenView}
           idEmployee={currentStudent.studentId}
-        />
-      )}
-      {openAssistance && (
-        <AssistanceDialog
-          open={openAssistance}
-          onClose={toggleOpenAssistance}
-          idCourse={idCourse}
         />
       )}
     </Wrapper>

@@ -57,6 +57,22 @@ const List = () => {
       hide: 'md'
     }))
 
+  const AddEmployee = (
+    <Grid item xs={12} md={12}>
+      <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}>
+        No se encontraron trabajadores
+        <Button
+          onClick={() => {
+            dispatch(uiActions.setCurrentModule('EMPRESAS'))
+            toggleOpenJEmployeeForm()
+          }}
+        >
+          Agregar trabajador
+        </Button>
+      </Box>
+    </Grid>
+  )
+
   const createAttention = (values) =>
     dispatch(
       assistanceAction.createAssistance({
@@ -178,24 +194,12 @@ const List = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} md={8}>
-              <Box display={'flex'} justifyContent={'flex-end'}>
-                <Button
-                  onClick={() => {
-                    dispatch(uiActions.setCurrentModule('EMPRESAS'))
-                    toggleOpenJEmployeeForm()
-                  }}
-                >
-                  Agregar trabajador
-                </Button>
-              </Box>
-            </Grid>
           </Grid>
 
           <DataTable
             bordered
             progressPending={searching}
-            emptyMessage="No se encontraron trabajadores"
+            emptyMessage={AddEmployee}
             columns={[
               {
                 name: 'Run',
