@@ -7,7 +7,7 @@ import { DataTable } from '../Shared'
 import { SubmitButton, Wrapper } from '../UI'
 import assistanceActions from '../../state/actions/assistance'
 
-const ContactList = () => {
+const List = () => {
   const dispatch = useDispatch()
   const [exporting, setExporting] = useState(false)
   const { idVisit } = useParams()
@@ -76,4 +76,4 @@ const ContactList = () => {
   )
 }
 
-export default ContactList
+export default List
