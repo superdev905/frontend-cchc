@@ -69,7 +69,10 @@ const StepOne = ({ onClose, data }) => {
       schoolName: create?.application?.schoolName || '',
       schoolRegion: create?.application?.schoolRegion || '',
       schoolCommune: create?.application?.schoolCommune || '',
-      psuScore: create?.application?.psuScore || ''
+      psuScore: create?.application?.psuScore || '',
+      nemScore: create?.application?.nemScore || '',
+      salary: create?.application?.salary || '',
+      timeServices: create?.application?.timeServices || ''
     },
 
     onSubmit: (values) => {
@@ -485,6 +488,19 @@ const StepOne = ({ onClose, data }) => {
                       }}
                     />
                   </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      label="Renta"
+                      name="salary"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.salary}
+                      helperText={formik.touched.salary && formik.errors.salary}
+                      error={
+                        formik.touched.salary && Boolean(formik.errors.salary)
+                      }
+                    />
+                  </Grid>
                   <Grid item xs={12}>
                     {searchList.length === 0 ? (
                       <>
@@ -514,7 +530,7 @@ const StepOne = ({ onClose, data }) => {
               )}
             </Box>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} md={6}>
             <Box>
               <Typography>Beneficario</Typography>
               {selectedBeneficiary ? (
@@ -537,6 +553,22 @@ const StepOne = ({ onClose, data }) => {
                 />
               )}
             </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              label="Antiguedad del Trabajador"
+              name="timeServices"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.timeServices}
+              helperText={
+                formik.touched.timeServices && formik.errors.timeServices
+              }
+              error={
+                formik.touched.timeServices &&
+                Boolean(formik.errors.timeServices)
+              }
+            />
           </Grid>
           <Grid item xs={12}>
             <Typography
@@ -575,6 +607,22 @@ const StepOne = ({ onClose, data }) => {
                     error={
                       formik.touched.schoolName &&
                       Boolean(formik.errors.schoolName)
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    label="Años de Carrera"
+                    name="careerYears"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.careerYears}
+                    helperText={
+                      formik.touched.careerYears && formik.errors.careerYears
+                    }
+                    error={
+                      formik.touched.careerYears &&
+                      Boolean(formik.errors.careerYears)
                     }
                   />
                 </Grid>
@@ -633,6 +681,21 @@ const StepOne = ({ onClose, data }) => {
                     }
                     error={
                       formik.touched.psuScore && Boolean(formik.errors.psuScore)
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    label="NEM"
+                    name="nemScore"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.nemScore}
+                    helperText={
+                      formik.touched.nemScore && formik.errors.nemScore
+                    }
+                    error={
+                      formik.touched.nemScore && Boolean(formik.errors.nemScore)
                     }
                   />
                 </Grid>
