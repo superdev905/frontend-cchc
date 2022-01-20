@@ -89,15 +89,11 @@ const StatusList = () => {
         emptyMessage={
           filters.search
             ? `No se encontraron resultados para: ${filters.search}`
-            : 'Aún no hay estados de curso'
+            : 'Aún no hay estados de alumno'
         }
         highlightOnHover
         pointerOnHover
         columns={[
-          {
-            name: 'Estado de curso',
-            selector: (row) => row.courseStatus
-          },
           {
             name: 'Estado de alumno',
             selector: (row) => row.studentStatus
