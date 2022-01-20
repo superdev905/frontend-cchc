@@ -9,8 +9,8 @@ import { useSuccess } from '../../../hooks'
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Ingrese tipo de Jornada'),
-  start_date: Yup.date().nullable().required('Sleccione hora de inicio'),
-  end_date: Yup.date().nullable().required('Sleccione hora de fin')
+  start_time: Yup.date().nullable().required('Sleccione hora de inicio'),
+  end_time: Yup.date().nullable().required('Sleccione hora de fin')
 })
 
 const CreateSchedule = ({
@@ -32,14 +32,20 @@ const CreateSchedule = ({
     validationSchema,
     initialValues: {
       name: type === 'UPDATE' ? data?.name : '',
-      start_date: type === 'UPDATE' ? new Date(17) : new Date(17),
-      end_date: type === 'UPDATE' ? new Date(17) : new Date(17)
+      start_time:
+        type === 'UPDATE'
+          ? new Date(`December 17, 1995 ${data?.start_time}`)
+          : new Date('December 17, 1995 08:00:00'),
+      end_time:
+        type === 'UPDATE'
+          ? new Date(`December 17, 1995 ${data?.end_time}`)
+          : new Date('December 17, 1995 18:00:00')
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction({
         name: values.name,
-        start_date: new Date(values.start_date).toISOString(),
-        end_date: new Date(values.end_date).toISOString(),
+        start_time: new Date(values.start_time).toLocaleTimeString(),
+        end_time: new Date(values.end_time).toLocaleTimeString(),
         created_by: user.id
       })
         .then(() => {
@@ -90,10 +96,10 @@ const CreateSchedule = ({
                 <Grid item xs={12} md={12}>
                   <InputLabel required>Hora de inicio</InputLabel>
                   <TimePicker
-                    value={formik.values.start_date}
+                    value={formik.values.start_time}
                     onChange={(date) => {
-                      if (date < formik.values.end_date) {
-                        formik.setFieldValue('start_date', new Date(date))
+                      if (date < formik.values.end_time) {
+                        formik.setFieldValue('start_time', new Date(date))
                       }
                     }}
                   />
@@ -101,10 +107,10 @@ const CreateSchedule = ({
                 <Grid item xs={12} md={12}>
                   <InputLabel required>Hora de fin</InputLabel>
                   <TimePicker
-                    value={formik.values.end_date}
+                    value={formik.values.end_time}
                     onChange={(date) => {
-                      if (date > formik.values.start_date) {
-                        formik.setFieldValue('end_date', new Date(date))
+                      if (date > formik.values.start_time) {
+                        formik.setFieldValue('end_time', new Date(date))
                       }
                     }}
                   />
@@ -118,8 +124,7 @@ const CreateSchedule = ({
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
-              disabled={!formik.isValid || formik.isSubmitting}
-              loading={formik.isSubmitting}
+              disabled={!formik.isValid}
               success={success}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Jornada`}

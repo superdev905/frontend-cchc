@@ -15,7 +15,6 @@ const ScheduleList = () => {
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const [currentSchedule, setCurrentSchedule] = useState(null)
-  console.log(success)
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [filters, setFilters] = useState({
@@ -150,7 +149,6 @@ const ScheduleList = () => {
                 onEdit={() => {
                   setCurrentSchedule(row)
                   toggleOpenUpdate()
-                  console.log(row)
                 }}
                 onDelete={() => {
                   setCurrentSchedule(row)
