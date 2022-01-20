@@ -12,12 +12,19 @@ import { Dialog, DatePicker, DataTable } from '../Shared'
 import { formatSearchWithRut } from '../../formatters'
 import generateColor from '../../utils/generateColor'
 import migrantsActions from '../../state/actions/migrants'
+import employeesActions from '../../state/actions/employees'
+import assistanceActions from '../../state/actions/assistance'
+import uiActions from '../../state/actions/ui'
 import { PollsModule } from '../Polls'
+import { useToggle } from '../../hooks'
+import { EmployeeForm } from '../Employees'
+import AssistanceDialog from '../Assistance/Dialog'
 
 const MigrateModal = ({ open, onClose }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
+  const { user } = useSelector((state) => state.auth)
   const { moduleResponse } = useSelector((state) => state.poll)
   const { benefits: benefitsList } = useSelector((state) => state.migrants)
   const [searchRut, setSearchRut] = useState('')
@@ -26,6 +33,14 @@ const MigrateModal = ({ open, onClose }) => {
   const [years, setYears] = useState([])
   const [searchList, setSearchList] = useState([])
   const [selectedEmployee, setSelectedEmployee] = useState(null)
+  const { open: openEmployeeForm, toggleOpen: toggleOpenJEmployeeForm } =
+    useToggle()
+  const { open: openAttention, toggleOpen: toggleOpenAttention } = useToggle()
+
+  const onCreateEmployee = (values) =>
+    dispatch(
+      employeesActions.createEmployee({ ...values, created_by: user.id })
+    )
 
   const formik = useFormik({
     initialValues: {
@@ -81,6 +96,16 @@ const MigrateModal = ({ open, onClose }) => {
     }
     return yearsList
   }
+  const createAttention = (values) =>
+    dispatch(
+      assistanceActions.createAssistance({
+        ...values,
+        employee_id: selectedEmployee.id,
+        employee_name: selectedEmployee.names,
+        employee_lastname: `${selectedEmployee.paternal_surname}`,
+        employee_rut: selectedEmployee.run
+      })
+    )
 
   useEffect(() => {
     setBenefits(benefitsList.map((item) => ({ ...item, date: null })))
@@ -89,6 +114,8 @@ const MigrateModal = ({ open, onClose }) => {
   useEffect(() => {
     if (searchRut && formik.values.period) {
       setLoading(true)
+      setSelectedEmployee(null)
+      setSearchList([])
       dispatch(
         migrantsActions.searchMigrants(
           { rut: searchRut, period: formik.values.period },
@@ -102,6 +129,7 @@ const MigrateModal = ({ open, onClose }) => {
       })
     } else {
       setSearchList([])
+      setSelectedEmployee(null)
     }
   }, [searchRut, formik.values.period])
 
@@ -180,47 +208,66 @@ const MigrateModal = ({ open, onClose }) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    {loading && (
+                    {loading ? (
                       <>
                         <Skeleton height={'80px'}></Skeleton>
                         <Skeleton height={'80px'}></Skeleton>
-                      </>
-                    )}
-                    {searchList.length === 0 ? (
-                      <>
-                        <EmptyState
-                          message={`${
-                            searchRut
-                              ? `No se encontraron resultados para: ${searchRut}`
-                              : 'Ingrese el rut del trabajador'
-                          }`}
-                        />
                       </>
                     ) : (
                       <>
-                        {searchList.map((item) => (
-                          <EmployeeRow
-                            key={item}
-                            selectable={!item.isAdded}
-                            option={item}
-                            onClick={() => {
-                              if (!item.isAdded) {
-                                setSelectedEmployee(item)
-                              }
-                            }}
-                            customComponent={
-                              item.isAdded && (
-                                <Box textAlign={'center'}>
-                                  <Box>
-                                    <Typography variant="caption1">
-                                      Trabajador agregado en este periodo
-                                    </Typography>
-                                  </Box>
-                                </Box>
-                              )
-                            }
-                          />
-                        ))}
+                        {searchList.length === 0 ? (
+                          <>
+                            <EmptyState
+                              message={`${
+                                searchRut
+                                  ? `No se encontraron resultados para: ${searchRut}`
+                                  : 'Ingrese el rut del trabajador'
+                              }`}
+                              actionMessage="Crear trabajador"
+                              event={searchRut && toggleOpenJEmployeeForm}
+                            />
+                            {openEmployeeForm && (
+                              <EmployeeForm
+                                open={openEmployeeForm}
+                                type={'CREATE'}
+                                onClose={toggleOpenJEmployeeForm}
+                                submitFunction={onCreateEmployee}
+                                successMessage={'Trabajador creado'}
+                                successFunction={() => {
+                                  dispatch(
+                                    uiActions.setCurrentModule('MIGRANTES')
+                                  )
+                                }}
+                              />
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            {searchList.map((item) => (
+                              <EmployeeRow
+                                key={`employee-${item.id}`}
+                                selectable={!item.isAdded}
+                                option={item}
+                                onClick={() => {
+                                  if (!item.isAdded) {
+                                    setSelectedEmployee(item)
+                                  }
+                                }}
+                                customComponent={
+                                  item.isAdded && (
+                                    <Box textAlign={'center'}>
+                                      <Box>
+                                        <Typography variant="caption1">
+                                          Trabajador agregado en este periodo
+                                        </Typography>
+                                      </Box>
+                                    </Box>
+                                  )
+                                }
+                              />
+                            ))}
+                          </>
+                        )}
                       </>
                     )}
                   </Grid>
@@ -247,15 +294,19 @@ const MigrateModal = ({ open, onClose }) => {
                     name: 'Fecha',
                     selector: (row) => (
                       <Box>
-                        <DatePicker
-                          value={row.date}
-                          onChange={(e) => {
-                            const updatedList = benefits.map((item) =>
-                              item.id === row.id ? { ...item, date: e } : item
-                            )
-                            setBenefits(updatedList)
-                          }}
-                        />
+                        {row.name.includes('ATENCIÓN SOCIAL') ? (
+                          <Button onClick={toggleOpenAttention}>Atender</Button>
+                        ) : (
+                          <DatePicker
+                            value={row.date}
+                            onChange={(e) => {
+                              const updatedList = benefits.map((item) =>
+                                item.id === row.id ? { ...item, date: e } : item
+                              )
+                              setBenefits(updatedList)
+                            }}
+                          />
+                        )}
                       </Box>
                     )
                   },
@@ -277,6 +328,27 @@ const MigrateModal = ({ open, onClose }) => {
                   }
                 ]}
               />
+              {openAttention && (
+                <AssistanceDialog
+                  sourceSystem={'MIGRANTES'}
+                  onClose={toggleOpenAttention}
+                  open={openAttention}
+                  employee={selectedEmployee}
+                  visitShift={''}
+                  submitFunction={createAttention}
+                  company={{ business_name: '' }}
+                  construction={{ name: '' }}
+                  successFunction={() => {
+                    const list = benefits.map((item) =>
+                      item.name.includes('ATENCIÓN SOCIAL')
+                        ? { ...item, date: new Date() }
+                        : item
+                    )
+                    setBenefits(list)
+                  }}
+                  successMessage="Atención creada con éxito"
+                />
+              )}
             </Grid>
           </Grid>
         </Box>
@@ -286,7 +358,9 @@ const MigrateModal = ({ open, onClose }) => {
             <PollsModule />
           </Box>
           <Box textAlign="center" marginTop="10px">
-            <Button variant={'outlined'}>Cancelar</Button>
+            <Button onClick={onClose} variant={'outlined'}>
+              Cancelar
+            </Button>
             <Button
               onClick={formik.handleSubmit}
               disabled={

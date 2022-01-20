@@ -6,7 +6,9 @@ const setIsMobile = (value) => (dispatch) =>
 const setCurrentModule = (value) => (dispatch) =>
   dispatch({ type: uiTypes.USER_MODULE, payload: value })
 
-export default {
+const uiActions = {
   setIsMobile,
   setCurrentModule
 }
+
+export default uiActions

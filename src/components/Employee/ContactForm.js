@@ -32,7 +32,11 @@ const validationSchema = Yup.object().shape({
   number: Yup.string().required('Ingrese número'),
   block: Yup.string(),
   department: Yup.string(),
-  phone_owner: Yup.string(),
+  phone_owner: Yup.string().when('is_other_phone', {
+    is: true,
+    then: Yup.string().required('Seleccione a quien le Pertence')
+  }),
+  is_other_phone: Yup.boolean(false),
 
   email: Yup.string().email('Ingrese correo válido').required('Ingreso correo'),
 
@@ -97,6 +101,7 @@ const EmployeeModal = ({
       phone_owner: type === 'UPDATE' ? data.phone_owner : '',
       mobile_phone: type === 'UPDATE' ? data.mobile_phone : '',
       other_phone: type === 'UPDATE' ? data.other_phone : '',
+      is_other_phone: false,
       landline_phone: type === 'UPDATE' ? data.landline_phone : '',
       is_confirmed: type === 'UPDATE' ? data.is_confirmed : false
     },
@@ -151,6 +156,18 @@ const EmployeeModal = ({
     formik.setFieldValue('longitude', targetLocation.lng)
     formik.setFieldValue('latitude', targetLocation.lat)
   }
+
+  const onChangeOtherPhone = () => {
+    if (formik.values.other_phone) {
+      formik.setFieldValue('is_other_phone', true)
+      return
+    }
+    formik.setFieldValue('is_other_phone', false)
+  }
+
+  useEffect(() => {
+    onChangeOtherPhone()
+  }, [formik.values.other_phone])
 
   useEffect(() => {
     if (regions.length > 0 && type === 'UPDATE') {

@@ -84,12 +84,14 @@ const List = ({ ...props }) => {
                 ))}
               </Select>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <SearchInput
-                value={filters.search}
-                onChange={onSearchChange}
-                placeholder="Buscar por: razón social, rut"
-              />
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <SearchInput
+                  value={filters.search}
+                  onChange={onSearchChange}
+                  placeholder="Buscar por: razón social, rut"
+                />
+              </Grid>
             </Grid>
             <Grid item xs={12} md={6}>
               <Box display="flex" justifyContent="flex-end">

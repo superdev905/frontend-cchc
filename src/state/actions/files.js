@@ -77,10 +77,12 @@ const deleteFile = (key) => () =>
       })
   })
 
-export default {
+const filesActions = {
   uploadFile,
   getFile,
   uploadFileToStorage,
   downloadFile,
   deleteFile
 }
+
+export default filesActions

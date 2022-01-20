@@ -53,17 +53,13 @@ const LinearProgress = ({ question }) => {
   const classes = useStyles({ bg: getBgColor(percentage) })
   return (
     <>
-      {percentage <= 100 ? (
-        <Progress
-          value={percentage > 100 ? 100 : percentage}
-          color="primary"
-          variant="determinate"
-          className={classes.linearBar}
-          classes={{ barColorPrimary: 'red' }}
-        />
-      ) : (
-        'Pregunta no Respondida a Tiempo'
-      )}
+      <Progress
+        value={percentage > 100 ? 100 : percentage}
+        color="primary"
+        variant="determinate"
+        className={classes.linearBar}
+        classes={{ barColorPrimary: 'red' }}
+      />
     </>
   )
 }

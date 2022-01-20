@@ -14,7 +14,8 @@ import {
   Home as HousingIcon,
   Accessible as AccessibleIcon,
   ContactMail as MigrantIcon,
-  WorkOff as UnemployedIcon
+  WorkOff as UnemployedIcon,
+  Help as HelpIcon
 } from '@material-ui/icons'
 import LanguageIcon from '@material-ui/icons/Language'
 
@@ -83,6 +84,11 @@ const modulesByRole = {
       title: 'Consultas Web',
       path: '/question/dashboard',
       icon: <LanguageIcon />
+    },
+    {
+      title: 'Protocolos',
+      path: '/protocols',
+      icon: <HelpIcon />
     },
     {
       index: 5,

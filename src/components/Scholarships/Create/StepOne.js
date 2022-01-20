@@ -14,7 +14,7 @@ import generateColor from '../../../utils/generateColor'
 import EmployeeRow from './EmployeeRow'
 import RowAutocomplete from './RowAutocomplete'
 import { formatSearchWithRut } from '../../../formatters'
-import { CompanyRow } from '../../Shared'
+import { CompanyRow, DatePicker } from '../../Shared'
 import validationSchema from './schemas'
 
 const StepOne = ({ onClose, data }) => {
@@ -49,6 +49,8 @@ const StepOne = ({ onClose, data }) => {
     validationSchema,
     initialValues: {
       scholarshipId: create?.application?.scholarshipId || '',
+      startDate: create?.benefit?.startDate || '',
+      endDate: create?.benefit?.endDate || '',
       date: create?.application?.date || '',
       employeeNames: create?.application?.employeeNames || '',
       employeeRut: create?.application?.employeeRut || '',
@@ -312,6 +314,39 @@ const StepOne = ({ onClose, data }) => {
                 <option value={item.id}>{item.name}</option>
               ))}
             </Select>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <DatePicker
+              required
+              label="Fecha de inicio"
+              disabledFuture={false}
+              value={formik.values.startDate}
+              helperText={formik.touched.startDate && formik.errors.startDate}
+              error={
+                formik.touched.startDate && Boolean(formik.errors.startDate)
+              }
+              onChange={(date) => {
+                formik.setFieldTouched('startDate')
+                formik.setFieldValue('startDate', date)
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <DatePicker
+              required
+              label="Fecha de termino"
+              minDate={formik.values.startDate}
+              disabledPast
+              disabledFuture={false}
+              value={formik.values.endDate}
+              helperText={formik.touched.endDate && formik.errors.endDate}
+              error={formik.touched.endDate && Boolean(formik.errors.endDate)}
+              onChange={(date) => {
+                formik.setFieldTouched('endDate')
+                formik.setFieldValue('endDate', date)
+              }}
+            />
           </Grid>
           <Grid item xs={12}>
             <Typography

@@ -86,6 +86,10 @@ const services = {
     development: `${BASEURL[env]}:5118/api/v1`,
     testing: `${BASEURL[env]}:5117/api/v1`,
     production: `${BASEURL[env]}:5117/api/v1`
+  },
+  protocols: {
+    development: `${BASEURL[env]}:5119/api/v1`,
+    production: `${BASEURL[env]}:5120/api/v1`
   }
 }
 
@@ -106,7 +110,8 @@ const config = {
     question: services.question[env],
     migrant: services.migrant[env],
     inclusion: services.inclusion[env],
-    unemployed: services.unemployed[env]
+    unemployed: services.unemployed[env],
+    protocols: services.protocols[env]
   }
 }
 

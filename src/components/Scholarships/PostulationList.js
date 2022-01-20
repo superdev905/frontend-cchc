@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useHistory, withRouter } from 'react-router-dom'
 import { Box, Grid } from '@material-ui/core'
 import { Button, PageHeading, SearchInput, Select, Wrapper } from '../UI'
-import { formatSearchWithRut } from '../../formatters'
+import { formatSearchWithRut, formatDate } from '../../formatters'
 import scholarshipsActions from '../../state/actions/scholarships'
 import CreateDialog from './Create/CreateDialog'
 import { DataTable } from '../Shared'
@@ -117,7 +117,7 @@ const PostulationList = () => {
         emptyMessage={
           filters.search
             ? `No se encontraron resultados para: ${filters.search}`
-            : 'Aún no hay postulaciones'
+            : 'no hay postulaciones'
         }
         highlightOnHover
         pointerOnHover
@@ -134,6 +134,16 @@ const PostulationList = () => {
           {
             name: 'Empresa',
             selector: (row) => row.businessName,
+            hide: 'md'
+          },
+          {
+            name: 'Fecha de inicio',
+            selector: (row) => formatDate(row.startDate, {}),
+            hide: 'md'
+          },
+          {
+            name: 'Fecha de fin',
+            selector: (row) => formatDate(row.endDate, {}),
             hide: 'md'
           },
           {

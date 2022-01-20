@@ -45,6 +45,7 @@ const Question = lazy(() => import('../pages/Question'))
 const QuestionDashboard = lazy(() => import('../pages/QuestionDashboard'))
 const InclusionCase = lazy(() => import('../pages/InclusionCase'))
 const InclusiveCases = lazy(() => import('../pages/InclusionCases'))
+const Protocols = lazy(() => import('../pages/Protocols'))
 
 const routes = [
   {
@@ -555,6 +556,22 @@ const routes = [
   ...MigrantRoutes,
   ...UnemployedRoutes,
   {
+    path: '/inclusive',
+    key: 'INCLUSIVE',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
+        yes={() => (
+          <Layout>
+            <InclusivePage />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
     path: '/inclusion-cases',
     key: 'INCLUSION-CASES',
     exact: true,
@@ -596,6 +613,24 @@ const routes = [
       />
     )
   },
-  ...SocialCaseRoutes
+  ...SocialCaseRoutes,
+  {
+    path: '/protocols',
+    key: 'PROTOCOLS',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'JEFATURA']}
+        yes={() => (
+          <Layout>
+            <Protocols />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  ...SocialCaseRoutes,
+  ...MigrantRoutes
 ]
 export default routes
