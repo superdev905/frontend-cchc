@@ -347,7 +347,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
         </Box>
         <Box>
           <Box marginTop={2} className={classes.centeredSpaced}>
-            <Typography>Estado de curso</Typography>
+            <Typography>Estado de alumno</Typography>
             <Button size="small" onClick={toggleOpenStatus}>
               Agregar
             </Button>

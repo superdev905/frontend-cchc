@@ -68,32 +68,34 @@ const List = ({ ...props }) => {
       <Wrapper>
         <Box>
           <Grid container spacing={1} alignItems="center">
-            <Grid item xs={12} md={2}>
-              <Select name="status" onChange={handleStatusChange}>
-                <option value="">Todos</option>
-                {[
-                  { key: 'CREATED', name: 'Activos' },
-                  { key: 'DELETED', name: 'Eliminados' }
-                ].map((item) => (
-                  <option
-                    key={`employee--filters-${item.key}`}
-                    value={item.key}
-                  >
-                    {item.name}
-                  </option>
-                ))}
-              </Select>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
-                <SearchInput
-                  value={filters.search}
-                  onChange={onSearchChange}
-                  placeholder="Buscar por: razón social, rut"
-                />
+            <Grid item xs={12} md={7}>
+              <Grid container spacing={1}>
+                <Grid item xs={12} md={3}>
+                  <Select name="status" onChange={handleStatusChange}>
+                    <option value="">Todos</option>
+                    {[
+                      { key: 'CREATED', name: 'Activos' },
+                      { key: 'DELETED', name: 'Eliminados' }
+                    ].map((item) => (
+                      <option
+                        key={`employee--filters-${item.key}`}
+                        value={item.key}
+                      >
+                        {item.name}
+                      </option>
+                    ))}
+                  </Select>
+                </Grid>
+                <Grid item xs={12} md={9}>
+                  <SearchInput
+                    value={filters.search}
+                    onChange={onSearchChange}
+                    placeholder="Buscar por: razón social, rut"
+                  />
+                </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={5}>
               <Box display="flex" justifyContent="flex-end">
                 <Button onClick={addButtonClick}>Nueva empresa</Button>
               </Box>

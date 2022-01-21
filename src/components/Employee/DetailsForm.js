@@ -104,9 +104,6 @@ const Details = ({ loading, data }) => {
           <LabeledRow width={200} label={'Vivo'}>
             <Text loading={loading}>{data?.alive}</Text>
           </LabeledRow>
-          <LabeledRow width={200} label={'Pertenece a RECONOCER'}>
-            <Text loading={loading}>{data?.recognize}</Text>
-          </LabeledRow>
         </Grid>
       </Grid>
     </Box>

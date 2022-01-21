@@ -77,6 +77,9 @@ const Details = ({ loading }) => {
                   {employee?.scholarship?.description}
                 </Text>
               </LabeledRow>
+              <LabeledRow label={'Etnia'}>
+                <Text loading={loading}>{employee?.etnia}</Text>
+              </LabeledRow>
               <LabeledRow width={170} label={'Fecha de nacimiento'}>
                 <Text loading={loading}>{formatDate(employee?.born_date)}</Text>
               </LabeledRow>
@@ -134,9 +137,6 @@ const Details = ({ loading }) => {
 
               <LabeledRow width={200} label={'Vivo'}>
                 <Text loading={loading}>{employee?.alive}</Text>
-              </LabeledRow>
-              <LabeledRow width={200} label={'Pertenece a RECONOCER'}>
-                <Text loading={loading}>{employee?.recognize}</Text>
               </LabeledRow>
             </Grid>
             {employee?.comments && (

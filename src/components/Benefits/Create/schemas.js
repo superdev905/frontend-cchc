@@ -20,7 +20,8 @@ export const benefitSchema = Yup.object().shape({
 export const courseSchema = Yup.object().shape({
   otecId: Yup.number().required('Seleccione otec'),
   description: Yup.string().required('Ingrese descripción'),
-  instructorId: Yup.number().required('Seleccione relator')
+  instructorId: Yup.number().required('Seleccione relator'),
+  status: Yup.string().required('Selecciona estado de curso')
 })
 
 export const restrictionSchema = {}

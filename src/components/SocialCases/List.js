@@ -18,6 +18,7 @@ const SocialCasesList = () => {
   const { totalCases, casesList, filters } = useSelector(
     (state) => state.socialCase
   )
+  const { user } = useSelector((state) => state.auth)
 
   const onSearchChange = (e) => {
     const { value } = e.target
@@ -40,6 +41,9 @@ const SocialCasesList = () => {
     }
     if (formattedFilters.endDate) {
       formattedFilters.endDate = new Date(filters.endDate).toISOString()
+    }
+    if (user.role.key !== 'ADMIN') {
+      formattedFilters.userId = user.id
     }
     dispatch(
       socialCaseActions.getSocialCases(
@@ -122,11 +126,6 @@ const SocialCasesList = () => {
             {
               name: 'Empresa',
               selector: (row) => row.businessName,
-              hide: 'md'
-            },
-            {
-              name: 'Oficina',
-              selector: (row) => row.office,
               hide: 'md'
             },
             {

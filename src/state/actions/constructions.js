@@ -63,7 +63,7 @@ const createConstruction = (values) => () =>
         resolve(data)
       })
       .catch((err) => {
-        reject(err.response.data)
+        reject(err.response.data.detail)
       })
   })
 
@@ -75,7 +75,7 @@ const updateConstruction = (constructionId, values) => () =>
         resolve(data)
       })
       .catch((err) => {
-        reject(err.response.data)
+        reject(err.response.data.detail)
       })
   })
 
@@ -87,7 +87,7 @@ const patchConstruction = (constructionId, values) => () =>
         resolve(data)
       })
       .catch((err) => {
-        reject(err.response.data)
+        reject(err.response.data.detail)
       })
   })
 
@@ -111,7 +111,7 @@ const getConstructions =
           resolve(data.items)
         })
         .catch((err) => {
-          reject(err.response.data)
+          reject(err.response.data.detail)
         })
     })
 
@@ -131,7 +131,7 @@ const getConstruction =
           resolve(data)
         })
         .catch((err) => {
-          reject(err.response.data)
+          reject(err.response.data.detail)
         })
     })
 
@@ -143,7 +143,7 @@ const createConstructionTypology = (values) => () =>
         resolve(data.data)
       })
       .catch((err) => {
-        reject(err.response.data)
+        reject(err.response.data.detail)
       })
   })
 
@@ -199,7 +199,7 @@ const createContact = (values) => () =>
         resolve(data)
       })
       .catch((err) => {
-        reject(err.response.data)
+        reject(err.response.data.detail)
       })
   })
 
@@ -211,7 +211,7 @@ const updateContact = (id, values) => () =>
         resolve(data)
       })
       .catch((err) => {
-        reject(err.response.data)
+        reject(err.response.data.detail)
       })
   })
 
@@ -223,7 +223,7 @@ const deleteContact = (id) => () =>
         resolve(data)
       })
       .catch((err) => {
-        reject(err.response.data)
+        reject(err.response.data.detail)
       })
   })
 const patchContact = (id, values) => () =>
@@ -234,7 +234,7 @@ const patchContact = (id, values) => () =>
         resolve(data)
       })
       .catch((err) => {
-        reject(err.response.data)
+        reject(err.response.data.detail)
       })
   })
 

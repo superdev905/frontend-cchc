@@ -22,7 +22,10 @@ import { ConfirmDelete } from '../../components/Shared'
 import useStyles from './styles'
 import './custom.css'
 import { formatHours } from '../../formatters'
+import Cards from '../../components/Calendar/CalendarResume'
 import socialCasesActions from '../../state/actions/socialCase'
+
+import FiltersMenu from './FiltersMenu'
 
 const EventsCalendar = () => {
   const dispatch = useDispatch()
@@ -39,6 +42,12 @@ const EventsCalendar = () => {
     start_date: startOfWeek(currentDate),
     end_date: endOfWeek(currentDate)
   })
+  const {
+    open: openfilters,
+    handleOpen: handleOpenfilters,
+    handleClose: handleClosefilters,
+    anchorEl: anchorElfilters
+  } = useMenu()
   const { open: openPreview, handleClose, handleOpen, anchorEl } = useMenu()
   const {
     open: openTask,
@@ -46,6 +55,11 @@ const EventsCalendar = () => {
     handleOpen: handleOpenTask,
     anchorEl: anchorElTask
   } = useMenu()
+  const [otherFilters, setOtherFilters] = useState({
+    assistenceIdList: [],
+    view: 'VER TODO'
+  })
+  const [assistenceListFiltered, setAssistenceListFiltered] = useState([])
   const { calendarEvents } = useSelector((state) => state.assistance)
   const { calendarTasks } = useSelector((state) => state.socialCase)
   const { user } = useSelector((state) => state.auth)
@@ -75,6 +89,10 @@ const EventsCalendar = () => {
         user_id: user?.id || null
       })
     )
+  }
+
+  const applyFilters = () => {
+    console.log(otherFilters)
   }
 
   const onCancelEvent = () => {
@@ -281,15 +299,35 @@ const EventsCalendar = () => {
 
   return (
     <div>
+      <Box mt={1} mb={2}>
+        <Cards />
+      </Box>
       <Wrapper>
+        <FiltersMenu
+          open={openfilters}
+          onClose={handleClosefilters}
+          anchorEl={anchorElfilters}
+          assistenceListFiltered={assistenceListFiltered}
+          setAssistenceListFiltered={setAssistenceListFiltered}
+          otherFilters={otherFilters}
+          setOtherFilters={setOtherFilters}
+          applyFilters={applyFilters}
+        />
         <Box miHeight="600px">
           <FullCalendar
             ref={calendarApi}
+            firstDay={1}
             droppable={false}
             height="700px"
             now={calendarDate}
             plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
             customButtons={{
+              filters: {
+                text: 'Filtros',
+                click: (e) => {
+                  handleOpenfilters(e)
+                }
+              },
               export: {
                 text: 'Exportar',
                 click: () => {
@@ -300,7 +338,7 @@ const EventsCalendar = () => {
             headerToolbar={{
               left: 'prev,today,next',
               center: 'title',
-              right: 'timeGridDay,timeGridWeek,dayGridMonth,export'
+              right: 'timeGridDay,timeGridWeek,dayGridMonth,filters,export'
             }}
             buttonText={{
               today: 'Hoy',

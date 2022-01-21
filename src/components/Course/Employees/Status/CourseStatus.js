@@ -10,11 +10,9 @@ import { Dialog } from '../../../Shared'
 import { Button, Select, SubmitButton } from '../../../UI'
 import { useSuccess } from '../../../../hooks'
 
-const statusCourseList = ['DESARROLLO', 'CONVOCATIORIA', 'REALIZADO']
 const statusStudentList = ['APROBADO', 'REPROBADO']
 
 const validationSchema = Yup.object().shape({
-  courseStatus: Yup.string().required('Ingrese estado del curso'),
   studentStatus: Yup.string().required(
     'Ingrese estado de aprobación del alumno'
   )
@@ -41,7 +39,6 @@ const CourseStatus = ({
     initialValues: {
       courseId: idCourse,
       date: currentDate,
-      courseStatus: type === 'UPDATE' ? data.courseStatus : '',
       studentStatus: type === 'UPDATE' ? data.studentStatus : ''
     },
     onSubmit: (values, { resetForm }) => {
@@ -85,27 +82,6 @@ const CourseStatus = ({
         </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Select
-                label="Estado curso"
-                required
-                name="courseStatus"
-                value={formik.values.courseStatus}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.courseStatus &&
-                  Boolean(formik.errors.courseStatus)
-                }
-                helperText={
-                  formik.touched.courseStatus && formik.errors.courseStatus
-                }
-              >
-                <option value="">SELECCIONE ESTADO DE CURSO</option>
-                {statusCourseList.map((item) => (
-                  <option value={item}>{capitalize(item)}</option>
-                ))}
-              </Select>
-            </Grid>
             <Grid item xs={12}>
               <Select
                 label="Estado alumno"

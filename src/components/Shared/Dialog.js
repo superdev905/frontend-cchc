@@ -21,6 +21,7 @@ const CustomDialog = ({
   fullWidth,
   maxWidth,
   fullScreen,
+  customButon,
   ...props
 }) => {
   const classes = useStyles()
@@ -36,9 +37,13 @@ const CustomDialog = ({
       <DialogContent>
         <Box>
           <Box display="flex" justifyContent="flex-end">
-            <IconButton onClick={onClose}>
-              <CloseIcon />
-            </IconButton>
+            {!customButon ? (
+              <IconButton onClick={onClose}>
+                <CloseIcon />
+              </IconButton>
+            ) : (
+              customButon
+            )}
           </Box>
           <Box className={classes.content}>{children}</Box>
         </Box>

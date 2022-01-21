@@ -128,7 +128,7 @@ const ContactCard = ({
               includeInterlocutor
               submitFunction={updateContact}
               onClose={toggleOpen}
-              successMessage="Contacto actualizado"
+              successMessage="Interlocutor actualizado"
               successFunc={(updatedContact) => {
                 if (onSuccessFunction) {
                   onSuccessFunction(updatedContact)

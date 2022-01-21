@@ -23,7 +23,7 @@ const CaseAdditionalForm = ({ formik, onReset }) => {
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={4}>
           <Select
-            label="Oficina"
+            label="Oficina123"
             name="office"
             required
             value={formik.values.office}
