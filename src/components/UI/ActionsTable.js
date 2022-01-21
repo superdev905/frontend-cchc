@@ -24,6 +24,7 @@ const ActionGroup = ({
   onEdit,
   onDelete,
   disabledDelete,
+  disableEdit,
   onView,
   moreOptions
 }) => {
@@ -41,7 +42,7 @@ const ActionGroup = ({
         </IconButton>
       ))}
       {onEdit && (
-        <IconButton onClick={onEdit}>
+        <IconButton onClick={onEdit} disabled={disableEdit}>
           <EditIcon className={classes.btnPrimary} />
         </IconButton>
       )}

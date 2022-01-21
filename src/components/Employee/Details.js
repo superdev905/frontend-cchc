@@ -138,9 +138,6 @@ const Details = ({ loading }) => {
               <LabeledRow width={200} label={'Vivo'}>
                 <Text loading={loading}>{employee?.alive}</Text>
               </LabeledRow>
-              <LabeledRow width={200} label={'Pertenece a RECONOCER'}>
-                <Text loading={loading}>{employee?.recognize}</Text>
-              </LabeledRow>
             </Grid>
             {employee?.comments && (
               <Grid item xs={12}>

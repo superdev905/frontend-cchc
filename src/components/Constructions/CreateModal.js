@@ -17,6 +17,7 @@ import FacturationModal from '../Companies/Create/ParentBusiness'
 import { buildTreeData, searchFromTree } from '../../utils/buildTreeData'
 import { PollsModule } from '../Polls'
 import { isPollListAnswered } from '../../validations'
+import Can from '../Can'
 
 const businessSchema = Yup.object({
   business_selected_id: Yup.number().required('Seleccione empresa')
@@ -338,27 +339,59 @@ const ConstructionModal = ({
                 ))}
               </Select>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Select
-                label="Estado"
-                name="status"
-                required
-                onChange={formik.handleChange}
-                value={formik.values.status}
-                helperText={formik.touched.status && formik.errors.status}
-                error={formik.touched.status && Boolean(formik.errors.status)}
-              >
-                <option value="">SELECCIONE ESTADO </option>
-                {[
-                  { key: 'VIGENTE', name: 'VIGENTE' },
-                  { key: 'NO_VIGENTE', name: 'NO VIGENTE' }
-                ].map((item, index) => (
-                  <option key={`region--${index}`} value={`${item.key}`}>
-                    {item.name}
-                  </option>
-                ))}
-              </Select>
-            </Grid>
+            <Can
+              availableTo={['ADMIN']}
+              yes={() => (
+                <Grid item xs={12} md={6}>
+                  <Select
+                    label="Estado"
+                    name="status"
+                    required
+                    onChange={formik.handleChange}
+                    value={formik.values.status}
+                    helperText={formik.touched.status && formik.errors.status}
+                    error={
+                      formik.touched.status && Boolean(formik.errors.status)
+                    }
+                  >
+                    <option value="">SELECCIONE ESTADO </option>
+                    {[
+                      { key: 'VIGENTE', name: 'VIGENTE' },
+                      { key: 'NO_VIGENTE', name: 'NO VIGENTE' }
+                    ].map((item, index) => (
+                      <option key={`region--${index}`} value={`${item.key}`}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </Select>
+                </Grid>
+              )}
+              no={() => (
+                <Grid item xs={12} md={6}>
+                  <Select
+                    label="Estado"
+                    name="status"
+                    disabled
+                    onChange={formik.handleChange}
+                    value={formik.values.status}
+                    helperText={formik.touched.status && formik.errors.status}
+                    error={
+                      formik.touched.status && Boolean(formik.errors.status)
+                    }
+                  >
+                    <option value="">SELECCIONE ESTADO </option>
+                    {[
+                      { key: 'VIGENTE', name: 'VIGENTE' },
+                      { key: 'NO_VIGENTE', name: 'NO VIGENTE' }
+                    ].map((item, index) => (
+                      <option key={`region--${index}`} value={`${item.key}`}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </Select>
+                </Grid>
+              )}
+            />
             <Grid item xs={12} md={6}>
               <DatePicker
                 label="Fecha termino"

@@ -13,6 +13,8 @@ import ScoreCard from '../Score/ScoreCard'
 import courses from '../../../../state/actions/courses'
 import EmployeeTracking from '../../EmployeeTracking'
 import AddScore from '../Score/AddScore'
+import CourseStatus from '../Status/CourseStatus'
+import StatusList from '../Status/List'
 import { ConfirmDelete } from '../../../Shared'
 import StudentPaymentCard from '../PaymentCard'
 
@@ -40,6 +42,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const { open: openDeletePayment, toggleOpen: toggleOpenDeletePayment } =
     useToggle()
   const { open: openAddScore, toggleOpen: toggleOpenAddScore } = useToggle()
+  const { open: openStatus, toggleOpen: toggleOpenStatus } = useToggle()
   const { open: openEditScore, toggleOpen: toggleOpenEditScore } = useToggle()
   const { open: openDeleteScore, toggleOpen: toggleOpenDeleteScore } =
     useToggle()
@@ -89,6 +92,28 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
         toggleOpenAddScore()
         fetchScores()
         enqueueSnackbar('Nota agregada exitosamente', {
+          autoHideDuration: 1800,
+          variant: 'success'
+        })
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
+  const addStatus = (values) => {
+    dispatch(
+      courses.createStatus({
+        ...values,
+        studentId: student.student.id
+      })
+    )
+      .then(() => {
+        setLoading(false)
+        changeSuccess(true)
+        toggleOpenStatus()
+        fetchStatus()
+        enqueueSnackbar('Estado agregado exitosamente', {
           autoHideDuration: 1800,
           variant: 'success'
         })
@@ -320,6 +345,15 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
             )}
           </Box>
         </Box>
+        <Box>
+          <Box marginTop={2} className={classes.centeredSpaced}>
+            <Typography>Estado de alumno</Typography>
+            <Button size="small" onClick={toggleOpenStatus}>
+              Agregar
+            </Button>
+          </Box>
+          <StatusList />
+        </Box>
       </Box>
 
       {openAdd && (
@@ -388,6 +422,13 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
           success={success}
         />
       )}
+
+      <CourseStatus
+        open={openStatus}
+        onClose={toggleOpenStatus}
+        submitFunction={addStatus}
+        successFunction={fetchStatus}
+      />
     </Drawer>
   )
 }
