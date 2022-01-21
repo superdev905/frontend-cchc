@@ -17,7 +17,8 @@ const JobsDialog = ({
   onClose,
   employeeId,
   employeeNames,
-  employeeRun
+  employeeRun,
+  customButon
 }) => {
   const tabsComponents = {
     0: <EmployeeDetails />,
@@ -45,6 +46,7 @@ const JobsDialog = ({
       maxWidth
       fullWidth="lg"
       fullScreen={isMobile}
+      customButon={customButon}
     >
       <Box>
         <Typography
