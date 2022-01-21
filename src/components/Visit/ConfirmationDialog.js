@@ -1,6 +1,6 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles, Box, Typography } from '@material-ui/core'
+import employeeActions from '../../state/actions/employees'
 import { Dialog } from '../Shared'
 import { Button } from '../UI'
 
@@ -26,22 +26,28 @@ const ConfirmationDialog = ({
   onCloseJobs,
   onCloseAssistence,
   employeeNames,
-  employeeRun
+  employeeRun,
+  employeeId
 }) => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const { isMobile } = useSelector((state) => state.ui)
   const { user } = useSelector((state) => state.auth)
 
   const applyConfirmation = () => {
     try {
       const formData = {
-        userId: user.id,
+        employeeId,
+        assistanceId: user.id,
         date: new Date().toISOString()
       }
-      console.log(formData)
-      onCloseJobs()
-      onClose()
-      onCloseAssistence()
+      dispatch(
+        employeeActions.createEmployeeRevision(employeeId, formData)
+      ).then(() => {
+        onCloseJobs()
+        onClose()
+        onCloseAssistence()
+      })
     } catch (err) {
       console.error(err)
     }
