@@ -415,7 +415,29 @@ const getAttendedEmployeeByBusiness =
         })
     })
 
-export default {
+const getEmployeesToAttend =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.socialCase
+        }/social-cases/employee?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: assistanceTypes.GET_EMPLOYEES_TO_ATTEND,
+            payload: data.items
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const assistanceActions = {
   toggleModal,
   getCalendarEvents,
   createEvent,
@@ -443,5 +465,8 @@ export default {
   updateVisitReport,
   getReportItems,
   exportEmployeesToAttend,
-  getAttendedEmployeeByBusiness
+  getAttendedEmployeeByBusiness,
+  getEmployeesToAttend
 }
+
+export default assistanceActions

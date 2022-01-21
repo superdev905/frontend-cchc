@@ -129,11 +129,6 @@ const SocialCasesList = () => {
               hide: 'md'
             },
             {
-              name: 'Oficina',
-              selector: (row) => row.office,
-              hide: 'md'
-            },
-            {
               name: '',
               right: true,
               cell: (row) => (

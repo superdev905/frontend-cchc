@@ -168,7 +168,11 @@ const PostulationList = () => {
         paginationTotalRows={applicationsListFiltered.length}
       />
 
-      <CreateDialog open={showCreateModal} onClose={toggleCreateModal} />
+      <CreateDialog
+        open={showCreateModal}
+        onClose={toggleCreateModal}
+        successFunction={fetchPostulations}
+      />
     </Wrapper>
   )
 }

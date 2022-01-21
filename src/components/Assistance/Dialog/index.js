@@ -92,9 +92,7 @@ const WorkerInterventionRecord = ({
     validateOnChange: true,
     validateOnMount: true,
     initialValues: {
-      zone: '',
-      office: '',
-      delegation: ''
+      requestType: ''
     }
   })
 
@@ -123,7 +121,6 @@ const WorkerInterventionRecord = ({
       case_id: type === 'UPDATE' ? data.case_id : defaultCaseId || '',
       task_id: type === 'UPDATE' ? data.task_id : defaultTaskId || '',
       assigned_id: type === 'UPDATE' ? data.assigned_id : '',
-      typeRequest: type === 'UPDATE' ? data.typeRequest : '',
       observation: type === 'UPDATE' ? data.observation : '',
       attached_url: type === 'UPDATE' ? data.attached_url : '',
       attached_key: type === 'UPDATE' ? data.attached_url : ''
@@ -712,18 +709,19 @@ const WorkerInterventionRecord = ({
                 {formik.values.case_id === 'NEW' && (
                   <Grid item xs={12} md={12} lg={12}>
                     <TextArea
-                      rowsMin={4}
+                      rowsMin={2}
                       label="Tipo de Solicitud"
-                      name="Tipo de Solicitud"
-                      value={formik.values.typeRequest}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
+                      name="requestType"
+                      value={caseFormik.values.requestType}
+                      onChange={caseFormik.handleChange}
+                      onBlur={caseFormik.handleBlur}
                       error={
-                        formik.touched.typeRequest &&
-                        Boolean(formik.errors.typeRequest)
+                        caseFormik.touched.requestType &&
+                        Boolean(caseFormik.errors.requestType)
                       }
                       helperText={
-                        formik.touched.typeRequest && formik.errors.typeRequest
+                        caseFormik.touched.requestType &&
+                        caseFormik.errors.requestType
                       }
                     />
                   </Grid>
