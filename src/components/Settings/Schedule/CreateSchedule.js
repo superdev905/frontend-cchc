@@ -44,8 +44,12 @@ const CreateSchedule = ({
     onSubmit: (values, { resetForm }) => {
       submitFunction({
         name: values.name,
-        start_time: new Date(values.start_time).toLocaleTimeString(),
-        end_time: new Date(values.end_time).toLocaleTimeString(),
+        start_time: new Date(values.start_time).toLocaleTimeString('it-IT', {
+          hour12: false
+        }),
+        end_time: new Date(values.end_time).toLocaleTimeString('it-IT', {
+          hour12: false
+        }),
         created_by: user.id
       })
         .then(() => {
