@@ -151,7 +151,15 @@ const PostulationDetails = ({ loading }) => {
               <LabeledRow label="Run:">
                 <Text loading={loading}>{application?.employee.run}</Text>
               </LabeledRow>
+              <LabeledRow label="Renta:">
+                <Text loading={loading}>{application?.employee.salary}</Text>
+              </LabeledRow>
             </Box>
+            <LabeledRow label="Antiguedad:">
+              <Text loading={loading}>
+                {application?.employee.timeServices}
+              </Text>
+            </LabeledRow>
             <Box mt={2}>
               <Typography className={classes.heading}>Beneficiario</Typography>
               <LabeledRow label="Nombres:">
@@ -212,8 +220,14 @@ const PostulationDetails = ({ loading }) => {
                     formatText.capitalizeString(application?.career.type)}
                 </Text>
               </LabeledRow>
+              <LabeledRow label="Años de Carrera:">
+                <Text loading={loading}> {application?.careerYears}</Text>
+              </LabeledRow>
               <LabeledRow label="Puntaje PTU:">
                 <Text loading={loading}> {application?.psuScore}</Text>
+              </LabeledRow>
+              <LabeledRow label="NEM:">
+                <Text loading={loading}> {application?.nemScore}</Text>
               </LabeledRow>
             </Box>
           </Box>
