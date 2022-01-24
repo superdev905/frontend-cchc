@@ -56,11 +56,13 @@ const WorkerRegistration = ({
       employeeNames: type === 'UPDATE' ? data.employeeNames : '',
       entryNumber: type === 'UPDATE' ? data.entryNumber : '',
       amount: type === 'UPDATE' ? data.amount : '',
-      fileKey: type === 'UPDATE' ? data.fileKey : '',
-      fileUrl: type === 'UPDATE' ? data.fileUrl : '',
-      fileSize: type === 'UPDATE' ? data.fileSize : '',
-      fileName: type === 'UPDATE' ? data.fileName : '',
-      uploadDate: type === 'UPDATE' ? data.uploadDate : ''
+      file: {
+        fileKey: type === 'UPDATE' ? data.fileKey : '',
+        fileUrl: type === 'UPDATE' ? data.fileUrl : '',
+        fileSize: type === 'UPDATE' ? data.fileSize : '',
+        fileName: type === 'UPDATE' ? data.fileName : '',
+        uploadDate: type === 'UPDATE' ? data.uploadDate : ''
+      }
     },
     onSubmit: (values) => {
       let form = {
@@ -74,11 +76,13 @@ const WorkerRegistration = ({
           .then((response) => {
             form = {
               ...form,
-              fileKey: response.file_key,
-              fileUrl: response.file_url,
-              fileSize: response.file_size,
-              fileName: response.file_name,
-              uploadDate: response.upload_date
+              file: {
+                fileKey: response.file_key,
+                fileUrl: response.file_url,
+                fileSize: response.file_size,
+                fileName: response.file_name,
+                uploadDate: response.upload_date
+              }
             }
 
             submitFunction(form)
