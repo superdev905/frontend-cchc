@@ -13,6 +13,8 @@ const validationSchema = Yup.object({
     .test('Check Rut', 'Ingrese Rut válido', (v) => rutValidation(v)),
   businessName: Yup.string().required('Ingrese nombre empresa'),
   businessId: Yup.number().required('Ingrese nombre empresa'),
+  constructionId: Yup.number().required('Seleccione obra'),
+  constructionName: Yup.string().required('Seleccione obra'),
   businessRelatedRut: Yup.string(),
   businessRelatedName: Yup.string(),
   businessRelatedId: Yup.number(),

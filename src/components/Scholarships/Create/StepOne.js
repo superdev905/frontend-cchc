@@ -14,7 +14,7 @@ import generateColor from '../../../utils/generateColor'
 import EmployeeRow from './EmployeeRow'
 import RowAutocomplete from './RowAutocomplete'
 import { formatSearchWithRut } from '../../../formatters'
-import { CompanyRow, DatePicker } from '../../Shared'
+import { CompanyRow, CurrencyTextField, DatePicker } from '../../Shared'
 import validationSchema from './schemas'
 
 const StepOne = ({ onClose, data }) => {
@@ -43,6 +43,9 @@ const StepOne = ({ onClose, data }) => {
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(
     create?.beneficiary || null
   )
+  const [selectedConstruction, setSelectedConstruction] = useState(
+    create?.construction || null
+  )
 
   const formik = useFormik({
     validateOnMount: true,
@@ -58,6 +61,8 @@ const StepOne = ({ onClose, data }) => {
       businessName: create?.application?.businessName || '',
       businessRut: create?.application?.businessRut || '',
       businessId: create?.application?.businessId || '',
+      constructionId: create?.application?.constructionId || '',
+      constructionName: create?.application?.constructionName || '',
       businessRelatedName: create?.application?.businessRelatedName || '',
       businessRelatedRut: create?.application?.businessRelatedRut || '',
       businessRelatedId: create?.application?.businessRelatedId || '',
@@ -71,8 +76,9 @@ const StepOne = ({ onClose, data }) => {
       schoolCommune: create?.application?.schoolCommune || '',
       psuScore: create?.application?.psuScore || '',
       nemScore: create?.application?.nemScore || '',
-      salary: create?.application?.salary || '',
-      timeServices: create?.application?.timeServices || ''
+      employeeSalary: create?.application?.salary || '',
+      employeeSeniority: create?.application?.employeeSeniority || '',
+      careerDuration: create?.application?.careerDuration || ''
     },
 
     onSubmit: (values) => {
@@ -83,6 +89,7 @@ const StepOne = ({ onClose, data }) => {
           employee: selectedEmployee,
           beneficiary: selectedBeneficiary,
           relatedCompany: selectedRelated,
+          construction: selectedConstruction,
           application: { ...create.application, ...values },
           step: create.step + 1
         })
@@ -246,6 +253,18 @@ const StepOne = ({ onClose, data }) => {
   }, [searchCompany])
 
   useEffect(() => {
+    if (selectedConstruction) {
+      formik.setFieldValue('constructionName', selectedConstruction?.name)
+      formik.setFieldValue('constructionId', selectedConstruction?.id)
+      fetchRelatedCompanies()
+    } else {
+      setRelatedList([])
+      formik.setFieldValue('constructionName', '')
+      formik.setFieldValue('constructionId', '')
+    }
+  }, [selectedConstruction])
+
+  useEffect(() => {
     if (selectedCompany) {
       formik.setFieldValue('businessName', selectedCompany?.business_name)
       formik.setFieldValue('businessRut', selectedCompany?.rut)
@@ -296,6 +315,8 @@ const StepOne = ({ onClose, data }) => {
     dispatch(scholarshipsActions.getScholarshipTypes())
     dispatch(scholarshipsActions.getCareers())
   }, [])
+
+  console.log(formik.errors)
 
   return (
     <Box className={classes.form}>
@@ -452,8 +473,39 @@ const StepOne = ({ onClose, data }) => {
                       )}
                       renderInput={(params) => <TextField {...params} />}
                     />
-                    <Typography>Obra</Typography>
-                    <Select name="obra"></Select>
+                  </>
+                )}
+              </Box>
+            </Box>
+            <Box>
+              <Box>
+                <Typography>Obra</Typography>
+                {selectedConstruction ? (
+                  <CompanyRow
+                    type={'CONSTRUCTION'}
+                    company={selectedConstruction}
+                    onDelete={() => setSelectedConstruction(null)}
+                    iconColor="#BD52F2"
+                  />
+                ) : (
+                  <>
+                    <Autocomplete
+                      required
+                      options={selectedCompany?.constructions || []}
+                      value={''}
+                      getOptionLabel={(option) => option.name || ''}
+                      onChange={(__, option) => {
+                        setSelectedConstruction(option)
+                      }}
+                      renderOption={(option) => (
+                        <CompanyRow.Autocomplete
+                          type="CONSTRUCTION"
+                          company={option}
+                          iconColor="#BD52F2"
+                        />
+                      )}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
                   </>
                 )}
               </Box>
@@ -488,19 +540,6 @@ const StepOne = ({ onClose, data }) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      label="Renta"
-                      name="salary"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.salary}
-                      helperText={formik.touched.salary && formik.errors.salary}
-                      error={
-                        formik.touched.salary && Boolean(formik.errors.salary)
-                      }
-                    />
-                  </Grid>
                   <Grid item xs={12}>
                     {searchList.length === 0 ? (
                       <>
@@ -530,7 +569,7 @@ const StepOne = ({ onClose, data }) => {
               )}
             </Box>
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <Box>
               <Typography>Beneficario</Typography>
               {selectedBeneficiary ? (
@@ -555,18 +594,36 @@ const StepOne = ({ onClose, data }) => {
             </Box>
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              label="Antiguedad del Trabajador"
-              name="timeServices"
+            <CurrencyTextField
+              label="Renta del trabajador"
+              name="employeeSalary"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.timeServices}
+              value={formik.values.employeeSalary}
               helperText={
-                formik.touched.timeServices && formik.errors.timeServices
+                formik.touched.employeeSalary && formik.errors.employeeSalary
               }
               error={
-                formik.touched.timeServices &&
-                Boolean(formik.errors.timeServices)
+                formik.touched.employeeSalary &&
+                Boolean(formik.errors.employeeSalary)
+              }
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              label="Antiguedad del trabajador (en años)"
+              placeholder={'Ejemplo: 1 '}
+              name="employeeSeniority"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.employeeSeniority}
+              helperText={
+                formik.touched.employeeSeniority &&
+                formik.errors.employeeSeniority
+              }
+              error={
+                formik.touched.employeeSeniority &&
+                Boolean(formik.errors.employeeSeniority)
               }
             />
           </Grid>
@@ -613,16 +670,17 @@ const StepOne = ({ onClose, data }) => {
                 <Grid item xs={12} md={6}>
                   <TextField
                     label="Años de Carrera"
-                    name="careerYears"
+                    name="careerDuration"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.careerYears}
+                    value={formik.values.careerDuration}
                     helperText={
-                      formik.touched.careerYears && formik.errors.careerYears
+                      formik.touched.careerDuration &&
+                      formik.errors.careerDuration
                     }
                     error={
-                      formik.touched.careerYears &&
-                      Boolean(formik.errors.careerYears)
+                      formik.touched.careerDuration &&
+                      Boolean(formik.errors.careerDuration)
                     }
                   />
                 </Grid>

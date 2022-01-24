@@ -98,19 +98,13 @@ const PostulationDetails = ({ loading }) => {
               <Typography className={classes.heading}>
                 Detalles de obra
               </Typography>
-              <LabeledRow label="Razón social:">
-                <Text loading={loading}>
-                  {application?.business.businessName}
-                </Text>
+              <LabeledRow label="Nombre:">
+                <Text loading={loading}>{application?.construction.name}</Text>
               </LabeledRow>
               <LabeledRow label="Dirección:">
-                <Text loading={loading}>{application?.business.address}</Text>
-              </LabeledRow>
-              <LabeledRow label="Correo:">
-                <Text loading={loading}>{application?.business.email}</Text>
-              </LabeledRow>
-              <LabeledRow label="Contacto obra:">
-                <Text loading={loading}>un contacto</Text>
+                <Text loading={loading}>
+                  {application?.construction.address}
+                </Text>
               </LabeledRow>
             </Box>
             {application && application.relatedBusiness && (
@@ -152,13 +146,13 @@ const PostulationDetails = ({ loading }) => {
                 <Text loading={loading}>{application?.employee.run}</Text>
               </LabeledRow>
               <LabeledRow label="Renta:">
-                <Text loading={loading}>{application?.employee.salary}</Text>
+                <Text loading={loading}>{application?.employeeSalary}</Text>
               </LabeledRow>
             </Box>
             <LabeledRow label="Antiguedad:">
-              <Text loading={loading}>
-                {application?.employee.timeServices}
-              </Text>
+              <Text
+                loading={loading}
+              >{`${application?.employeeSeniority} años`}</Text>
             </LabeledRow>
             <Box mt={2}>
               <Typography className={classes.heading}>Beneficiario</Typography>
@@ -221,7 +215,10 @@ const PostulationDetails = ({ loading }) => {
                 </Text>
               </LabeledRow>
               <LabeledRow label="Años de Carrera:">
-                <Text loading={loading}> {application?.careerYears}</Text>
+                <Text loading={loading}>
+                  {' '}
+                  {`${application?.careerDuration} años`}
+                </Text>
               </LabeledRow>
               <LabeledRow label="Puntaje PTU:">
                 <Text loading={loading}> {application?.psuScore}</Text>
