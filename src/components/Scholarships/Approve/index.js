@@ -38,6 +38,14 @@ const RevisionDialog = ({ open, onClose, successFunction }) => {
   const { open: openApprove, toggleOpen: toggleOpenApprove } = useToggle()
   const { open: openReject, toggleOpen: toggleOpenReject } = useToggle()
   const { open: openReview, toggleOpen: toggleOpenReview } = useToggle()
+  const {
+    open: openCompleteDocuments,
+    toggleOpen: toggleOpenCompleteDocuments
+  } = useToggle()
+  const {
+    open: openAssignedScholarship,
+    toggleOpen: toggleOpenAssignedScholarship
+  } = useToggle()
 
   const getDisabledStatus = (status) => {
     if (status === 'POR_REVISAR') return false
@@ -133,6 +141,20 @@ const RevisionDialog = ({ open, onClose, successFunction }) => {
               Solicitar Revisión
             </SubmitButton>
             <SubmitButton
+              variant="outlined"
+              onClick={toggleOpenCompleteDocuments}
+            >
+              Documentación Completa
+            </SubmitButton>
+            <SubmitButton
+              variant="outlined"
+              onClick={toggleOpenAssignedScholarship}
+            >
+              Beca Asignada
+            </SubmitButton>
+          </Box>
+          <Box textAlign="center">
+            <SubmitButton
               danger
               onClick={toggleOpenReject}
               disabled={getDisabledStatus(application.revisionStatus.status)}
@@ -211,6 +233,36 @@ const RevisionDialog = ({ open, onClose, successFunction }) => {
               toggleOpenReject
             )
           }
+        />
+      )}
+
+      {openCompleteDocuments && (
+        <ConfirmDelete
+          event="COMPLETEDOCUMENTS"
+          open={openCompleteDocuments}
+          success={success}
+          confirmText="Documentación Completa"
+          onClose={toggleOpenCompleteDocuments}
+          message={<span>¿La documentación se encuentra completa? </span>}
+          onConfirm={() => {
+            console.log('Documentación completa')
+            toggleOpenCompleteDocuments()
+          }}
+        />
+      )}
+
+      {openAssignedScholarship && (
+        <ConfirmDelete
+          event="ASSIGNEDSCHOLARSHIP"
+          open={openAssignedScholarship}
+          success={success}
+          confirmText="Asignar Beca"
+          onClose={toggleOpenAssignedScholarship}
+          message={<span>¿Está seguro de asignar ésta beca? </span>}
+          onConfirm={() => {
+            console.log('Beca asignada')
+            toggleOpenAssignedScholarship()
+          }}
         />
       )}
     </Dialog>
