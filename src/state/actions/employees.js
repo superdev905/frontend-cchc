@@ -414,8 +414,19 @@ const patchEmployeeJob = (id, values) => () =>
         reject(err.response.data.detail)
       })
   })
+const createEmployeeRevision = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.employee}/employees/${id}/revision`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
-export default {
+const employeeActions = {
   getEmployees,
   createEmployee,
   getEmployeeDetails,
@@ -446,5 +457,8 @@ export default {
   createEmployeeJob,
   updateEmployeeJob,
   patchEmployeeJob,
-  getEmployeeRelative
+  getEmployeeRelative,
+  createEmployeeRevision
 }
+
+export default employeeActions

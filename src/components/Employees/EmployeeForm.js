@@ -70,7 +70,6 @@ const validationSchema = Yup.object().shape({
   marital_status_id: Yup.number().required('Seleccione estado civil'),
   disability: Yup.string().required('SELECCIONE OPCIÓN'),
   credential_disability: Yup.string(),
-  recognize: Yup.string().required('SELECCIONE OPCIÓN'),
   nationality_id: Yup.number().required('Seleccione nacionalidad'),
   alive: Yup.string().required('SELECCIONE OPCIÓN'),
   //  bank_id: Yup.number('Seleccione banco'),
@@ -78,6 +77,7 @@ const validationSchema = Yup.object().shape({
   account_number: Yup.string('Seleccione número de cuenta'),
   rsh: Yup.string('SELECCIONE OPCIÓN'),
   rsh_percentage: Yup.string('SELECCIONE OPCIÓN'),
+  etnia: Yup.string('Ingrese etnia'),
   comments: Yup.string('Ingrese comentarios')
 })
 
@@ -123,7 +123,6 @@ const EmployeeModal = ({
       disability_type: type === 'UPDATE' ? data.disability_type : '',
       disability_percentage:
         type === 'UPDATE' ? data.disability_percentage : '',
-      recognize: type === 'UPDATE' ? data.recognize : '',
       nationality_id: type === 'UPDATE' ? data.nationality_id : '',
       alive: type === 'UPDATE' ? data.alive : '',
       bank_id: type === 'UPDATE' ? data.bank_id : '',
@@ -132,6 +131,7 @@ const EmployeeModal = ({
       rsh: type === 'UPDATE' ? data.rsh : '',
       rsh_percentage: type === 'UPDATE' ? data.rsh_percentage : '',
       rsh_status: type === 'UPDATE' ? data.rsh_status : '',
+      etnia: type === 'UPDATE' ? data.etnia : '',
       comments: type === 'UPDATE' ? data.comments : ''
     },
     onSubmit: (values) => {
@@ -447,6 +447,16 @@ const EmployeeModal = ({
                   ))}
                 </Select>
               </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <TextField
+                  label="Etnia"
+                  name="etnia"
+                  value={formik.values.etnia}
+                  onChange={formik.handleChange}
+                  error={formik.touched.etnia && Boolean(formik.errors.etnia)}
+                  helperText={formik.touched.etnia && formik.errors.etnia}
+                />
+              </Grid>
             </Grid>
 
             <Typography className={classes.heading}>Discapacidad </Typography>
@@ -746,28 +756,6 @@ const EmployeeModal = ({
                     {formik.touched.alive && formik.errors.alive}
                   </FormHelperText>
                 )}
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Select
-                  label="Pertenece a Reconocer"
-                  name="recognize"
-                  onChange={formik.handleChange}
-                  value={formik.values.recognize}
-                  required
-                  error={
-                    formik.touched.recognize && Boolean(formik.errors.recognize)
-                  }
-                  helperText={
-                    formik.touched.recognize && formik.errors.recognize
-                  }
-                >
-                  <option value="">SELECCIONE OPCIÓN</option>
-                  {decisionList.map((item, index) => (
-                    <option key={`region--${index}`} value={`${item}`}>
-                      {item}
-                    </option>
-                  ))}
-                </Select>
               </Grid>
             </Grid>
             <Grid container spacing={2}>

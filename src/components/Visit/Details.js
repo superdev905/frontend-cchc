@@ -69,7 +69,6 @@ const Details = ({ fetching, fetchDetails }) => {
   }
 
   const { open: openCancel, toggleOpen: toggleOpenCancel } = useToggle()
-  const { open: openFinish, toggleOpen: toggleOpenFinish } = useToggle()
   const { open: openStart, toggleOpen: toggleOpenStart } = useToggle()
   const { open: openView, toggleOpen: toggleOpenView } = useToggle()
   const { open: openVisitClose, toggleOpen: toggleOpenVisitClose } = useToggle()
@@ -107,25 +106,6 @@ const Details = ({ fetching, fetchDetails }) => {
           enqueueSnackbar('Evento cancelado', { variant: 'success' })
 
           toggleOpenCancel()
-          fetchDetails()
-        })
-      })
-      .catch((err) => {
-        setLoading(false)
-        enqueueSnackbar(err, { variant: 'error' })
-      })
-  }
-
-  const onFinishedEvent = () => {
-    setLoading(true)
-    dispatch(assistanceActions.patchEvent(visit.id, { status: 'TERMINADA' }))
-      .then(() => {
-        setLoading(false)
-        fetchEvents(filters)
-        changeSuccess(true, () => {
-          enqueueSnackbar('Evento terminado', { variant: 'success' })
-
-          toggleOpenFinish()
           fetchDetails()
         })
       })
@@ -217,7 +197,7 @@ const Details = ({ fetching, fetchDetails }) => {
             >
               Actualizar reporte
             </Button>
-            <Button onClick={toggleOpenViewReport}>Ver documento</Button>
+            <Button onClick={toggleOpenViewReport}>Ver reporte</Button>
           </Box>
         ) : (
           <Button
@@ -227,12 +207,7 @@ const Details = ({ fetching, fetchDetails }) => {
             Informar
           </Button>
         )}
-        <Button
-          onClick={toggleOpenFinish}
-          disabled={Boolean(visit?.status !== 'INICIADA') || visit?.is_close}
-        >
-          Completar visita
-        </Button>
+
         <Button
           onClick={toggleOpenVisitClose}
           disabled={
@@ -242,7 +217,7 @@ const Details = ({ fetching, fetchDetails }) => {
             visit?.is_close_pending
           }
         >
-          Solicitar cierre
+          Enviar reporte y cierre
         </Button>
         <Button
           danger
@@ -439,27 +414,6 @@ const Details = ({ fetching, fetchDetails }) => {
               <strong>{visit.title}</strong>?
               <Box>
                 <Text className={classes.Cancel}>CANCELAR</Text>
-              </Box>
-            </span>
-          }
-        />
-      )}
-
-      {visit && openFinish && (
-        <ConfirmDelete
-          event="FINISH"
-          confirmText="Aceptar"
-          open={openFinish}
-          success={success}
-          onClose={toggleOpenFinish}
-          loading={loading}
-          onConfirm={() => onFinishedEvent()}
-          message={
-            <span>
-              ¿Estás seguro de completar este evento:
-              <strong>{` ${visit.title}`}</strong>?
-              <Box>
-                <Text className={classes.Complete}>COMPLETAR</Text>
               </Box>
             </span>
           }

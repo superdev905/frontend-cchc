@@ -19,7 +19,5 @@ export const validationSchema = Yup.object().shape({
 })
 
 export const caseAdditionalSchema = Yup.object().shape({
-  zone: Yup.string().required('Ingrese zona'),
-  delegation: Yup.string().required('Ingrese zona'),
-  office: Yup.string().required('Ingrese zona')
+  request_type: Yup.string().required('Ingrese de solicitud')
 })

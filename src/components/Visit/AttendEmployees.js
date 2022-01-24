@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { FiDownload as ExportIcon } from 'react-icons/fi'
 import { Box, Typography } from '@material-ui/core'
@@ -7,9 +7,13 @@ import { DataTable } from '../Shared'
 import { SubmitButton, Wrapper } from '../UI'
 import assistanceActions from '../../state/actions/assistance'
 
-const ContactList = () => {
+const List = () => {
   const dispatch = useDispatch()
+
   const [exporting, setExporting] = useState(false)
+  const { employeesToAttend } = useSelector((state) => state.assistance)
+  const { visit } = useSelector((state) => state.assistance)
+
   const { idVisit } = useParams()
 
   const handleExportEmployees = () => {
@@ -18,6 +22,23 @@ const ContactList = () => {
       setExporting(false)
     })
   }
+
+  const fetchEmployeesToAttend = () => {
+    dispatch(
+      assistanceActions.getEmployeesToAttend({
+        page: 1,
+        size: 1,
+        businessId: visit?.business_id
+      })
+    )
+  }
+
+  useEffect(() => {
+    if (visit) {
+      fetchEmployeesToAttend()
+    }
+  }, [visit])
+
   return (
     <Wrapper>
       <Box
@@ -45,35 +66,34 @@ const ContactList = () => {
         columns={[
           {
             name: 'Run',
-            selector: (row) => row.full_name,
+            selector: (row) => row.employeeRut,
             sortable: true
           },
           {
             name: 'Nombres',
-            selector: (row) => row.full_name,
+            selector: (row) => row.employee.names,
             sortable: true
           },
           {
             name: 'Apellidos',
-            selector: (row) => row.charge
+            selector: (row) =>
+              `${row.employee.paternalSurname} ${
+                row.employee.maternalSurname || ''
+              }`
           },
           {
             name: 'Nacionalidad',
-            selector: (row) => row.email
+            selector: (row) => row.employee.nationality.description
           },
           {
             name: 'Sexo',
-            selector: (row) => row.email
-          },
-          {
-            name: 'Cargo de obra',
-            selector: (row) => row.email
+            selector: (row) => row.employee.gender
           }
         ]}
-        data={[]}
+        data={employeesToAttend}
       />
     </Wrapper>
   )
 }
 
-export default ContactList
+export default List

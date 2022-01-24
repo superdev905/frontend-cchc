@@ -72,7 +72,7 @@ const Contacts = ({ ...props }) => {
     <Box>
       <Wrapper>
         <Box display="flex" justifyContent="space-between">
-          <Typography className={classes.heading}>Contactos</Typography>
+          <Typography className={classes.heading}>Interlocutores</Typography>
           <Button
             disabled={company?.state === 'DELETED'}
             onClick={toggleOpenCreate}
@@ -82,7 +82,7 @@ const Contacts = ({ ...props }) => {
         </Box>
         <Box>
           {contacts.length === 0 ? (
-            <EmptyState message="No hay contactos registrados" />
+            <EmptyState message="No hay interlocutores registrados" />
           ) : (
             <ContactCard.Container>
               {contacts.map((item) => (
@@ -109,7 +109,7 @@ const Contacts = ({ ...props }) => {
           onClose={toggleOpenCreate}
           submitFunction={onCrateContact}
           successFunc={fetchContacts}
-          successMessage="Contacto creado con éxito"
+          successMessage="Interlocutor creado con éxito"
         />
         {currentContact && openUpdate && (
           <ContactModal
@@ -120,7 +120,7 @@ const Contacts = ({ ...props }) => {
             data={currentContact}
             submitFunction={onEditContact}
             successFunc={fetchContacts}
-            successMessage="Contacto actualizado con éxito"
+            successMessage="Interlocutor actualizado con éxito"
           />
         )}
         {currentContact && openDelete && (

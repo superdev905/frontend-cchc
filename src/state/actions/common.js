@@ -439,6 +439,55 @@ const getCommunes = () => (dispatch) =>
       })
   })
 
+const getSchedule = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.parameters}/shift`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: commonTypes.GET_SCHEDULE, payload: data })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+const createSchedule = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.parameters}/shift`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const updateSchedule = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.parameters}/shift/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const deleteSchedule = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.delete(`${config.services.parameters}/shift/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getRegions,
   getCharges,
@@ -471,5 +520,9 @@ export default {
   createOTEC,
   updateOTEC,
   deleteOTEC,
-  getCommunes
+  getCommunes,
+  getSchedule,
+  createSchedule,
+  updateSchedule,
+  deleteSchedule
 }

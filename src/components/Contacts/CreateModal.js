@@ -105,7 +105,11 @@ const ContactModal = ({
       if (!includeInterlocutor) {
         delete formattedValues.is_interlocutor
       }
-      submitFunction(formattedValues)
+      submitFunction({
+        ...formattedValues,
+        full_name: formattedValues.full_name.toUpperCase(),
+        email: formattedValues.email.toUpperCase()
+      })
         .then((res) => {
           formik.setSubmitting(false)
           changeSuccess(false)
@@ -162,7 +166,7 @@ const ContactModal = ({
       <Box className={classes.form} p={2}>
         <Box>
           <Heading align="center">
-            {`${type === 'UPDATE' ? 'Editar' : 'Nuevo'} Contacto`}
+            {`${type === 'UPDATE' ? 'Editar' : 'Nuevo'} Interlocutor`}
           </Heading>
         </Box>
         <Box>
@@ -308,7 +312,8 @@ const ContactModal = ({
 ContactModal.defaultProps = {
   type: 'CREATE',
   includeInterlocutor: false,
-  interlocutorAsDefault: false
+  interlocutorAsDefault: false,
+  successMessage: 'Interlocutor creado!'
 }
 
 export default ContactModal

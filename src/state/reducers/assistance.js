@@ -10,7 +10,8 @@ const initialState = {
   attendedEmployeeList: [],
   attention: null,
   listAttention: [],
-  totalAttention: 0
+  totalAttention: 0,
+  employeesToAttend: []
 }
 
 const assistanceReducer = (state = initialState, { type, payload }) => {
@@ -35,6 +36,8 @@ const assistanceReducer = (state = initialState, { type, payload }) => {
       return { ...state, listAttention: payload }
     case assistanceTypes.SET_ATTENTION_TOTALS:
       return { ...state, totalAttention: payload }
+    case assistanceTypes.GET_EMPLOYEES_TO_ATTEND:
+      return { ...state, employeesToAttend: payload }
 
     default:
       return state

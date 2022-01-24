@@ -11,6 +11,7 @@ import { Button, Wrapper } from '../../components/UI'
 import CreateCourse from '../../components/Courses/CreateCourse'
 import { AssistanceDialog } from '../../components/Course/Attendance'
 import { useSuccess, useToggle } from '../../hooks'
+import UpdateCourse from '../../components/Courses/UpdateStatus'
 
 const Course = ({ children }) => {
   const dispatch = useDispatch()
@@ -23,6 +24,8 @@ const Course = ({ children }) => {
   const { success, changeSuccess } = useSuccess()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const { open: openUpdateCourse, toggleOpen: toggleOpenUpdateCourse } =
+    useToggle()
   const { open: openAssistance, toggleOpen: toggleOpenAssistance } = useToggle()
 
   const updateCourse = (values) =>
@@ -83,6 +86,13 @@ const Course = ({ children }) => {
         />
         <Box>
           <Button
+            variant="outlined"
+            onClick={toggleOpenUpdateCourse}
+            disabled={course?.state === 'DELETED'}
+          >
+            Actualizar Curso
+          </Button>
+          <Button
             danger
             onClick={toggleOpenDelete}
             disabled={course?.state === 'DELETED'}
@@ -132,6 +142,13 @@ const Course = ({ children }) => {
           }
           loading={deleting}
           success={success}
+        />
+      )}
+
+      {course && openUpdateCourse && (
+        <UpdateCourse
+          open={openUpdateCourse}
+          onClose={toggleOpenUpdateCourse}
         />
       )}
       {openAssistance && (

@@ -28,7 +28,8 @@ const initialState = {
   roles: [],
   otecs: [],
   totalOtecs: 0,
-  communes: []
+  communes: [],
+  schedule: []
 }
 
 const commonReducer = (state = initialState, { type, payload }) => {
@@ -89,6 +90,8 @@ const commonReducer = (state = initialState, { type, payload }) => {
       return { ...state, totalOtecs: payload }
     case commonTypes.GET_COMMUNES:
       return { ...state, communes: payload }
+    case commonTypes.GET_SCHEDULE:
+      return { ...state, schedule: payload }
 
     default:
       return state

@@ -304,6 +304,7 @@ const List = () => {
           onClose={toggleOpenConfirmation}
           onCloseJobs={toggleOpenJobs}
           onCloseAssistence={toggleOpen}
+          employeeId={selectedUser.id}
           employeeNames={`${selectedUser.names} ${selectedUser.paternal_surname}`}
           employeeRun={selectedUser.run}
         />

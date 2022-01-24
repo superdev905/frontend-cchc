@@ -131,7 +131,7 @@ const Analysis = () => {
                         )
                       )
                     }}
-                    successMessage="Contacto actualizado con éxito"
+                    successMessage="Interlocutor actualizado con éxito"
                   />
                 )}
               </Box>

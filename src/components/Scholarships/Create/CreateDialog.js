@@ -11,12 +11,12 @@ function getSteps() {
   return ['Información de postulación', 'Adjuntar archivos']
 }
 
-function getStepContent(stepIndex, { onClose }) {
+function getStepContent(stepIndex, { onClose, successFunction }) {
   switch (stepIndex) {
     case 0:
       return <StepOne onClose={onClose} />
     case 1:
-      return <StepTwo />
+      return <StepTwo successFunction={successFunction} />
     default:
       return <span>Paso no encontrado</span>
   }
@@ -92,7 +92,7 @@ const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
               </Box>
             </Box>
           ) : (
-            <>{getStepContent(create.step, { onClose })}</>
+            <>{getStepContent(create.step, { onClose, successFunction })}</>
           )}
         </div>
       </Box>

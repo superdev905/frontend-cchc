@@ -40,7 +40,7 @@ const CompanyTabs = ({ children }) => {
           tabs={[
             'Detalles',
             'Divisiones',
-            'Contactos',
+            'Interlocutores',
             'Obras',
             'Trabajadores atendidos'
           ]}

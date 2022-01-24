@@ -33,12 +33,14 @@ const StepOne = ({ onClose, data }) => {
       otecName: create?.benefit?.otecName || '',
       instructorId: create?.benefit?.instructorId || '',
       instructorName: create?.benefit?.instructorName || '',
-      description: create?.benefit?.description || ''
+      description: create?.benefit?.description || '',
+      status: create?.benefit?.status || ''
     },
     onSubmit: (values) => {
       const body = { ...values }
       if (values.isCourse) {
         body.course = {
+          status: values.status,
           otecId: values.otecId,
           instructorId: values.instructorId,
           description: values.description

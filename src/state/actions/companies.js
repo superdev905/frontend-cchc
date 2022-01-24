@@ -207,6 +207,18 @@ const blockCompany = (id) => () =>
       })
   })
 
+const suspendCompany = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`/business/${id}/suspend`)
+      .then((response) => {
+        const { data } = response
+        resolve(data.data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const updateCompany = (id, values) => () =>
   new Promise((resolve, reject) => {
     Axios.put(`/business/${id}`, values)
@@ -250,7 +262,8 @@ const companiesActions = {
   getMainCompany,
   getAvailableCompanies,
   getRelatedCompanies,
-  searchCompanies
+  searchCompanies,
+  suspendCompany
 }
 
 export default companiesActions
