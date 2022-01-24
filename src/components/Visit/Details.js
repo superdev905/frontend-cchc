@@ -5,7 +5,14 @@ import {
   FaUserLock as CompanyIcon,
   FaUserCog as WorkerIcon
 } from 'react-icons/fa'
-import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
+import {
+  Box,
+  Grid,
+  Typography,
+  makeStyles,
+  IconButton
+} from '@material-ui/core'
+import { LocationOn as LocationOnIcon } from '@material-ui/icons'
 import { Alert } from '@material-ui/lab'
 import { endOfWeek } from 'date-fns'
 import startOfWeek from 'date-fns/startOfWeek'
@@ -317,11 +324,17 @@ const Details = ({ fetching, fetchDetails }) => {
             </LabeledRow>
             <LabeledRow label="Dirección:">
               <Text loading={loading || fetching}>
-                {visit?.construction?.address}{' '}
+                {visit?.construction?.address}
+                {' - '}
+                <IconButton
+                  size="small"
+                  onClick={toggleOpenView}
+                  color="primary"
+                >
+                  Ver Ubicación:
+                  <LocationOnIcon />
+                </IconButton>
               </Text>
-              <Button size="small" onClick={toggleOpenView}>
-                Ver Ubicación
-              </Button>
             </LabeledRow>
           </Grid>
         </Grid>

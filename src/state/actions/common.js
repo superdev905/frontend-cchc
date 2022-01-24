@@ -127,7 +127,7 @@ const getRSH = () => (dispatch) =>
       .then((response) => {
         const { data } = response
         dispatch({ type: commonTypes.GET_RSH, payload: data })
-        resolve()
+        resolve(data)
       })
       .catch((err) => {
         reject(err)

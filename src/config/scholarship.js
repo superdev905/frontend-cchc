@@ -49,7 +49,7 @@ const scholarshipConfig = {
   ],
   revisionStatus: [
     { status: 'CREADA', name: 'Creada' },
-    /* { status: 'APROBADA', name: 'Aprobada' }, */
+    { status: 'APROBADA', name: 'Aprobada' },
     { status: 'RECHAZADA', name: 'Rechazada' },
     { status: 'POR_REVISAR', name: 'Solucitud de revisión' }
   ]

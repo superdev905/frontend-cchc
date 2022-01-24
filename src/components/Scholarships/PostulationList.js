@@ -81,14 +81,16 @@ const PostulationList = () => {
           <Grid item xs={12} md={2}>
             <Select name="status" onChange={handleStatusChange}>
               <option value="">Todos</option>
-              {scholarshipConfig.revisionStatus.map((item) => (
-                <option
-                  key={`application--filters-${item.key}`}
-                  value={item.status}
-                >
-                  {item.name}
-                </option>
-              ))}
+              {scholarshipConfig.revisionStatus
+                .filter((item) => item.status !== 'APROBADA')
+                .map((item) => (
+                  <option
+                    key={`application--filters-${item.key}`}
+                    value={item.status}
+                  >
+                    {item.name}
+                  </option>
+                ))}
             </Select>
           </Grid>
           <Grid item xs={12} md={4}>
