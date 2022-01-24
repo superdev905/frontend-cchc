@@ -17,6 +17,7 @@ import BEATracking from './BEATracking'
 const BenefitDialog = ({
   open,
   onClose,
+  benefitId,
   data,
   scholarshipType,
   type,
@@ -26,7 +27,7 @@ const BenefitDialog = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
-  const { benefitsList } = useSelector((state) => state.scholarships)
+  /* const { benefitsList } = useSelector((state) => state.scholarships) */
   const { success, changeSuccess } = useSuccess()
 
   const getValidationSchema = (typeName) => {
@@ -37,18 +38,19 @@ const BenefitDialog = ({
   const getInitialValues = (typeName) => {
     if (typeName === 'BESH' || typeName === 'BEST')
       return {
-        benefitId: type === 'UPDATE' ? data.benefitId : '',
+        benefitId: type === 'UPDATE' ? data.benefitId : benefitId,
         scholarshipStatus: type === 'UPDATE' ? data.scholarshipStatus : '',
         businessName: type === 'UPDATE' ? data.businessName : '',
         totalCourses: type === 'UPDATE' ? data.totalCourses : '',
         failedCourses: type === 'UPDATE' ? data.failedCourses : '',
         yearInProgress: type === 'UPDATE' ? data.yearInProgress : '',
-        levelInProgress: type === 'UPDATE' ? data.levelInProgress : ''
+        levelInProgress: type === 'UPDATE' ? data.levelInProgress : '',
+        observations: type === 'UPDATE' ? data.observations : ''
       }
 
     if (typeName === 'ACADEMIC_EXCELLENCE_SCHOLARSHIP')
       return {
-        benefitId: type === 'UPDATE' ? data.benefitId : '',
+        benefitId: type === 'UPDATE' ? data.benefitId : benefitId,
         scholarshipStatus: type === 'UPDATE' ? data.scholarshipStatus : '',
         yearInProgress: type === 'UPDATE' ? data.yearInProgress : '',
         levelInProgress: type === 'UPDATE' ? data.levelInProgress : '',
@@ -59,21 +61,23 @@ const BenefitDialog = ({
         businessName: type === 'UPDATE' ? data.businessName : '',
         mandatoryActivity: type === 'UPDATE' ? data.mandatoryActivity : '',
         psychologicalInterview:
-          type === 'UPDATE' ? data.psychologicalInterview : ''
+          type === 'UPDATE' ? data.psychologicalInterview : '',
+        observations: type === 'UPDATE' ? data.observations : ''
       }
 
     return {
-      benefitId: type === 'UPDATE' ? data.benefitId : '',
-      scholarshipStatus: type === 'UPDATE' ? data.scholarshipStatus : ''
+      benefitId: type === 'UPDATE' ? data.benefitId : benefitId,
+      scholarshipStatus: type === 'UPDATE' ? data.scholarshipStatus : '',
+      observations: type === 'UPDATE' ? data.observations : ''
     }
   }
 
   const renderForm = (typeName, form) => {
     if (typeName === 'PMA')
-      return <PmaTracking form={form} benefits={benefitsList} />
+      return <PmaTracking form={form} /* benefits={benefitsList}  */ />
     if (typeName === 'ACADEMIC_EXCELLENCE_SCHOLARSHIP')
-      return <BEATracking form={form} benefits={benefitsList} />
-    return <CommonTracking form={form} benefits={benefitsList} />
+      return <BEATracking form={form} /* benefits={benefitsList} */ />
+    return <CommonTracking form={form} /* benefits={benefitsList}  */ />
   }
 
   const formik = useFormik({
