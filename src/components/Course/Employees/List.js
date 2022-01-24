@@ -47,10 +47,6 @@ const EmployeesRegistrationList = () => {
         changeSuccess(true)
         toggleOpenAdd()
         fetchEmployees()
-        enqueueSnackbar('Trabajador inscrito correctamente', {
-          autoHideDuration: 1500,
-          variant: 'success'
-        })
       })
       .catch(() => {
         setLoading(false)
@@ -171,7 +167,7 @@ const EmployeesRegistrationList = () => {
       />
 
       <WorkerRegistration
-        successMessage="Curso creado"
+        successMessage="Trabajador Registrado"
         open={openAdd}
         onClose={toggleOpenAdd}
         submitFunction={createEmployeeRegistration}
