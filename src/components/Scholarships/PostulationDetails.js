@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography, makeStyles, Chip } from '@material-ui/core'
 import { LabeledRow, Text } from '../UI'
-import { formatDate, formatText } from '../../formatters'
+import { formatCurrency, formatDate, formatText } from '../../formatters'
 import { useToggle } from '../../hooks'
 import { FileThumbnail, FileVisor } from '../Shared'
 import StatusCard from './StatusCard'
@@ -139,14 +139,19 @@ const PostulationDetails = ({ loading }) => {
               <Typography className={classes.heading}>Trabajador</Typography>
               <LabeledRow label="Nombres:">
                 <Text loading={loading}>
-                  {`${application?.employee.names} ${application?.employee.paternalSurname} ${application?.employee.maternalSurname}`}
+                  <a
+                    href={`/employee/${application?.employee.id}/info`}
+                    target="_blank"
+                  >{`${application?.employee.names} ${application?.employee.paternalSurname} ${application?.employee.maternalSurname}`}</a>
                 </Text>
               </LabeledRow>
               <LabeledRow label="Run:">
                 <Text loading={loading}>{application?.employee.run}</Text>
               </LabeledRow>
               <LabeledRow label="Renta:">
-                <Text loading={loading}>{application?.employeeSalary}</Text>
+                <Text loading={loading}>
+                  {application && formatCurrency(application?.employeeSalary)}
+                </Text>
               </LabeledRow>
             </Box>
             <LabeledRow label="Antiguedad:">

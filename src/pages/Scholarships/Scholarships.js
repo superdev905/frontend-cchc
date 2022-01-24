@@ -5,7 +5,7 @@ import uiActions from '../../state/actions/ui'
 import {
   PostulationList,
   ApprovedList,
-  ScholarshipGraphs
+  ScholarshipDashboard
 } from '../../components/Scholarships'
 
 const Scholarships = () => {
@@ -17,7 +17,7 @@ const Scholarships = () => {
 
   return (
     <Box>
-      <ScholarshipGraphs />
+      <ScholarshipDashboard />
       <PostulationList />
       <ApprovedList />
     </Box>

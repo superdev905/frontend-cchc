@@ -151,7 +151,7 @@ const PostulationList = () => {
           {
             name: 'Estado',
             cell: (row) => (
-              <PostulationChip label={row.revisionName} status={row.status} />
+              <PostulationChip label={row.status} status={row.status} />
             )
           }
         ]}

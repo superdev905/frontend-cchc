@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { makeStyles } from '@material-ui/styles'
-import { Box, Menu, Fade, TextField } from '@material-ui/core'
-import { Autocomplete } from '@material-ui/lab'
-import { Button } from '../UI'
+import { Box, Menu, Fade, makeStyles, Grid } from '@material-ui/core'
+import { Button, Select } from '../UI'
 import DatePicker from '../Shared/DatePicker'
 import scholarshipsActions from '../../state/actions/scholarships'
 import { scholarshipConfig } from '../../config'
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    padding: `${theme.spacing(3)}px ${theme.spacing(2)}px`,
+    width: '90%',
     [theme.breakpoints.up('md')]: {
-      minWidth: '400px'
+      width: '400px'
     }
   },
   content: {
@@ -50,110 +50,79 @@ const FiltersMenu = ({ open, onClose, anchorEl, filters, setFilters }) => {
         horizontal: 'center'
       }}
     >
-      <Box className={classes.content}>
-        <Box width="100%">
-          <Autocomplete
-            options={scholarshipType}
-            value={
-              scholarshipType[
-                scholarshipType.indexOf(
-                  scholarshipType.find(
-                    (item) => item.key === filters.scholarshipType
-                  )
-                )
-              ]
-            }
-            onChange={(e, value) => {
-              setFilters({
-                ...filters,
-                scholarshipType: value != null ? value.key : ''
-              })
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Select
+            label="Beca"
+            name="scholarshipId"
+            onChange={(e) => {
+              setFilters({ ...filters, scholarshipId: e.target.value })
             }}
-            getOptionSelected={(option, value) => option === value || ''}
-            getOptionLabel={(option) => option.name || ''}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                label="Tipo de Beca"
-                placeholder=""
-              />
-            )}
-          />
-        </Box>
-        <Box width="100%">
+          >
+            <option value="">TODOS</option>
+            {scholarshipType.map((item) => (
+              <option value={item.id}>{item.name}</option>
+            ))}
+          </Select>
+        </Grid>
+        <Grid item xs={12}>
           <DatePicker
             label={'Fecha desde'}
             value={filters.startDate}
             onChange={(date) =>
               setFilters({
                 ...filters,
-                startDate:
-                  date != null ? new Date(date).toISOString().toString() : ''
+                startDate: date
               })
             }
           />
-        </Box>
-        <Box width="100%">
+        </Grid>
+        <Grid item xs={12}>
           <DatePicker
             label={'Fecha hasta'}
             value={filters.endDate}
             onChange={(date) =>
               setFilters({
                 ...filters,
-                endDate:
-                  date != null ? new Date(date).toISOString().toString() : ''
+                endDate: date
               })
             }
           />
-        </Box>
-        <Box width="100%">
-          <Autocomplete
-            options={scholarshipConfig.revisionStatus}
-            value={
-              scholarshipConfig.revisionStatus[
-                scholarshipConfig.revisionStatus.indexOf(
-                  scholarshipConfig.revisionStatus.find(
-                    (item) => item.status === filters.status
-                  )
-                )
-              ]
-            }
-            onChange={(e, value) => {
+        </Grid>
+        <Grid item xs={12}>
+          <Select
+            label={'Estado'}
+            onChange={(e) =>
               setFilters({
                 ...filters,
-                status: value != null ? value.status : ''
+                status: e.target.value
               })
-            }}
-            getOptionSelected={(option, value) => option === value || ''}
-            getOptionLabel={(option) => option.name || ''}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                label="Estado"
-                placeholder=""
-              />
-            )}
-          />
-        </Box>
-
-        <Box width="100%" display="flex" justifyContent="center">
-          <Button
-            onClick={() => {
-              setFilters({
-                scholarshipType: '',
-                startDate: '',
-                endDate: '',
-                status: ''
-              })
-              onClose()
-            }}
-            variant="outlined"
+            }
           >
-            Limpiar
-          </Button>
-        </Box>
+            <option value="">TODOS</option>
+            {scholarshipConfig.revisionStatus.map((item) => (
+              <option key={`status-option-${item.status}`} value={item.status}>
+                {item.name}
+              </option>
+            ))}
+          </Select>
+        </Grid>
+      </Grid>
+      <Box width="100%" display="flex" justifyContent="center">
+        <Button
+          onClick={() => {
+            setFilters({
+              scholarshipType: '',
+              startDate: '',
+              endDate: '',
+              status: ''
+            })
+            onClose()
+          }}
+          variant="outlined"
+        >
+          Limpiar
+        </Button>
       </Box>
     </Menu>
   )

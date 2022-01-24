@@ -336,6 +336,46 @@ const patchSalaryLiquidation = (id, values) => () =>
       })
   })
 
+const getSummary = (query) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.scholarship}/dashboard/summary?${queryString.stringify(
+        query
+      )}`
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scholarshipTypes.SCHOLARSHIP_DASH_SUMMARY,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getStatsByType = (query) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.scholarship}/dashboard/stats?${queryString.stringify(
+        query
+      )}`
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scholarshipTypes.SCHOLARSHIP_DASH_STATS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const scholarshipsActions = {
   updateCreate,
   toggleCreateModal,
@@ -358,7 +398,9 @@ const scholarshipsActions = {
   getSalaryLiquidation,
   getAllSalaryLiquidations,
   updateSalaryLiquidation,
-  patchSalaryLiquidation
+  patchSalaryLiquidation,
+  getStatsByType,
+  getSummary
 }
 
 export default scholarshipsActions
