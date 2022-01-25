@@ -232,7 +232,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
               `${student.student.names} ${student.student.paternalSurname} ${student.student.maternalSurname}`}
           </Text>
         </Box>
-        <Box>
+        <Box px={3}>
           <LabeledRow label={'Rut:'}>
             <Text loaderWidth={'20%'} loading={loading}>
               {student && `${student.student.run}`}

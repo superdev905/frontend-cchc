@@ -33,6 +33,7 @@ import benefitsActions from '../../../state/actions/benefits'
 import useStyles from './styles'
 import { validationSchema, caseAdditionalSchema } from './schema'
 import socialCasesActions from '../../../state/actions/socialCase'
+import CaseAdditionalForm from './CaseAdditionalForm'
 
 const attentionPlaces = ['OFICINA', 'TERRENO', 'VIRTUAL']
 
@@ -98,6 +99,8 @@ const WorkerInterventionRecord = ({
 
   const formik = useFormik({
     validateOnMount: true,
+    validateOnBlur: true,
+    validateOnChange: true,
     validationSchema,
     initialValues: {
       date: type === 'UPDATE' ? data.date : '',
@@ -146,14 +149,20 @@ const WorkerInterventionRecord = ({
         })
       )
 
-      submitFunction({
+      const body = {
         ...values,
         attachments: attachmentsList,
         case_id: values.case_id === 'NEW' ? null : values.case_id,
         task_id: values.task_id ? values.task_id : null,
         assigned_id: user.id,
         created_by: user.id
-      }).then((result) => {
+      }
+
+      if (!body.case_id) {
+        delete body.case_id
+      }
+
+      submitFunction(body).then((result) => {
         formik.setSubmitting(false)
         changeSuccess(true, () => {
           enqueueSnackbar(successMessage, {
@@ -203,16 +212,11 @@ const WorkerInterventionRecord = ({
     switch (name) {
       case 'area': {
         const area = areas.find((item) => item.id === parseInt(value, 10))
-        setTopics(area.topics)
+        setTopics(area?.topics || [])
         // setAreas(area?.areas || [])
-        formik.setFieldValue('area_id', area.id)
-        formik.setFieldValue('area_name', area.name)
-        break
-      }
-      case 'topic': {
-        const topic = topics.find((item) => item.id === parseInt(value, 10))
-        formik.setFieldValue('topic_id', topic.id)
-        formik.setFieldValue('topic_name', topic.name)
+        formik.setFieldValue('area_id', area?.id || '')
+        formik.setFieldValue('area_name', area?.name || '')
+        formik.setFieldTouched('area_id')
         break
       }
       default:
@@ -439,17 +443,17 @@ const WorkerInterventionRecord = ({
             <Grid item xs={12} md={6} lg={4}>
               <Select
                 label="Tema"
-                name="topic"
+                name="topic_id"
                 required
                 value={formik.values.topic_id}
-                onChange={handleSelectChange}
+                onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
                   formik.touched.topic_id && Boolean(formik.errors.topic_id)
                 }
                 helperText={formik.touched.topic_id && formik.errors.topic_id}
               >
-                <option value={`INVALID`}>SELECCIONE TEMA</option>
+                <option value={''}>SELECCIONE TEMA</option>
                 {topics.map((item, index) => (
                   <option key={`area--${index}`} value={`${item.id}`}>
                     {item.name}
@@ -633,6 +637,8 @@ const WorkerInterventionRecord = ({
                             checked={formik.values.is_social_case === 'NO'}
                             onChange={() => {
                               formik.setFieldValue('is_social_case', 'NO')
+                              formik.setFieldValue('case_id', '')
+                              formik.setFieldValue('task_id', '')
                             }}
                           />
                         }
@@ -646,7 +652,8 @@ const WorkerInterventionRecord = ({
                       name="case_id"
                       disabled={
                         formik.values.case_id === 'NEW' ||
-                        formik.values.is_social_case === 'NO'
+                        formik.values.is_social_case === 'NO' ||
+                        formik.values.is_social_case === ''
                       }
                       required={formik.values.is_social_case === 'SI'}
                       value={formik.values.case_id}
@@ -682,7 +689,10 @@ const WorkerInterventionRecord = ({
                     <Select
                       label="Plan de Intervención"
                       name="task_id"
-                      required={formik.values.is_social_case === 'SI'}
+                      required={
+                        formik.values.is_social_case === 'SI' ||
+                        formik.values.is_social_case === ''
+                      }
                       value={formik.values.task_id}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -706,26 +716,18 @@ const WorkerInterventionRecord = ({
                     </Select>
                   </Grid>
                 </Grid>
-                {formik.values.case_id === 'NEW' && (
-                  <Grid item xs={12} md={12} lg={12}>
-                    <TextArea
-                      rowsMin={2}
-                      label="Tipo de Solicitud"
-                      name="requestType"
-                      value={caseFormik.values.requestType}
-                      onChange={caseFormik.handleChange}
-                      onBlur={caseFormik.handleBlur}
-                      error={
-                        caseFormik.touched.requestType &&
-                        Boolean(caseFormik.errors.requestType)
-                      }
-                      helperText={
-                        caseFormik.touched.requestType &&
-                        caseFormik.errors.requestType
-                      }
-                    />
-                  </Grid>
-                )}
+                {formik.values.is_social_case === 'SI' &&
+                  formik.values.case_id === 'NEW' && (
+                    <>
+                      <CaseAdditionalForm
+                        formik={caseFormik}
+                        onReset={() => {
+                          formik.setFieldValue('case_id', '')
+                          formik.setFieldValue('task_id', '')
+                        }}
+                      />
+                    </>
+                  )}
               </Box>
             </Grid>
 
@@ -809,7 +811,11 @@ const WorkerInterventionRecord = ({
 
             <SubmitButton
               onClick={toggleOpenConfirm}
-              disabled={formik.isSubmitting || getActivityValidation()}
+              disabled={
+                formik.isSubmitting ||
+                getActivityValidation() ||
+                !formik.isValid
+              }
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Registro`}
             </SubmitButton>
