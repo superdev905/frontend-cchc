@@ -23,6 +23,11 @@ const useStyles = makeStyles((theme) => ({
   userTitle: {
     fontSize: 20,
     fontWeight: 'bold'
+  },
+  subHeading: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    marginBottom: 5
   }
 }))
 

@@ -5,12 +5,17 @@ import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Skeleton } from '@material-ui/lab'
-import { addMonths } from 'date-fns'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { FiUpload } from 'react-icons/fi'
-import { Dialog, FilePicker } from '../../Shared'
+import { CurrencyTextField, Dialog, FilePicker } from '../../Shared'
 import { formatSearchWithRut } from '../../../formatters'
-import { Button, EmptyState, SubmitButton, TextField } from '../../UI'
+import {
+  Button,
+  EmptyState,
+  InputLabel,
+  SubmitButton,
+  TextField
+} from '../../UI'
 import { useSuccess } from '../../../hooks'
 import EmployeeRow from '../../Scholarships/Create/EmployeeRow'
 import employeesActions from '../../../state/actions/employees'
@@ -64,66 +69,48 @@ const WorkerRegistration = ({
         uploadDate: type === 'UPDATE' ? data.uploadDate : ''
       }
     },
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       let form = {
         ...values,
-        createDate: new Date(addMonths(new Date(), 1))
+        createDate: new Date().toISOString()
       }
       if (uploadFile) {
         const formData = new FormData()
         formData.append('file', uploadFile, uploadFile.name)
-        dispatch(filesActions.uploadFileToStorage(formData))
-          .then((response) => {
-            form = {
-              ...form,
-              file: {
-                fileKey: response.file_key,
-                fileUrl: response.file_url,
-                fileSize: response.file_size,
-                fileName: response.file_name,
-                uploadDate: response.upload_date
-              }
-            }
-
-            submitFunction(form)
-            formik.setSubmitting(false)
-            enqueueSnackbar(successMessage, {
-              variant: 'success'
-            })
-            changeSuccess(true, () => {
-              if (successFunction) {
-                successFunction()
-              }
-            })
-          })
-          .catch((err) => {
-            formik.setSubmitting(false)
-            enqueueSnackbar(err, {
-              variant: 'error'
-            })
-          })
-      } else {
-        submitFunction(form)
-          .then(() => {
-            formik.setSubmitting(false)
-            enqueueSnackbar(successMessage, {
-              variant: 'success'
-            })
-
-            changeSuccess(true, () => {
-              onClose()
-              if (successFunction) {
-                successFunction()
-              }
-            })
-          })
-          .catch((err) => {
-            formik.setSubmitting(false)
-            enqueueSnackbar(err, {
-              variant: 'error'
-            })
-          })
+        const result = await dispatch(
+          filesActions.uploadFileToStorage(formData)
+        )
+        form = {
+          ...form,
+          file: {
+            fileKey: result.file_key,
+            fileUrl: result.file_url,
+            fileSize: result.file_size,
+            fileName: result.file_name,
+            uploadDate: result.upload_date
+          }
+        }
       }
+      submitFunction(form)
+        .then(() => {
+          formik.setSubmitting(false)
+          enqueueSnackbar(successMessage, {
+            variant: 'success'
+          })
+
+          changeSuccess(true, () => {
+            onClose()
+            if (successFunction) {
+              successFunction()
+            }
+          })
+        })
+        .catch((err) => {
+          formik.setSubmitting(false)
+          enqueueSnackbar(err, {
+            variant: 'error'
+          })
+        })
     }
   })
 
@@ -174,9 +161,15 @@ const WorkerRegistration = ({
       fullScreen={isMobile}
     >
       <Box>
-        <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
-          Inscribir nuevo trabajador
-        </Typography>
+        <Box mb={2}>
+          <Typography
+            variant="h6"
+            align="center"
+            style={{ fontWeight: 'bold' }}
+          >
+            Inscribir nuevo trabajador
+          </Typography>
+        </Box>
         <Box>
           {loader ? (
             <>
@@ -194,49 +187,65 @@ const WorkerRegistration = ({
             <Box>
               {selectedEmployee ? (
                 <Box>
-                  <Typography>Trabajador</Typography>
-                  <EmployeeRow
-                    option={selectedEmployee}
-                    onDelete={() => {
-                      setSelectedEmployee(null)
-                    }}
-                  />
-                  <TextField
-                    label="N° Comprobante Ingreso"
-                    name={'entryNumber'}
-                    placeholder={'Mínimo 4 Dígitos'}
-                    value={formik.values.entryNumber}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.entryNumber &&
-                      Boolean(formik.errors.entryNumber)
-                    }
-                    helperText={
-                      formik.touched.entryNumber && formik.errors.entryNumber
-                    }
-                  />
-                  <TextField
-                    label="Monto"
-                    name={'amount'}
-                    placeholder={'$'}
-                    value={formik.values.amount}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.amount && Boolean(formik.errors.amount)
-                    }
-                    helperText={formik.touched.amount && formik.errors.amount}
-                  />
-                  <FilePicker
-                    acceptedFiles={['.pdf']}
-                    onChange={(e) => {
-                      setUploadFile(e)
-                    }}
-                    onDelete={() => {
-                      setUploadFile(null)
-                      formik.setFieldValue('file', '')
-                    }}
-                    icon={<FiUpload fontSize="24px" />}
-                  />
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <InputLabel>Trabajador</InputLabel>
+                      <EmployeeRow
+                        option={selectedEmployee}
+                        onDelete={() => {
+                          setSelectedEmployee(null)
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="N° Comprobante Ingreso"
+                        name={'entryNumber'}
+                        placeholder={'Mínimo 4 Dígitos'}
+                        value={formik.values.entryNumber}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.entryNumber &&
+                          Boolean(formik.errors.entryNumber)
+                        }
+                        helperText={
+                          formik.touched.entryNumber &&
+                          formik.errors.entryNumber
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <CurrencyTextField
+                        label="Monto"
+                        name={'amount'}
+                        placeholder={'$ 1000'}
+                        value={formik.values.amount}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.amount && Boolean(formik.errors.amount)
+                        }
+                        helperText={
+                          formik.touched.amount && formik.errors.amount
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <InputLabel>Adjunto</InputLabel>
+                      <FilePicker
+                        acceptedFiles={['.pdf']}
+                        onChange={(e) => {
+                          setUploadFile(e)
+                        }}
+                        onDelete={() => {
+                          setUploadFile(null)
+                          formik.setFieldValue('file', '')
+                        }}
+                        icon={<FiUpload fontSize="24px" />}
+                      />
+                    </Grid>
+                  </Grid>
                 </Box>
               ) : (
                 <Grid container spacing={1}>

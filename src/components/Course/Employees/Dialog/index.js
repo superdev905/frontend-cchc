@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { Box, Drawer, IconButton, Typography } from '@material-ui/core'
 import { FiArrowLeft as BackIcon } from 'react-icons/fi'
-import { formatDate, formatText } from '../../../../formatters'
+import { formatCurrency, formatDate, formatText } from '../../../../formatters'
 import { Button, EmptyState, LabeledRow, Text } from '../../../UI'
 import { useToggle, useSuccess } from '../../../../hooks'
 import useStyles from './styles'
@@ -15,7 +15,7 @@ import EmployeeTracking from '../../EmployeeTracking'
 import AddScore from '../Score/AddScore'
 import CourseStatus from '../Status/CourseStatus'
 import StatusList from '../Status/List'
-import { ConfirmDelete } from '../../../Shared'
+import { ConfirmDelete, FileThumbnail, FileVisor } from '../../../Shared'
 import StudentPaymentCard from '../PaymentCard'
 
 const EmployeeDialog = ({ open, onClose, idEmployee }) => {
@@ -46,6 +46,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const { open: openEditScore, toggleOpen: toggleOpenEditScore } = useToggle()
   const { open: openDeleteScore, toggleOpen: toggleOpenDeleteScore } =
     useToggle()
+  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
 
   const fetchDetails = () => {
     setLoading(true)
@@ -248,12 +249,45 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
                 })}
             </Text>
           </LabeledRow>
+          <LabeledRow label={'N° comprobante'}>
+            <Text loaderWidth={'20%'} loading={loading}>
+              {student?.entryNumber}
+            </Text>
+          </LabeledRow>
+          <LabeledRow label={'Monto'}>
+            <Text loaderWidth={'50%'} loading={loading}>
+              {student && formatCurrency(student.amount)}
+            </Text>
+          </LabeledRow>
           <LabeledRow label={'Inscrito por:'}>
             <Text loaderWidth={'30%'} loading={loading}>
               {student &&
                 `${student.createdBy.names} ${student.createdBy.paternalSurname} ${student.createdBy.maternalSurname}`}
             </Text>
           </LabeledRow>
+          {student?.file && (
+            <Box mt={1}>
+              <Typography className={classes.subHeading}>
+                Archivo adjunto
+              </Typography>
+              <FileThumbnail
+                fileName={student.file.fileName}
+                fileSize={student.file.fileSize}
+                date={student.file.uploadDate}
+                onView={() => {
+                  toggleOpenVisor()
+                }}
+              />
+              {openVisor && (
+                <FileVisor
+                  src={student.file.fileUrl}
+                  filename={student.file.fileName}
+                  open={openVisor}
+                  onClose={toggleOpenVisor}
+                />
+              )}
+            </Box>
+          )}
         </Box>
         <Box>
           <Box className={classes.centeredSpaced}>
