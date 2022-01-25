@@ -1,6 +1,7 @@
 import * as Yup from 'yup'
 
 export const CommonTrackingSchema = Yup.object().shape({
+  benefitId: Yup.string(),
   yearInProgress: Yup.number('Ingrese año válido').required(
     'Ingrese año en curso'
   ),
@@ -12,11 +13,12 @@ export const CommonTrackingSchema = Yup.object().shape({
     'Ingrese ramos reprobados'
   ),
   businessName: Yup.string().required('Ingrese nombre de empresa actual'),
-  benefitId: Yup.number().required('Selecciona beneficio'),
-  scholarshipStatus: Yup.string().required('Seleccione estado de beca')
+  scholarshipStatus: Yup.string().required('Seleccione estado de beca'),
+  observations: Yup.string()
 })
 
 export const BeaTrackingSchema = Yup.object().shape({
+  benefitId: Yup.string(),
   yearInProgress: Yup.number('Ingrese año válido').required(
     'Ingrese año en curso'
   ),
@@ -28,11 +30,12 @@ export const BeaTrackingSchema = Yup.object().shape({
   businessName: Yup.string().required('Ingrese nombre de empresa actual'),
   mandatoryActivity: Yup.string(),
   psychologicalInterview: Yup.string(),
-  benefitId: Yup.number().required('Selecciona beneficio'),
-  scholarshipStatus: Yup.string().required('Seleccione estado de beca')
+  scholarshipStatus: Yup.string().required('Seleccione estado de beca'),
+  observations: Yup.string()
 })
 
 export const PmaTrackingSchema = Yup.object().shape({
-  benefitId: Yup.number().required('Seleccione beneficio'),
-  scholarshipStatus: Yup.string().required('Seleccione estado de beca')
+  benefitId: Yup.string(),
+  scholarshipStatus: Yup.string().required('Seleccione estado de beca'),
+  observations: Yup.string()
 })

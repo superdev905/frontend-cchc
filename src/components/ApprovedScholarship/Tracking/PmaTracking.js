@@ -1,13 +1,13 @@
 import { capitalize } from 'lodash'
 import { Grid } from '@material-ui/core'
-import { Select } from '../../UI'
+import { Select, TextArea } from '../../UI'
 
 const statusList = ['APROBADA', 'RECHAZADA', 'EN PROCESO']
 
-const PmaTracking = ({ form, benefits }) => (
+const PmaTracking = ({ form /* , benefits */ }) => (
   <Grid container spacing={2}>
     <Grid item xs={12}>
-      <Select
+      {/* <Select
         label="Beneficio"
         required
         name="benefitId"
@@ -22,7 +22,7 @@ const PmaTracking = ({ form, benefits }) => (
             {item.name}
           </option>
         ))}
-      </Select>
+      </Select> */}
     </Grid>
     <Grid item xs={12}>
       <Select
@@ -44,6 +44,17 @@ const PmaTracking = ({ form, benefits }) => (
           <option value={item}>{capitalize(item)}</option>
         ))}
       </Select>
+    </Grid>
+    <Grid item xs={12}>
+      <TextArea
+        label="Observación"
+        required
+        name="observations"
+        value={form.values.observations}
+        onChange={form.handleChange}
+        error={form.touched.observations && Boolean(form.errors.observations)}
+        helperText={form.touched.observations && form.errors.observations}
+      />
     </Grid>
   </Grid>
 )
