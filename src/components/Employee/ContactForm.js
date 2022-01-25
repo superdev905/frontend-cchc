@@ -2,16 +2,8 @@ import { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { addMonths } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  Box,
-  FormControlLabel,
-  Grid,
-  Switch,
-  Typography
-} from '@material-ui/core'
-import { Alert } from '@material-ui/lab'
+import { Box, Grid, Typography } from '@material-ui/core'
 import { Dialog, Map } from '../Shared'
 import { Button, InputLabel, Select, SubmitButton, TextField } from '../UI'
 import commonActions from '../../state/actions/common'
@@ -20,7 +12,6 @@ import AddressAutocomplete from '../Shared/AddressAutoComplete'
 import { phoneValidator } from '../../validations'
 import { useSuccess } from '../../hooks'
 import { SantiagoDefaultLocation } from '../../config'
-import { formatDate } from '../../formatters'
 
 const phoneOwner = ['FAMILIAR', 'VECINO', 'RECADO', 'OTRO']
 
@@ -65,12 +56,10 @@ const EmployeeModal = ({
   data,
   submitFunction,
   successMessage,
-  successFunction,
-  alertConfirmation
+  successFunction
 }) => {
   const dispatch = useDispatch()
   const [communes, setCommunes] = useState([])
-  const [confirmDate, setConfirmDate] = useState(null)
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
@@ -106,10 +95,7 @@ const EmployeeModal = ({
       is_confirmed: type === 'UPDATE' ? data.is_confirmed : false
     },
     onSubmit: (values, { resetForm }) => {
-      submitFunction({
-        ...values,
-        confirmation_date: new Date(addMonths(new Date(), 1))
-      })
+      submitFunction(values)
         .then(() => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, {
@@ -183,12 +169,6 @@ const EmployeeModal = ({
         dispatch(commonPublicActions.getRegions())
       }
     }
-
-    setConfirmDate(
-      type === 'UPDATE'
-        ? new Date(data.confirmation_date)
-        : new Date(addMonths(new Date(), 1))
-    )
   }, [open, type, data])
 
   useEffect(() => {
@@ -433,35 +413,6 @@ const EmployeeModal = ({
                     Debes escribir al menos un número de contacto
                   </InputLabel>
                 </Grid>
-                {alertConfirmation && (
-                  <Grid item xs={12} md={12}>
-                    <Alert severity="info">
-                      <Typography>
-                        Próxima fecha de confirmación de teléfono:{' '}
-                        <strong>
-                          {confirmDate && formatDate(confirmDate)}
-                        </strong>
-                      </Typography>
-                      <Box>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              color="primary"
-                              checked={formik.values.is_confirmed}
-                              onChange={(e) => {
-                                formik.setFieldValue(
-                                  'is_confirmed',
-                                  e.target.checked
-                                )
-                              }}
-                            />
-                          }
-                          label="Confirmar teléfono"
-                        />
-                      </Box>
-                    </Alert>
-                  </Grid>
-                )}
               </Grid>
             </Grid>
             <Grid item xs={12} lg={4}>
