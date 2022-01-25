@@ -156,6 +156,20 @@ const BenefitForm = ({ type, formik, actions }) => {
               helperText={formik.touched.totalCost && formik.errors.totalCost}
             />
           </Grid>
+          <Grid item xs={12} md={12}>
+            <Select
+              label="Área"
+              name="area"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.area}
+            >
+              <option value="">SELECCIONE ÁREA</option>
+              <option value="ECONOMICO">ECONOMICO</option>
+              <option value="ESTUDIANTIL">ESTUDIANTIL</option>
+              <option value="OTRO">OTRO</option>
+            </Select>
+          </Grid>
           {type === 'CREATE' && (
             <Grid item xs={12}>
               <Box>
