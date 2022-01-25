@@ -30,6 +30,7 @@ import commonPublic from '../../state/actions/commonPublic'
 import pollActions from '../../state/actions/poll'
 import { decisionList } from '../../config'
 import { PollsModule } from '../Polls'
+import Etnias from '../../resources/etnias'
 
 const statusList = ['REALIZADO', 'EN TRAMITE']
 const disabilityType = [
@@ -216,6 +217,12 @@ const EmployeeModal = ({
   const onBankSelect = (__, value) => {
     if (value) {
       formik.setFieldValue('bank_id', value.id)
+    }
+  }
+
+  const onEtniaSelect = (__, value) => {
+    if (value) {
+      formik.setFieldValue('etnia', value)
     }
   }
 
@@ -448,13 +455,28 @@ const EmployeeModal = ({
                 </Select>
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <TextField
-                  label="Etnia"
-                  name="etnia"
-                  value={formik.values.etnia}
-                  onChange={formik.handleChange}
-                  error={formik.touched.etnia && Boolean(formik.errors.etnia)}
-                  helperText={formik.touched.etnia && formik.errors.etnia}
+                <Autocomplete
+                  options={Etnias}
+                  value={
+                    Etnias[
+                      Etnias.findIndex((item) => item === formik.values.etnia)
+                    ] || ''
+                  }
+                  getOptionSelected={(option, value) => option === value}
+                  getOptionLabel={(option) => option}
+                  onChange={onEtniaSelect}
+                  required
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Etnia"
+                      placeholder="SELECCIONE Etnia"
+                      error={
+                        formik.touched.etnia && Boolean(formik.errors.etnia)
+                      }
+                      helperText={formik.touched.etnia && formik.errors.etnia}
+                    />
+                  )}
                 />
               </Grid>
             </Grid>
@@ -559,23 +581,6 @@ const EmployeeModal = ({
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6} lg={4}>
-                {/* <Select
-                  label="Banco"
-                  name="bank_id"
-                  value={formik.values.bank_id}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched.bank_id && Boolean(formik.errors.bank_id)
-                  }
-                  helperText={formik.touched.bank_id && formik.errors.bank_id}
-                >
-                  <option value="">SIN BANCO</option>
-                  {banks.map((item, i) => (
-                    <option key={`gender-${i}-${item}`} value={item.id}>
-                      {item.description}
-                    </option>
-                  ))}
-                </Select> */}
                 <Autocomplete
                   options={banks}
                   value={
