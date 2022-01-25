@@ -106,7 +106,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
     dispatch(
       courses.createStatus({
         ...values,
-        studentId: student.student.id
+        studentId: student.studentId
       })
     )
       .then(() => {
@@ -128,7 +128,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
     dispatch(
       courses.updateScore(currentScore.id, {
         ...values,
-        studentId: student.student.id
+        studentId: student.studentId
       })
     )
       .then(() => {
