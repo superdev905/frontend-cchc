@@ -13,6 +13,7 @@ import {
   VisitStatistics
 } from '../../components/Visit'
 import ConstructionAttend from '../../components/Visit/ConstructionAttend/ConstructionAttend'
+import { VisitDotacion } from '../../components/Assistance'
 
 const Visit = () => {
   const dispatch = useDispatch()
@@ -47,6 +48,7 @@ const Visit = () => {
       <ContactList />
       <AttendedEmployees />
       <AttendEmployees />
+      <VisitDotacion fetchDetails={getDetails} />
       <ConstructionAttend />
       <VisitStatistics />
     </Box>

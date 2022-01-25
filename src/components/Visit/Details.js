@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
-import {
-  FaUserLock as CompanyIcon,
-  FaUserCog as WorkerIcon
-} from 'react-icons/fa'
 import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { endOfWeek } from 'date-fns'
@@ -12,11 +8,10 @@ import startOfWeek from 'date-fns/startOfWeek'
 import assistanceActions from '../../state/actions/assistance'
 import { formatDate, formatHours } from '../../formatters'
 import { useSuccess, useToggle } from '../../hooks'
-import { LabeledRow, StatusChip, Text, Wrapper, Button, DataCard } from '../UI'
+import { LabeledRow, StatusChip, Text, Wrapper, Button } from '../UI'
 import ReportModal from './Report/ReportModal'
 import { ConfirmDelete, FileVisor } from '../Shared'
 import MapModal from '../Constructions/MapModal'
-import WorkerDialog from './WorkerDialog'
 
 const useStyles = makeStyles(() => ({
   Cancel: {
@@ -65,8 +60,6 @@ const Details = ({ fetching, fetchDetails }) => {
   const { open: openStart, toggleOpen: toggleOpenStart } = useToggle()
   const { open: openView, toggleOpen: toggleOpenView } = useToggle()
   const { open: openVisitClose, toggleOpen: toggleOpenVisitClose } = useToggle()
-  const { open: openWorkerDialog, toggleOpen: toggleOpenWorkerDialog } =
-    useToggle()
 
   const { success, changeSuccess } = useSuccess()
   const [filters] = useState({
@@ -149,9 +142,6 @@ const Details = ({ fetching, fetchDetails }) => {
         enqueueSnackbar(err, { variant: 'error' })
       })
   }
-
-  const setVisitWorkers = (values) =>
-    dispatch(assistanceActions.setWorkersQuantity(visit.id, values))
 
   useEffect(() => {
     fetchEvents(filters)
@@ -282,18 +272,6 @@ const Details = ({ fetching, fetchDetails }) => {
               </Text>
             </LabeledRow>
           </Grid>
-          {openWorkerDialog && visit && (
-            <WorkerDialog
-              open={openWorkerDialog}
-              onClose={toggleOpenWorkerDialog}
-              data={{
-                company_workers: visit?.company_workers || 0,
-                outsourced_workers: visit?.outsourced_workers || 0
-              }}
-              submitFunction={setVisitWorkers}
-              successFunction={fetchDetails}
-            />
-          )}
           <Grid item xs={12} md={6}>
             <LabeledRow label="Fecha:">
               <Text loading={fetching} loaderWidth="70%">
@@ -324,56 +302,6 @@ const Details = ({ fetching, fetchDetails }) => {
               </Button>
             </LabeledRow>
           </Grid>
-        </Grid>
-      </Box>
-      <Box>
-        <Grid item xs={12} md={6}>
-          <Box>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Typography
-                style={{
-                  fontSize: '18px',
-                  fontWeight: 'bold',
-                  marginBottom: '10px'
-                }}
-              >
-                Trabajadores
-              </Typography>
-              <Button
-                size="small"
-                disabled={visit?.is_close}
-                onClick={toggleOpenWorkerDialog}
-              >
-                Actualizar
-              </Button>
-            </Box>
-            <Grid container spacing={3}>
-              <Grid item xs={6}>
-                <Typography className={classes.dataTitle}>
-                  Trabajadores de casa:
-                </Typography>
-                <DataCard
-                  icon={<CompanyIcon />}
-                  data={visit?.company_workers || 0}
-                  color="primary"
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Typography className={classes.dataTitle}>
-                  Trabajadores de subcontrato:
-                </Typography>
-                <DataCard
-                  icon={<WorkerIcon />}
-                  data={visit?.outsourced_workers || 0}
-                  color="purple"
-                />
-              </Grid>
-            </Grid>
-          </Box>
         </Grid>
       </Box>
 
