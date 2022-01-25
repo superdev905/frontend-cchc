@@ -69,7 +69,6 @@ const validationSchema = Yup.object().shape({
   marital_status_id: Yup.number().required('Seleccione estado civil'),
   disability: Yup.string().required('SELECCIONE OPCIÓN'),
   credential_disability: Yup.string(),
-  recognize: Yup.string().required('SELECCIONE OPCIÓN'),
   nationality_id: Yup.number().required('Seleccione nacionalidad'),
   alive: Yup.string().required('SELECCIONE OPCIÓN'),
   //  bank_id: Yup.number('Seleccione banco'),
@@ -123,7 +122,6 @@ const EmployeeModal = ({
       disability_type: type === 'UPDATE' ? data.disability_type : '',
       disability_percentage:
         type === 'UPDATE' ? data.disability_percentage : '',
-      recognize: type === 'UPDATE' ? data.recognize : '',
       nationality_id: type === 'UPDATE' ? data.nationality_id : '',
       alive: type === 'UPDATE' ? data.alive : '',
       bank_id: type === 'UPDATE' ? data.bank_id : '',
@@ -705,28 +703,6 @@ const EmployeeModal = ({
                     {formik.touched.alive && formik.errors.alive}
                   </FormHelperText>
                 )}
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Select
-                  label="Pertenece a Reconocer"
-                  name="recognize"
-                  onChange={formik.handleChange}
-                  value={formik.values.recognize}
-                  required
-                  error={
-                    formik.touched.recognize && Boolean(formik.errors.recognize)
-                  }
-                  helperText={
-                    formik.touched.recognize && formik.errors.recognize
-                  }
-                >
-                  <option value="">SELECCIONE OPCIÓN</option>
-                  {decisionList.map((item, index) => (
-                    <option key={`region--${index}`} value={`${item}`}>
-                      {item}
-                    </option>
-                  ))}
-                </Select>
               </Grid>
             </Grid>
             <Grid container spacing={2}>

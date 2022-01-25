@@ -137,8 +137,9 @@ const List = () => {
           },
           {
             right: true,
-            cell: (row) => (
+            selector: (row) => (
               <ActionsTable
+                disableEdit={row.isCompleted === true}
                 onEdit={() => {
                   toggleOpenEdit()
                   setCurrentTask(row)

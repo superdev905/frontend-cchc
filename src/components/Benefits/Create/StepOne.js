@@ -28,6 +28,7 @@ const StepOne = ({ onClose, data }) => {
       usersQuantity: create?.benefit?.usersQuantity || '',
       isActive: create?.benefit?.isActive || '',
       totalCost: create?.benefit?.totalCost || '',
+      area: create?.benefit?.area || '',
       isCourse: create?.benefit?.isCourse || false,
       otecId: create?.benefit?.otecId || '',
       otecName: create?.benefit?.otecName || '',
