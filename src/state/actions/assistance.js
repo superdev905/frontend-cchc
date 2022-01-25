@@ -19,6 +19,9 @@ const createEvent = (values) => () =>
       })
   })
 
+const cleanCalendarEvents = () => (dispatch) =>
+  dispatch({ type: assistanceTypes.GET_CALENDAR_EVENTS, payload: [] })
+
 const getCalendarEvents =
   (query = {}) =>
   (dispatch) =>
@@ -437,6 +440,28 @@ const getEmployeesToAttend =
         })
     })
 
+const getCalendarStats =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.assistance
+        }/visits/calendar/stats?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: assistanceTypes.GET_CALENDAR_STATS,
+            payload: data
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const assistanceActions = {
   toggleModal,
   getCalendarEvents,
@@ -466,7 +491,9 @@ const assistanceActions = {
   getReportItems,
   exportEmployeesToAttend,
   getAttendedEmployeeByBusiness,
-  getEmployeesToAttend
+  getEmployeesToAttend,
+  cleanCalendarEvents,
+  getCalendarStats
 }
 
 export default assistanceActions

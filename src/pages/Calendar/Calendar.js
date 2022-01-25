@@ -40,8 +40,11 @@ const EventsCalendar = () => {
   const [currentView, setCurrentView] = useState('timeGridWeek')
   const [filters, setFilters] = useState({
     start_date: startOfWeek(currentDate),
-    end_date: endOfWeek(currentDate)
+    end_date: endOfWeek(currentDate),
+    users: [],
+    type: ''
   })
+  const [calendarView, setCalendarView] = useState('')
   const {
     open: openfilters,
     handleOpen: handleOpenfilters,
@@ -288,25 +291,40 @@ const EventsCalendar = () => {
 
   useEffect(() => {
     if (rangeDate.start && rangeDate.end) {
-      setFilters({ start_date: rangeDate.start, end_date: rangeDate.end })
+      setFilters({
+        ...filters,
+        start_date: rangeDate.start,
+        end_date: rangeDate.end
+      })
     }
-  }, [calendarApi, rangeDate])
+  }, [rangeDate])
 
   useEffect(() => {
-    fetchEvents(filters)
-    fetchInterventionPlanTasks(filters)
-  }, [filters])
+    if (!calendarView) {
+      fetchEvents(filters)
+      fetchInterventionPlanTasks(filters)
+    } else if (calendarView === 'TASKS') {
+      dispatch(assistanceActions.cleanCalendarEvents())
+      fetchInterventionPlanTasks(filters)
+    } else {
+      dispatch(socialCasesActions.cleanCalendarPlans())
+      fetchEvents(filters)
+    }
+  }, [filters, calendarView])
 
   return (
     <div>
       <Box mt={1} mb={2}>
-        <Cards />
+        <Cards query={filters} />
       </Box>
       <Wrapper>
         <FiltersMenu
           open={openfilters}
           onClose={handleClosefilters}
           anchorEl={anchorElfilters}
+          value={{ users: filters.users, type: calendarView }}
+          handleChangeUsers={(users) => setFilters({ ...filters, users })}
+          handleChangeType={(type) => setCalendarView(type)}
           assistenceListFiltered={assistenceListFiltered}
           setAssistenceListFiltered={setAssistenceListFiltered}
           otherFilters={otherFilters}

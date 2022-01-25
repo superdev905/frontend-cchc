@@ -1,31 +1,31 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { makeStyles } from '@material-ui/styles'
+
 import {
   Box,
   Menu,
   Fade,
-  TextField,
   Typography,
-  Checkbox
+  Checkbox,
+  makeStyles
 } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import {
   CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
   CheckBox as CheckBoxIcon
 } from '@material-ui/icons'
-
-import { Button } from '../../components/UI'
+import { Button, TextField, Select } from '../../components/UI'
 import usersActions from '../../state/actions/users'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
-const viewOnlyOp = ['VER TODO', 'SOLO TAREAS', 'SOLO VISITAS']
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    width: '80%',
+    padding: `${theme.spacing(2)}px ${theme.spacing(3)}px`,
     [theme.breakpoints.up('md')]: {
-      minWidth: '400px'
+      width: '450px'
     }
   },
   content: {
@@ -42,31 +42,16 @@ const FiltersMenu = ({
   open,
   onClose,
   anchorEl,
-  assistenceListFiltered,
-  setAssistenceListFiltered,
-  otherFilters,
-  setOtherFilters,
-  applyFilters
+  handleChangeUsers,
+  handleChangeType,
+  applyFilters,
+  value
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const [assistanceList, setAssistanceList] = useState([])
+  const [selectedUsers, setSelectedUsers] = useState([])
 
-  const handleChangeAssistance = (value) => {
-    if (!value) {
-      return
-    }
-    setAssistenceListFiltered(value)
-  }
-  const handleChangeView = (value) => {
-    if (!value) {
-      return
-    }
-    setOtherFilters({
-      ...otherFilters,
-      view: value
-    })
-  }
+  const [assistanceList, setAssistanceList] = useState([])
 
   useEffect(() => {
     dispatch(usersActions.getSocialAssistanceList()).then((response) => {
@@ -75,17 +60,8 @@ const FiltersMenu = ({
   }, [])
 
   useEffect(() => {
-    const ids = []
-    if (assistenceListFiltered) {
-      assistenceListFiltered.forEach((item) => {
-        ids.push(item.id)
-      })
-      setOtherFilters({
-        ...otherFilters,
-        assistenceIdList: ids
-      })
-    }
-  }, [assistenceListFiltered])
+    handleChangeUsers(selectedUsers.map((item) => item.id))
+  }, [selectedUsers])
 
   return (
     <Menu
@@ -109,10 +85,10 @@ const FiltersMenu = ({
           <Typography>Filtros</Typography>
           <Autocomplete
             multiple
-            value={assistenceListFiltered}
+            value={selectedUsers}
             options={assistanceList}
             disableCloseOnSelect
-            onChange={(e, value) => handleChangeAssistance(value)}
+            onChange={(__, values) => setSelectedUsers(values)}
             getOptionLabel={(option) =>
               `${option.names} ${option.paternal_surname} ${option.maternal_surname}` ||
               ''
@@ -123,13 +99,12 @@ const FiltersMenu = ({
                   icon={icon}
                   checkedIcon={checkedIcon}
                   style={{ marginRight: 8 }}
-                  checked={Boolean(assistenceListFiltered.indexOf(option) > -1)}
+                  checked={Boolean(value.users.indexOf(option) > -1)}
                 />
-                {`${option.names} ${option.paternal_surname} ${option.maternal_surname}` ||
+                {`${option.names} ${option.paternal_surname} ${option.maternal_surname}`.toUpperCase() ||
                   ''}
               </>
             )}
-            style={{ width: 500 }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -141,21 +116,20 @@ const FiltersMenu = ({
           />
         </Box>
         <Box width="100%">
-          <Autocomplete
-            options={viewOnlyOp}
-            value={otherFilters.view}
-            onChange={(e, value) => handleChangeView(value)}
-            getOptionSelected={(option, value) => option === value}
-            getOptionLabel={(option) => option || ''}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                label="Ver"
-                placeholder=""
-              />
-            )}
-          />
+          <Select
+            label="Ver"
+            onChange={(e) => handleChangeType(e.target.value)}
+          >
+            {[
+              { key: '', name: 'VER TODO' },
+              { key: 'TASKS', name: 'SOLO TAREAS' },
+              { key: 'VISITS', name: 'SOLO VISITAS' }
+            ].map((item) => (
+              <option key={`option-type-${item.key}`} value={item.key}>
+                {item.name}
+              </option>
+            ))}
+          </Select>
         </Box>
 
         <Box width="100%" display="flex" justifyContent="center">
