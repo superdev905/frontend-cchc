@@ -28,7 +28,7 @@ const visitSchema = Yup.object().shape({
 
 const validationSchema = Yup.object().shape({
   type_id: Yup.number().required('Seleccione tipo de evento'),
-  title: Yup.string().required('Ingrese título'),
+  title: Yup.string(),
   date: Yup.date().nullable().required('Seleccione fecha de evento'),
   start_date: Yup.date().nullable().required('Slecciona fecha de inicio'),
   end_date: Yup.date().nullable().required('Slecciona fecha de fin'),
@@ -72,6 +72,7 @@ const EventForm = ({
     initialValues: {
       title: type === 'CREATE' ? '' : event.title,
       type_id: type === 'CREATE' ? '' : event.type_id,
+      type_description: type === 'CREATE' ? '' : event.type_id,
       status: type === 'CREATE' ? 'PROGRAMADA' : event.status,
       date: type === 'CREATE' ? new Date(data.start) : event.date,
       start_date: type === 'CREATE' ? new Date(data.start) : event.start_date,
@@ -88,6 +89,10 @@ const EventForm = ({
     onSubmit: (values, { resetForm }) => {
       submitFunction({
         ...values,
+        title:
+          values.type_description === 'VISITA'
+            ? `${values.type_description} - ${values.business_name} - ${values.construction_name}`
+            : values.type_description,
         status: reschedule ? 'REPROGRAMADA' : values.status,
         start_date: new Date(values.start_date).toISOString(),
         end_date: new Date(values.end_date).toISOString()
@@ -258,18 +263,6 @@ const EventForm = ({
         )}
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TextField
-              placeholder="Título del evento"
-              name="title"
-              label="Título"
-              required
-              value={formik.values.title}
-              onChange={formik.handleChange}
-              error={Boolean(formik.errors.title)}
-              helperText={formik.errors.title}
-            />
-          </Grid>
-          <Grid item xs={12}>
             <Box display="flex" alignItems="center">
               <Typography style={{ marginRight: '10px' }}>
                 Asignado a:
@@ -354,7 +347,7 @@ const EventForm = ({
             >
               <option value="">SELECCIONE TIPO</option>
               {eventTypes.map((item) => (
-                <option value={item.id} key={`event-type-${item.id}`}>
+                <option value={item.id} key={`event-type-${item}`}>
                   {item.description}
                 </option>
               ))}
