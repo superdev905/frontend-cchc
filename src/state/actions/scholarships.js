@@ -122,10 +122,10 @@ const deletePostulation = (id, values) => () =>
       })
   })
 
-const postulationApprove = (id, values) => () =>
+const postulationChangeStatus = (id, values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(
-      `${config.services.scholarship}/postulations/${id}/approve`,
+      `${config.services.scholarship}/postulations/${id}/change-status`,
       values
     )
       .then((response) => {
@@ -159,36 +159,6 @@ const getBenefits =
 const createBenefit = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.scholarship}/benefits`, values)
-      .then((response) => {
-        const { data } = response
-        resolve(data)
-      })
-      .catch((err) => {
-        reject(err.response.data.detail)
-      })
-  })
-
-const postulationReject = (id, values) => () =>
-  new Promise((resolve, reject) => {
-    Axios.post(
-      `${config.services.scholarship}/postulations/${id}/reject`,
-      values
-    )
-      .then((response) => {
-        const { data } = response
-        resolve(data)
-      })
-      .catch((err) => {
-        reject(err.response.data.detail)
-      })
-  })
-
-const postulationRevision = (id, values) => () =>
-  new Promise((resolve, reject) => {
-    Axios.post(
-      `${config.services.scholarship}/postulations/${id}/request-revision`,
-      values
-    )
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -390,9 +360,6 @@ const scholarshipsActions = {
   createBenefit,
   updatePostulation,
   deletePostulation,
-  postulationApprove,
-  postulationReject,
-  postulationRevision,
   getApplicationRevisions,
   createSalaryLiquidation,
   getSalaryLiquidation,
@@ -400,7 +367,8 @@ const scholarshipsActions = {
   updateSalaryLiquidation,
   patchSalaryLiquidation,
   getStatsByType,
-  getSummary
+  getSummary,
+  postulationChangeStatus
 }
 
 export default scholarshipsActions
