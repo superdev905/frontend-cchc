@@ -85,7 +85,11 @@ const BenefitDialog = ({
     validateOnMount: true,
     initialValues: getInitialValues(scholarshipType),
     onSubmit: (values) => {
-      submitFunction({ ...values, date: new Date() })
+      submitFunction({
+        ...values,
+        observations: values.observations.toUpperCase(),
+        date: new Date()
+      })
         .then(() => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, { variant: 'success' })

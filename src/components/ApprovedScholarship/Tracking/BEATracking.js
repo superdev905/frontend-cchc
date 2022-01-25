@@ -165,10 +165,11 @@ const PmaTracking = ({ form /* , benefits  */ }) => (
     <Grid item xs={12}>
       <TextArea
         label="Observación"
-        required
         name="observations"
         value={form.values.observations}
         onChange={form.handleChange}
+        onBlur={form.handleBlur}
+        maxLength={800}
         error={form.touched.observations && Boolean(form.errors.observations)}
         helperText={form.touched.observations && form.errors.observations}
       />
