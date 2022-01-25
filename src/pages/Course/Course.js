@@ -90,7 +90,7 @@ const Course = ({ children }) => {
             onClick={toggleOpenUpdateCourse}
             disabled={course?.state === 'DELETED'}
           >
-            Actualizar Curso
+            Actualizar estado
           </Button>
           <Button
             danger

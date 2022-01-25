@@ -44,7 +44,6 @@ const FiltersMenu = ({
   anchorEl,
   handleChangeUsers,
   handleChangeType,
-  applyFilters,
   value
 }) => {
   const classes = useStyles()
@@ -96,10 +95,11 @@ const FiltersMenu = ({
             renderOption={(option) => (
               <>
                 <Checkbox
+                  color="primary"
                   icon={icon}
                   checkedIcon={checkedIcon}
                   style={{ marginRight: 8 }}
-                  checked={Boolean(value.users.indexOf(option) > -1)}
+                  checked={Boolean(value.users.indexOf(option.id) > -1)}
                 />
                 {`${option.names} ${option.paternal_surname} ${option.maternal_surname}`.toUpperCase() ||
                   ''}
@@ -133,10 +133,7 @@ const FiltersMenu = ({
         </Box>
 
         <Box width="100%" display="flex" justifyContent="center">
-          <Button onClick={onClose} variant="outlined">
-            Cancelar
-          </Button>
-          <Button onClick={applyFilters}>Aplicar</Button>
+          <Button onClick={onClose}>Aceptar</Button>
         </Box>
       </Box>
     </Menu>

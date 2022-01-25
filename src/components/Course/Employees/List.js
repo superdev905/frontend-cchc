@@ -181,6 +181,7 @@ const EmployeesRegistrationList = () => {
         open={openAdd}
         onClose={toggleOpenAdd}
         submitFunction={createEmployeeRegistration}
+        successFunction={fetchEmployees}
       />
 
       {currentStudent && openDelete && (
