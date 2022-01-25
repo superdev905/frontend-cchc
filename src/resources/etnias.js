@@ -11,4 +11,4 @@ const Etnias = [
   'Yagan'
 ]
 
-export default Etnias
+export default Etnias.map((item) => item.toUpperCase())
