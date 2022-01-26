@@ -17,6 +17,12 @@ import { PollsModule } from '../../Polls'
 import useStyles from './styles'
 import Can from '../../Can'
 
+const parentValidation = Yup.object({
+  parent_business_id: Yup.number()
+    .required('Selecciona empresa relacionada')
+    .nullable()
+})
+
 const validationSchema = Yup.object({
   type: Yup.string().required('Seleccione tipo'),
   is_partner: Yup.string().required('Seleccione empresa socia'),
@@ -32,6 +38,8 @@ const StepOne = () => {
   const { success, changeSuccess } = useSuccess()
   const { moduleResponse } = useSelector((state) => state.poll)
   const { module: currentModule } = useSelector((state) => state.ui)
+  const [needParent, setNeedParent] = useState(false)
+  const [errorParent, setErrorParent] = useState(false)
   const { create } = useSelector((state) => state.companies)
   const [mainCompanies, setMainCompanies] = useState([])
   const [listCompanies, setListCompanies] = useState([])
@@ -39,8 +47,12 @@ const StepOne = () => {
   const { open, toggleOpen } = useToggle()
 
   const formik = useFormik({
-    validationSchema,
+    validationSchema: needParent
+      ? validationSchema.concat(parentValidation)
+      : validationSchema,
     validateOnMount: true,
+    validateOnChange: true,
+    validateOnBlur: true,
     initialValues: {
       type: create?.company?.type || '',
       is_partner: create?.company?.is_partner || '',
@@ -74,6 +86,9 @@ const StepOne = () => {
         commune_id: commune,
 
         ...values
+      }
+      if (!data.parent_business_id) {
+        data.parent_business_id = null
       }
       if (create.type === 'CREATE') {
         dispatch(companiesActions.createCompany(data))
@@ -140,6 +155,18 @@ const StepOne = () => {
   }
 
   useEffect(() => {
+    setNeedParent(formik.values.type === 'EMPRESA RELACIONADA')
+    if (formik.values.type !== 'EMPRESA RELACIONADA') {
+      setErrorParent(false)
+      setParentCompany(null)
+      formik.setFieldValue('parent_business_id', '')
+    } else {
+      setErrorParent(!formik.values.parent_business_id)
+    }
+  }, [formik.values.type])
+
+  useEffect(() => {
+    setErrorParent(!formik.values.parent_business_id)
     if (formik.values.parent_business_id && listCompanies.length > 0) {
       setParentCompany(
         listCompanies.find(
@@ -183,6 +210,7 @@ const StepOne = () => {
               label="Tipo de empresa"
               name="type"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.type}
               required
               error={formik.touched.type && Boolean(formik.errors.type)}
@@ -214,6 +242,8 @@ const StepOne = () => {
               }}
               disabled
               placeholder="Sin empresa madre"
+              error={errorParent}
+              helperText={errorParent && 'Seleccione empresa madre'}
             />
           </Grid>
           <Grid item xs={12} md={6}>
@@ -221,6 +251,7 @@ const StepOne = () => {
               label="Asociada"
               name="is_partner"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.is_partner}
               required
               error={
@@ -241,6 +272,7 @@ const StepOne = () => {
               label="Beneficio Pyme"
               name="benefit_pyme"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.benefit_pyme}
             >
               <option value="">SELECCIONE UNA OPCIÓN</option>
@@ -256,6 +288,7 @@ const StepOne = () => {
               label="Servicio Social"
               name="social_service"
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               value={formik.values.social_service}
               required
               error={
@@ -332,7 +365,7 @@ const StepOne = () => {
           loading={formik.isSubmitting}
           onClick={formik.handleSubmit}
           success={success}
-          disabled={formik.isSubmitting || getPollValidation()}
+          disabled={!formik.isValid || getPollValidation()}
         >
           {create.type === 'UPDATE' ? 'Actualizar' : 'Crear'} empresa
         </SubmitButton>

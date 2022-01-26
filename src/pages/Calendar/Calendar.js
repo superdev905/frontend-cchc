@@ -25,6 +25,8 @@ import { formatHours } from '../../formatters'
 import Cards from '../../components/Calendar/CalendarResume'
 import socialCasesActions from '../../state/actions/socialCase'
 
+import FiltersMenu from './FiltersMenu'
+
 const EventsCalendar = () => {
   const dispatch = useDispatch()
   const classes = useStyles()
@@ -38,8 +40,17 @@ const EventsCalendar = () => {
   const [currentView, setCurrentView] = useState('timeGridWeek')
   const [filters, setFilters] = useState({
     start_date: startOfWeek(currentDate),
-    end_date: endOfWeek(currentDate)
+    end_date: endOfWeek(currentDate),
+    users: [],
+    type: ''
   })
+  const [calendarView, setCalendarView] = useState('')
+  const {
+    open: openfilters,
+    handleOpen: handleOpenfilters,
+    handleClose: handleClosefilters,
+    anchorEl: anchorElfilters
+  } = useMenu()
   const { open: openPreview, handleClose, handleOpen, anchorEl } = useMenu()
   const {
     open: openTask,
@@ -271,29 +282,56 @@ const EventsCalendar = () => {
 
   useEffect(() => {
     if (rangeDate.start && rangeDate.end) {
-      setFilters({ start_date: rangeDate.start, end_date: rangeDate.end })
+      setFilters({
+        ...filters,
+        start_date: rangeDate.start,
+        end_date: rangeDate.end
+      })
     }
-  }, [calendarApi, rangeDate])
+  }, [rangeDate])
 
   useEffect(() => {
-    fetchEvents(filters)
-    fetchInterventionPlanTasks(filters)
-  }, [filters])
+    if (!calendarView) {
+      fetchEvents(filters)
+      fetchInterventionPlanTasks(filters)
+    } else if (calendarView === 'TASKS') {
+      dispatch(assistanceActions.cleanCalendarEvents())
+      fetchInterventionPlanTasks(filters)
+    } else {
+      dispatch(socialCasesActions.cleanCalendarPlans())
+      fetchEvents(filters)
+    }
+  }, [filters, calendarView])
 
   return (
     <div>
       <Box mt={1} mb={2}>
-        <Cards />
+        <Cards query={filters} />
       </Box>
       <Wrapper>
+        <FiltersMenu
+          open={openfilters}
+          onClose={handleClosefilters}
+          anchorEl={anchorElfilters}
+          value={{ users: filters.users, type: calendarView }}
+          handleChangeUsers={(users) => setFilters({ ...filters, users })}
+          handleChangeType={(type) => setCalendarView(type)}
+        />
         <Box miHeight="600px">
           <FullCalendar
             ref={calendarApi}
+            firstDay={1}
             droppable={false}
             height="700px"
             now={calendarDate}
             plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
             customButtons={{
+              filters: {
+                text: 'Filtros',
+                click: (e) => {
+                  handleOpenfilters(e)
+                }
+              },
               export: {
                 text: 'Exportar',
                 click: () => {
@@ -304,7 +342,7 @@ const EventsCalendar = () => {
             headerToolbar={{
               left: 'prev,today,next',
               center: 'title',
-              right: 'timeGridDay,timeGridWeek,dayGridMonth,export'
+              right: 'timeGridDay,timeGridWeek,dayGridMonth,filters,export'
             }}
             buttonText={{
               today: 'Hoy',

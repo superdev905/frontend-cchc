@@ -81,8 +81,8 @@ const Background = () => {
                 <LabeledRow width={200} label={'Profesional'}>
                   <Text>{`${caseDetails.professional.names} ${caseDetails.professional.paternalSurname} ${caseDetails.professional.maternalSurname}`}</Text>
                 </LabeledRow>
-                <LabeledRow width={200} label={'Delegación'}>
-                  <Text>{caseDetails.delegation}</Text>
+                <LabeledRow width={200} label={'Tipo de Solicitud'}>
+                  <Text>{caseDetails?.requestType}</Text>
                 </LabeledRow>
               </Grid>
             </Grid>

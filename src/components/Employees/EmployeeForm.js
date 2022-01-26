@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Autocomplete } from '@material-ui/lab'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
@@ -23,11 +24,13 @@ import {
   TextField
 } from '../UI'
 import { isPollListAnswered, rutValidation } from '../../validations'
+import uiActions from '../../state/actions/ui'
 import commonActions from '../../state/actions/common'
 import commonPublic from '../../state/actions/commonPublic'
 import pollActions from '../../state/actions/poll'
 import { decisionList } from '../../config'
 import { PollsModule } from '../Polls'
+import Etnias from '../../resources/etnias'
 
 const statusList = ['REALIZADO', 'EN TRAMITE']
 const disabilityType = [
@@ -75,6 +78,7 @@ const validationSchema = Yup.object().shape({
   account_number: Yup.string('Seleccione número de cuenta'),
   rsh: Yup.string('SELECCIONE OPCIÓN'),
   rsh_percentage: Yup.string('SELECCIONE OPCIÓN'),
+  etnia: Yup.string('Ingrese etnia'),
   comments: Yup.string('Ingrese comentarios')
 })
 
@@ -128,6 +132,7 @@ const EmployeeModal = ({
       rsh: type === 'UPDATE' ? data.rsh : '',
       rsh_percentage: type === 'UPDATE' ? data.rsh_percentage : '',
       rsh_status: type === 'UPDATE' ? data.rsh_status : '',
+      etnia: type === 'UPDATE' ? data.etnia : '',
       comments: type === 'UPDATE' ? data.comments : ''
     },
     onSubmit: (values) => {
@@ -203,6 +208,24 @@ const EmployeeModal = ({
     }
   }, [formik.values.bank_id, formik.values.account_type])
 
+  const onScholarshipSelect = (__, value) => {
+    if (value) {
+      formik.setFieldValue('scholarship_id', value.id)
+    }
+  }
+
+  const onBankSelect = (__, value) => {
+    if (value) {
+      formik.setFieldValue('bank_id', value.id)
+    }
+  }
+
+  const onEtniaSelect = (__, value) => {
+    if (value) {
+      formik.setFieldValue('etnia', value)
+    }
+  }
+
   useEffect(() => {
     if (user) {
       dispatch(commonActions.getMaritalStatuses())
@@ -220,6 +243,12 @@ const EmployeeModal = ({
   }, [])
 
   useEffect(() => {
+    if (open) {
+      dispatch(uiActions.setCurrentModule('EMPLOYEES'))
+    }
+  }, [open])
+
+  useEffect(() => {
     if (formik.isSubmitting && !formik.isValid) {
       enqueueSnackbar('Completa los campos requeridos', {
         autoHideDuration: 2000,
@@ -227,6 +256,12 @@ const EmployeeModal = ({
       })
     }
   }, [!formik.isValid, formik.isSubmitting])
+
+  useEffect(() => {
+    if (open) {
+      formik.resetForm()
+    }
+  }, [open])
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
@@ -244,7 +279,7 @@ const EmployeeModal = ({
                 <RutTextField
                   label="Run"
                   name="run"
-                  required
+                  reqActionsred
                   disabled={type === 'UPDATE'}
                   value={formik.values.run}
                   onChange={formik.handleChange}
@@ -258,7 +293,7 @@ const EmployeeModal = ({
                   label="Nombres"
                   name="names"
                   disabled={disabledNames}
-                  required
+                  reqActionsred
                   value={formik.values.names}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -338,28 +373,35 @@ const EmployeeModal = ({
                 </Select>
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <Select
-                  label="Escolaridad"
-                  name="scholarship_id"
+                <Autocomplete
+                  options={scholarshipList}
+                  value={
+                    scholarshipList[
+                      scholarshipList.findIndex(
+                        (item) => item.id === formik.values.scholarship_id
+                      )
+                    ] || ''
+                  }
+                  getOptionSelected={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => option.description}
+                  onChange={onScholarshipSelect}
                   required
-                  value={formik.values.scholarship_id}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched.scholarship_id &&
-                    Boolean(formik.errors.scholarship_id)
-                  }
-                  helperText={
-                    formik.touched.scholarship_id &&
-                    formik.errors.scholarship_id
-                  }
-                >
-                  <option value="">SELECCIONE ESCOLARIDAD</option>
-                  {scholarshipList.map((item, i) => (
-                    <option key={`scholarship-${i}-${item.id}`} value={item.id}>
-                      {item.description}
-                    </option>
-                  ))}
-                </Select>
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Escolaridad *"
+                      placeholder="SELECCIONE ESCOLARIDAD"
+                      error={
+                        formik.touched.scholarship_id &&
+                        Boolean(formik.errors.scholarship_id)
+                      }
+                      helperText={
+                        formik.touched.scholarship_id &&
+                        formik.errors.scholarship_id
+                      }
+                    />
+                  )}
+                />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
                 <Select
@@ -411,6 +453,31 @@ const EmployeeModal = ({
                     </option>
                   ))}
                 </Select>
+              </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <Autocomplete
+                  options={Etnias}
+                  value={
+                    Etnias[
+                      Etnias.findIndex((item) => item === formik.values.etnia)
+                    ] || ''
+                  }
+                  getOptionSelected={(option, value) => option === value}
+                  getOptionLabel={(option) => option}
+                  onChange={onEtniaSelect}
+                  required
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Etnia"
+                      placeholder="SELECCIONE Etnia"
+                      error={
+                        formik.touched.etnia && Boolean(formik.errors.etnia)
+                      }
+                      helperText={formik.touched.etnia && formik.errors.etnia}
+                    />
+                  )}
+                />
               </Grid>
             </Grid>
 
@@ -514,23 +581,33 @@ const EmployeeModal = ({
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6} lg={4}>
-                <Select
-                  label="Banco"
-                  name="bank_id"
-                  value={formik.values.bank_id}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched.bank_id && Boolean(formik.errors.bank_id)
+                <Autocomplete
+                  options={banks}
+                  value={
+                    banks[
+                      banks.findIndex(
+                        (item) => item.id === formik.values.bank_id
+                      )
+                    ] || ''
                   }
-                  helperText={formik.touched.bank_id && formik.errors.bank_id}
-                >
-                  <option value="">SIN BANCO</option>
-                  {banks.map((item, i) => (
-                    <option key={`gender-${i}-${item}`} value={item.id}>
-                      {item.description}
-                    </option>
-                  ))}
-                </Select>
+                  getOptionSelected={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => option.description}
+                  onChange={onBankSelect}
+                  required
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Banco"
+                      placeholder="SELECCIONE EL BANCO"
+                      error={
+                        formik.touched.bank_id && Boolean(formik.errors.bank_id)
+                      }
+                      helperText={
+                        formik.touched.bank_id && formik.errors.bank_id
+                      }
+                    />
+                  )}
+                />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
                 <Select

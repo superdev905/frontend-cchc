@@ -105,6 +105,12 @@ const getInterventionPlans =
         })
     })
 
+const cleanCalendarPlans = () => (dispatch) =>
+  dispatch({
+    type: socialCaseTypes.GET_INTERVENTION_PLANS_CALENDAR,
+    payload: []
+  })
+
 const getPlansForCalendar =
   (query = {}) =>
   (dispatch) =>
@@ -272,7 +278,8 @@ const socialCasesActions = {
   getDerivation,
   createClosing,
   getInterventionTaskDetails,
-  completeInterventionTask
+  completeInterventionTask,
+  cleanCalendarPlans
 }
 
 export default socialCasesActions

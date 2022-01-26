@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams, useLocation } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
-import {
-  AddCircleOutline as AddIcon,
-  Edit as EditIcon,
-  ArrowForward as ArrowIcon
-} from '@material-ui/icons'
+import { Edit as EditIcon, ArrowForward as ArrowIcon } from '@material-ui/icons'
 import assistanceAction from '../../state/actions/assistance'
 import employeesActions from '../../state/actions/employees'
 import uiActions from '../../state/actions/ui'
@@ -17,6 +13,7 @@ import AssistanceDialog from '../Assistance/Dialog'
 import { useToggle } from '../../hooks'
 import searchWithRut from '../../formatters/searchWithRut'
 import JobsDialog from './JobsDialog'
+import ConfirmationDialog from './ConfirmationDialog'
 import { EmployeeForm } from '../Employees'
 
 const List = () => {
@@ -27,6 +24,8 @@ const List = () => {
   const { user } = useSelector((state) => state.auth)
   const { open: openJobs, toggleOpen: toggleOpenJobs } = useToggle()
   const { open: openEmployeeForm, toggleOpen: toggleOpenJEmployeeForm } =
+    useToggle()
+  const { open: openConfirmation, toggleOpen: toggleOpenConfirmation } =
     useToggle()
   const [searchUser, setSearchUser] = useState('')
   const [searching, setSearching] = useState(false)
@@ -56,6 +55,26 @@ const List = () => {
       center: true,
       hide: 'md'
     }))
+
+  const addEmployee = (
+    <Grid item xs={12} md={12}>
+      <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}>
+        No se encontraron trabajadores
+        <Button
+          onClick={() => {
+            dispatch(uiActions.setCurrentModule('EMPRESAS'))
+            toggleOpenJEmployeeForm()
+          }}
+        >
+          Agregar trabajador
+        </Button>
+      </Box>
+    </Grid>
+  )
+
+  const confirmationButtom = (
+    <Button onClick={() => toggleOpenConfirmation()}>Validar Datos</Button>
+  )
 
   const createAttention = (values) =>
     dispatch(
@@ -178,24 +197,12 @@ const List = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} md={8}>
-              <Box display={'flex'} justifyContent={'flex-end'}>
-                <Button
-                  onClick={() => {
-                    dispatch(uiActions.setCurrentModule('EMPRESAS'))
-                    toggleOpenJEmployeeForm()
-                  }}
-                >
-                  Agregar trabajador
-                </Button>
-              </Box>
-            </Grid>
           </Grid>
 
           <DataTable
             bordered
             progressPending={searching}
-            emptyMessage="No se encontraron trabajadores"
+            emptyMessage={addEmployee}
             columns={[
               {
                 name: 'Run',
@@ -227,7 +234,7 @@ const List = () => {
                     >
                       Actualizar
                     </Button>
-                    <Button
+                    {/*  <Button
                       size="small"
                       startIcon={<AddIcon />}
                       onClick={() => {
@@ -236,7 +243,7 @@ const List = () => {
                       }}
                     >
                       Atender
-                    </Button>
+                    </Button> */}
                   </Box>
                 )
               }
@@ -285,6 +292,18 @@ const List = () => {
         <JobsDialog
           open={openJobs}
           onClose={toggleOpenJobs}
+          employeeId={selectedUser.id}
+          employeeNames={`${selectedUser.names} ${selectedUser.paternal_surname}`}
+          employeeRun={selectedUser.run}
+          customButon={confirmationButtom}
+        />
+      )}
+      {selectedUser && openConfirmation && (
+        <ConfirmationDialog
+          open={openConfirmation}
+          onClose={toggleOpenConfirmation}
+          onCloseJobs={toggleOpenJobs}
+          onCloseAssistence={toggleOpen}
           employeeId={selectedUser.id}
           employeeNames={`${selectedUser.names} ${selectedUser.paternal_surname}`}
           employeeRun={selectedUser.run}

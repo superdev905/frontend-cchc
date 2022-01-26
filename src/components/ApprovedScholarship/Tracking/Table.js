@@ -8,7 +8,7 @@ const BEAList = ({ list, loading, onEdit, onDelete }) => (
     progressPending={loading}
     emptyMessage={'Esta beca no tiene seguimientos registrados'}
     columns={[
-      { name: 'Fecha', selector: (row) => formatDate(row.date) },
+      { name: 'Fecha', selector: (row) => formatDate(row.date, {}) },
       {
         name: 'Año en curso',
         selector: (row) => row.levelInProgress
@@ -62,7 +62,7 @@ const BeshBestList = ({ list, loading, onEdit, onDelete }) => (
     progressPending={loading}
     emptyMessage={'Esta beca no tiene seguimientos registrados'}
     columns={[
-      { name: 'Fecha', selector: (row) => formatDate(row.date) },
+      { name: 'Fecha', selector: (row) => formatDate(row.date, {}) },
       {
         name: 'Año en curso',
         selector: (row) => row.yearInProgress
@@ -111,7 +111,7 @@ const PMAList = ({ list, loading, onEdit, onDelete }) => (
     progressPending={loading}
     emptyMessage={'Esta beca no tiene seguimientos registrados'}
     columns={[
-      { name: 'Fecha', selector: (row) => formatDate(row.date) },
+      { name: 'Fecha', selector: (row) => formatDate(row.date, {}) },
       {
         name: 'Beneficio',
         selector: (row) => row.benefit.name

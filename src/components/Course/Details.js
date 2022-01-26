@@ -1,4 +1,4 @@
-import { Avatar, Box, Grid, Typography } from '@material-ui/core'
+import { Avatar, Box, Chip, Grid, Typography } from '@material-ui/core'
 import { useSelector } from 'react-redux'
 import { formatDate } from '../../formatters'
 import { LabeledRow, StatusChip, Text } from '../UI'
@@ -10,6 +10,11 @@ const Details = ({ loading }) => {
     <Box p={1}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
+          <LabeledRow label="Estado:">
+            <Text loading={loading}>
+              {course && <Chip color="primary" label={course.status} />}
+            </Text>
+          </LabeledRow>
           <LabeledRow label="Código:">
             <Text loading={loading}>{course && course.code}</Text>
           </LabeledRow>

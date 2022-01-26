@@ -60,6 +60,18 @@ const patchCourse = (id, values) => () =>
       })
   })
 
+const updateCourseStatus = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${config.services.courses}/courses/${id}/status`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const getCourse = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.courses}/courses/${id}`)
@@ -513,7 +525,7 @@ const patchStudentPayment = (id, values) => () =>
       })
   })
 
-export default {
+const courseActions = {
   getCourses,
   createCourse,
   updateCourse,
@@ -549,5 +561,8 @@ export default {
   createStudentPayment,
   getStudentPayments,
   updateStudentPayment,
-  patchStudentPayment
+  patchStudentPayment,
+  updateCourseStatus
 }
+
+export default courseActions

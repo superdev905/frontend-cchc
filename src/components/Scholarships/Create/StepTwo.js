@@ -15,7 +15,7 @@ import { scholarshipConfig } from '../../../config'
 import { formatText } from '../../../formatters'
 import { PollsModule } from '../../Polls'
 
-const StepTwo = () => {
+const StepTwo = ({ successFunction }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
@@ -57,6 +57,9 @@ const StepTwo = () => {
         autoHideDuration: 1500,
         variant: 'success'
       })
+      if (successFunction) {
+        successFunction()
+      }
     } else {
       dispatch(
         scholarshipsActions.updatePostulation(create.application.id, data)

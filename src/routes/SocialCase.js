@@ -16,7 +16,7 @@ const socialCaseRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
         yes={() => (
           <Layout>
             <SocialCase />
@@ -31,7 +31,7 @@ const socialCaseRoutes = [
     key: 'SOCIALCASE-TAB-DETAILS',
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
         yes={() => (
           <Layout>
             <SocialCaseDetails />
@@ -46,7 +46,7 @@ const socialCaseRoutes = [
     key: 'SOCIALCASE-TAB-DETAILS',
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
         yes={() => (
           <Layout>
             <SocialCaseDetails />
@@ -61,7 +61,7 @@ const socialCaseRoutes = [
     key: 'SOCIALCASE-TAB-DETAILS',
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
         yes={() => (
           <Layout>
             <SocialCaseDetails />
@@ -76,7 +76,7 @@ const socialCaseRoutes = [
     key: 'SOCIALCASE-TAB-DETAILS',
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
         yes={() => (
           <Layout>
             <SocialCaseDetails />

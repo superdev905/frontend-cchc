@@ -2,16 +2,8 @@ import { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { addMonths } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  Box,
-  FormControlLabel,
-  Grid,
-  Switch,
-  Typography
-} from '@material-ui/core'
-import { Alert } from '@material-ui/lab'
+import { Box, Grid, Typography } from '@material-ui/core'
 import { Dialog, Map } from '../Shared'
 import { Button, InputLabel, Select, SubmitButton, TextField } from '../UI'
 import commonActions from '../../state/actions/common'
@@ -20,7 +12,6 @@ import AddressAutocomplete from '../Shared/AddressAutoComplete'
 import { phoneValidator } from '../../validations'
 import { useSuccess } from '../../hooks'
 import { SantiagoDefaultLocation } from '../../config'
-import { formatDate } from '../../formatters'
 
 const phoneOwner = ['FAMILIAR', 'VECINO', 'RECADO', 'OTRO']
 
@@ -32,7 +23,11 @@ const validationSchema = Yup.object().shape({
   number: Yup.string().required('Ingrese número'),
   block: Yup.string(),
   department: Yup.string(),
-  phone_owner: Yup.string(),
+  phone_owner: Yup.string().when('is_other_phone', {
+    is: true,
+    then: Yup.string().required('Seleccione a quien le Pertence')
+  }),
+  is_other_phone: Yup.boolean(false),
 
   email: Yup.string().email('Ingrese correo válido').required('Ingreso correo'),
 
@@ -61,12 +56,10 @@ const EmployeeModal = ({
   data,
   submitFunction,
   successMessage,
-  successFunction,
-  alertConfirmation
+  successFunction
 }) => {
   const dispatch = useDispatch()
   const [communes, setCommunes] = useState([])
-  const [confirmDate, setConfirmDate] = useState(null)
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { isMobile } = useSelector((state) => state.ui)
@@ -97,14 +90,12 @@ const EmployeeModal = ({
       phone_owner: type === 'UPDATE' ? data.phone_owner : '',
       mobile_phone: type === 'UPDATE' ? data.mobile_phone : '',
       other_phone: type === 'UPDATE' ? data.other_phone : '',
+      is_other_phone: false,
       landline_phone: type === 'UPDATE' ? data.landline_phone : '',
       is_confirmed: type === 'UPDATE' ? data.is_confirmed : false
     },
     onSubmit: (values, { resetForm }) => {
-      submitFunction({
-        ...values,
-        confirmation_date: new Date(addMonths(new Date(), 1))
-      })
+      submitFunction(values)
         .then(() => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, {
@@ -152,6 +143,18 @@ const EmployeeModal = ({
     formik.setFieldValue('latitude', targetLocation.lat)
   }
 
+  const onChangeOtherPhone = () => {
+    if (formik.values.other_phone) {
+      formik.setFieldValue('is_other_phone', true)
+      return
+    }
+    formik.setFieldValue('is_other_phone', false)
+  }
+
+  useEffect(() => {
+    onChangeOtherPhone()
+  }, [formik.values.other_phone])
+
   useEffect(() => {
     if (regions.length > 0 && type === 'UPDATE') {
       setCommunes(regions.find((item) => item.id === data.region_id).communes)
@@ -166,12 +169,6 @@ const EmployeeModal = ({
         dispatch(commonPublicActions.getRegions())
       }
     }
-
-    setConfirmDate(
-      type === 'UPDATE'
-        ? new Date(data.confirmation_date)
-        : new Date(addMonths(new Date(), 1))
-    )
   }, [open, type, data])
 
   useEffect(() => {
@@ -416,35 +413,6 @@ const EmployeeModal = ({
                     Debes escribir al menos un número de contacto
                   </InputLabel>
                 </Grid>
-                {alertConfirmation && (
-                  <Grid item xs={12} md={12}>
-                    <Alert severity="info">
-                      <Typography>
-                        Próxima fecha de confirmación de teléfono:{' '}
-                        <strong>
-                          {confirmDate && formatDate(confirmDate)}
-                        </strong>
-                      </Typography>
-                      <Box>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              color="primary"
-                              checked={formik.values.is_confirmed}
-                              onChange={(e) => {
-                                formik.setFieldValue(
-                                  'is_confirmed',
-                                  e.target.checked
-                                )
-                              }}
-                            />
-                          }
-                          label="Confirmar teléfono"
-                        />
-                      </Box>
-                    </Alert>
-                  </Grid>
-                )}
               </Grid>
             </Grid>
             <Grid item xs={12} lg={4}>

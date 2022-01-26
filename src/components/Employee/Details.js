@@ -1,3 +1,5 @@
+/* import { useEffect } from 'react'
+import { useParams } from 'react-router-dom' */
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import employeesActions from '../../state/actions/employees'
@@ -17,6 +19,7 @@ const useStyles = makeStyles(() => ({
 const Details = ({ loading }) => {
   const dispatch = useDispatch()
   const classes = useStyles()
+  /* const { idEmployee } = useParams() */
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { employee } = useSelector((state) => state.employees)
 
@@ -28,8 +31,13 @@ const Details = ({ loading }) => {
       })
     )
   const getEmployeeDetails = () => {
-    dispatch(employeesActions.getEmployeeDetails(employee.id))
+    dispatch(employeesActions.getEmployeeDetails(employee))
   }
+
+  /* useEffect(() => {
+    getEmployeeDetails()
+    console.log({ employee })
+  }, []) */
 
   return (
     <Box width="100%">
@@ -76,6 +84,9 @@ const Details = ({ loading }) => {
                 <Text loading={loading}>
                   {employee?.scholarship?.description}
                 </Text>
+              </LabeledRow>
+              <LabeledRow label={'Etnia'}>
+                <Text loading={loading}>{employee?.etnia}</Text>
               </LabeledRow>
               <LabeledRow width={170} label={'Fecha de nacimiento'}>
                 <Text loading={loading}>{formatDate(employee?.born_date)}</Text>
@@ -153,7 +164,7 @@ const Details = ({ loading }) => {
           </Grid>
         </Box>
       </Wrapper>
-      {employee && openEdit && (
+      {openEdit && (
         <EmployeeForm
           type="UPDATE"
           open={openEdit}

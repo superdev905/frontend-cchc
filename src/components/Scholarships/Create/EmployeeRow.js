@@ -9,12 +9,12 @@ import {
 import { Button } from '../../UI'
 
 const useStyles = makeStyles((theme) => ({
-  root: ({ selectable }) => ({
+  root: ({ selectable, option }) => ({
     position: 'relative',
     marginBottom: theme.spacing(2),
     borderRadius: 5,
     border: `1px solid ${theme.palette.gray.gray600}`,
-    cursor: selectable ? 'pointer' : 'inherit',
+    cursor: selectable && !option.isAdded ? 'pointer' : 'inherit',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center'
@@ -36,9 +36,13 @@ const EmployeeRow = ({
   onDelete,
   customComponent
 }) => {
-  const classes = useStyles({ selectable })
+  const classes = useStyles({ selectable, option })
   return (
-    <Box p={1} className={classes.root} onClick={onClick}>
+    <Box
+      p={1}
+      className={classes.root}
+      onClick={!option.isAdded ? onClick : null}
+    >
       <Box display="flex" alignItems="center">
         <Avatar style={{ backgroundColor: option.avatarBg }}>
           {option.names.charAt(0)}
@@ -50,7 +54,9 @@ const EmployeeRow = ({
             }}
           >{`${option.names} ${
             option?.paternal_surname || option?.paternalSurname
-          } ${option.maternal_surname || option.maternalSurname}`}</Typography>
+          } ${
+            option.maternal_surname || option.maternalSurname || ''
+          }`}</Typography>
           <Typography style={{ fontSize: 14 }}>{`Rut: ${
             option.run || 'Sin rut'
           }`}</Typography>

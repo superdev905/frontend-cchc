@@ -19,6 +19,9 @@ const createEvent = (values) => () =>
       })
   })
 
+const cleanCalendarEvents = () => (dispatch) =>
+  dispatch({ type: assistanceTypes.GET_CALENDAR_EVENTS, payload: [] })
+
 const getCalendarEvents =
   (query = {}) =>
   (dispatch) =>
@@ -415,7 +418,51 @@ const getAttendedEmployeeByBusiness =
         })
     })
 
-export default {
+const getEmployeesToAttend =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.socialCase
+        }/social-cases/employee?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: assistanceTypes.GET_EMPLOYEES_TO_ATTEND,
+            payload: data.items
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const getCalendarStats =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.assistance
+        }/visits/calendar/stats?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: assistanceTypes.GET_CALENDAR_STATS,
+            payload: data
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const assistanceActions = {
   toggleModal,
   getCalendarEvents,
   createEvent,
@@ -443,5 +490,10 @@ export default {
   updateVisitReport,
   getReportItems,
   exportEmployeesToAttend,
-  getAttendedEmployeeByBusiness
+  getAttendedEmployeeByBusiness,
+  getEmployeesToAttend,
+  cleanCalendarEvents,
+  getCalendarStats
 }
+
+export default assistanceActions

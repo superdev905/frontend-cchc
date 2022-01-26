@@ -33,7 +33,6 @@ import benefitsActions from '../../../state/actions/benefits'
 import useStyles from './styles'
 import { validationSchema, caseAdditionalSchema } from './schema'
 import socialCasesActions from '../../../state/actions/socialCase'
-import CaseAdditionalForm from './CaseAdditionalForm'
 
 const attentionPlaces = ['OFICINA', 'TERRENO', 'VIRTUAL']
 
@@ -93,9 +92,7 @@ const WorkerInterventionRecord = ({
     validateOnChange: true,
     validateOnMount: true,
     initialValues: {
-      zone: '',
-      office: '',
-      delegation: ''
+      requestType: ''
     }
   })
 
@@ -710,12 +707,24 @@ const WorkerInterventionRecord = ({
                   </Grid>
                 </Grid>
                 {formik.values.case_id === 'NEW' && (
-                  <CaseAdditionalForm
-                    formik={caseFormik}
-                    onReset={() => {
-                      formik.setFieldValue('case_id', '')
-                    }}
-                  />
+                  <Grid item xs={12} md={12} lg={12}>
+                    <TextArea
+                      rowsMin={2}
+                      label="Tipo de Solicitud"
+                      name="requestType"
+                      value={caseFormik.values.requestType}
+                      onChange={caseFormik.handleChange}
+                      onBlur={caseFormik.handleBlur}
+                      error={
+                        caseFormik.touched.requestType &&
+                        Boolean(caseFormik.errors.requestType)
+                      }
+                      helperText={
+                        caseFormik.touched.requestType &&
+                        caseFormik.errors.requestType
+                      }
+                    />
+                  </Grid>
                 )}
               </Box>
             </Grid>

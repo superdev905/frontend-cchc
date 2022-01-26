@@ -1,39 +1,36 @@
-import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
+import { useEffect } from 'react'
+import { Grid } from '@material-ui/core'
+import { useDispatch, useSelector } from 'react-redux'
+import assistanceActions from '../../state/actions/assistance'
+import { SimpleCard } from '../UI'
 
-const useStyles = makeStyles((theme) => ({
-  cardRoot: {
-    backgroundColor: theme.palette.common.white,
-    textAlign: 'center',
-    borderRadius: theme.spacing(1)
-  },
-  data: {
-    fontSize: 38,
-    fontWeight: 'bold'
-  },
-  label: {
-    opacity: 0.8
+const Cards = ({ query }) => {
+  const dispatch = useDispatch()
+  const { calendarStats } = useSelector((state) => state.assistance)
+  const fetchStats = () => {
+    const formattedQuery = {
+      startDate: new Date(query.start_date).toISOString(),
+      endDate: new Date(query.end_date).toISOString()
+    }
+    if (query.users) {
+      formattedQuery.users = query.users
+    }
+    dispatch(assistanceActions.getCalendarStats(formattedQuery))
   }
-}))
 
-const SimpleCard = ({ data, label }) => {
-  const classes = useStyles()
+  useEffect(() => {
+    fetchStats()
+  }, [query])
 
   return (
-    <Box p={2} className={classes.cardRoot}>
-      <Box display="flex" justifyContent="center" padding={0} margin={0}>
-        <Typography className={classes.data}>{data}</Typography>
-      </Box>
-      <Typography className={classes.label}>{label}</Typography>
-    </Box>
+    <Grid container spacing={1}>
+      {calendarStats.map((item, index) => (
+        <Grid item xs={6} md={4} lg={2} key={`calendar-card-${index}`}>
+          <SimpleCard label={item.label} data={item.value} />
+        </Grid>
+      ))}
+    </Grid>
   )
 }
-
-const Cards = () => (
-  <Grid container spacing={1}>
-    <Grid item xs={6} md={4} lg={2}>
-      <SimpleCard label="Visitas por Asignar" data="3" />
-    </Grid>
-  </Grid>
-)
 
 export default Cards

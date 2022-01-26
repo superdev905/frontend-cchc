@@ -89,6 +89,16 @@ const QuestionList = () => {
               maxWidth: '120px'
             },
             {
+              name: 'Progreso Para poder Responder',
+              cell: (row) => (
+                <Box width={'100%'}>
+                  {row.status !== 'RESPONDIDA' ? (
+                    <LinearProgress question={row} />
+                  ) : null}
+                </Box>
+              )
+            },
+            {
               name: 'Título',
               selector: (row) => row.title
             },
@@ -117,16 +127,6 @@ const QuestionList = () => {
               selector: (row) => row.areaName,
               compact: true,
               maxWidth: '100px'
-            },
-            {
-              name: 'Progreso Para poder Responder',
-              cell: (row) => (
-                <Box width={'100%'}>
-                  {row.status !== 'RESPONDIDA' ? (
-                    <LinearProgress question={row} />
-                  ) : null}
-                </Box>
-              )
             },
             {
               name: '',

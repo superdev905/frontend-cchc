@@ -53,7 +53,7 @@ const ClosingModal = ({ open, onClose }) => {
       observations: ''
     },
     validationSchema: Yup.object({
-      state: Yup.string().required('Seleccione el estado'),
+      state: Yup.string(),
       observations: Yup.string().required('El campo Observaciones es requerido')
     }),
     onSubmit: (formData) => {
@@ -78,6 +78,7 @@ const ClosingModal = ({ open, onClose }) => {
   useEffect(() => {
     if (open) {
       formik.resetForm()
+      formik.setFieldValue('state', 'CERRADO')
     }
   }, [open])
 
@@ -120,7 +121,6 @@ const ClosingModal = ({ open, onClose }) => {
                       }
                       helperText={formik.touched.state && formik.errors.state}
                     >
-                      <option value="">-Seleccione-</option>
                       {states.map((item) => (
                         <option key={`state-${item}`} value={item}>
                           {item}
@@ -134,6 +134,7 @@ const ClosingModal = ({ open, onClose }) => {
                     <TextArea
                       label="Observaciones *"
                       name="observations"
+                      value={formik.values.observations}
                       multiline
                       rows={8}
                       variant="outlined"

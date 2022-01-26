@@ -8,15 +8,15 @@ const PollTabs = ({ children }) => {
   const history = useHistory()
 
   const getRoute = (index) => {
-    if (index === 2) return 'enroll'
-    if (index === 1) return 'payments'
+    if (index === 1) return 'enroll'
+    if (index === 2) return 'payments'
     return 'classes'
   }
 
   const getCurrentTab = () => {
     const { pathname } = history.location
-    if (pathname.includes('enroll')) return 2
-    if (pathname.includes('payments')) return 1
+    if (pathname.includes('enroll')) return 1
+    if (pathname.includes('payments')) return 2
     return 0
   }
 
@@ -29,7 +29,7 @@ const PollTabs = ({ children }) => {
       <Tabs
         fullWidth
         value={getCurrentTab()}
-        tabs={['Clases', 'Pagos a OTEC', 'Trabajadores']}
+        tabs={['Clases', 'Trabajadores', 'Pagos a OTEC']}
         onChange={handleTabChange}
       >
         {children}

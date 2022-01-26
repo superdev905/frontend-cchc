@@ -5,18 +5,22 @@ import { Box, Grid, Typography } from '@material-ui/core'
 import { Dialog } from '../../Shared'
 import { formatSearchWithRut } from '../../../formatters'
 import { EmptyState, TextField } from '../../UI'
+import { useToggle } from '../../../hooks'
 import EmployeeRow from '../../Scholarships/Create/EmployeeRow'
 import employeesActions from '../../../state/actions/employees'
 import generateColor from '../../../utils/generateColor'
+import EmployeeModal from '../../Employees/EmployeeForm'
 
 const AddEmployee = ({ open, onClose, loader, onAdd }) => {
   const dispatch = useDispatch()
 
   const { isMobile } = useSelector((state) => state.ui)
+  const { user } = useSelector((state) => state.auth)
   const [employeeList, setEmployeeList] = useState([])
   const [searchRut, setSearchRut] = useState('')
   const [searchList, setSearchList] = useState([])
   const [selectedEmployee, setSelectedEmployee] = useState(null)
+  const { open: openForm, toggleOpen: toggleOpenForm } = useToggle()
 
   const addEmployee = (selected) => {
     const updatedList = employeeList.concat(selected)
@@ -47,6 +51,17 @@ const AddEmployee = ({ open, onClose, loader, onAdd }) => {
       setSelectedEmployee(null)
     }
   }, [open])
+
+  const createNewEmployee = (values) =>
+    dispatch(
+      employeesActions.createEmployee({ ...values, created_by: user.id })
+    )
+
+  const afterCreating = () => {
+    setSearchRut('')
+    setSearchList([])
+    setSelectedEmployee(null)
+  }
 
   return (
     <Dialog
@@ -105,6 +120,8 @@ const AddEmployee = ({ open, onClose, loader, onAdd }) => {
                               ? `No se encontraron resultados para: ${searchRut}`
                               : 'Ingrese el rut del trabajador'
                           }`}
+                          event={searchRut ? toggleOpenForm : null}
+                          actionMessage={searchRut ? 'Nuevo Trabajador' : null}
                         />
                       </>
                     ) : (
@@ -128,6 +145,15 @@ const AddEmployee = ({ open, onClose, loader, onAdd }) => {
             </Box>
           )}
         </Box>
+        {openForm && (
+          <EmployeeModal
+            open={openForm}
+            onClose={toggleOpenForm}
+            submitFunction={createNewEmployee}
+            successMessage="trabajador creado correctamente"
+            successFunction={afterCreating}
+          />
+        )}
       </Box>
     </Dialog>
   )

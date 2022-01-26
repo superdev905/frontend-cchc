@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography, makeStyles, Chip } from '@material-ui/core'
 import { LabeledRow, Text } from '../UI'
-import { formatDate, formatText } from '../../formatters'
+import { formatCurrency, formatDate, formatText } from '../../formatters'
 import { useToggle } from '../../hooks'
 import { FileThumbnail, FileVisor } from '../Shared'
 import StatusCard from './StatusCard'
@@ -98,19 +98,13 @@ const PostulationDetails = ({ loading }) => {
               <Typography className={classes.heading}>
                 Detalles de obra
               </Typography>
-              <LabeledRow label="Razón social:">
-                <Text loading={loading}>
-                  {application?.business.businessName}
-                </Text>
+              <LabeledRow label="Nombre:">
+                <Text loading={loading}>{application?.construction.name}</Text>
               </LabeledRow>
               <LabeledRow label="Dirección:">
-                <Text loading={loading}>{application?.business.address}</Text>
-              </LabeledRow>
-              <LabeledRow label="Correo:">
-                <Text loading={loading}>{application?.business.email}</Text>
-              </LabeledRow>
-              <LabeledRow label="Contacto obra:">
-                <Text loading={loading}>un contacto</Text>
+                <Text loading={loading}>
+                  {application?.construction.address}
+                </Text>
               </LabeledRow>
             </Box>
             {application && application.relatedBusiness && (
@@ -145,20 +139,25 @@ const PostulationDetails = ({ loading }) => {
               <Typography className={classes.heading}>Trabajador</Typography>
               <LabeledRow label="Nombres:">
                 <Text loading={loading}>
-                  {`${application?.employee.names} ${application?.employee.paternalSurname} ${application?.employee.maternalSurname}`}
+                  <a
+                    href={`/employee/${application?.employee.id}/info`}
+                    target="_blank"
+                  >{`${application?.employee.names} ${application?.employee.paternalSurname} ${application?.employee.maternalSurname}`}</a>
                 </Text>
               </LabeledRow>
               <LabeledRow label="Run:">
                 <Text loading={loading}>{application?.employee.run}</Text>
               </LabeledRow>
               <LabeledRow label="Renta:">
-                <Text loading={loading}>{application?.employee.salary}</Text>
+                <Text loading={loading}>
+                  {application && formatCurrency(application?.employeeSalary)}
+                </Text>
               </LabeledRow>
             </Box>
             <LabeledRow label="Antiguedad:">
-              <Text loading={loading}>
-                {application?.employee.timeServices}
-              </Text>
+              <Text
+                loading={loading}
+              >{`${application?.employeeSeniority} años`}</Text>
             </LabeledRow>
             <Box mt={2}>
               <Typography className={classes.heading}>Beneficiario</Typography>
@@ -221,7 +220,10 @@ const PostulationDetails = ({ loading }) => {
                 </Text>
               </LabeledRow>
               <LabeledRow label="Años de Carrera:">
-                <Text loading={loading}> {application?.careerYears}</Text>
+                <Text loading={loading}>
+                  {' '}
+                  {`${application?.careerDuration} años`}
+                </Text>
               </LabeledRow>
               <LabeledRow label="Puntaje PTU:">
                 <Text loading={loading}> {application?.psuScore}</Text>

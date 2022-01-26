@@ -38,12 +38,14 @@ const RevisionDialog = ({ open, onClose, successFunction }) => {
   const { open: openApprove, toggleOpen: toggleOpenApprove } = useToggle()
   const { open: openReject, toggleOpen: toggleOpenReject } = useToggle()
   const { open: openReview, toggleOpen: toggleOpenReview } = useToggle()
-
-  const getDisabledStatus = (status) => {
-    if (status === 'POR_REVISAR') return false
-    if (status === 'CREADA') return false
-    return true
-  }
+  const {
+    open: openCompleteDocuments,
+    toggleOpen: toggleOpenCompleteDocuments
+  } = useToggle()
+  const {
+    open: openAssignedScholarship,
+    toggleOpen: toggleOpenAssignedScholarship
+  } = useToggle()
 
   const handleRevisionError = (err, toggleFunction) => {
     setLoading(false)
@@ -52,20 +54,12 @@ const RevisionDialog = ({ open, onClose, successFunction }) => {
     setComments('')
   }
 
-  const getAction = (type) => {
-    const actions = {
-      APPROVE: scholarshipsActions.postulationApprove,
-      REJECT: scholarshipsActions.postulationApprove,
-      REVIEW: scholarshipsActions.postulationRevision
-    }
-    return actions[type]
-  }
-
-  const handleAction = (type, state, successMessage, toggleFunction) => {
+  const handleAction = (state, name, successMessage, toggleFunction) => {
     setLoading(true)
     dispatch(
-      getAction(type)(idPostulation, {
-        state,
+      scholarshipsActions.postulationChangeStatus(idPostulation, {
+        status: state,
+        name,
         date: new Date(),
         comments
       })
@@ -121,30 +115,30 @@ const RevisionDialog = ({ open, onClose, successFunction }) => {
               label="Comentarios"
               value={comments}
               onChange={(e) => setComments(e.target.value)}
-              readOnly={getDisabledStatus(application.revisionStatus.status)}
             />
           </Box>
           <Box textAlign="center">
-            <SubmitButton
-              variant="outlined"
-              disabled={Boolean(!comments) || comments.length < 50}
-              onClick={toggleOpenReview}
-            >
+            <SubmitButton variant="outlined" onClick={toggleOpenReview}>
               Solicitar Revisión
             </SubmitButton>
             <SubmitButton
-              danger
-              onClick={toggleOpenReject}
-              disabled={getDisabledStatus(application.revisionStatus.status)}
+              variant="outlined"
+              onClick={toggleOpenCompleteDocuments}
             >
-              Rechazar
+              Documentación Completa
             </SubmitButton>
             <SubmitButton
-              disabled={getDisabledStatus(application.revisionStatus.status)}
-              onClick={toggleOpenApprove}
+              variant="outlined"
+              onClick={toggleOpenAssignedScholarship}
             >
-              Aprobar
+              Beca Asignada
             </SubmitButton>
+          </Box>
+          <Box textAlign="center">
+            <SubmitButton danger onClick={toggleOpenReject}>
+              Rechazar
+            </SubmitButton>
+            <SubmitButton onClick={toggleOpenApprove}>Aprobar</SubmitButton>
           </Box>
         </Grid>
         <Grid item xs={12} lg={5}>
@@ -164,8 +158,8 @@ const RevisionDialog = ({ open, onClose, successFunction }) => {
           message={<span>¿Estás seguro de aprobar esta postulación? </span>}
           onConfirm={() =>
             handleAction(
-              'APPROVE',
-              'APROBADA',
+              'BECA_APROBADA',
+              'Beca aprobada',
               'Postulación aprobada con éxito',
               toggleOpenApprove
             )
@@ -182,8 +176,8 @@ const RevisionDialog = ({ open, onClose, successFunction }) => {
           message={<span>¿Estás seguro de rechazar esta postulación? </span>}
           onConfirm={() =>
             handleAction(
-              'REJECT',
               'RECHAZADA',
+              'Rechazada',
               'Postulación rechazada',
               toggleOpenReject
             )
@@ -205,9 +199,47 @@ const RevisionDialog = ({ open, onClose, successFunction }) => {
           }
           onConfirm={() =>
             handleAction(
-              'REVIEW',
-              'POR REVISAR',
+              'REVISION',
+              'Revisión',
               'Se solicitó revisón de la postulación',
+              toggleOpenReject
+            )
+          }
+        />
+      )}
+
+      {openCompleteDocuments && (
+        <ConfirmDelete
+          event="COMPLETEDOCUMENTS"
+          open={openCompleteDocuments}
+          success={success}
+          confirmText="Documentación Completa"
+          onClose={toggleOpenCompleteDocuments}
+          message={<span>¿La documentación se encuentra completa? </span>}
+          onConfirm={() =>
+            handleAction(
+              'DOCUMENTACION_COMPLETA',
+              'Documentación completa',
+              'Se solicitó revisón de la postulación',
+              toggleOpenReject
+            )
+          }
+        />
+      )}
+
+      {openAssignedScholarship && (
+        <ConfirmDelete
+          event="ASSIGNEDSCHOLARSHIP"
+          open={openAssignedScholarship}
+          success={success}
+          confirmText="Asignar Beca"
+          onClose={toggleOpenAssignedScholarship}
+          message={<span>¿Está seguro de asignar ésta beca? </span>}
+          onConfirm={() =>
+            handleAction(
+              'BECA_ASIGNADA',
+              'Beca asignada',
+              'Beca asignada exitosamente',
               toggleOpenReject
             )
           }

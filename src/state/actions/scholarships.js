@@ -122,10 +122,10 @@ const deletePostulation = (id, values) => () =>
       })
   })
 
-const postulationApprove = (id, values) => () =>
+const postulationChangeStatus = (id, values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(
-      `${config.services.scholarship}/postulations/${id}/approve`,
+      `${config.services.scholarship}/postulations/${id}/change-status`,
       values
     )
       .then((response) => {
@@ -159,36 +159,6 @@ const getBenefits =
 const createBenefit = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.scholarship}/benefits`, values)
-      .then((response) => {
-        const { data } = response
-        resolve(data)
-      })
-      .catch((err) => {
-        reject(err.response.data.detail)
-      })
-  })
-
-const postulationReject = (id, values) => () =>
-  new Promise((resolve, reject) => {
-    Axios.post(
-      `${config.services.scholarship}/postulations/${id}/reject`,
-      values
-    )
-      .then((response) => {
-        const { data } = response
-        resolve(data)
-      })
-      .catch((err) => {
-        reject(err.response.data.detail)
-      })
-  })
-
-const postulationRevision = (id, values) => () =>
-  new Promise((resolve, reject) => {
-    Axios.post(
-      `${config.services.scholarship}/postulations/${id}/request-revision`,
-      values
-    )
       .then((response) => {
         const { data } = response
         resolve(data)
@@ -336,6 +306,46 @@ const patchSalaryLiquidation = (id, values) => () =>
       })
   })
 
+const getSummary = (query) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.scholarship}/dashboard/summary?${queryString.stringify(
+        query
+      )}`
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scholarshipTypes.SCHOLARSHIP_DASH_SUMMARY,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getStatsByType = (query) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.scholarship}/dashboard/stats?${queryString.stringify(
+        query
+      )}`
+    )
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: scholarshipTypes.SCHOLARSHIP_DASH_STATS,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const scholarshipsActions = {
   updateCreate,
   toggleCreateModal,
@@ -350,15 +360,15 @@ const scholarshipsActions = {
   createBenefit,
   updatePostulation,
   deletePostulation,
-  postulationApprove,
-  postulationReject,
-  postulationRevision,
   getApplicationRevisions,
   createSalaryLiquidation,
   getSalaryLiquidation,
   getAllSalaryLiquidations,
   updateSalaryLiquidation,
-  patchSalaryLiquidation
+  patchSalaryLiquidation,
+  getStatsByType,
+  getSummary,
+  postulationChangeStatus
 }
 
 export default scholarshipsActions

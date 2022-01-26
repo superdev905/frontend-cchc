@@ -3,8 +3,8 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, Grid, Typography, InputLabel } from '@material-ui/core'
-import { Alert } from '@material-ui/lab'
+import { Box, Grid, Typography, InputLabel, TextField } from '@material-ui/core'
+import { Alert, Autocomplete } from '@material-ui/lab'
 import {
   DatePicker,
   Dialog,
@@ -120,6 +120,18 @@ const HousingForm = ({
     }
   })
 
+  const onSpecialtySelect = (__, value) => {
+    if (value) {
+      formik.setFieldValue('specialty_id', value.id)
+    }
+  }
+
+  const onSubSpecialtySelect = (__, value) => {
+    if (value) {
+      formik.setFieldValue('specialty_detail_id', value.id)
+    }
+  }
+
   useEffect(() => {
     if (formik.values.is_certificated === 'NO') {
       setIsCertified(false)
@@ -159,56 +171,65 @@ const HousingForm = ({
         <Box p={2}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <Select
-                label="Especialidad"
-                required
-                name="specialty_id"
-                onChange={formik.handleChange}
-                value={formik.values.specialty_id}
-                required
-                error={
-                  formik.touched.specialty_id &&
-                  Boolean(formik.errors.specialty_id)
+              <Autocomplete
+                options={specList}
+                value={
+                  specList[
+                    specList.findIndex(
+                      (item) => item.id === formik.values.specialty_id
+                    )
+                  ] || ''
                 }
-                helperText={
-                  formik.touched.specialty_id && formik.errors.specialty_id
-                }
-              >
-                <option value="">SELECCIONE OPCIÓN</option>
-                {specList.map((item, index) => (
-                  <option key={`specialty_id--${index}`} value={`${item.id}`}>
-                    {`${item.description}`}
-                  </option>
-                ))}
-              </Select>
+                getOptionSelected={(option, value) => option.id === value.id}
+                getOptionLabel={(option) => option.description}
+                onChange={onSpecialtySelect}
+                required
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Especialidad *"
+                    placeholder="SELECCIONE ESPECIALIDAD"
+                    error={
+                      formik.touched.specialty_id &&
+                      Boolean(formik.errors.specialty_id)
+                    }
+                    helperText={
+                      formik.touched.specialty_id && formik.errors.specialty_id
+                    }
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={12} md={6}>
-              <Select
-                label="Detalle de Especialidad"
-                required
-                name="specialty_detail_id"
-                onChange={formik.handleChange}
-                value={formik.values.specialty_detail_id}
-                required
-                error={
-                  formik.touched.specialty_detail_id &&
-                  Boolean(formik.errors.specialty_detail_id)
+              <Autocomplete
+                options={subSpec}
+                value={
+                  subSpec[
+                    subSpec.findIndex(
+                      (item) => item.id === formik.values.specialty_detail_id
+                    )
+                  ] || ''
                 }
-                helperText={
-                  formik.touched.specialty_detail_id &&
-                  formik.errors.specialty_detail_id
-                }
-              >
-                <option value="">SELECCIONE OPCIÓN</option>
-                {subSpec.map((item, index) => (
-                  <option
-                    key={`specialty_detail--${index}`}
-                    value={`${item.id}`}
-                  >
-                    {`${item.description}`}
-                  </option>
-                ))}
-              </Select>
+                getOptionSelected={(option, value) => option.id === value.id}
+                getOptionLabel={(option) => option.description}
+                onChange={onSubSpecialtySelect}
+                required
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Detalle de Especialidad *"
+                    placeholder="SELECCIONE OPCIÓN"
+                    error={
+                      formik.touched.specialty_detail_id &&
+                      Boolean(formik.errors.specialty_detail_id)
+                    }
+                    helperText={
+                      formik.touched.specialty_detail_id &&
+                      formik.errors.specialty_detail_id
+                    }
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={12} md={6}>
               <Select

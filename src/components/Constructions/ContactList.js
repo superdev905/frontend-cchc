@@ -95,7 +95,7 @@ const ContactList = ({ ...props }) => {
         onClose={toggleOpen}
         submitFunction={onCreateContact}
         successFunc={fetchContacts}
-        successMessage="Contacto de obra creado con éxito"
+        successMessage="Interlocutor de obra creado con éxito"
       />
       {currentContact && openUpdate && (
         <ContactModal
@@ -105,7 +105,7 @@ const ContactList = ({ ...props }) => {
           onClose={toggleOpenUpdate}
           submitFunction={onEditContact}
           successFunc={fetchContacts}
-          successMessage="Contacto de obra actualizado con éxito"
+          successMessage="Interlocutor de obra actualizado con éxito"
         />
       )}
       {currentContact && openDelete && (
