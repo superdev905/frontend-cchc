@@ -42,7 +42,10 @@ const validationSchema = Yup.object().shape({
   charge_id: Yup.string('Seleccione cargo').nullable(),
   role_id: Yup.number('Seleccione rol').required('Seleccione rol'),
   charge_name: Yup.string(),
-  is_administrator: Yup.bool(),
+  is_administrator: Yup.bool()
+})
+
+const validationSchemaUpdate = Yup.object().shape({
   password: Yup.string()
     .min(8, 'La contraseña debe tener 8 caracteres como mínimo')
     .required('Ingrese contraseña'),
@@ -80,7 +83,7 @@ const Form = ({
     validationSchema:
       type === 'ADD'
         ? validationSchema.concat(createValidation)
-        : validationSchema,
+        : validationSchema.concat(validationSchemaUpdate),
     initialValues: {
       names: type !== 'ADD' ? data.names : '',
       maternal_surname: type !== 'ADD' ? data.maternal_surname : '',
