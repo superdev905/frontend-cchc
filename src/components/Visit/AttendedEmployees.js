@@ -16,7 +16,7 @@ import JobsDialog from './JobsDialog'
 import ConfirmationDialog from './ConfirmationDialog'
 import { EmployeeForm } from '../Employees'
 
-const List = () => {
+const List = ({ isDisabled = false }) => {
   const dispatch = useDispatch()
   const { idVisit } = useParams()
   const history = useHistory()
@@ -61,6 +61,7 @@ const List = () => {
       <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}>
         No se encontraron trabajadores
         <Button
+          disabled={isDisabled}
           onClick={() => {
             dispatch(uiActions.setCurrentModule('EMPRESAS'))
             toggleOpenJEmployeeForm()
@@ -190,6 +191,7 @@ const List = () => {
             <Grid item xs={12} md={4}>
               <TextField
                 label="Buscar trabajador"
+                disabled={isDisabled}
                 placeholder="Rut"
                 value={searchUser}
                 onChange={(e) => {

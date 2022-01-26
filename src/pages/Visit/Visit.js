@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 import { Box, IconButton } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
@@ -19,6 +19,7 @@ const Visit = () => {
   const [loading, setLoading] = useState(false)
   const { idVisit } = useParams()
   const history = useHistory()
+  const { visit } = useSelector((state) => state.assistance)
 
   const goBack = () => {
     history.goBack()
@@ -45,7 +46,15 @@ const Visit = () => {
       <VisitDetails fetching={loading} fetchDetails={getDetails} />
 
       <ContactList />
-      <AttendedEmployees />
+      <AttendedEmployees
+        isDisabled={
+          visit?.status === 'CANCELADA' ||
+          visit?.status === 'TERMINADA' ||
+          visit?.is_close_pending ||
+          visit?.is_close ||
+          visit?.is_close_pending
+        }
+      />
       <AttendEmployees />
       <ConstructionAttend />
       <VisitStatistics />
