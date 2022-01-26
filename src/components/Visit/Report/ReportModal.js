@@ -114,7 +114,7 @@ const ReportModal = ({
   }
 
   const getItemsValidation = () =>
-    reportItems.filter((item) => !item.value).length > 0
+    reportItems.filter((item) => item.value === '').length > 0
 
   useEffect(() => {
     if (open) {
@@ -251,7 +251,7 @@ const ReportModal = ({
                           type="number"
                           value={item.value}
                           onChange={(e) => handleChangeItem(e, item.itemId)}
-                          error={item.value === 0 || Boolean(!item.value)}
+                          error={item.value === ''}
                         />
                       </Grid>
                     </Grid>

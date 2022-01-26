@@ -2,21 +2,25 @@ import { useEffect, useState } from 'react'
 import { Box, Checkbox, Grid, Typography } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
-import { Button, Select, SubmitButton, TextField } from '../../UI'
+import { Button, SubmitButton, TextField } from '../../UI'
 import coursesActions from '../../../state/actions/courses'
 import { ConfirmDelete, DataTable, Dialog } from '../../Shared'
 import { useSuccess, useToggle } from '../../../hooks'
 import { formatDate } from '../../../formatters'
 
-const AssistanceDialog = ({ open, onClose, idCourse }) => {
+const AssistanceDialog = ({
+  open,
+  onClose,
+  idCourse,
+  lecture,
+  successFunction
+}) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
   const [loading, setLoading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [list, setList] = useState([])
-  const [lectures, setLectures] = useState([])
-  const [lectureId, setLectureId] = useState('')
   const { studentsCourse: studentList } = useSelector((state) => state.courses)
   const { success, changeSuccess } = useSuccess()
   const { open: openConfirm, toggleOpen: toggleOpenConfirm } = useToggle()
@@ -34,27 +38,20 @@ const AssistanceDialog = ({ open, onClose, idCourse }) => {
     setList(updatedList)
   }
 
-  const getCourseClasses = () => {
-    dispatch(coursesActions.getClasses({ courseId: idCourse })).then(
-      (result) => {
-        setLectures(result.items)
-      }
-    )
-  }
-
   const registerAttendance = () => {
     const data = list.map((item) => ({
       isPresent: item.isPresent,
       studentId: item.studentId
     }))
     setIsSubmitting(true)
-    dispatch(coursesActions.createAttendance(lectureId, { students: data }))
+    dispatch(coursesActions.createAttendance(lecture.id, { students: data }))
       .then(() => {
         setIsSubmitting(false)
         changeSuccess(true, () => {
           toggleOpenConfirm()
           onClose()
           enqueueSnackbar('Asistencia registrada', { variant: 'success' })
+          successFunction()
         })
       })
       .catch((err) => {
@@ -67,7 +64,7 @@ const AssistanceDialog = ({ open, onClose, idCourse }) => {
   useEffect(() => {
     setList(
       studentList.map((item) => ({
-        isPresent: false,
+        isPresent: true,
         studentId: item.student.id,
         ...item
       }))
@@ -77,7 +74,6 @@ const AssistanceDialog = ({ open, onClose, idCourse }) => {
   useEffect(() => {
     if (open) {
       fetchStudentList()
-      getCourseClasses()
     }
   }, [open])
 
@@ -103,21 +99,11 @@ const AssistanceDialog = ({ open, onClose, idCourse }) => {
                 <TextField label="Fecha" value={formatDate(new Date())} />
               </Grid>
               <Grid item xs={12} md={6}>
-                <Select
+                <TextField
                   label={'Clase'}
-                  required
-                  value={lectureId}
-                  onChange={(e) => {
-                    setLectureId(e.target.value)
-                  }}
-                >
-                  <option value="">SELECCIONE CLASE</option>
-                  {lectures.map((item) => (
-                    <option key={`classes-option-${item.id}`} value={item.id}>
-                      {`${item.name}: ${item.title}`}
-                    </option>
-                  ))}
-                </Select>
+                  value={lecture.name}
+                  inputProps={{ readOnly: true }}
+                />
               </Grid>
             </Grid>
           </Box>
@@ -154,7 +140,7 @@ const AssistanceDialog = ({ open, onClose, idCourse }) => {
           <Button onClick={onClose} variant="outlined">
             Cancelar
           </Button>
-          <SubmitButton disabled={!lectureId} onClick={toggleOpenConfirm}>
+          <SubmitButton onClick={toggleOpenConfirm}>
             Registrar asistencia
           </SubmitButton>
         </Box>
