@@ -21,9 +21,12 @@ const Construction = () => {
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [restoring, setRestoring] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openRestore, toggleOpen: toggleOpenRestore } = useToggle()
+  const { open: openSuspend, toggleOpen: toggleOpenSuspend } = useToggle()
+  const { open: openActive, toggleOpen: toggleOpenActive } = useToggle()
   const { success, changeSuccess } = useSuccess()
   const { construction } = useSelector((state) => state.constructions)
 
@@ -66,6 +69,22 @@ const Construction = () => {
       })
   }
 
+  const handleAction = (id, status, successFunction) => {
+    setSubmitting(true)
+    dispatch(
+      constructionActions.patchConstruction(id, { is_suspended: status })
+    )
+      .then(() => {
+        setSubmitting(false)
+        changeSuccess(true)
+        successFunction()
+        getConstructionDetails()
+      })
+      .catch(() => {
+        setSubmitting(false)
+      })
+  }
+
   const goBack = () => {
     history.goBack()
   }
@@ -95,6 +114,20 @@ const Construction = () => {
           </Text>
         </Box>
         <Box>
+          {construction && (
+            <>
+              <Button
+                danger={!construction?.is_suspended}
+                onClick={
+                  construction?.is_suspended
+                    ? toggleOpenActive
+                    : toggleOpenSuspend
+                }
+              >
+                {construction?.is_suspended ? 'Activar' : 'Suspender'}
+              </Button>{' '}
+            </>
+          )}
           <Can
             availableTo={['ADMIN']}
             yes={() => (
@@ -145,6 +178,43 @@ const Construction = () => {
           message={
             <Typography variant="h6">
               ¿Estás seguro de restaurar
+              <strong> {construction.name}</strong>?
+            </Typography>
+          }
+        />
+      )}
+      {construction && openSuspend && (
+        <ConfirmDelete
+          confirmText={'Suspender'}
+          open={openSuspend}
+          onClose={toggleOpenSuspend}
+          loading={submitting}
+          success={success}
+          onConfirm={() =>
+            handleAction(construction.id, true, toggleOpenSuspend)
+          }
+          message={
+            <Typography variant="h6">
+              ¿Estás seguro de suspender
+              <strong> {construction.name}</strong>?
+            </Typography>
+          }
+        />
+      )}
+      {construction && openActive && (
+        <ConfirmDelete
+          event={'ACTIVE'}
+          confirmText={'Activar'}
+          open={openActive}
+          onClose={toggleOpenActive}
+          loading={submitting}
+          success={success}
+          onConfirm={() =>
+            handleAction(construction.id, false, toggleOpenActive)
+          }
+          message={
+            <Typography variant="h6">
+              ¿Estás seguro de activar
               <strong> {construction.name}</strong>?
             </Typography>
           }
