@@ -10,8 +10,12 @@ import {
   FormControlLabel,
   FormHelperText,
   Radio,
-  Avatar
+  Avatar,
+  Switch
 } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
+import RowAutocomplete from './RowAutocomplete'
+import EmployeeRow from './EmployeeRow'
 import { ConfirmDelete, Dialog, FilePicker } from '../../Shared'
 import {
   Button,
@@ -20,10 +24,13 @@ import {
   InputLabel,
   TextArea,
   LabeledRow,
-  EmptyState
+  EmptyState,
+  TextField
 } from '../../UI'
 import commonActions from '../../../state/actions/common'
 import filesActions from '../../../state/actions/files'
+import employeeActions from '../../../state/actions/employees'
+import generateColor from '../../../utils/generateColor'
 import { AttentionStatus } from '../../../config'
 import { formatDate, formatHours } from '../../../formatters'
 import { useSuccess, useToggle } from '../../../hooks'
@@ -68,8 +75,29 @@ const WorkerInterventionRecord = ({
     activity: null
   })
   const [selectedPlans, setSelectedPlans] = useState([])
+  const [beneficiaryList, setBeneficiaryList] = useState([])
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState(null)
   const { open: openBenefit, toggleOpen: toggleOpenBenefit } = useToggle()
   const { open: openConfirm, toggleOpen: toggleOpenConfirm } = useToggle()
+
+  const fetchBeneficiaryList = () => {
+    dispatch(employeeActions.getEmployeeRelatives(employee.run)).then(
+      (result) => {
+        setBeneficiaryList(
+          [{ ...employee, isRelative: false }]
+            .concat(result.map((item) => ({ ...item, isRelative: true })))
+            .map((item) => ({
+              ...item,
+              avatarBg: generateColor()
+            }))
+        )
+      }
+    )
+  }
+
+  useEffect(() => {
+    fetchBeneficiaryList()
+  }, [employee])
 
   const handleActivityCreate = (benefit, activity, assistanceId) => {
     dispatch(
@@ -126,7 +154,10 @@ const WorkerInterventionRecord = ({
       typeRequest: type === 'UPDATE' ? data.typeRequest : '',
       observation: type === 'UPDATE' ? data.observation : '',
       attached_url: type === 'UPDATE' ? data.attached_url : '',
-      attached_key: type === 'UPDATE' ? data.attached_url : ''
+      attached_key: type === 'UPDATE' ? data.attached_url : '',
+      attention_beneficiary:
+        type === 'UPDATE' ? data.attention_beneficiary : '',
+      beneficiary_selected: type === 'UPDATE' ? data.beneficiary_selected : ''
     },
     onSubmit: async (values) => {
       const attachmentsList = []
@@ -604,6 +635,59 @@ const WorkerInterventionRecord = ({
               </Grid>
             )}
 
+            <Grid item xs={12} md={2}>
+              <InputLabel>Atención a beneficiario?</InputLabel>
+              <FormControlLabel
+                control={
+                  <Switch
+                    color="primary"
+                    checked={formik.values.attention_beneficiary}
+                    onChange={(e) => {
+                      formik.setFieldValue(
+                        'attention_beneficiary',
+                        e.target.checked
+                      )
+                    }}
+                  />
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Box>
+                {formik.values.attention_beneficiary && (
+                  <Grid item xs={12} md={12}>
+                    <Typography>Beneficario</Typography>
+                    {selectedBeneficiary ? (
+                      <EmployeeRow
+                        option={selectedBeneficiary}
+                        onDelete={() => setSelectedBeneficiary(null)}
+                      />
+                    ) : (
+                      <Autocomplete
+                        required
+                        options={beneficiaryList}
+                        value={formik.values.beneficiary_selected}
+                        getOptionLabel={(option) => option.names || ''}
+                        onChange={(__, option) => {
+                          setSelectedBeneficiary(option)
+                          formik.setFieldValue(
+                            'beneficiary_selected',
+                            option.id
+                          )
+                        }}
+                        required
+                        renderOption={(option) => (
+                          <RowAutocomplete option={option} />
+                        )}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+                    )}
+                  </Grid>
+                )}
+              </Box>
+            </Grid>
+
             <Grid item xs={12} md={12} lg={12}>
               <Box>
                 <Box mb={2}>
@@ -855,6 +939,11 @@ const WorkerInterventionRecord = ({
               </LabeledRow>
               <LabeledRow label="Caso social:">
                 {formik.values.is_social_case}
+              </LabeledRow>
+              <LabeledRow label="Atención para:">
+                {selectedBeneficiary?.names}{' '}
+                {selectedBeneficiary?.paternal_surname}{' '}
+                {selectedBeneficiary?.maternal_surname}
               </LabeledRow>
             </Box>
           }
