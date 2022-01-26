@@ -32,6 +32,7 @@ const Details = ({ ...props }) => {
   const [currentConstruction, setCurrentConstruction] = useState(null)
   const { success, changeSuccess } = useSuccess()
   const [submitting, setSubmitting] = useState(false)
+  const { user } = useSelector((state) => state.auth)
 
   const onEditClick = (construction) => {
     setCurrentConstruction(construction)
@@ -175,15 +176,18 @@ const Details = ({ ...props }) => {
                     {...row}
                     disabledDelete={row.state === 'DELETED'}
                     onEdit={() => onEditClick(row)}
-                    onDelete={() => onDelete(row)}
+                    onDelete={
+                      row.state !== 'DELETED' ? () => onDelete(row) : null
+                    }
                     onView={() => {
                       props.history.push(`/obras/${row.id}`)
                     }}
                     moreOptions={
-                      query.state === 'DELETED'
+                      query.state === 'DELETED' && user.role.key === 'ADMIN'
                         ? [
                             {
                               icon: <RestoreIcon color="primary" />,
+
                               onClick: () => {
                                 setCurrentConstruction(row)
                                 toggleOpenRestore()

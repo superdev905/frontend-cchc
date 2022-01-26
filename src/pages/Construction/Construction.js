@@ -12,6 +12,7 @@ import {
 } from '../../components/Constructions'
 import { ConfirmDelete } from '../../components/Shared'
 import { useSuccess, useToggle } from '../../hooks'
+import Can from '../../components/Can'
 
 const Construction = () => {
   const dispatch = useDispatch()
@@ -94,9 +95,17 @@ const Construction = () => {
           </Text>
         </Box>
         <Box>
-          {construction?.state === 'DELETED' && (
-            <Button onClick={toggleOpenRestore}>Restaurar</Button>
-          )}
+          <Can
+            availableTo={['ADMIN']}
+            yes={() => (
+              <>
+                {construction?.state === 'DELETED' && (
+                  <Button onClick={toggleOpenRestore}>Restaurar</Button>
+                )}
+              </>
+            )}
+            no={() => null}
+          />
           <Button
             danger
             disabled={construction?.state === 'DELETED'}
