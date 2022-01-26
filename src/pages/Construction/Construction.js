@@ -19,8 +19,10 @@ const Construction = () => {
   const history = useHistory()
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [restoring, setRestoring] = useState(false)
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
+  const { open: openRestore, toggleOpen: toggleOpenRestore } = useToggle()
   const { success, changeSuccess } = useSuccess()
   const { construction } = useSelector((state) => state.constructions)
 
@@ -46,6 +48,20 @@ const Construction = () => {
       })
       .catch(() => {
         setDeleting(false)
+      })
+  }
+
+  const restoreConstruction = (id) => {
+    setRestoring(true)
+    dispatch(constructionActions.patchConstruction(id, { state: 'CREATED' }))
+      .then(() => {
+        setRestoring(false)
+        changeSuccess(true)
+        toggleOpenRestore()
+        getConstructionDetails()
+      })
+      .catch(() => {
+        setRestoring(false)
       })
   }
 
@@ -78,6 +94,9 @@ const Construction = () => {
           </Text>
         </Box>
         <Box>
+          {construction?.state === 'DELETED' && (
+            <Button onClick={toggleOpenRestore}>Restaurar</Button>
+          )}
           <Button
             danger
             disabled={construction?.state === 'DELETED'}
@@ -100,6 +119,23 @@ const Construction = () => {
           message={
             <Typography variant="h6">
               ¿Estás seguro de eliminar
+              <strong> {construction.name}</strong>?
+            </Typography>
+          }
+        />
+      )}
+      {construction && openRestore && (
+        <ConfirmDelete
+          event="RESTORE"
+          confirmText={'Restaurar'}
+          open={openRestore}
+          onClose={toggleOpenRestore}
+          loading={restoring}
+          success={success}
+          onConfirm={() => restoreConstruction(construction.id)}
+          message={
+            <Typography variant="h6">
+              ¿Estás seguro de restaurar
               <strong> {construction.name}</strong>?
             </Typography>
           }

@@ -96,7 +96,11 @@ const ConstructionModal = ({
         type === 'UPDATE' ? construction?.billing_business_id : ''
     },
     onSubmit: (values, { resetForm }) => {
-      const data = { ...values }
+      const data = {
+        ...values,
+        name: values.name.toUpperCase(),
+        address: values.address.toUpperCase()
+      }
       if (selectClient) {
         data.business_id = parseInt(values.business_selected_id, 10)
       }
