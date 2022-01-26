@@ -30,7 +30,7 @@ import {
 import commonActions from '../../../state/actions/common'
 import filesActions from '../../../state/actions/files'
 import employeeActions from '../../../state/actions/employees'
-import generateColor from '../../../utils/generateColor'
+import generateColor, { COLORS } from '../../../utils/generateColor'
 import { AttentionStatus } from '../../../config'
 import { formatDate, formatHours } from '../../../formatters'
 import { useSuccess, useToggle } from '../../../hooks'
@@ -85,8 +85,8 @@ const WorkerInterventionRecord = ({
     dispatch(employeeActions.getEmployeeRelatives(employee.run)).then(
       (result) => {
         setBeneficiaryList(
-          [{ ...employee, isRelative: false }]
-            .concat(result.map((item) => ({ ...item, isRelative: true })))
+          result
+            .map((item) => ({ ...item, isRelative: true }))
             .map((item) => ({
               ...item,
               avatarBg: generateColor()
@@ -155,6 +155,10 @@ const WorkerInterventionRecord = ({
       observation: type === 'UPDATE' ? data.observation : '',
       attached_url: type === 'UPDATE' ? data.attached_url : '',
       attached_key: type === 'UPDATE' ? data.attached_url : '',
+      attended_id: type === 'UPDATE' ? data.attended_id : '',
+      attended_name: type === 'UPDATE' ? data.attended_name : '',
+      is_attended_relative:
+        type === 'UPDATE' ? data.is_attended_relative : false,
       attention_beneficiary:
         type === 'UPDATE' ? data.attention_beneficiary : '',
       beneficiary_selected: type === 'UPDATE' ? data.beneficiary_selected : ''
@@ -324,6 +328,15 @@ const WorkerInterventionRecord = ({
   }, [formik.values.case_id, casesForSelect])
 
   useEffect(() => {
+    formik.setFieldValue('attended_id', employee.id)
+    formik.setFieldValue(
+      'attended_name',
+      `${employee.names} ${employee.paternal_surname}`.toUpperCase()
+    )
+    setSelectedBeneficiary(employee)
+  }, [employee])
+
+  useEffect(() => {
     if (formik.values.area_id && areas.length > 0) {
       handleSelectChange({
         target: { name: 'area', value: formik.values.area_id }
@@ -393,6 +406,97 @@ const WorkerInterventionRecord = ({
                 </LabeledRow>
               </Box>
             </Grid>
+            <Grid item xs={12}>
+              <Box mb={1}>
+                <Typography>
+                  <strong>Trabajador </strong>
+                </Typography>
+              </Box>
+              <Box>
+                <EmployeeRow
+                  selectable={false}
+                  option={{ ...employee, avatarBg: COLORS[1] }}
+                />
+                <Box my={2}>
+                  <InputLabel>¿Atender a familiar?</InputLabel>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        color="primary"
+                        checked={formik.values.is_attended_relative}
+                        onChange={(e) => {
+                          formik.setFieldValue(
+                            'is_attended_relative',
+                            e.target.checked
+                          )
+                          if (e.target.checked) {
+                            setSelectedBeneficiary(null)
+                            formik.setFieldValue('attended_id', '')
+                            formik.setFieldValue('attended_name', '')
+                          } else {
+                            setSelectedBeneficiary(employee)
+                          }
+                        }}
+                      />
+                    }
+                  />
+                </Box>
+                {!formik.values.is_attended_relative && selectedBeneficiary && (
+                  <Box>
+                    <Box mt={1}>
+                      <InputLabel>Persona atendida</InputLabel>
+                    </Box>
+                    <EmployeeRow
+                      option={{ ...selectedBeneficiary, avatarBg: COLORS[1] }}
+                    />
+                  </Box>
+                )}
+                {formik.values.is_attended_relative && (
+                  <Grid item xs={12} md={12}>
+                    {selectedBeneficiary ? (
+                      <Box>
+                        <Box mt={1}>
+                          <InputLabel>Persona atendida</InputLabel>
+                        </Box>
+                        <EmployeeRow
+                          option={selectedBeneficiary}
+                          onDelete={() => setSelectedBeneficiary(null)}
+                        />
+                      </Box>
+                    ) : (
+                      <Box>
+                        <Autocomplete
+                          required
+                          options={beneficiaryList}
+                          value={formik.values.beneficiary_selected}
+                          getOptionLabel={(option) => option.names || ''}
+                          onChange={(__, option) => {
+                            setSelectedBeneficiary(option)
+                            formik.setFieldValue('attended_id', option.id)
+                            formik.setFieldValue(
+                              'attended_name',
+                              `${option.names} ${option.paternal_surname}`.toUpperCase()
+                            )
+                          }}
+                          required
+                          renderOption={(option) => (
+                            <RowAutocomplete option={option} />
+                          )}
+                          noOptionsText="Este trabajador no tiene familiares"
+                          renderInput={(params) => (
+                            <TextField
+                              label={'Seleccione familiar'}
+                              {...params}
+                            />
+                          )}
+                        />
+                      </Box>
+                    )}
+                  </Grid>
+                )}
+              </Box>
+            </Grid>
+
             <Grid item xs={12}>
               <Typography>
                 <strong>Complete los siguientes campos</strong>
@@ -635,60 +739,6 @@ const WorkerInterventionRecord = ({
                 />
               </Grid>
             )}
-
-            <Grid item xs={12} md={2}>
-              <InputLabel>Atención a beneficiario?</InputLabel>
-              <FormControlLabel
-                control={
-                  <Switch
-                    color="primary"
-                    checked={formik.values.attention_beneficiary}
-                    onChange={(e) => {
-                      formik.setFieldValue(
-                        'attention_beneficiary',
-                        e.target.checked
-                      )
-                    }}
-                  />
-                }
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Box>
-                {formik.values.attention_beneficiary && (
-                  <Grid item xs={12} md={12}>
-                    <Typography>Beneficario</Typography>
-                    {selectedBeneficiary ? (
-                      <EmployeeRow
-                        option={selectedBeneficiary}
-                        onDelete={() => setSelectedBeneficiary(null)}
-                      />
-                    ) : (
-                      <Autocomplete
-                        required
-                        options={beneficiaryList}
-                        value={formik.values.beneficiary_selected}
-                        getOptionLabel={(option) => option.names || ''}
-                        onChange={(__, option) => {
-                          setSelectedBeneficiary(option)
-                          formik.setFieldValue(
-                            'beneficiary_selected',
-                            option.id
-                          )
-                        }}
-                        required
-                        renderOption={(option) => (
-                          <RowAutocomplete option={option} />
-                        )}
-                        renderInput={(params) => <TextField {...params} />}
-                      />
-                    )}
-                  </Grid>
-                )}
-              </Box>
-            </Grid>
-
             <Grid item xs={12} md={12} lg={12}>
               <Box>
                 <Box mb={2}>
