@@ -38,6 +38,11 @@ const Details = ({ loading }) => {
                   <StatusChip label="Esta obra fue eliminada" error />
                 </Box>
               )}
+              {construction && construction.is_suspended && (
+                <Box marginBottom="10px">
+                  <StatusChip label="Esta obra fue suspendida" error />
+                </Box>
+              )}
 
               <Typography className={classes.heading}>Información</Typography>
               <Box>

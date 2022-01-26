@@ -14,7 +14,8 @@ export const benefitSchema = Yup.object().shape({
   totalCost: Yup.number('Ingrese número valido')
     .min(1, 'La cantidad minima debe ser 1')
     .required('Ingrese costo total'),
-  isCourse: Yup.bool()
+  isCourse: Yup.bool(),
+  areaId: Yup.number('Selecciona una area')
 })
 
 export const courseSchema = Yup.object().shape({

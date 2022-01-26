@@ -81,17 +81,23 @@ const patchEmployee = (id, values) => () =>
         reject(err.response.data.detail)
       })
   })
-const getAttachments = (id) => () =>
-  new Promise((resolve, reject) => {
-    Axios.get(`${config.services.employee}/employees/${id}/attachments`)
-      .then((response) => {
-        const { data } = response
-        resolve(data)
-      })
-      .catch((err) => {
-        reject(err.response.data.detail)
-      })
-  })
+const getAttachments =
+  (id, query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.employee
+        }/employees/${id}/attachments?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
 
 const createRelative = (values) => () =>
   new Promise((resolve, reject) => {

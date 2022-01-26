@@ -4,7 +4,6 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { capitalize } from 'lodash'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Dialog } from '../../../Shared'
 import { Button, Select, SubmitButton } from '../../../UI'
@@ -99,7 +98,7 @@ const CourseStatus = ({
               >
                 <option value="">SELECCINE ESTADO DE ESTUDIANTE</option>
                 {statusStudentList.map((item) => (
-                  <option value={item}>{capitalize(item)}</option>
+                  <option value={item}>{item}</option>
                 ))}
               </Select>
             </Grid>

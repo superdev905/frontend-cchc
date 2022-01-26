@@ -12,6 +12,7 @@ import {
 } from '../../components/Constructions'
 import { ConfirmDelete } from '../../components/Shared'
 import { useSuccess, useToggle } from '../../hooks'
+import Can from '../../components/Can'
 
 const Construction = () => {
   const dispatch = useDispatch()
@@ -19,8 +20,13 @@ const Construction = () => {
   const history = useHistory()
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [restoring, setRestoring] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
+  const { open: openRestore, toggleOpen: toggleOpenRestore } = useToggle()
+  const { open: openSuspend, toggleOpen: toggleOpenSuspend } = useToggle()
+  const { open: openActive, toggleOpen: toggleOpenActive } = useToggle()
   const { success, changeSuccess } = useSuccess()
   const { construction } = useSelector((state) => state.constructions)
 
@@ -46,6 +52,36 @@ const Construction = () => {
       })
       .catch(() => {
         setDeleting(false)
+      })
+  }
+
+  const restoreConstruction = (id) => {
+    setRestoring(true)
+    dispatch(constructionActions.patchConstruction(id, { state: 'CREATED' }))
+      .then(() => {
+        setRestoring(false)
+        changeSuccess(true)
+        toggleOpenRestore()
+        getConstructionDetails()
+      })
+      .catch(() => {
+        setRestoring(false)
+      })
+  }
+
+  const handleAction = (id, status, successFunction) => {
+    setSubmitting(true)
+    dispatch(
+      constructionActions.patchConstruction(id, { is_suspended: status })
+    )
+      .then(() => {
+        setSubmitting(false)
+        changeSuccess(true)
+        successFunction()
+        getConstructionDetails()
+      })
+      .catch(() => {
+        setSubmitting(false)
       })
   }
 
@@ -78,6 +114,31 @@ const Construction = () => {
           </Text>
         </Box>
         <Box>
+          {construction && (
+            <>
+              <Button
+                danger={!construction?.is_suspended}
+                onClick={
+                  construction?.is_suspended
+                    ? toggleOpenActive
+                    : toggleOpenSuspend
+                }
+              >
+                {construction?.is_suspended ? 'Activar' : 'Suspender'}
+              </Button>{' '}
+            </>
+          )}
+          <Can
+            availableTo={['ADMIN']}
+            yes={() => (
+              <>
+                {construction?.state === 'DELETED' && (
+                  <Button onClick={toggleOpenRestore}>Restaurar</Button>
+                )}
+              </>
+            )}
+            no={() => null}
+          />
           <Button
             danger
             disabled={construction?.state === 'DELETED'}
@@ -100,6 +161,60 @@ const Construction = () => {
           message={
             <Typography variant="h6">
               ¿Estás seguro de eliminar
+              <strong> {construction.name}</strong>?
+            </Typography>
+          }
+        />
+      )}
+      {construction && openRestore && (
+        <ConfirmDelete
+          event="RESTORE"
+          confirmText={'Restaurar'}
+          open={openRestore}
+          onClose={toggleOpenRestore}
+          loading={restoring}
+          success={success}
+          onConfirm={() => restoreConstruction(construction.id)}
+          message={
+            <Typography variant="h6">
+              ¿Estás seguro de restaurar
+              <strong> {construction.name}</strong>?
+            </Typography>
+          }
+        />
+      )}
+      {construction && openSuspend && (
+        <ConfirmDelete
+          confirmText={'Suspender'}
+          open={openSuspend}
+          onClose={toggleOpenSuspend}
+          loading={submitting}
+          success={success}
+          onConfirm={() =>
+            handleAction(construction.id, true, toggleOpenSuspend)
+          }
+          message={
+            <Typography variant="h6">
+              ¿Estás seguro de suspender
+              <strong> {construction.name}</strong>?
+            </Typography>
+          }
+        />
+      )}
+      {construction && openActive && (
+        <ConfirmDelete
+          event={'ACTIVE'}
+          confirmText={'Activar'}
+          open={openActive}
+          onClose={toggleOpenActive}
+          loading={submitting}
+          success={success}
+          onConfirm={() =>
+            handleAction(construction.id, false, toggleOpenActive)
+          }
+          message={
+            <Typography variant="h6">
+              ¿Estás seguro de activar
               <strong> {construction.name}</strong>?
             </Typography>
           }

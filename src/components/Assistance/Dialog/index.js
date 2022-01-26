@@ -10,8 +10,12 @@ import {
   FormControlLabel,
   FormHelperText,
   Radio,
-  Avatar
+  Avatar,
+  Switch
 } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
+import RowAutocomplete from './RowAutocomplete'
+import EmployeeRow from './EmployeeRow'
 import { ConfirmDelete, Dialog, FilePicker } from '../../Shared'
 import {
   Button,
@@ -20,10 +24,13 @@ import {
   InputLabel,
   TextArea,
   LabeledRow,
-  EmptyState
+  EmptyState,
+  TextField
 } from '../../UI'
 import commonActions from '../../../state/actions/common'
 import filesActions from '../../../state/actions/files'
+import employeeActions from '../../../state/actions/employees'
+import generateColor, { COLORS } from '../../../utils/generateColor'
 import { AttentionStatus } from '../../../config'
 import { formatDate, formatHours } from '../../../formatters'
 import { useSuccess, useToggle } from '../../../hooks'
@@ -33,6 +40,7 @@ import benefitsActions from '../../../state/actions/benefits'
 import useStyles from './styles'
 import { validationSchema, caseAdditionalSchema } from './schema'
 import socialCasesActions from '../../../state/actions/socialCase'
+import CaseAdditionalForm from './CaseAdditionalForm'
 
 const attentionPlaces = ['OFICINA', 'TERRENO', 'VIRTUAL']
 
@@ -68,8 +76,29 @@ const WorkerInterventionRecord = ({
     activity: null
   })
   const [selectedPlans, setSelectedPlans] = useState([])
+  const [beneficiaryList, setBeneficiaryList] = useState([])
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState(null)
   const { open: openBenefit, toggleOpen: toggleOpenBenefit } = useToggle()
   const { open: openConfirm, toggleOpen: toggleOpenConfirm } = useToggle()
+
+  const fetchBeneficiaryList = () => {
+    dispatch(employeeActions.getEmployeeRelatives(employee.run)).then(
+      (result) => {
+        setBeneficiaryList(
+          result
+            .map((item) => ({ ...item, isRelative: true }))
+            .map((item) => ({
+              ...item,
+              avatarBg: generateColor()
+            }))
+        )
+      }
+    )
+  }
+
+  useEffect(() => {
+    fetchBeneficiaryList()
+  }, [employee])
 
   const handleActivityCreate = (benefit, activity, assistanceId) => {
     dispatch(
@@ -98,6 +127,8 @@ const WorkerInterventionRecord = ({
 
   const formik = useFormik({
     validateOnMount: true,
+    validateOnBlur: true,
+    validateOnChange: true,
     validationSchema,
     initialValues: {
       date: type === 'UPDATE' ? data.date : '',
@@ -123,7 +154,14 @@ const WorkerInterventionRecord = ({
       assigned_id: type === 'UPDATE' ? data.assigned_id : '',
       observation: type === 'UPDATE' ? data.observation : '',
       attached_url: type === 'UPDATE' ? data.attached_url : '',
-      attached_key: type === 'UPDATE' ? data.attached_url : ''
+      attached_key: type === 'UPDATE' ? data.attached_url : '',
+      attended_id: type === 'UPDATE' ? data.attended_id : '',
+      attended_name: type === 'UPDATE' ? data.attended_name : '',
+      is_attended_relative:
+        type === 'UPDATE' ? data.is_attended_relative : false,
+      attention_beneficiary:
+        type === 'UPDATE' ? data.attention_beneficiary : '',
+      beneficiary_selected: type === 'UPDATE' ? data.beneficiary_selected : ''
     },
     onSubmit: async (values) => {
       const attachmentsList = []
@@ -146,14 +184,20 @@ const WorkerInterventionRecord = ({
         })
       )
 
-      submitFunction({
+      const body = {
         ...values,
         attachments: attachmentsList,
         case_id: values.case_id === 'NEW' ? null : values.case_id,
         task_id: values.task_id ? values.task_id : null,
         assigned_id: user.id,
         created_by: user.id
-      }).then((result) => {
+      }
+
+      if (!body.case_id) {
+        delete body.case_id
+      }
+
+      submitFunction(body).then((result) => {
         formik.setSubmitting(false)
         changeSuccess(true, () => {
           enqueueSnackbar(successMessage, {
@@ -203,16 +247,11 @@ const WorkerInterventionRecord = ({
     switch (name) {
       case 'area': {
         const area = areas.find((item) => item.id === parseInt(value, 10))
-        setTopics(area.topics)
+        setTopics(area?.topics || [])
         // setAreas(area?.areas || [])
-        formik.setFieldValue('area_id', area.id)
-        formik.setFieldValue('area_name', area.name)
-        break
-      }
-      case 'topic': {
-        const topic = topics.find((item) => item.id === parseInt(value, 10))
-        formik.setFieldValue('topic_id', topic.id)
-        formik.setFieldValue('topic_name', topic.name)
+        formik.setFieldValue('area_id', area?.id || '')
+        formik.setFieldValue('area_name', area?.name || '')
+        formik.setFieldTouched('area_id')
         break
       }
       default:
@@ -289,6 +328,15 @@ const WorkerInterventionRecord = ({
   }, [formik.values.case_id, casesForSelect])
 
   useEffect(() => {
+    formik.setFieldValue('attended_id', employee.id)
+    formik.setFieldValue(
+      'attended_name',
+      `${employee.names} ${employee.paternal_surname}`.toUpperCase()
+    )
+    setSelectedBeneficiary(employee)
+  }, [employee])
+
+  useEffect(() => {
     if (formik.values.area_id && areas.length > 0) {
       handleSelectChange({
         target: { name: 'area', value: formik.values.area_id }
@@ -358,6 +406,97 @@ const WorkerInterventionRecord = ({
                 </LabeledRow>
               </Box>
             </Grid>
+            <Grid item xs={12}>
+              <Box mb={1}>
+                <Typography>
+                  <strong>Trabajador </strong>
+                </Typography>
+              </Box>
+              <Box>
+                <EmployeeRow
+                  selectable={false}
+                  option={{ ...employee, avatarBg: COLORS[1] }}
+                />
+                <Box my={2}>
+                  <InputLabel>¿Atender a familiar?</InputLabel>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        color="primary"
+                        checked={formik.values.is_attended_relative}
+                        onChange={(e) => {
+                          formik.setFieldValue(
+                            'is_attended_relative',
+                            e.target.checked
+                          )
+                          if (e.target.checked) {
+                            setSelectedBeneficiary(null)
+                            formik.setFieldValue('attended_id', '')
+                            formik.setFieldValue('attended_name', '')
+                          } else {
+                            setSelectedBeneficiary(employee)
+                          }
+                        }}
+                      />
+                    }
+                  />
+                </Box>
+                {!formik.values.is_attended_relative && selectedBeneficiary && (
+                  <Box>
+                    <Box mt={1}>
+                      <InputLabel>Persona atendida</InputLabel>
+                    </Box>
+                    <EmployeeRow
+                      option={{ ...selectedBeneficiary, avatarBg: COLORS[1] }}
+                    />
+                  </Box>
+                )}
+                {formik.values.is_attended_relative && (
+                  <Grid item xs={12} md={12}>
+                    {selectedBeneficiary ? (
+                      <Box>
+                        <Box mt={1}>
+                          <InputLabel>Persona atendida</InputLabel>
+                        </Box>
+                        <EmployeeRow
+                          option={selectedBeneficiary}
+                          onDelete={() => setSelectedBeneficiary(null)}
+                        />
+                      </Box>
+                    ) : (
+                      <Box>
+                        <Autocomplete
+                          required
+                          options={beneficiaryList}
+                          value={formik.values.beneficiary_selected}
+                          getOptionLabel={(option) => option.names || ''}
+                          onChange={(__, option) => {
+                            setSelectedBeneficiary(option)
+                            formik.setFieldValue('attended_id', option.id)
+                            formik.setFieldValue(
+                              'attended_name',
+                              `${option.names} ${option.paternal_surname}`.toUpperCase()
+                            )
+                          }}
+                          required
+                          renderOption={(option) => (
+                            <RowAutocomplete option={option} />
+                          )}
+                          noOptionsText="Este trabajador no tiene familiares"
+                          renderInput={(params) => (
+                            <TextField
+                              label={'Seleccione familiar'}
+                              {...params}
+                            />
+                          )}
+                        />
+                      </Box>
+                    )}
+                  </Grid>
+                )}
+              </Box>
+            </Grid>
+
             <Grid item xs={12}>
               <Typography>
                 <strong>Complete los siguientes campos</strong>
@@ -439,17 +578,17 @@ const WorkerInterventionRecord = ({
             <Grid item xs={12} md={6} lg={4}>
               <Select
                 label="Tema"
-                name="topic"
+                name="topic_id"
                 required
                 value={formik.values.topic_id}
-                onChange={handleSelectChange}
+                onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
                   formik.touched.topic_id && Boolean(formik.errors.topic_id)
                 }
                 helperText={formik.touched.topic_id && formik.errors.topic_id}
               >
-                <option value={`INVALID`}>SELECCIONE TEMA</option>
+                <option value={''}>SELECCIONE TEMA</option>
                 {topics.map((item, index) => (
                   <option key={`area--${index}`} value={`${item.id}`}>
                     {item.name}
@@ -600,7 +739,6 @@ const WorkerInterventionRecord = ({
                 />
               </Grid>
             )}
-
             <Grid item xs={12} md={12} lg={12}>
               <Box>
                 <Box mb={2}>
@@ -633,6 +771,8 @@ const WorkerInterventionRecord = ({
                             checked={formik.values.is_social_case === 'NO'}
                             onChange={() => {
                               formik.setFieldValue('is_social_case', 'NO')
+                              formik.setFieldValue('case_id', '')
+                              formik.setFieldValue('task_id', '')
                             }}
                           />
                         }
@@ -646,7 +786,8 @@ const WorkerInterventionRecord = ({
                       name="case_id"
                       disabled={
                         formik.values.case_id === 'NEW' ||
-                        formik.values.is_social_case === 'NO'
+                        formik.values.is_social_case === 'NO' ||
+                        formik.values.is_social_case === ''
                       }
                       required={formik.values.is_social_case === 'SI'}
                       value={formik.values.case_id}
@@ -682,7 +823,10 @@ const WorkerInterventionRecord = ({
                     <Select
                       label="Plan de Intervención"
                       name="task_id"
-                      required={formik.values.is_social_case === 'SI'}
+                      required={
+                        formik.values.is_social_case === 'SI' ||
+                        formik.values.is_social_case === ''
+                      }
                       value={formik.values.task_id}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -706,26 +850,18 @@ const WorkerInterventionRecord = ({
                     </Select>
                   </Grid>
                 </Grid>
-                {formik.values.case_id === 'NEW' && (
-                  <Grid item xs={12} md={12} lg={12}>
-                    <TextArea
-                      rowsMin={2}
-                      label="Tipo de Solicitud"
-                      name="requestType"
-                      value={caseFormik.values.requestType}
-                      onChange={caseFormik.handleChange}
-                      onBlur={caseFormik.handleBlur}
-                      error={
-                        caseFormik.touched.requestType &&
-                        Boolean(caseFormik.errors.requestType)
-                      }
-                      helperText={
-                        caseFormik.touched.requestType &&
-                        caseFormik.errors.requestType
-                      }
-                    />
-                  </Grid>
-                )}
+                {formik.values.is_social_case === 'SI' &&
+                  formik.values.case_id === 'NEW' && (
+                    <>
+                      <CaseAdditionalForm
+                        formik={caseFormik}
+                        onReset={() => {
+                          formik.setFieldValue('case_id', '')
+                          formik.setFieldValue('task_id', '')
+                        }}
+                      />
+                    </>
+                  )}
               </Box>
             </Grid>
 
@@ -809,7 +945,11 @@ const WorkerInterventionRecord = ({
 
             <SubmitButton
               onClick={toggleOpenConfirm}
-              disabled={formik.isSubmitting || getActivityValidation()}
+              disabled={
+                formik.isSubmitting ||
+                getActivityValidation() ||
+                !formik.isValid
+              }
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Registro`}
             </SubmitButton>
@@ -853,6 +993,11 @@ const WorkerInterventionRecord = ({
               </LabeledRow>
               <LabeledRow label="Caso social:">
                 {formik.values.is_social_case}
+              </LabeledRow>
+              <LabeledRow label="Atención para:">
+                {selectedBeneficiary?.names}{' '}
+                {selectedBeneficiary?.paternal_surname}{' '}
+                {selectedBeneficiary?.maternal_surname}
               </LabeledRow>
             </Box>
           }

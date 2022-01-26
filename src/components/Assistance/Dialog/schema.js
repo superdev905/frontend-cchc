@@ -15,6 +15,9 @@ export const validationSchema = Yup.object().shape({
   task_id: Yup.number(),
   assigned_id: Yup.string('Ingrese profesional'),
   observation: Yup.string('Ingrese observaciones'),
+  attended_id: Yup.number().required('Selecciona persona atendida'),
+  attended_name: Yup.string().required('Selecciona persona atendida'),
+  is_attended_relative: Yup.bool().required('Seleccione quien es atendido'),
   attached_url: Yup.mixed()
 })
 
