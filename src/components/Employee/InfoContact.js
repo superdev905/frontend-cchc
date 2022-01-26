@@ -89,7 +89,10 @@ const InfoContact = () => {
           <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
             Información de contacto
           </Typography>
-          <Button onClick={toggleOpenAdd}> Registrar contacto</Button>
+          <Button disabled={contacts.length > 0} onClick={toggleOpenAdd}>
+            {' '}
+            Registrar contacto
+          </Button>
         </Box>
         <Box>
           {contacts.length === 0 && (
