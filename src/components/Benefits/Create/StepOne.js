@@ -35,7 +35,8 @@ const StepOne = ({ onClose, data }) => {
       instructorId: create?.benefit?.instructorId || '',
       instructorName: create?.benefit?.instructorName || '',
       description: create?.benefit?.description || '',
-      status: create?.benefit?.status || ''
+      status: create?.benefit?.status || '',
+      areaId: create?.benefit?.areaId || ''
     },
     onSubmit: (values) => {
       const body = { ...values }
