@@ -42,7 +42,14 @@ const validationSchema = Yup.object().shape({
   charge_id: Yup.string('Seleccione cargo').nullable(),
   role_id: Yup.number('Seleccione rol').required('Seleccione rol'),
   charge_name: Yup.string(),
-  is_administrator: Yup.bool()
+  is_administrator: Yup.bool(),
+  password: Yup.string()
+    .min(8, 'La contraseña debe tener 8 caracteres como mínimo')
+    .required('Ingrese contraseña'),
+  confirm_password: Yup.string('Confirme contraseña nueva')
+    .min(8, 'Debe ser mayor a 8 caracteres')
+    .oneOf([Yup.ref('password')], 'Las contraseñas deben ser iguales')
+    .required('Campo requerido')
 })
 
 const Form = ({
@@ -121,6 +128,7 @@ const Form = ({
       dispatch(commonActions.getRoles())
     }
   }, [open])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth={true}>
       <Box>
@@ -252,6 +260,43 @@ const Form = ({
                 ))}
               </Select>
             </Grid>
+
+            {type === 'UPDATE' && (
+              <>
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    name="password"
+                    label="Nueva Contraseña"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.password && Boolean(formik.errors.password)
+                    }
+                    helperText={
+                      formik.touched.password && formik.errors.password
+                    }
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    name="confirm_password"
+                    label="Confirmar Contraseña"
+                    value={formik.values.confirm_password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.confirm_password &&
+                      Boolean(formik.errors.confirm_password)
+                    }
+                    helperText={
+                      formik.touched.confirm_password &&
+                      formik.errors.confirm_password
+                    }
+                  />
+                </Grid>
+              </>
+            )}
           </Grid>
           <Box textAlign="center">
             {type === 'VIEW' ? (
