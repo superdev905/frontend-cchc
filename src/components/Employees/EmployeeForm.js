@@ -372,7 +372,7 @@ const EmployeeModal = ({
                   helperText={formik.touched.gender && formik.errors.gender}
                 >
                   <option value="">SELECCIONE GENERO </option>
-                  {['MASCULINO', 'FEMENINO', 'INDETERMINADO'].map((item, i) => (
+                  {['MASCULINO', 'FEMENINO', 'OTRO'].map((item, i) => (
                     <option key={`gender-${i}-${item}`} value={item}>
                       {item}
                     </option>
