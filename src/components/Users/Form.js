@@ -59,6 +59,16 @@ const validationSchema = Yup.object().shape({
   is_administrator: Yup.bool()
 })
 
+const validationSchemaUpdate = Yup.object().shape({
+  password: Yup.string().min(
+    8,
+    'La contraseña debe tener 8 caracteres como mínimo'
+  ),
+  confirm_password: Yup.string('Confirme contraseña nueva')
+    .min(8, 'Debe ser mayor a 8 caracteres')
+    .oneOf([Yup.ref('password')], 'Las contraseñas deben ser iguales')
+})
+
 const Form = ({
   open,
   onClose,
@@ -87,7 +97,7 @@ const Form = ({
     validationSchema:
       type === 'ADD'
         ? validationSchema.concat(createValidation)
-        : validationSchema.concat(updateValidation),
+        : validationSchema.concat(validationSchemaUpdate),
     initialValues: {
       names: type !== 'ADD' ? data.names : '',
       maternal_surname: type !== 'ADD' ? data.maternal_surname : '',
