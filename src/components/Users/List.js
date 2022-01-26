@@ -71,6 +71,9 @@ const List = () => {
       delete values.charge_name
     }
     delete values.password
+    if (values.confirm_password) {
+      values.password = values.confirm_password
+    }
     return dispatch(
       usersActions.updateUser(current.id, {
         ...values,

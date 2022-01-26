@@ -32,6 +32,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+const updateValidation = Yup.object().shape({
+  password: Yup.string()
+    .min(8, 'La contraseña debe tener 8 caracteres como mínimo')
+    .required('Ingrese contraseña'),
+  confirm_password: Yup.string('Confirme contraseña nueva')
+    .min(8, 'Debe ser mayor a 8 caracteres')
+    .oneOf([Yup.ref('password')], 'Las contraseñas deben ser iguales')
+    .required('Campo requerido')
+})
+
 const createValidation = Yup.object().shape({
   password: Yup.string()
     .min(8, 'La contraseña debe tener 8 caracteres como mínimo')
@@ -46,14 +56,7 @@ const validationSchema = Yup.object().shape({
   charge_id: Yup.string('Seleccione cargo').nullable(),
   role_id: Yup.number('Seleccione rol').required('Seleccione rol'),
   charge_name: Yup.string(),
-  is_administrator: Yup.bool(),
-  password: Yup.string()
-    .min(8, 'La contraseña debe tener 8 caracteres como mínimo')
-    .required('Ingrese contraseña'),
-  confirm_password: Yup.string('Confirme contraseña nueva')
-    .min(8, 'Debe ser mayor a 8 caracteres')
-    .oneOf([Yup.ref('password')], 'Las contraseñas deben ser iguales')
-    .required('Campo requerido')
+  is_administrator: Yup.bool()
 })
 
 const Form = ({
@@ -84,7 +87,7 @@ const Form = ({
     validationSchema:
       type === 'ADD'
         ? validationSchema.concat(createValidation)
-        : validationSchema,
+        : validationSchema.concat(updateValidation),
     initialValues: {
       names: type !== 'ADD' ? data.names : '',
       maternal_surname: type !== 'ADD' ? data.maternal_surname : '',
