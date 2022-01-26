@@ -291,7 +291,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
         </Box>
         <Box px={3}>
           <Box className={classes.centeredSpaced}>
-            <Typography>Porcentaje de inasistencias</Typography>
+            <Typography>Porcentaje de asistencia</Typography>
           </Box>
           <Box
             style={{
@@ -306,7 +306,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
               fontWeight: 'bold'
             }}
           >
-            {student && `${student.absencesPercentage}`}
+            {student && `${student.attendancePercentage}`}
           </Box>
         </Box>
         <Box px={3}>

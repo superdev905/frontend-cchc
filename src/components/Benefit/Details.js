@@ -89,7 +89,7 @@ const BenefitDetails = ({ loading }) => {
           <LabeledRow label={'Nombre de proyecto'} width={200}>
             <Text loading={loading}>{benefit && benefit.projectName}</Text>
           </LabeledRow>
-          {benefit.area && (
+          {benefit?.area && (
             <LabeledRow label={'Área'} width={200}>
               <Text loading={loading}> {benefit.area.name}</Text>
             </LabeledRow>
