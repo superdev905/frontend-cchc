@@ -34,7 +34,7 @@ const ProtocolCard = ({ protocol, onDownload, onView }) => {
                 {protocol.title}
               </Typography>
               <Typography className={classes.info}>
-                {protocol.classification}
+                {protocol.classification.name}
               </Typography>
             </Box>
           </Box>
