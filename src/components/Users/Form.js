@@ -46,13 +46,13 @@ const validationSchema = Yup.object().shape({
 })
 
 const validationSchemaUpdate = Yup.object().shape({
-  password: Yup.string()
-    .min(8, 'La contraseña debe tener 8 caracteres como mínimo')
-    .required('Ingrese contraseña'),
+  password: Yup.string().min(
+    8,
+    'La contraseña debe tener 8 caracteres como mínimo'
+  ),
   confirm_password: Yup.string('Confirme contraseña nueva')
     .min(8, 'Debe ser mayor a 8 caracteres')
     .oneOf([Yup.ref('password')], 'Las contraseñas deben ser iguales')
-    .required('Campo requerido')
 })
 
 const Form = ({
