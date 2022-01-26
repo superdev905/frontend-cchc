@@ -23,7 +23,7 @@ import authActions from '../../state/actions/auth'
 import useStyles from './styles'
 import useMenu from '../../hooks/useMenu'
 import LeftDrawer from './LeftDrawer'
-import { ReportWidget } from '../Widgets'
+import { ReportWidget, ProtocolWidget } from '../Widgets'
 
 const ResponsiveDrawer = ({ ...props }) => {
   const { window } = props

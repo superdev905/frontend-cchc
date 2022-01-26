@@ -1,1 +1,1 @@
-export { default as ReportModuleDialog } from './ModuleDialog'
+export { default } from './ReportDialog'
