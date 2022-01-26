@@ -138,7 +138,8 @@ const EmployeeModal = ({
     onSubmit: (values) => {
       const submitData = { ...values }
       if (submitData.bank_id === '') {
-        delete submitData.bank_id
+        /* delete submitData.bank_id */
+        submitData.bank_id = null
       }
       if (submitData.rsh_status === '') {
         delete submitData.rsh_status
@@ -218,6 +219,12 @@ const EmployeeModal = ({
     if (value) {
       formik.setFieldValue('bank_id', value.id)
     }
+    if (!value) {
+      formik.setFieldValue('account_type', '')
+      formik.setFieldValue('account_number', '')
+      formik.setFieldValue('bank_id', '')
+    }
+    console.log(formik.values)
   }
 
   const onEtniaSelect = (__, value) => {
