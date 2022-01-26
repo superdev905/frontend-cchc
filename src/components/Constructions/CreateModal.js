@@ -219,7 +219,18 @@ const ConstructionModal = ({
       dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
         (list) => {
           setCompanies(list)
-          setTreeData(buildTreeData(list))
+          if (type !== 'UPDATE') {
+            setTreeData(buildTreeData(list))
+          } else {
+            const treeList = buildTreeData(list).map((item) =>
+              searchFromTree(
+                item,
+                item,
+                parseInt(construction?.billing_business_id, 10)
+              )
+            )
+            setTreeData(treeList.filter((item) => item))
+          }
         }
       )
     }
