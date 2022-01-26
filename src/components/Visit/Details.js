@@ -225,7 +225,9 @@ const Details = ({ fetching, fetchDetails }) => {
           disabled={
             visit?.status === 'CANCELADA' ||
             visit?.status === 'TERMINADA' ||
-            visit?.is_close
+            visit?.is_close_pending ||
+            visit?.is_close ||
+            visit?.is_close_pending
           }
         >
           Cancelar
