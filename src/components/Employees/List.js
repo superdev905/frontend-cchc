@@ -1,16 +1,18 @@
 import { Box, Grid } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { formatDate, formatSearchWithRut } from '../../formatters'
 import { useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
+import assistanceActions from '../../state/actions/assistance'
 import { DataTable } from '../Shared'
 import { Button, SearchInput, Select, StatusChip, Wrapper } from '../UI'
 import EmployeeForm from './EmployeeForm'
 
 const ListEmployees = () => {
   const dispatch = useDispatch()
+  const { idEmployee } = useParams()
   const history = useHistory()
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
@@ -54,6 +56,24 @@ const ListEmployees = () => {
         setLoading(false)
       })
   }
+  const fetchList = () => {
+    setLoading(true)
+    dispatch(
+      assistanceActions.getAttention({
+        id_employee: idEmployee
+      })
+    ).then((data) => {
+      setLoading(false)
+      setTableData(
+        data.map((item) => ({
+          ...item,
+          stringDate: formatDate(item.date, {}),
+          is_social_case: `${item.is_social_case}`,
+          status: `${item.status}`
+        }))
+      )
+    })
+  }
   const onRowClick = (row) => {
     history.push(`/employee/${row.id}/info`)
   }
@@ -70,8 +90,7 @@ const ListEmployees = () => {
     setTableData(
       listEmployees.map((item) => ({
         ...item,
-        last_name: `${item.paternal_surname} ${item.maternal_surname}`,
-        born_date: formatDate(item.born_date)
+        last_name: `${item.paternal_surname} ${item.maternal_surname}`
       }))
     )
   }, [listEmployees])
@@ -79,6 +98,10 @@ const ListEmployees = () => {
   useEffect(() => {
     fetchEmployees()
   }, [filters])
+
+  useEffect(() => {
+    fetchList()
+  }, [])
 
   return (
     <Box>
@@ -145,8 +168,16 @@ const ListEmployees = () => {
               selector: (row) => row.last_name
             },
             {
-              name: 'Fecha de nacimiento',
-              selector: (row) => row.born_date
+              name: 'Fecha de ultima atención ',
+              selector: (row) => row.stringDate
+            },
+            {
+              name: 'Caso Social',
+              selector: (row) => row.is_social_case
+            },
+            {
+              name: 'Estado de Asistencia',
+              selector: (row) => row.status
             },
             {
               name: 'Estado',

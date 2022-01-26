@@ -17,12 +17,14 @@ const ReportDialog = ({ open, onClose }) => {
   }
 
   useEffect(() => {
-    dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
-      (list) => {
-        setCompanies(list)
-      }
-    )
-  })
+    if (open) {
+      dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
+        (list) => {
+          setCompanies(list)
+        }
+      )
+    }
+  }, [open])
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
       <Box>
