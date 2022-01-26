@@ -289,7 +289,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
             </Box>
           )}
         </Box>
-        <Box>
+        <Box px={3}>
           <Box className={classes.centeredSpaced}>
             <Typography>Porcentaje de inasistencias</Typography>
           </Box>
@@ -309,7 +309,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
             {student && `${student.absencesPercentage}`}
           </Box>
         </Box>
-        <Box>
+        <Box px={3}>
           <Box className={classes.centeredSpaced}>
             <Typography>Pagos</Typography>
             <Button size="small" onClick={toggleOpenAdd}>
@@ -344,7 +344,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
             )}
           </Box>
         </Box>
-        <Box>
+        <Box px={3}>
           <Box marginBottom={2} className={classes.centeredSpaced}>
             <Typography>Notas</Typography>
             <Button size="small" onClick={toggleOpenAddScore}>
@@ -379,7 +379,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
             )}
           </Box>
         </Box>
-        <Box>
+        <Box px={3}>
           <Box marginTop={2} className={classes.centeredSpaced}>
             <Typography>Estado de alumno</Typography>
             <Button size="small" onClick={toggleOpenStatus}>
