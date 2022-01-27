@@ -28,7 +28,8 @@ const EditDialog = ({ open, onClose, benefit, successFunction }) => {
       usersQuantity: benefit?.usersQuantity || '',
       isActive: benefit?.isActive ? 'VIGENTE' : 'NO VIGENTE',
       totalCost: benefit?.totalCost || '',
-      isCourse: benefit?.isCourse
+      isCourse: benefit?.isCourse,
+      areaId: benefit?.areaId
     },
     onSubmit: (values) => {
       dispatch(
