@@ -3,13 +3,15 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, Grid, Typography, TextField } from '@material-ui/core'
+import { Box, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
-import { CurrencyTextField, DatePicker, Dialog } from '../Shared'
-import { Button, Select, SubmitButton } from '../UI'
+import { CompanyRow, CurrencyTextField, DatePicker, Dialog } from '../Shared'
+import { Button, InputLabel, Select, SubmitButton, TextField } from '../UI'
+import constructionsActions from '../../state/actions/constructions'
 import companiesActions from '../../state/actions/companies'
 import { useSuccess } from '../../hooks'
 import commonActions from '../../state/actions/common'
+import SearchCompany from '../Companies/SearchCompany'
 
 const validationSchema = Yup.object().shape({
   admission_date: Yup.date().required('Seleccione fecha de ingreso'),
@@ -39,11 +41,12 @@ const HousingForm = ({
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
-  const [companies, setCompanies] = useState([])
-  const [constructions, setConstructions] = useState([])
+
   const { isMobile } = useSelector((state) => state.ui)
   const [subSpec, setSubSpec] = useState([])
   const { specList } = useSelector((state) => state.common)
+  const [selectedCompany, setSelectedCompany] = useState(null)
+  const [constructionList, setConstructionList] = useState([])
 
   const formik = useFormik({
     validateOnMount: true,
@@ -88,53 +91,24 @@ const HousingForm = ({
     }
   })
 
-  /* const handleCompanyChange = (e) => {
-    const { value } = e.target
-    if (value === '') {
-      formik.setFieldValue('business_id', value)
-      formik.setFieldValue('business_name', value)
-      formik.setFieldValue('construction_id', value)
-      formik.setFieldValue('construction_name', value)
-      setConstructions([])
-    } else {
-      const currentCompany = companies.find(
-        (item) => item.id === parseInt(value, 10)
-      )
-      setConstructions(currentCompany.constructions)
-      formik.setFieldValue('business_id', value)
-      formik.setFieldValue('business_name', currentCompany.business_name)
-      formik.setFieldValue('construction_id', '')
-      formik.setFieldValue('construction_name', '')
-    }
-  } */
-
-  const onCompanieSelect = (__, value) => {
-    if (value) {
-      const currentCompany = companies
-        .filter(
-          (item) => item.status !== 'NO_VIGENTE' && item.state !== 'DELETED'
-        )
-        .find((construction) => construction.id === parseInt(value.id, 10))
-
-      setConstructions(currentCompany.constructions)
-
-      formik.setFieldValue('business_id', value.id)
-      formik.setFieldValue('business_name', currentCompany.business_name)
-    }
-    if (!value) {
-      formik.setFieldValue('business_id', '')
-      formik.setFieldValue('business_name', '')
-      formik.setFieldValue('construction_id', '')
-      formik.setFieldValue('construction_name', '')
-      setConstructions([])
-    }
-  }
-
   const onConstructionSelect = (__, value) => {
     if (value) {
       formik.setFieldValue('construction_id', value.id)
       formik.setFieldValue('construction_name', value.name)
     }
+  }
+
+  const handleGetConstructions = (idCompany) => {
+    dispatch(
+      constructionsActions.getConstructions(
+        {
+          business_id: idCompany
+        },
+        false
+      )
+    ).then((res) => {
+      setConstructionList(res.filter((item) => !item.is_suspended))
+    })
   }
 
   useEffect(() => {
@@ -145,25 +119,13 @@ const HousingForm = ({
   }, [formik.values.contract_type])
 
   useEffect(() => {
-    if (formik.values.construction_id && constructions.length > 0) {
-      const currentCons = constructions.find(
+    if (formik.values.construction_id && constructionList.length > 0) {
+      const currentCons = constructionList.find(
         (item) => item.id === parseInt(formik.values.construction_id, 10)
       )
       formik.setFieldValue('construction_name', currentCons?.name || '')
     }
-  }, [formik.values.construction_id, constructions])
-
-  useEffect(() => {
-    if (formik.values.business_id && companies.length > 0) {
-      const currentCompany = companies.find(
-        (item) => item.id === parseInt(formik.values.business_id, 10)
-      )
-      formik.setFieldValue('business_name', currentCompany.business_name)
-      setConstructions(currentCompany.constructions)
-    } else {
-      setConstructions([])
-    }
-  }, [formik.values.business_id, companies])
+  }, [formik.values.construction_id, constructionList])
 
   useEffect(() => {
     if (formik.values.specialty_id && specList.length > 0) {
@@ -185,12 +147,26 @@ const HousingForm = ({
   }, [specialty_id, specialty_detail_id])
 
   useEffect(() => {
+    formik.setFieldValue('business_id', selectedCompany?.id)
+    formik.setFieldValue('business_name', selectedCompany?.business_name)
+    if (selectedCompany) {
+      handleGetConstructions(selectedCompany.id)
+    }
+  }, [selectedCompany])
+
+  useEffect(() => {
+    if (type === 'UPDATE' && formik.values.business_id) {
+      dispatch(
+        companiesActions.getCompany(formik.values.business_id, false)
+      ).then((res) => {
+        setSelectedCompany(res)
+      })
+    }
+  }, [formik.values.business_id])
+
+  useEffect(() => {
     if (open) {
       dispatch(commonActions.getSpecList())
-      dispatch(companiesActions.getAvailableCompanies()).then((list) => {
-        setCompanies(list)
-      })
-      console.log({ companies })
     }
   }, [open])
 
@@ -202,67 +178,52 @@ const HousingForm = ({
         </Typography>
         <Box p={2}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <DatePicker
-                label="Fecha de ingreso"
-                value={formik.values.admission_date}
-                required
-                onChange={(date) => {
-                  formik.setFieldValue('admission_date', date)
-                }}
-                error={
-                  formik.touched.admission_date &&
-                  Boolean(formik.errors.admission_date)
-                }
-                helperText={
-                  formik.touched.admission_date && formik.errors.admission_date
-                }
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Autocomplete
-                options={companies}
-                value={
-                  companies[
-                    companies.findIndex(
-                      (item) => item.id === formik.values.business_id
-                    )
-                  ] || ''
-                }
-                getOptionSelected={(option, value) => option.id === value.id}
-                getOptionLabel={(option) => option.business_name}
-                onChange={onCompanieSelect}
-                required
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Empresa *"
-                    placeholder="SELECCIONE EMPRESA"
-                    error={
-                      formik.touched.business_id &&
-                      Boolean(formik.errors.business_id)
-                    }
-                    helperText={
-                      formik.touched.business_id && formik.errors.business_id
-                    }
+            <Grid item xs={12}>
+              {selectedCompany ? (
+                <Box>
+                  <InputLabel>Empresa seleccionada</InputLabel>
+                  <CompanyRow
+                    company={selectedCompany}
+                    onDelete={() => {
+                      setSelectedCompany(null)
+                      setConstructionList([])
+
+                      formik.setFieldValue('construction_id', '')
+                      formik.setFieldValue('construction_name', '')
+                    }}
                   />
-                )}
-              />
+                </Box>
+              ) : (
+                <SearchCompany
+                  onSelected={(value) => {
+                    setSelectedCompany(value)
+                  }}
+                  onDelete={() => {
+                    setSelectedCompany(null)
+                    setConstructionList([])
+                  }}
+                />
+              )}
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12}>
               <Autocomplete
-                options={constructions}
+                options={constructionList}
                 value={
-                  constructions[
-                    constructions.findIndex(
-                      (item) => item.id === formik.values.construction_id
-                    )
-                  ] || ''
+                  constructionList.length > 0 && formik.values.construction_id
+                    ? constructionList[
+                        constructionList.findIndex(
+                          (item) =>
+                            item.id ===
+                            parseInt(formik.values.construction_id, 10)
+                        )
+                      ]
+                    : ''
                 }
                 getOptionSelected={(option, value) => option.id === value.id}
                 getOptionLabel={(option) => option.name}
                 onChange={onConstructionSelect}
                 required
+                noOptionsText="Esta empresa no tiene obras"
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -280,6 +241,24 @@ const HousingForm = ({
                 )}
               />
             </Grid>
+            <Grid item xs={12} md={6}>
+              <DatePicker
+                label="Fecha de ingreso"
+                value={formik.values.admission_date}
+                required
+                onChange={(date) => {
+                  formik.setFieldValue('admission_date', date)
+                }}
+                error={
+                  formik.touched.admission_date &&
+                  Boolean(formik.errors.admission_date)
+                }
+                helperText={
+                  formik.touched.admission_date && formik.errors.admission_date
+                }
+              />
+            </Grid>
+
             <Grid item xs={12} md={6}>
               <Select
                 label="Especialidad"
