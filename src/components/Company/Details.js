@@ -32,6 +32,9 @@ const Details = () => {
             <Box>
               <Typography className={classes.heading}>Información</Typography>
               <Box>
+                {company && !company?.is_active && (
+                  <StatusChip error label="Empresa suspendida" />
+                )}
                 <LabeledRow label="Razón social">
                   <Text>{company?.business_name}</Text>
                 </LabeledRow>

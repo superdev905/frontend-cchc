@@ -40,6 +40,7 @@ const Company = ({ children }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { company } = useSelector((state) => state.companies)
   const [deleting, setDeleting] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [errorDelete, setErrorDelete] = useState('')
   const [errorDocs, setErrorDocs] = useState([])
   const { open, toggleOpen } = useToggle()
@@ -47,6 +48,7 @@ const Company = ({ children }) => {
   const { open: openErrorDelete, toggleOpen: toggleOpenErrorDelete } =
     useToggle()
   const { open: openSuspend, toggleOpen: toggleOpenSuspend } = useToggle()
+  const { open: openActive, toggleOpen: toggleOpenActive } = useToggle()
   const { success, changeSuccess } = useSuccess()
   const { open: openMenu, anchorEl, handleOpen, handleClose } = useMenu()
   const goBack = () => {
@@ -77,22 +79,22 @@ const Company = ({ children }) => {
       })
   }
 
-  const suspendCompany = () => {
-    setDeleting(true)
-    dispatch(companiesActions.suspendCompany(idCompany))
+  const handleCompanyPatch = (state, message, toggleFunction) => {
+    dispatch(companiesActions.patchCompany(idCompany, { is_active: state }))
       .then(() => {
-        setDeleting(false)
+        setSubmitting(false)
         changeSuccess(true, () => {
           fetchCompanyDetails()
-          toggleOpenSuspend()
-          enqueueSnackbar('Empresa suspendida', { variant: 'success' })
+          toggleFunction()
+          enqueueSnackbar(message, { variant: 'success' })
         })
       })
       .catch((err) => {
-        setDeleting(false)
+        setSubmitting(false)
         enqueueSnackbar(err, { variant: 'error' })
       })
   }
+
   useEffect(() => {
     fetchCompanyDetails()
   }, [])
@@ -131,8 +133,26 @@ const Company = ({ children }) => {
             onClose={handleClose}
             anchorEl={anchorEl}
           >
-            <MenuItem className={classes.menuItem}>Suspender</MenuItem>
-            <MenuItem className={classes.menuItem}>Activar</MenuItem>
+            <MenuItem
+              className={classes.menuItem}
+              onClick={() => {
+                handleClose()
+                toggleOpenSuspend()
+              }}
+              disabled={!company?.is_active}
+            >
+              Suspender
+            </MenuItem>
+            <MenuItem
+              className={classes.menuItem}
+              disabled={company?.is_active}
+              onClick={() => {
+                handleClose()
+                toggleOpenActive()
+              }}
+            >
+              Activar
+            </MenuItem>
           </Menu>
         </Box>
       </Box>
@@ -198,7 +218,7 @@ const Company = ({ children }) => {
       {openSuspend && (
         <ConfirmDelete
           open={openSuspend}
-          loading={deleting}
+          loading={submitting}
           success={success}
           message={
             <Typography variant="h6">
@@ -206,8 +226,28 @@ const Company = ({ children }) => {
             </Typography>
           }
           confirmText={'Suspender'}
-          onConfirm={suspendCompany}
+          onConfirm={() =>
+            handleCompanyPatch(false, 'Empresa suspendida', toggleOpenSuspend)
+          }
           onClose={toggleOpenSuspend}
+        />
+      )}
+      {openActive && (
+        <ConfirmDelete
+          event={'ACTIVE'}
+          open={openActive}
+          loading={submitting}
+          success={success}
+          message={
+            <Typography variant="h6">
+              <strong>¿Estás seguro de activar esta empresa?</strong>
+            </Typography>
+          }
+          confirmText={'Activar'}
+          onConfirm={() =>
+            handleCompanyPatch(true, 'Empresa activada', toggleOpenActive)
+          }
+          onClose={toggleOpenActive}
         />
       )}
     </div>
