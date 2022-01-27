@@ -26,13 +26,15 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const [loadingPayments, setLoadingPayments] = useState(false)
   const [deletingPayment, setDeletingPayment] = useState(false)
   const [studentPayments, setStudentPayments] = useState([])
+  const [scores, setScores] = useState([])
   const [currentPayment, setCurrentPayment] = useState(null)
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [student, setStudent] = useState(null)
   const [currentScore, setCurrentScore] = useState(null)
   const { isMobile } = useSelector((state) => state.ui)
-  const { scoresList } = useSelector((state) => state.courses)
+  /* const { scoresList } = useSelector((state) => state.courses)
+  console.log(scoresList) */
   const { success, changeSuccess } = useSuccess()
   const {
     success: successDeletePayment,
@@ -68,7 +70,8 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
 
   const fetchScores = () => {
     setLoading(true)
-    dispatch(courses.getScores({ courseId: idCourse })).then(() => {
+    dispatch(courses.getScores({ courseId: idCourse })).then((result) => {
+      setScores(result.items.filter((item) => item.studentId === idEmployee))
       setLoading(false)
     })
   }
@@ -352,7 +355,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
             </Button>
           </Box>
           <Box>
-            {scoresList.length === 0 ? (
+            {scores.length === 0 ? (
               <EmptyState
                 message="Aún no hay notas"
                 actionMessage="Nueva nota"
@@ -360,7 +363,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
               />
             ) : (
               <ScoreCard.Container>
-                {scoresList.map((item) => (
+                {scores.map((item) => (
                   <ScoreCard
                     key={`score-i-${item.id}`}
                     score={item.score}

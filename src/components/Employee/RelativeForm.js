@@ -27,28 +27,48 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const validationSchema = Yup.object().shape({
-  run: Yup.string().test('validRUN', 'Ingrese run válido', (v) => {
-    if (!v) return true
-    return rutValidation(v)
-  }),
-  names: Yup.string().required('Ingrese nombres'),
-  paternal_surname: Yup.string().required('Ingrese apellido'),
-  maternal_surname: Yup.string('Ingrese apellido'),
-  gender: Yup.string().required('Seleccione sexo'),
-  born_date: Yup.date().required('Seleccione fecha de nacimiento').nullable(),
-  scholarship_id: Yup.number().required('Seleccione escolaridad'),
-  marital_status_id: Yup.number().required('Seleccione estado civil'),
-  job_id: Yup.number().required('Seleccione ocupación/actividad'),
-  nationality_id: Yup.number().required('Seleccione nacionalidad'),
-  relationship_id: Yup.number().required('Seleccione parentesco'),
-  legal_charge: Yup.string().required('Seleccion opcion de carga legal'),
-  rsh: Yup.string('Seleccione opción'),
-  rsh_percentage_id: Yup.number(),
-  phone: Yup.string().test('Check phone', 'Ingrese télefono válido', (v) =>
-    phoneValidator(v)
-  )
-})
+const validRunEqCurrentEmployee = (value, currentEmployee) => {
+  let isValid = false
+  if (value !== currentEmployee.run) {
+    isValid = true
+  } else {
+    isValid = false
+  }
+  return isValid
+}
+
+const validationSchema = (currentEmployee) =>
+  Yup.object().shape({
+    run: Yup.string()
+      .test('validRUN', 'Ingrese run válido', (v) => {
+        if (!v) return true
+        return rutValidation(v)
+      })
+      .test(
+        'validRUN_eq_CurrentEmployee',
+        'El trabajador no puede formar parte de su mismo Grupo Familiar',
+        (v) => {
+          if (!v) return true
+          return validRunEqCurrentEmployee(v, currentEmployee)
+        }
+      ),
+    names: Yup.string().required('Ingrese nombres'),
+    paternal_surname: Yup.string().required('Ingrese apellido'),
+    maternal_surname: Yup.string('Ingrese apellido'),
+    gender: Yup.string().required('Seleccione sexo'),
+    born_date: Yup.date().required('Seleccione fecha de nacimiento').nullable(),
+    scholarship_id: Yup.number().required('Seleccione escolaridad'),
+    marital_status_id: Yup.number().required('Seleccione estado civil'),
+    job_id: Yup.number().required('Seleccione ocupación/actividad'),
+    nationality_id: Yup.number().required('Seleccione nacionalidad'),
+    relationship_id: Yup.number().required('Seleccione parentesco'),
+    legal_charge: Yup.string().required('Seleccion opcion de carga legal'),
+    rsh: Yup.string('Seleccione opción'),
+    rsh_percentage_id: Yup.number(),
+    phone: Yup.string().test('Check phone', 'Ingrese télefono válido', (v) =>
+      phoneValidator(v)
+    )
+  })
 
 const EmployeeModal = ({
   open,
@@ -72,9 +92,10 @@ const EmployeeModal = ({
     relationshipList,
     activities
   } = useSelector((state) => state.common)
+  const { employee } = useSelector((state) => state.employees)
   const formik = useFormik({
     validateOnMount: true,
-    validationSchema,
+    validationSchema: validationSchema(employee),
     validateOnChange: true,
     validateOnBlur: true,
     initialValues: {

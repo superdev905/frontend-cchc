@@ -37,7 +37,7 @@ const EventsCalendar = () => {
   const [loading, setLoading] = useState(false)
   const [rescheduleStatus, setRescheduleStatus] = useState(false)
   const [rangeDate, setRangeDate] = useState({ start: null, end: null })
-  const [currentView, setCurrentView] = useState('timeGridWeek')
+  const [currentView, setCurrentView] = useState('dayGridMonth')
   const [filters, setFilters] = useState({
     start_date: startOfWeek(currentDate),
     end_date: endOfWeek(currentDate),

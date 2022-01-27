@@ -42,8 +42,8 @@ const StepOne = ({ onClose }) => {
       name: create?.company?.name || '',
       email: create?.company?.email || '',
       address: create?.company?.address || '',
-      commune: create?.company?.commune?.id || '',
-      region: create?.company?.region_id || '',
+      commune: create?.company?.commune || '',
+      region: create?.company?.region || '',
       latitude: parseFloat(create?.company?.latitude) || location.latitude,
       longitude: parseFloat(create?.company?.longitude) || location.longitude
     },
