@@ -3,7 +3,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { Avatar, Box, Grid, makeStyles, Typography } from '@material-ui/core'
+import {
+  Avatar,
+  Box,
+  Grid,
+  makeStyles,
+  Typography,
+  InputAdornment,
+  IconButton
+} from '@material-ui/core'
+import { Visibility, VisibilityOff } from '@material-ui/icons'
 import { Dialog } from '../Shared'
 import { SubmitButton, Button, TextField, Select } from '../UI'
 import { useSuccess } from '../../hooks'
@@ -29,6 +38,10 @@ const useStyles = makeStyles((theme) => ({
   customMessage: {
     fontSize: '0.8rem',
     color: 'red'
+  },
+  passwordTextField: {
+    textTransform: 'inherit',
+    '& input': { textTransform: 'inherit' }
   }
 }))
 
@@ -72,6 +85,8 @@ const Form = ({
   const dispatch = useDispatch()
   const [readOnly] = useState(type === 'VIEW')
   const [randomPassword] = useState(generatePassword())
+  const [visible, setVisible] = useState(false)
+  const [confirmVisible, setConfirmVisible] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { charges, roles } = useSelector((state) => state.common)
@@ -282,8 +297,10 @@ const Form = ({
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <CustomTextField
+                    type={visible ? 'text' : 'password'}
                     name="password"
                     label="Nueva Contraseña"
+                    className={classes.passwordTextField}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     error={
@@ -292,14 +309,28 @@ const Form = ({
                     helperText={
                       formik.touched.password && formik.errors.password
                     }
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => setVisible(!visible)}
+                          >
+                            {visible ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
                   />
                 </Grid>
 
                 <Grid item xs={12} md={6}>
                   <CustomTextField
+                    type={confirmVisible ? 'text' : 'password'}
                     name="confirm_password"
                     label="Confirmar Contraseña"
                     value={formik.values.confirm_password}
+                    className={classes.passwordTextField}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     error={
@@ -310,6 +341,22 @@ const Form = ({
                       formik.touched.confirm_password &&
                       formik.errors.confirm_password
                     }
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => setConfirmVisible(!confirmVisible)}
+                          >
+                            {confirmVisible ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
                   />
                 </Grid>
               </>
