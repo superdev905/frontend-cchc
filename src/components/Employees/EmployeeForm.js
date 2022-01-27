@@ -198,15 +198,23 @@ const EmployeeModal = ({
   }, [formik.values.rsh])
 
   useEffect(() => {
-    const format = formik.values.run
-    const newFormat = format.replace(/\./g, '').replace(/-/g, '').slice(0, -1)
-    if (
-      formik.values.bank_id === '1' &&
-      formik.values.account_type === 'VISTA'
-    ) {
-      formik.setFieldValue('account_number', newFormat)
+    const selectBank = banks.find(
+      (item) => item.id === parseInt(formik.values.bank_id, 10)
+    )
+    if (selectBank && formik.values.account_type === 'VISTA') {
+      if (
+        selectBank.description.includes('BANCO DEL ESTADO') ||
+        selectBank.description.includes('BANCOESTADO')
+      ) {
+        const format = formik.values.run
+        const newFormat = format
+          .replace(/\./g, '')
+          .replace(/-/g, '')
+          .slice(0, -1)
+        formik.setFieldValue('account_number', newFormat)
+      }
     }
-  }, [formik.values.bank_id, formik.values.account_type])
+  }, [formik.values.bank_id, formik.values.account_type, formik.values.run])
 
   const onScholarshipSelect = (__, value) => {
     if (value) {
@@ -279,8 +287,6 @@ const EmployeeModal = ({
                 <RutTextField
                   label="Run"
                   name="run"
-                  reqActionsred
-                  disabled={type === 'UPDATE'}
                   value={formik.values.run}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
