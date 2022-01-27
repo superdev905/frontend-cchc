@@ -43,6 +43,7 @@ const AnnexedDialog = ({ open, onClose, selectedCompany, successFunction }) => {
   const [loading, setLoading] = useState(false)
   const [relatedBusinesses, setRelatedBusinesses] = useState([])
   const [employeeList, setEmployeeList] = useState([])
+  const [disabled, setDisabled] = useState([])
   const [professionalList, setProfessionalList] = useState([])
   const [users, setUsers] = useState([])
   const { open: openAddEmployee, toggleOpen: toggleOpenAddEmployee } =
@@ -56,6 +57,14 @@ const AnnexedDialog = ({ open, onClose, selectedCompany, successFunction }) => {
       observations: ''
     }
   })
+
+  useEffect(() => {
+    if (employeeList.length > 0) {
+      setDisabled(false)
+    } else {
+      setDisabled(true)
+    }
+  }, [employeeList])
 
   const createAnnexed = () => {
     setLoading(true)
@@ -82,18 +91,22 @@ const AnnexedDialog = ({ open, onClose, selectedCompany, successFunction }) => {
       date: new Date(),
       agreementId
     }
-    dispatch(housingActions.createAnnexed(createData))
-      .then(() => {
-        setLoading(false)
-        onClose()
-        if (successFunction) {
-          successFunction()
-        }
-      })
-      .catch((err) => {
-        enqueueSnackbar(err, { variant: 'error' })
-        setLoading(false)
-      })
+    if (employeeList.length > 0) {
+      dispatch(housingActions.createAnnexed(createData))
+        .then(() => {
+          setLoading(false)
+          onClose()
+          if (successFunction) {
+            successFunction()
+          }
+        })
+        .catch((err) => {
+          enqueueSnackbar(err, { variant: 'error' })
+          setLoading(false)
+        })
+    } else {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -147,7 +160,14 @@ const AnnexedDialog = ({ open, onClose, selectedCompany, successFunction }) => {
         />
       </Box>
       <Box className={classes.section}>
-        <EmployeeList employees={employeeList} onAdd={toggleOpenAddEmployee} />
+        <EmployeeList
+          employees={employeeList}
+          onAdd={toggleOpenAddEmployee}
+          onDelete={(r) => {
+            const newEmployeeList = employeeList?.filter((f) => f !== r)
+            setEmployeeList(newEmployeeList)
+          }}
+        />
         {openAddEmployee && (
           <HouseAddEmployee
             open={openAddEmployee}
@@ -228,6 +248,7 @@ const AnnexedDialog = ({ open, onClose, selectedCompany, successFunction }) => {
           loading={loading}
           onClick={createAnnexed}
           startIcon={<SaveIcon />}
+          disabled={disabled}
         >
           Guardar
         </SubmitButton>

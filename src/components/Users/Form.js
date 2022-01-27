@@ -277,6 +277,9 @@ const Form = ({
 
             {type === 'UPDATE' && (
               <>
+                <Grid item xs={12} md={12}>
+                  <Typography>Actualizar contraseña</Typography>
+                </Grid>
                 <Grid item xs={12} md={6}>
                   <CustomTextField
                     name="password"
