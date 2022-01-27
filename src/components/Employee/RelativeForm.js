@@ -3,13 +3,7 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  Box,
-  Grid,
-  Typography,
-  makeStyles,
-  TextField as MaterialTextField
-} from '@material-ui/core'
+import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import { DatePicker, Dialog } from '../Shared'
 import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
@@ -350,9 +344,10 @@ const EmployeeModal = ({
                 onChange={onScholarshipSelect}
                 required
                 renderInput={(params) => (
-                  <MaterialTextField
+                  <TextField
                     {...params}
-                    label="Escolaridad *"
+                    label="Escolaridad"
+                    required
                     placeholder="SELECCIONE ESCOLARIDAD"
                     error={
                       formik.touched.scholarship_id &&
@@ -381,9 +376,10 @@ const EmployeeModal = ({
                 onChange={onNationalitySelect}
                 required
                 renderInput={(params) => (
-                  <MaterialTextField
+                  <TextField
                     {...params}
-                    label="Nacionalidad *"
+                    label="Nacionalidad"
+                    required
                     placeholder="SELECCIONE NACIONALIDAD"
                     error={
                       formik.touched.nationality_id &&

@@ -1,7 +1,7 @@
 const genderList = [
   { key: 'MASCULINO', name: 'Masculino' },
   { key: 'FEMENINO', name: 'Femenino' },
-  { key: 'INDETERMINADO', name: 'Indeterminado' }
+  { key: 'OTRO', name: 'Otro' }
 ]
 
 export default genderList
