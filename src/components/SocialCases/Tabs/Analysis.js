@@ -7,7 +7,8 @@ import DerivationModal from '../Analysis/DerivationModal'
 import socialCasesActions from '../../../state/actions/socialCase'
 import contactActions from '../../../state/actions/contact'
 import { formatDate } from '../../../formatters'
-import { ContactCard, ContactModal } from '../../Contacts'
+import { ContactModal } from '../../Contacts'
+import { UserCard } from '../../Users'
 import { useToggle } from '../../../hooks'
 
 const Analysis = () => {
@@ -103,16 +104,17 @@ const Analysis = () => {
                 >
                   Profesionales
                 </Typography>
-                <Grid container>
+                <Grid container spacing={2}>
                   {derivationDetails.professionals.map((item) => (
-                    <ContactCard
-                      key={`contact-card-${item.id}`}
-                      contact={item}
-                      onEdit={() => {
-                        setCurrentContact(item)
-                        toggleOpenUpdate()
-                      }}
-                    />
+                    <Grid item xs={12} lg={6} key={`contact-card-${item.id}`}>
+                      <UserCard
+                        user={item}
+                        onEdit={() => {
+                          setCurrentContact(item)
+                          toggleOpenUpdate()
+                        }}
+                      />
+                    </Grid>
                   ))}
                 </Grid>
                 {currentContact && openUpdate && (

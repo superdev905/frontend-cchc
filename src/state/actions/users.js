@@ -152,7 +152,7 @@ const getSocialAssistanceList =
         })
     })
 
-export default {
+const usersActions = {
   getUsers,
   createUser,
   updateUser,
@@ -164,3 +164,5 @@ export default {
   getFoundationUsers,
   getSocialAssistanceList
 }
+
+export default usersActions

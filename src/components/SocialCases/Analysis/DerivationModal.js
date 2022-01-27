@@ -11,6 +11,7 @@ import { Select, Button, TextField, TextArea } from '../../UI'
 import { Dialog } from '../../Shared'
 import companyActions from '../../../state/actions/companies'
 import socialCaseActions from '../../../state/actions/socialCase'
+import usersActions from '../../../state/actions/users'
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -41,7 +42,7 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
   const dispatch = useDispatch()
   const { isMobile } = useSelector((state) => state.ui)
   const { caseDetails } = useSelector((state) => state.socialCase)
-  const { contacts } = useSelector((state) => state.companies)
+  const [assistanceList, setAssistanceList] = useState([])
   const { enqueueSnackbar } = useSnackbar()
   const [state] = useState('ASIGNADO')
   const [value, setValue] = useState([])
@@ -64,7 +65,11 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
         formData.state = state
         formData.professionals = value.map((item) => ({
           userId: item.id,
-          fullName: item.full_name
+          fullName: `${item.names} ${item.paternal_surname} ${
+            item?.maternal_surname || ''
+          }`
+            .toUpperCase()
+            .trim()
         }))
 
         dispatch(
@@ -94,6 +99,9 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
     if (open) {
       if (caseDetails) {
         dispatch(companyActions.getContacts(caseDetails.businessId))
+        dispatch(usersActions.getSocialAssistanceList()).then((res) => {
+          setAssistanceList(res)
+        })
       }
     }
   }, [caseDetails, open])
@@ -181,12 +189,12 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
                       onChange={(event, newValue) => {
                         setValue([...newValue])
                       }}
-                      options={contacts}
-                      getOptionLabel={(option) => option.full_name}
+                      options={assistanceList}
+                      getOptionLabel={(option) => option.names}
                       renderTags={(tagValue, getTagProps) =>
                         tagValue.map((option, index) => (
                           <Chip
-                            label={`${option.full_name.toUpperCase()}-${
+                            label={`${option.names.toUpperCase()}-${
                               option.charge_name
                             }`}
                             {...getTagProps({ index })}
@@ -205,7 +213,7 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
                           <Typography
                             style={{ fontSize: 17, fontWeight: 'bold' }}
                           >
-                            {`Nombre:  ${values.full_name}`}
+                            {`Nombre:  ${values.names}`}
                           </Typography>
                           <Typography
                             style={{
