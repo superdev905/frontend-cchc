@@ -6,9 +6,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Avatar, Box, Grid, Typography } from '@material-ui/core'
 import { Alert, Autocomplete } from '@material-ui/lab'
+import constructionsActions from '../../state/actions/constructions'
 import companiesActions from '../../state/actions/companies'
+import SearchCompany from '../Companies/SearchCompany'
 import commonActions from '../../state/actions/common'
-import { CompanyRow, DatePicker, Dialog, TimePicker } from '../Shared'
+import { DatePicker, Dialog, TimePicker } from '../Shared'
 import { useSuccess } from '../../hooks'
 import {
   Button,
@@ -53,6 +55,7 @@ const EventForm = ({
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const [selectedCompany, setSelectedCompany] = useState(null)
+  const [constructions, setConstructions] = useState([])
   const [selectedCons, setSelectedCons] = useState(null)
   const { user } = useSelector((state) => state.auth)
   const { eventTypes, shiftList } = useSelector((state) => state.common)
@@ -109,14 +112,19 @@ const EventForm = ({
     }
   })
 
-  const onCompanySelect = (__, values) => {
-    setSelectedCompany(values)
-    const idCompany = values ? values.id : ''
-    const nameCompany = values ? values.business_name : ''
-    formik.setFieldValue('business_id', idCompany)
-    formik.setFieldValue('business_name', nameCompany)
-    setSelectedCons(null)
-  }
+  useEffect(() => {
+    if (selectedCompany) {
+      dispatch(
+        constructionsActions.getConstructions({
+          business_id: selectedCompany.id
+        })
+      ).then((response) => {
+        setConstructions(response)
+      })
+    }
+    formik.setFieldValue('business_id', selectedCompany?.id || '')
+    formik.setFieldValue('business_name', selectedCompany?.business_name || '')
+  }, [selectedCompany])
 
   const onConstructionChange = (__, values) => {
     setSelectedCons(values)
@@ -357,42 +365,31 @@ const EventForm = ({
           {formik.values.type_description === 'VISITA' && (
             <>
               <Grid item xs={12}>
-                <Autocomplete
-                  options={companies}
-                  value={selectedCompany || ''}
-                  getOptionSelected={(option, value) => option.id === value.id}
-                  getOptionLabel={(option) => option.business_name || ''}
-                  onChange={onCompanySelect}
-                  disabled={formik.values.type_description === 'TAREA'}
-                  required={isVisit}
-                  renderOption={(option) => (
-                    <CompanyRow.Autocomplete company={option} />
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Selecciona empresa"
-                      placeholder="Nombre de empresa"
-                    />
-                  )}
+                <SearchCompany
+                  onSelected={(company) => setSelectedCompany(company)}
+                  onDelete={() => {
+                    setSelectedCompany(null)
+                    setConstructions([])
+                    formik.setFieldValue('construction_id', '')
+                    formik.setFieldValue('construction_name', '')
+                    setSelectedCons(null)
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
                 <Autocomplete
-                  options={
-                    selectedCompany
-                      ? selectedCompany.constructions.filter(
-                          (item) =>
-                            item.status !== 'NO_VIGENTE' &&
-                            item.state !== 'DELETED'
-                        )
-                      : []
-                  }
+                  options={constructions.filter(
+                    (item) =>
+                      item.status !== 'NO_VIGENTE' &&
+                      item.state !== 'DELETED' &&
+                      !item.is_suspended
+                  )}
                   value={selectedCons || ''}
                   getOptionSelected={(option, value) => option.id === value.id}
                   getOptionLabel={(option) => option.name || ''}
                   onChange={onConstructionChange}
                   disabled={formik.values.type_description === 'TAREA'}
+                  noOptionsText="Esta empresa no tiene obras"
                   required={isVisit}
                   renderOption={(option) => (
                     <Box>
