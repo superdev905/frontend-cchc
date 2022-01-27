@@ -25,7 +25,9 @@ const FamiliarGroup = () => {
 
   const fetchRelatives = () => {
     setLoading(true)
-    dispatch(employeesActions.getEmployeeRelatives(employee.run))
+    dispatch(
+      employeesActions.getEmployeeRelatives({ employee_run: employee.run })
+    )
       .then((list) => {
         setLoading(false)
         setTableData(

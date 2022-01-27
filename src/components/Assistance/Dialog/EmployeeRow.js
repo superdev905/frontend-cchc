@@ -53,8 +53,10 @@ const EmployeeRow = ({
               fontWeight: 'bold'
             }}
           >{`${option.names} ${
-            option?.paternal_surname || option?.paternalSurname
-          } ${option.maternal_surname || option.maternalSurname}`}</Typography>
+            option?.paternal_surname || option?.paternalSurname || ''
+          } ${
+            option.maternal_surname || option.maternalSurname || ''
+          }`}</Typography>
           <Typography style={{ fontSize: 14 }}>{`Rut: ${
             option.run || 'Sin rut'
           }`}</Typography>

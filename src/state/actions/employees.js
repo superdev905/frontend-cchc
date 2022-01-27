@@ -135,19 +135,23 @@ const blockRelative = (id) => () =>
       })
   })
 
-const getEmployeeRelatives = (employeeRun) => () =>
-  new Promise((resolve, reject) => {
-    Axios.get(
-      `${config.services.employee}/employee-relatives?employee_run=${employeeRun}`
-    )
-      .then((response) => {
-        const { data } = response
-        resolve(data)
-      })
-      .catch((err) => {
-        reject(err.response.data.detail)
-      })
-  })
+const getEmployeeRelatives =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${config.services.employee}/employee-relatives?${queryString.stringify(
+          query
+        )}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
 
 const getEmployeeRelative = (id) => () =>
   new Promise((resolve, reject) => {

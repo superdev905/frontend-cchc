@@ -82,18 +82,21 @@ const WorkerInterventionRecord = ({
   const { open: openConfirm, toggleOpen: toggleOpenConfirm } = useToggle()
 
   const fetchBeneficiaryList = () => {
-    dispatch(employeeActions.getEmployeeRelatives(employee.run)).then(
-      (result) => {
-        setBeneficiaryList(
-          result
-            .map((item) => ({ ...item, isRelative: true }))
-            .map((item) => ({
-              ...item,
-              avatarBg: generateColor()
-            }))
-        )
-      }
-    )
+    dispatch(
+      employeeActions.getEmployeeRelatives({
+        employee_run: employee.run,
+        state: 'CREATED'
+      })
+    ).then((result) => {
+      setBeneficiaryList(
+        result
+          .map((item) => ({ ...item, isRelative: true }))
+          .map((item) => ({
+            ...item,
+            avatarBg: generateColor()
+          }))
+      )
+    })
   }
 
   useEffect(() => {

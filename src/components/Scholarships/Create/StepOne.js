@@ -149,18 +149,21 @@ const StepOne = ({ onClose, data }) => {
   }, [data])
 
   const fetchBeneficiaryList = () => {
-    dispatch(employeeActions.getEmployeeRelatives(selectedEmployee.run)).then(
-      (result) => {
-        setBeneficiaryList(
-          [{ ...selectedEmployee, isRelative: false }]
-            .concat(result.map((item) => ({ ...item, isRelative: true })))
-            .map((item) => ({
-              ...item,
-              avatarBg: generateColor()
-            }))
-        )
-      }
-    )
+    dispatch(
+      employeeActions.getEmployeeRelatives({
+        employee_run: selectedEmployee.run,
+        state: 'CREATED'
+      })
+    ).then((result) => {
+      setBeneficiaryList(
+        [{ ...selectedEmployee, isRelative: false }]
+          .concat(result.map((item) => ({ ...item, isRelative: true })))
+          .map((item) => ({
+            ...item,
+            avatarBg: generateColor()
+          }))
+      )
+    })
   }
 
   const fetchCompanies = () => {
