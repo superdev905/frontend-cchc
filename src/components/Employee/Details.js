@@ -31,7 +31,7 @@ const Details = ({ loading }) => {
       })
     )
   const getEmployeeDetails = () => {
-    dispatch(employeesActions.getEmployeeDetails(employee))
+    dispatch(employeesActions.getEmployeeDetails(employee.id))
   }
 
   /* useEffect(() => {
