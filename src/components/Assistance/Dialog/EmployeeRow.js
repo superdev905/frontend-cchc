@@ -41,7 +41,7 @@ const EmployeeRow = ({
     <Box
       p={1}
       className={classes.root}
-      onClick={!option.isAdded ? onClick : null}
+      onClick={!option?.isAdded ? onClick : null}
     >
       <Box display="flex" alignItems="center">
         <Avatar style={{ backgroundColor: option.avatarBg }}>

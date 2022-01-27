@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { Box, Drawer, IconButton, Typography } from '@material-ui/core'
 import { FiArrowLeft as BackIcon } from 'react-icons/fi'
-import { formatDate, formatText } from '../../../../formatters'
+import { formatCurrency, formatDate, formatText } from '../../../../formatters'
 import { Button, EmptyState, LabeledRow, Text } from '../../../UI'
 import { useToggle, useSuccess } from '../../../../hooks'
 import useStyles from './styles'
@@ -15,7 +15,7 @@ import EmployeeTracking from '../../EmployeeTracking'
 import AddScore from '../Score/AddScore'
 import CourseStatus from '../Status/CourseStatus'
 import StatusList from '../Status/List'
-import { ConfirmDelete } from '../../../Shared'
+import { ConfirmDelete, FileThumbnail, FileVisor } from '../../../Shared'
 import StudentPaymentCard from '../PaymentCard'
 
 const EmployeeDialog = ({ open, onClose, idEmployee }) => {
@@ -26,13 +26,15 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const [loadingPayments, setLoadingPayments] = useState(false)
   const [deletingPayment, setDeletingPayment] = useState(false)
   const [studentPayments, setStudentPayments] = useState([])
+  const [scores, setScores] = useState([])
   const [currentPayment, setCurrentPayment] = useState(null)
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [student, setStudent] = useState(null)
   const [currentScore, setCurrentScore] = useState(null)
   const { isMobile } = useSelector((state) => state.ui)
-  const { scoresList } = useSelector((state) => state.courses)
+  /* const { scoresList } = useSelector((state) => state.courses)
+  console.log(scoresList) */
   const { success, changeSuccess } = useSuccess()
   const {
     success: successDeletePayment,
@@ -46,6 +48,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const { open: openEditScore, toggleOpen: toggleOpenEditScore } = useToggle()
   const { open: openDeleteScore, toggleOpen: toggleOpenDeleteScore } =
     useToggle()
+  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
 
   const fetchDetails = () => {
     setLoading(true)
@@ -67,7 +70,8 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
 
   const fetchScores = () => {
     setLoading(true)
-    dispatch(courses.getScores({ courseId: idCourse })).then(() => {
+    dispatch(courses.getScores({ courseId: idCourse })).then((result) => {
+      setScores(result.items.filter((item) => item.studentId === idEmployee))
       setLoading(false)
     })
   }
@@ -105,7 +109,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
     dispatch(
       courses.createStatus({
         ...values,
-        studentId: student.student.id
+        studentId: student.studentId
       })
     )
       .then(() => {
@@ -127,7 +131,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
     dispatch(
       courses.updateScore(currentScore.id, {
         ...values,
-        studentId: student.student.id
+        studentId: student.studentId
       })
     )
       .then(() => {
@@ -231,7 +235,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
               `${student.student.names} ${student.student.paternalSurname} ${student.student.maternalSurname}`}
           </Text>
         </Box>
-        <Box>
+        <Box px={3}>
           <LabeledRow label={'Rut:'}>
             <Text loaderWidth={'20%'} loading={loading}>
               {student && `${student.student.run}`}
@@ -248,16 +252,49 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
                 })}
             </Text>
           </LabeledRow>
+          <LabeledRow label={'N° comprobante'}>
+            <Text loaderWidth={'20%'} loading={loading}>
+              {student?.entryNumber}
+            </Text>
+          </LabeledRow>
+          <LabeledRow label={'Monto'}>
+            <Text loaderWidth={'50%'} loading={loading}>
+              {student && formatCurrency(student.amount)}
+            </Text>
+          </LabeledRow>
           <LabeledRow label={'Inscrito por:'}>
             <Text loaderWidth={'30%'} loading={loading}>
               {student &&
                 `${student.createdBy.names} ${student.createdBy.paternalSurname} ${student.createdBy.maternalSurname}`}
             </Text>
           </LabeledRow>
+          {student?.file && (
+            <Box mt={1}>
+              <Typography className={classes.subHeading}>
+                Archivo adjunto
+              </Typography>
+              <FileThumbnail
+                fileName={student.file.fileName}
+                fileSize={student.file.fileSize}
+                date={student.file.uploadDate}
+                onView={() => {
+                  toggleOpenVisor()
+                }}
+              />
+              {openVisor && (
+                <FileVisor
+                  src={student.file.fileUrl}
+                  filename={student.file.fileName}
+                  open={openVisor}
+                  onClose={toggleOpenVisor}
+                />
+              )}
+            </Box>
+          )}
         </Box>
-        <Box>
+        <Box px={3}>
           <Box className={classes.centeredSpaced}>
-            <Typography>Porcentaje de inasistencias</Typography>
+            <Typography>Porcentaje de asistencia</Typography>
           </Box>
           <Box
             style={{
@@ -272,10 +309,10 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
               fontWeight: 'bold'
             }}
           >
-            {student && `${student.absencesPercentage}`}
+            {student && `${student.attendancePercentage}`}
           </Box>
         </Box>
-        <Box>
+        <Box px={3}>
           <Box className={classes.centeredSpaced}>
             <Typography>Pagos</Typography>
             <Button size="small" onClick={toggleOpenAdd}>
@@ -310,7 +347,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
             )}
           </Box>
         </Box>
-        <Box>
+        <Box px={3}>
           <Box marginBottom={2} className={classes.centeredSpaced}>
             <Typography>Notas</Typography>
             <Button size="small" onClick={toggleOpenAddScore}>
@@ -318,7 +355,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
             </Button>
           </Box>
           <Box>
-            {scoresList.length === 0 ? (
+            {scores.length === 0 ? (
               <EmptyState
                 message="Aún no hay notas"
                 actionMessage="Nueva nota"
@@ -326,7 +363,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
               />
             ) : (
               <ScoreCard.Container>
-                {scoresList.map((item) => (
+                {scores.map((item) => (
                   <ScoreCard
                     key={`score-i-${item.id}`}
                     score={item.score}
@@ -345,7 +382,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
             )}
           </Box>
         </Box>
-        <Box>
+        <Box px={3}>
           <Box marginTop={2} className={classes.centeredSpaced}>
             <Typography>Estado de alumno</Typography>
             <Button size="small" onClick={toggleOpenStatus}>

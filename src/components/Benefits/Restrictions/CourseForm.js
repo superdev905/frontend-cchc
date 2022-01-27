@@ -175,7 +175,7 @@ const Course = ({
                 Boolean(formik.errors.instructorId)
               }
             >
-              <option value="">SELECCIONE RELATOR</option>
+              <option value="">NO APLICA</option>
               {instructorsList.map((item) => (
                 <option
                   value={item.id}
@@ -208,7 +208,7 @@ const Course = ({
               helperText={formik.touched.modality && formik.errors.modality}
               error={formik.touched.modality && Boolean(formik.errors.modality)}
             >
-              <option value="">SELECCIONE MODALIDAD</option>
+              <option value="">NO APLICA</option>
               {modalities.map((item) => (
                 <option value={item}>{capitalize(item)}</option>
               ))}
@@ -267,7 +267,7 @@ const Course = ({
                 Boolean(formik.errors.occupationName)
               }
             >
-              <option value="">SELECCIONE OFICIO </option>
+              <option value="">NO APLICA</option>
               {specList.map((item, index) => (
                 <option
                   key={`specialty_id--${index}`}
@@ -291,7 +291,7 @@ const Course = ({
                 formik.touched.assignedTo && Boolean(formik.errors.assignedTo)
               }
             >
-              <option value="">SELECCIONE RESPONSABLE</option>
+              <option value="">NO APLICA</option>
               {foundationUsers.map((item) => (
                 <option
                   value={item.id}

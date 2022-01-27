@@ -237,7 +237,7 @@ const Company = ({
                   Boolean(formik.errors.businessType)
                 }
               >
-                <option value="">SELECCIONE TIPO DE EMPRESA</option>
+                <option value="">NO APLICA</option>
                 {companyTypes.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
@@ -259,7 +259,7 @@ const Company = ({
                   Boolean(formik.errors.socialService)
                 }
               >
-                <option value="">SELECCIONE RELACIÓN</option>
+                <option value="">NO APLICA</option>
                 {decisionList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
@@ -281,7 +281,7 @@ const Company = ({
                   Boolean(formik.errors.businessField)
                 }
               >
-                <option value="">SELECCIONE GIRO </option>
+                <option value="">NO APLICA</option>
                 {businessFieldList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
@@ -303,7 +303,7 @@ const Company = ({
                   Boolean(formik.errors.employeeType)
                 }
               >
-                <option value="">SELECCIONE TIPO</option>
+                <option value="">NO APLICA</option>
                 {employeeTypes.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
@@ -323,7 +323,7 @@ const Company = ({
                   formik.touched.coverage && Boolean(formik.errors.coverage)
                 }
               >
-                <option value="">SELECCIONE COBERTURA</option>
+                <option value="">NO APLICA</option>
                 {coverageList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
@@ -340,7 +340,7 @@ const Company = ({
                 helperText={formik.touched.target && formik.errors.target}
                 error={formik.touched.target && Boolean(formik.errors.target)}
               >
-                <option value="">SELECCIONE OPCIÓN</option>
+                <option value="">NO APLICA</option>
                 {targetList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}
@@ -357,7 +357,7 @@ const Company = ({
                 helperText={formik.touched.office && formik.errors.office}
                 error={formik.touched.office && Boolean(formik.errors.office)}
               >
-                <option value="">SELECCIONE OFICINA</option>
+                <option value="">NO APLICA</option>
                 {officeList.map((item) => (
                   <option value={item}>{capitalize(item)}</option>
                 ))}

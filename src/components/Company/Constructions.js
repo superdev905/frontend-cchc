@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { Box, Typography } from '@material-ui/core'
+import { RestoreFromTrash as RestoreIcon } from '@material-ui/icons'
 import companyActions from '../../state/actions/companies'
 import constructionActions from '../../state/actions/constructions'
 import { ActionsTable, Button, StatusChip, Wrapper } from '../UI'
@@ -27,9 +28,11 @@ const Details = ({ ...props }) => {
   const { open: openCreate, toggleOpen: toggleOpenCreate } = useToggle()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const { open: openRestore, toggleOpen: toggleOpenRestore } = useToggle()
   const [currentConstruction, setCurrentConstruction] = useState(null)
   const { success, changeSuccess } = useSuccess()
-  const [deleting, setDeleting] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const { user } = useSelector((state) => state.auth)
 
   const onEditClick = (construction) => {
     setCurrentConstruction(construction)
@@ -67,22 +70,22 @@ const Details = ({ ...props }) => {
       })
     )
 
-  const deleteConstruction = (id) => {
-    setDeleting(true)
-    dispatch(constructionActions.patchConstruction(id, { state: 'DELETED' }))
+  const handleAction = (id, state, message, toggleFunction) => {
+    setSubmitting(true)
+    dispatch(constructionActions.patchConstruction(id, { state }))
       .then(() => {
-        setDeleting(false)
+        setSubmitting(false)
         changeSuccess(true)
-        toggleOpenDelete()
-        enqueueSnackbar('Obra eliminada exitosamente', { variant: 'success' })
+        toggleFunction()
+        enqueueSnackbar(message, { variant: 'success' })
         fetchConstruction()
       })
       .catch((err) => {
-        setDeleting(false)
+        setSubmitting(false)
         enqueueSnackbar(err.detail, {
           variant: 'error'
         })
-        toggleOpenDelete()
+        toggleFunction()
       })
   }
 
@@ -173,10 +176,26 @@ const Details = ({ ...props }) => {
                     {...row}
                     disabledDelete={row.state === 'DELETED'}
                     onEdit={() => onEditClick(row)}
-                    onDelete={() => onDelete(row)}
+                    onDelete={
+                      row.state !== 'DELETED' ? () => onDelete(row) : null
+                    }
                     onView={() => {
                       props.history.push(`/obras/${row.id}`)
                     }}
+                    moreOptions={
+                      query.state === 'DELETED' && user.role.key === 'ADMIN'
+                        ? [
+                            {
+                              icon: <RestoreIcon color="primary" />,
+
+                              onClick: () => {
+                                setCurrentConstruction(row)
+                                toggleOpenRestore()
+                              }
+                            }
+                          ]
+                        : []
+                    }
                   />
                 )
               }
@@ -207,9 +226,40 @@ const Details = ({ ...props }) => {
         <ConfirmDelete
           open={openDelete}
           onClose={toggleOpenDelete}
-          loading={deleting}
+          loading={submitting}
           success={success}
-          onConfirm={() => deleteConstruction(currentConstruction.id)}
+          onConfirm={() =>
+            handleAction(
+              currentConstruction.id,
+              'DELETED',
+              'Obra eliminada exitosamente!',
+              toggleOpenDelete
+            )
+          }
+          message={
+            <Typography variant="h6">
+              ¿Estás seguro de eliminar esta obra:{' '}
+              <strong>{currentConstruction.name}</strong>?
+            </Typography>
+          }
+        />
+      )}
+      {currentConstruction && openRestore && (
+        <ConfirmDelete
+          event={'RESTORE'}
+          confirmText="Restaurar"
+          open={openRestore}
+          onClose={toggleOpenRestore}
+          loading={submitting}
+          success={success}
+          onConfirm={() =>
+            handleAction(
+              currentConstruction.id,
+              'ACTIVE',
+              'Obra restaurada exitosamente!',
+              toggleOpenRestore
+            )
+          }
           message={
             <Typography variant="h6">
               ¿Estás seguro de eliminar esta obra:{' '}

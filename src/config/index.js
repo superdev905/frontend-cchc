@@ -53,7 +53,7 @@ const services = {
     production: `${BASEURL[env]}:5110/api/v1`
   },
   schedule: {
-    development: `${BASEURL[env]}:5194/api/v1`,
+    development: `${BASEURL[env]}:5300/api/v1`,
     testing: `${BASEURL[env]}:5199/api/v1`,
     production: `${BASEURL[env]}:5111/api/v1`
   },

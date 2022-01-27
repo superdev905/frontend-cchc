@@ -82,9 +82,7 @@ const Background = () => {
                   <Text>{`${caseDetails.professional.names} ${caseDetails.professional.paternalSurname} ${caseDetails.professional.maternalSurname}`}</Text>
                 </LabeledRow>
                 <LabeledRow width={200} label={'Tipo de Solicitud'}>
-                  <Text>
-                    {caseDetails.typeRequest ? caseDetails.typeRequest : 'TEST'}
-                  </Text>
+                  <Text>{caseDetails?.requestType}</Text>
                 </LabeledRow>
               </Grid>
             </Grid>

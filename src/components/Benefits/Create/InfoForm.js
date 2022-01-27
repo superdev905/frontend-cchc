@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   Box,
   FormControlLabel,
@@ -8,10 +10,14 @@ import {
 import { Select, TextField } from '../../UI'
 import { CurrencyTextField, DatePicker } from '../../Shared'
 import CourseForm from '../../Courses/CourseForm'
+import commonActions from '../../../state/actions/common'
 
 const statusList = ['VIGENTE', 'NO VIGENTE']
 
 const BenefitForm = ({ type, formik, actions }) => {
+  const dispatch = useDispatch()
+  const { areas } = useSelector((state) => state.common)
+
   const validNumber = (num) => {
     if (num === '') return ''
     if (Number.isNaN(num)) return ''
@@ -19,6 +25,10 @@ const BenefitForm = ({ type, formik, actions }) => {
     if (num === '0') return ''
     return parseInt(num, 10)
   }
+
+  useEffect(() => {
+    dispatch(commonActions.getAreas())
+  }, [])
 
   return (
     <Box>
@@ -159,15 +169,17 @@ const BenefitForm = ({ type, formik, actions }) => {
           <Grid item xs={12} md={12}>
             <Select
               label="Área"
-              name="area"
+              name="areaId"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.area}
+              value={formik.values.areaId}
             >
-              <option value="">SELECCIONE ÁREA</option>
-              <option value="ECONOMICO">ECONOMICO</option>
-              <option value="ESTUDIANTIL">ESTUDIANTIL</option>
-              <option value="OTRO">OTRO</option>
+              <option value="">SIN ÁREA</option>
+              {areas.map((item) => (
+                <option key={`area-option-${item.id}`} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
             </Select>
           </Grid>
           {type === 'CREATE' && (

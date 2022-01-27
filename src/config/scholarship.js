@@ -48,10 +48,12 @@ const scholarshipConfig = {
     }
   ],
   revisionStatus: [
-    { status: 'CREADA', name: 'Creada' },
-    /* { status: 'APROBADA', name: 'Aprobada' }, */
+    { status: 'CREADO', name: 'Creado' },
+    { status: 'REVISION', name: 'Revisión' },
     { status: 'RECHAZADA', name: 'Rechazada' },
-    { status: 'POR_REVISAR', name: 'Solucitud de revisión' }
+    { status: 'DOCUMENTACION_COMPLETA', name: 'Documentacion completa' },
+    { status: 'BECA_ASIGNADA', name: 'Beca asignada' },
+    { status: 'BECA_APROBADA', name: 'Beca aprobada' }
   ]
 }
 

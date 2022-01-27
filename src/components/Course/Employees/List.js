@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Alert } from '@material-ui/lab'
 import { Box, Grid, Typography } from '@material-ui/core'
+import { AttachFile as AttachFileIcon } from '@material-ui/icons'
 import { ActionsTable, Button, Wrapper } from '../../UI'
-import { formatDate } from '../../../formatters'
+import { formatCurrency, formatDate } from '../../../formatters'
 import { useToggle, useSuccess } from '../../../hooks'
-import { ConfirmDelete, DataTable } from '../../Shared'
+import { ConfirmDelete, DataTable, FileVisor } from '../../Shared'
 import Can from '../../Can'
 import benefitsActions from '../../../state/actions/benefits'
 import coursesActions from '../../../state/actions/courses'
@@ -28,6 +29,7 @@ const EmployeesRegistrationList = () => {
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const { open: openView, toggleOpen: toggleOpenView } = useToggle()
+  const { open: openVisor, toggleOpen: toggleOpenVisor } = useToggle()
 
   const fetchEmployees = () => {
     setLoading(true)
@@ -36,26 +38,12 @@ const EmployeesRegistrationList = () => {
     })
   }
 
-  const createEmployeeRegistration = (values) => {
+  const createEmployeeRegistration = (values) =>
     dispatch(
       coursesActions.enrollEmployee({
         ...values
       })
     )
-      .then(() => {
-        setLoading(false)
-        changeSuccess(true)
-        toggleOpenAdd()
-        fetchEmployees()
-        enqueueSnackbar('Trabajador inscrito correctamente', {
-          autoHideDuration: 1500,
-          variant: 'success'
-        })
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
 
   const unenrollEmployee = () => {
     dispatch(
@@ -134,8 +122,16 @@ const EmployeesRegistrationList = () => {
             selector: (row) => row.student.employeeName
           },
           {
-            name: 'Fecha',
+            name: 'Fecha de inscripción',
             selector: (row) => formatDate(row.enrollDate)
+          },
+          {
+            name: 'N° Comprobante',
+            selector: (row) => row.entryNumber
+          },
+          {
+            name: 'Monto',
+            selector: (row) => formatCurrency(row.amount)
           },
           {
             name: 'Estado',
@@ -156,6 +152,16 @@ const EmployeesRegistrationList = () => {
                   setCurrentStudent(row)
                   toggleOpenView()
                 }}
+                moreOptions={[
+                  {
+                    icon: <AttachFileIcon color="black" />,
+                    disabled: !row.file,
+                    onClick: () => {
+                      setCurrentStudent(row)
+                      toggleOpenVisor()
+                    }
+                  }
+                ]}
               />
             )
           }
@@ -171,10 +177,11 @@ const EmployeesRegistrationList = () => {
       />
 
       <WorkerRegistration
-        successMessage="Curso creado"
+        successMessage="Trabajador Registrado"
         open={openAdd}
         onClose={toggleOpenAdd}
         submitFunction={createEmployeeRegistration}
+        successFunction={fetchEmployees}
       />
 
       {currentStudent && openDelete && (
@@ -195,6 +202,14 @@ const EmployeesRegistrationList = () => {
           open={openView}
           onClose={toggleOpenView}
           idEmployee={currentStudent.studentId}
+        />
+      )}
+      {currentStudent && openVisor && (
+        <FileVisor
+          src={currentStudent.file.fileUrl}
+          filename={currentStudent.file.fileName}
+          open={openVisor}
+          onClose={toggleOpenVisor}
         />
       )}
     </Wrapper>

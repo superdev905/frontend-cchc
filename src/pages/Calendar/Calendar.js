@@ -37,11 +37,14 @@ const EventsCalendar = () => {
   const [loading, setLoading] = useState(false)
   const [rescheduleStatus, setRescheduleStatus] = useState(false)
   const [rangeDate, setRangeDate] = useState({ start: null, end: null })
-  const [currentView, setCurrentView] = useState('timeGridWeek')
+  const [currentView, setCurrentView] = useState('dayGridMonth')
   const [filters, setFilters] = useState({
     start_date: startOfWeek(currentDate),
-    end_date: endOfWeek(currentDate)
+    end_date: endOfWeek(currentDate),
+    users: [],
+    type: ''
   })
+  const [calendarView, setCalendarView] = useState('')
   const {
     open: openfilters,
     handleOpen: handleOpenfilters,
@@ -55,11 +58,6 @@ const EventsCalendar = () => {
     handleOpen: handleOpenTask,
     anchorEl: anchorElTask
   } = useMenu()
-  const [otherFilters, setOtherFilters] = useState({
-    assistenceIdList: [],
-    view: 'VER TODO'
-  })
-  const [assistenceListFiltered, setAssistenceListFiltered] = useState([])
   const { calendarEvents } = useSelector((state) => state.assistance)
   const { calendarTasks } = useSelector((state) => state.socialCase)
   const { user } = useSelector((state) => state.auth)
@@ -89,10 +87,6 @@ const EventsCalendar = () => {
         user_id: user?.id || null
       })
     )
-  }
-
-  const applyFilters = () => {
-    console.log(otherFilters)
   }
 
   const onCancelEvent = () => {
@@ -288,30 +282,40 @@ const EventsCalendar = () => {
 
   useEffect(() => {
     if (rangeDate.start && rangeDate.end) {
-      setFilters({ start_date: rangeDate.start, end_date: rangeDate.end })
+      setFilters({
+        ...filters,
+        start_date: rangeDate.start,
+        end_date: rangeDate.end
+      })
     }
-  }, [calendarApi, rangeDate])
+  }, [rangeDate])
 
   useEffect(() => {
-    fetchEvents(filters)
-    fetchInterventionPlanTasks(filters)
-  }, [filters])
+    if (!calendarView) {
+      fetchEvents(filters)
+      fetchInterventionPlanTasks(filters)
+    } else if (calendarView === 'TASKS') {
+      dispatch(assistanceActions.cleanCalendarEvents())
+      fetchInterventionPlanTasks(filters)
+    } else {
+      dispatch(socialCasesActions.cleanCalendarPlans())
+      fetchEvents(filters)
+    }
+  }, [filters, calendarView])
 
   return (
     <div>
       <Box mt={1} mb={2}>
-        <Cards />
+        <Cards query={filters} />
       </Box>
       <Wrapper>
         <FiltersMenu
           open={openfilters}
           onClose={handleClosefilters}
           anchorEl={anchorElfilters}
-          assistenceListFiltered={assistenceListFiltered}
-          setAssistenceListFiltered={setAssistenceListFiltered}
-          otherFilters={otherFilters}
-          setOtherFilters={setOtherFilters}
-          applyFilters={applyFilters}
+          value={{ users: filters.users, type: calendarView }}
+          handleChangeUsers={(users) => setFilters({ ...filters, users })}
+          handleChangeType={(type) => setCalendarView(type)}
         />
         <Box miHeight="600px">
           <FullCalendar

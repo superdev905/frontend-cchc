@@ -79,16 +79,16 @@ const HouseAgreements = () => {
         }
         columns={[
           {
-            name: 'Fecha',
-            selector: (row) => formatDate(row.date)
-          },
-          {
-            name: 'Número',
+            name: 'Rut',
             selector: (row) => row.number
           },
           {
             name: 'Empresa',
             selector: (row) => row.businessName.toUpperCase()
+          },
+          {
+            name: 'Fecha',
+            selector: (row) => formatDate(row.date)
           },
           {
             name: '',

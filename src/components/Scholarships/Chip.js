@@ -35,7 +35,7 @@ const StatusChip = ({ label, success, status, className, iconSize }) => {
   const classes = useStyles({ success })
 
   const icons = {
-    CREADA: <CreatedIcon fontSize={iconSize} />,
+    CREADO: <CreatedIcon fontSize={iconSize} />,
     APROBADA: <ApprovedIcon fontSize={iconSize} />,
     POR_REVISAR: <FiClock fontSize={iconSize} />,
     RECHAZADA: <FiX fontSize={iconSize} />
@@ -53,7 +53,7 @@ const StatusChip = ({ label, success, status, className, iconSize }) => {
       }
       className={clsx(
         classes.root,
-        status === 'CREADA' && classes.created,
+        status === 'CREADO' && classes.created,
         status === 'APROBADA' && classes.approved,
         status === 'RECHAZADA' && classes.rejected,
         status === 'POR_REVISAR' && classes.check

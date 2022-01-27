@@ -105,6 +105,12 @@ const getInterventionPlans =
         })
     })
 
+const cleanCalendarPlans = () => (dispatch) =>
+  dispatch({
+    type: socialCaseTypes.GET_INTERVENTION_PLANS_CALENDAR,
+    payload: []
+  })
+
 const getPlansForCalendar =
   (query = {}) =>
   (dispatch) =>
@@ -256,6 +262,22 @@ const deleteInterventionTask = (id) => (dispatch) =>
       })
   })
 
+const getStats = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.socialCase}/dashboard/stats`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: socialCaseTypes.GET_SOCIAL_CASE_STATS,
+          payload: data
+        })
+        resolve()
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const socialCasesActions = {
   getSocialCases,
   getSocialCaseById,
@@ -272,7 +294,9 @@ const socialCasesActions = {
   getDerivation,
   createClosing,
   getInterventionTaskDetails,
-  completeInterventionTask
+  completeInterventionTask,
+  cleanCalendarPlans,
+  getStats
 }
 
 export default socialCasesActions

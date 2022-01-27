@@ -4,6 +4,7 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 import { DatePicker, Dialog } from '../Shared'
 import { Button, RutTextField, Select, SubmitButton, TextField } from '../UI'
 import { rutValidation, phoneValidator } from '../../validations'
@@ -20,28 +21,48 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const validationSchema = Yup.object().shape({
-  run: Yup.string().test('validRUN', 'Ingrese run válido', (v) => {
-    if (!v) return true
-    return rutValidation(v)
-  }),
-  names: Yup.string().required('Ingrese nombres'),
-  paternal_surname: Yup.string().required('Ingrese apellido'),
-  maternal_surname: Yup.string('Ingrese apellido'),
-  gender: Yup.string().required('Seleccione sexo'),
-  born_date: Yup.date().required('Seleccione fecha de nacimiento').nullable(),
-  scholarship_id: Yup.number().required('Seleccione escolaridad'),
-  marital_status_id: Yup.number().required('Seleccione estado civil'),
-  job_id: Yup.number().required('Seleccione ocupación/actividad'),
-  nationality_id: Yup.number().required('Seleccione nacionalidad'),
-  relationship_id: Yup.number().required('Seleccione parentesco'),
-  legal_charge: Yup.string().required('Seleccion opcion de carga legal'),
-  rsh: Yup.string('Seleccione opción'),
-  rsh_percentage_id: Yup.number(),
-  phone: Yup.string().test('Check phone', 'Ingrese télefono válido', (v) =>
-    phoneValidator(v)
-  )
-})
+const validRunEqCurrentEmployee = (value, currentEmployee) => {
+  let isValid = false
+  if (value !== currentEmployee.run) {
+    isValid = true
+  } else {
+    isValid = false
+  }
+  return isValid
+}
+
+const validationSchema = (currentEmployee) =>
+  Yup.object().shape({
+    run: Yup.string()
+      .test('validRUN', 'Ingrese run válido', (v) => {
+        if (!v) return true
+        return rutValidation(v)
+      })
+      .test(
+        'validRUN_eq_CurrentEmployee',
+        'El trabajador no puede formar parte de su mismo Grupo Familiar',
+        (v) => {
+          if (!v) return true
+          return validRunEqCurrentEmployee(v, currentEmployee)
+        }
+      ),
+    names: Yup.string().required('Ingrese nombres'),
+    paternal_surname: Yup.string().required('Ingrese apellido'),
+    maternal_surname: Yup.string('Ingrese apellido'),
+    gender: Yup.string().required('Seleccione sexo'),
+    born_date: Yup.date().required('Seleccione fecha de nacimiento').nullable(),
+    scholarship_id: Yup.number().required('Seleccione escolaridad'),
+    marital_status_id: Yup.number().required('Seleccione estado civil'),
+    job_id: Yup.number().required('Seleccione ocupación/actividad'),
+    nationality_id: Yup.number().required('Seleccione nacionalidad'),
+    relationship_id: Yup.number().required('Seleccione parentesco'),
+    legal_charge: Yup.string().required('Seleccion opcion de carga legal'),
+    rsh: Yup.string('Seleccione opción'),
+    rsh_percentage_id: Yup.number(),
+    phone: Yup.string().test('Check phone', 'Ingrese télefono válido', (v) =>
+      phoneValidator(v)
+    )
+  })
 
 const EmployeeModal = ({
   open,
@@ -65,9 +86,10 @@ const EmployeeModal = ({
     relationshipList,
     activities
   } = useSelector((state) => state.common)
+  const { employee } = useSelector((state) => state.employees)
   const formik = useFormik({
     validateOnMount: true,
-    validationSchema,
+    validationSchema: validationSchema(employee),
     validateOnChange: true,
     validateOnBlur: true,
     initialValues: {
@@ -114,6 +136,18 @@ const EmployeeModal = ({
     if (actionType === 'VIEW') return 'Ver'
     if (actionType === 'UPDATE') return 'Actualizar'
     return 'Crear'
+  }
+
+  const onScholarshipSelect = (__, value) => {
+    if (value) {
+      formik.setFieldValue('scholarship_id', value.id)
+    }
+  }
+
+  const onNationalitySelect = (__, value) => {
+    if (value) {
+      formik.setFieldValue('nationality_id', value.id)
+    }
   }
 
   useEffect(() => {
@@ -296,62 +330,68 @@ const EmployeeModal = ({
               </Select>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <Select
-                label="Escolaridad"
-                name="scholarship_id"
+              <Autocomplete
+                options={scholarshipList}
+                value={
+                  scholarshipList[
+                    scholarshipList.findIndex(
+                      (item) => item.id === formik.values.scholarship_id
+                    )
+                  ] || ''
+                }
+                getOptionSelected={(option, value) => option.id === value.id}
+                getOptionLabel={(option) => option.description}
+                onChange={onScholarshipSelect}
                 required
-                value={formik.values.scholarship_id}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.scholarship_id &&
-                  Boolean(formik.errors.scholarship_id)
-                }
-                helperText={
-                  formik.touched.scholarship_id && formik.errors.scholarship_id
-                }
-                readOnly={type === 'VIEW'}
-                InputProps={{
-                  classes: {
-                    disabled: classes.disabled
-                  }
-                }}
-              >
-                <option value="">SELECCIONE ESCOLARIDAD</option>
-                {scholarshipList.map((item, i) => (
-                  <option key={`scholarship-${i}-${item.id}`} value={item.id}>
-                    {item.description}
-                  </option>
-                ))}
-              </Select>
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Escolaridad"
+                    required
+                    placeholder="SELECCIONE ESCOLARIDAD"
+                    error={
+                      formik.touched.scholarship_id &&
+                      Boolean(formik.errors.scholarship_id)
+                    }
+                    helperText={
+                      formik.touched.scholarship_id &&
+                      formik.errors.scholarship_id
+                    }
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <Select
-                label="Nacionalidad"
-                name="nationality_id"
+              <Autocomplete
+                options={nationalities}
+                value={
+                  nationalities[
+                    nationalities.findIndex(
+                      (item) => item.id === formik.values.nationality_id
+                    )
+                  ] || ''
+                }
+                getOptionSelected={(option, value) => option.id === value.id}
+                getOptionLabel={(option) => option.description}
+                onChange={onNationalitySelect}
                 required
-                value={formik.values.nationality_id}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.nationality_id &&
-                  Boolean(formik.errors.nationality_id)
-                }
-                helperText={
-                  formik.touched.nationality_id && formik.errors.nationality_id
-                }
-                readOnly={type === 'VIEW'}
-                InputProps={{
-                  classes: {
-                    disabled: classes.disabled
-                  }
-                }}
-              >
-                <option value="">SELECCIONE NACIONALIDAD</option>
-                {nationalities.map((item, i) => (
-                  <option key={`natinality-${i}-${item.id}`} value={item.id}>
-                    {item.description}
-                  </option>
-                ))}
-              </Select>
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Nacionalidad"
+                    required
+                    placeholder="SELECCIONE NACIONALIDAD"
+                    error={
+                      formik.touched.nationality_id &&
+                      Boolean(formik.errors.nationality_id)
+                    }
+                    helperText={
+                      formik.touched.nationality_id &&
+                      formik.errors.nationality_id
+                    }
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <Select

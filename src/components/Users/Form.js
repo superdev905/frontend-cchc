@@ -38,6 +38,10 @@ const useStyles = makeStyles((theme) => ({
   passwordTextField: {
     textTransform: 'inherit',
     '& input': { textTransform: 'inherit' }
+  },
+  customMessage: {
+    fontSize: '0.8rem',
+    color: 'red'
   }
 }))
 
@@ -127,6 +131,8 @@ const Form = ({
         })
     }
   })
+
+  const validateEmail = (value) => value.length - (value.indexOf('.') + 1)
 
   useEffect(() => {
     if (formik.values.charge_id && charges.length > 0) {
@@ -222,6 +228,11 @@ const Form = ({
                 helperText={formik.touched.email && formik.errors.email}
                 inputProps={{ readOnly }}
               />
+              {formik.values.email && validateEmail(formik.values.email) < 2 ? (
+                <Typography className={classes.customMessage}>
+                  El Correo Electrónico está Incompleto
+                </Typography>
+              ) : null}
             </Grid>
             {type === 'ADD' && (
               <Grid item xs={12} md={6}>
@@ -360,7 +371,11 @@ const Form = ({
                   Cancelar
                 </Button>
                 <SubmitButton
-                  disabled={!formik.isValid || formik.isSubmitting}
+                  disabled={
+                    !formik.isValid ||
+                    formik.isSubmitting ||
+                    validateEmail(formik.values.email) < 2
+                  }
                   loading={formik.isSubmitting}
                   onClick={formik.handleSubmit}
                   success={success}

@@ -1,4 +1,4 @@
-import { Box, Grid } from '@material-ui/core'
+import { Box, Chip, Grid } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -74,6 +74,7 @@ const ListEmployees = () => {
         born_date: formatDate(item.born_date)
       }))
     )
+    console.log({ tableData })
   }, [listEmployees])
 
   useEffect(() => {
@@ -145,11 +146,36 @@ const ListEmployees = () => {
               selector: (row) => row.last_name
             },
             {
-              name: 'Fecha de nacimiento',
-              selector: (row) => row.born_date
+              name: 'Fecha ultima atención',
+              selector: (row) =>
+                row.last_attention_date
+                  ? formatDate(row.last_attention_date, {})
+                  : '---'
+            },
+            {
+              name: 'Caso social',
+              center: true,
+              maxWidth: '150px',
+              selector: (row) => (
+                <Chip
+                  label={row.social_case_status ? 'Si' : 'NO'}
+                  color={row.social_case_status ? 'primary' : 'secondary'}
+                />
+              )
+            },
+            {
+              name: 'Att. en seguimiento',
+              center: true,
+              selector: (row) => (
+                <Chip
+                  label={row.has_attentions ? 'Si' : 'NO'}
+                  color={row.has_attentions ? 'primary' : 'secondary'}
+                />
+              )
             },
             {
               name: 'Estado',
+
               cell: (row) => (
                 <StatusChip
                   label={`${row.state === 'DELETED' ? 'Eliminado' : 'Activo'} `}

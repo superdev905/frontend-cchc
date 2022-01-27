@@ -2,7 +2,11 @@ import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Box } from '@material-ui/core'
 import uiActions from '../../state/actions/ui'
-import { PostulationList, ApprovedList } from '../../components/Scholarships'
+import {
+  PostulationList,
+  ApprovedList,
+  ScholarshipDashboard
+} from '../../components/Scholarships'
 
 const Scholarships = () => {
   const dispatch = useDispatch()
@@ -13,6 +17,7 @@ const Scholarships = () => {
 
   return (
     <Box>
+      <ScholarshipDashboard />
       <PostulationList />
       <ApprovedList />
     </Box>

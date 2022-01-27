@@ -16,7 +16,9 @@ const initialState = {
   benefitsList: [],
   salaryLiquidation: null,
   liquidationList: [],
-  totalLiquidations: 0
+  totalLiquidations: 0,
+  stats: [],
+  summary: []
 }
 
 const scholarshipsReducers = (state = initialState, { type, payload }) => {
@@ -47,6 +49,10 @@ const scholarshipsReducers = (state = initialState, { type, payload }) => {
       return { ...state, salaryLiquidation: payload }
     case scholarshipTypes.GET_ALL_SALARY_LIQUIDATIONS:
       return { ...state, liquidationList: payload }
+    case scholarshipTypes.SCHOLARSHIP_DASH_STATS:
+      return { ...state, stats: payload }
+    case scholarshipTypes.SCHOLARSHIP_DASH_SUMMARY:
+      return { ...state, summary: payload }
     default:
       return state
   }

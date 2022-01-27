@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
-import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
+import {
+  Box,
+  Grid,
+  Typography,
+  makeStyles,
+  IconButton
+} from '@material-ui/core'
+import { LocationOn as LocationOnIcon } from '@material-ui/icons'
 import { Alert } from '@material-ui/lab'
 import { endOfWeek } from 'date-fns'
 import startOfWeek from 'date-fns/startOfWeek'
@@ -208,7 +215,9 @@ const Details = ({ fetching, fetchDetails }) => {
           disabled={
             visit?.status === 'CANCELADA' ||
             visit?.status === 'TERMINADA' ||
-            visit?.is_close
+            visit?.is_close_pending ||
+            visit?.is_close ||
+            visit?.is_close_pending
           }
         >
           Cancelar
@@ -295,11 +304,17 @@ const Details = ({ fetching, fetchDetails }) => {
             </LabeledRow>
             <LabeledRow label="Dirección:">
               <Text loading={loading || fetching}>
-                {visit?.construction?.address}{' '}
+                {visit?.construction?.address}
+                {' - '}
+                <IconButton
+                  size="small"
+                  onClick={toggleOpenView}
+                  color="primary"
+                >
+                  Ver Ubicación:
+                  <LocationOnIcon />
+                </IconButton>
               </Text>
-              <Button size="small" onClick={toggleOpenView}>
-                Ver Ubicación
-              </Button>
             </LabeledRow>
           </Grid>
         </Grid>

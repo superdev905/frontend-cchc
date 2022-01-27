@@ -6,13 +6,13 @@ import {
   Typography
 } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
-
 import {
   FiPlus,
   FiEdit2 as EditIcon,
   FiTrash2 as DeleteIcon
 } from 'react-icons/fi'
 import { formatDate } from '../../../formatters'
+import { Button } from '../../UI'
 
 const Container = ({ children }) => (
   <Grid container spacing={2}>
@@ -82,12 +82,25 @@ const Loader = () => {
   )
 }
 
-const ClassesCard = ({ completed, item, onDelete, onEdit }) => {
+const ClassesCard = ({
+  completed,
+  item,
+  onDelete,
+  onEdit,
+  onRegisterAttendance
+}) => {
   const classes = useStyles({ completed })
   return (
     <Grid item xs={12} md={4} lg={3}>
       <Box p={2} className={classes.root}>
         <Box className={classes.actions}>
+          <Button
+            disabled={item.isCompleted}
+            onClick={onRegisterAttendance}
+            size={'small'}
+          >
+            Registrar assistencia
+          </Button>
           <IconButton onClick={onEdit}>
             <EditIcon />
           </IconButton>

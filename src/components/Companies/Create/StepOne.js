@@ -42,8 +42,8 @@ const StepOne = ({ onClose }) => {
       name: create?.company?.name || '',
       email: create?.company?.email || '',
       address: create?.company?.address || '',
-      commune: create?.company?.commune?.id || '',
-      region: create?.company?.region_id || '',
+      commune: create?.company?.commune_id || create?.company?.commune || '',
+      region: create?.company?.region_id || create?.company?.region || '',
       latitude: parseFloat(create?.company?.latitude) || location.latitude,
       longitude: parseFloat(create?.company?.longitude) || location.longitude
     },
@@ -68,13 +68,13 @@ const StepOne = ({ onClose }) => {
     switch (name) {
       case 'region': {
         const region = regions.find((item) => item.id === parseInt(value, 10))
-        setCommunes(region.communes)
-        formik.setFieldValue('region', region.id)
+        setCommunes(region?.communes || [])
+        formik.setFieldValue('region', region?.id || '')
         break
       }
       case 'commune': {
         const commune = communes.find((item) => item.id === parseInt(value, 10))
-        formik.setFieldValue('commune', commune.id)
+        formik.setFieldValue('commune', commune?.id || '')
         break
       }
       default:
@@ -84,6 +84,7 @@ const StepOne = ({ onClose }) => {
 
   useEffect(() => {
     if (formik.values.region && regions.length > 0) {
+      console.log(regions, formik.values.region.id)
       handleSelectChange({
         target: { name: 'region', value: formik.values.region }
       })

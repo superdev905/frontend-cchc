@@ -8,6 +8,7 @@ import ClassesDialog from './Dialog'
 import courses from '../../../state/actions/courses'
 import { ConfirmDelete } from '../../Shared'
 import { EmptyState } from '../../UI'
+import { AssistanceDialog } from '../Attendance'
 
 const ClassesTab = () => {
   const dispatch = useDispatch()
@@ -19,6 +20,7 @@ const ClassesTab = () => {
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { open: openAttendance, toggleOpen: toggleOpenAttendance } = useToggle()
   const { success, changeSuccess } = useSuccess()
 
   const fetchClasses = () => {
@@ -76,6 +78,10 @@ const ClassesTab = () => {
               {list.map((item) => (
                 <ClassesCard
                   key={`card-class-${item.id}`}
+                  onRegisterAttendance={() => {
+                    setCurrent(item)
+                    toggleOpenAttendance()
+                  }}
                   item={item}
                   onDelete={() => {
                     setCurrent(item)
@@ -92,6 +98,15 @@ const ClassesTab = () => {
         </>
       )}
 
+      {openAttendance && current && (
+        <AssistanceDialog
+          open={openAttendance}
+          onClose={toggleOpenAttendance}
+          idCourse={idCourse}
+          lecture={current}
+          successFunction={fetchClasses}
+        />
+      )}
       {openAdd && (
         <ClassesDialog
           open={openAdd}
