@@ -106,6 +106,21 @@ const updateRestriction = (id, type, values) => () =>
       })
   })
 
+const createRestriction = (type, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.benefits}/restrictions/${benefitEndpoints[type]}`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const createActivity = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.benefits}/activities`, values)
@@ -214,7 +229,8 @@ const benefitsActions = {
   updateActivity,
   deleteActivity,
   getBenefitsForEmployee,
-  getBenefitsForBusiness
+  getBenefitsForBusiness,
+  createRestriction
 }
 
 export default benefitsActions
