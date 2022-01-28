@@ -11,6 +11,7 @@ import { useSuccess } from '../../../hooks'
 import commonActions from '../../../state/actions/common'
 import usersActions from '../../../state/actions/users'
 import { courseSchema } from './schemas'
+import { formatQuery } from '../../../formatters'
 
 const modalities = ['PRESENCIAL', 'ELEARNING', 'ON LINE']
 
@@ -48,7 +49,7 @@ const Course = ({
       enrollCost: data?.enrollCost || ''
     },
     onSubmit: (values) => {
-      submitFunction(values)
+      submitFunction(formatQuery(values))
         .then(() => {
           formik.setSubmitting(false)
           changeSuccess(true, () => {

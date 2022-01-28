@@ -9,6 +9,7 @@ import { useSuccess } from '../../../hooks'
 import { decisionList } from '../../../config'
 import scholarshipsActions from '../../../state/actions/scholarships'
 import { scholarshipSchema } from './schemas'
+import { formatQuery } from '../../../formatters'
 
 const Scholarship = ({
   onCancel,
@@ -34,7 +35,7 @@ const Scholarship = ({
       tracking: data?.tracking || ''
     },
     onSubmit: (values) => {
-      submitFunction(values)
+      submitFunction(formatQuery(values))
         .then(() => {
           formik.setSubmitting(false)
           changeSuccess(true, () => {
