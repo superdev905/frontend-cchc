@@ -121,6 +121,20 @@ const createRestriction = (type, values) => () =>
       })
   })
 
+const deleteRestriction = (benefitId, id, type) => () =>
+  new Promise((resolve, reject) => {
+    Axios.delete(
+      `${config.services.benefits}/restrictions/${benefitEndpoints[type]}/${benefitId}/${id}`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const createActivity = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.benefits}/activities`, values)
@@ -230,7 +244,8 @@ const benefitsActions = {
   deleteActivity,
   getBenefitsForEmployee,
   getBenefitsForBusiness,
-  createRestriction
+  createRestriction,
+  deleteRestriction
 }
 
 export default benefitsActions
