@@ -155,11 +155,7 @@ const TaskPreview = ({ open, onClose, anchorEl, event }) => {
             toggleOpenAssistance()
             onClose()
           }}
-          employee={{
-            id: task?.socialCase?.employeeId,
-            names: task?.socialCase?.employeeNames,
-            run: task?.socialCase?.employeeRut
-          }}
+          employee={task?.socialCase?.employee}
         />
       )}
     </Menu>
