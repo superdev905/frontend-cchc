@@ -8,7 +8,7 @@ import Records from './Records'
 import Closing from './Closing'
 import Plan from './Plan'
 
-const SocialCaseTabs = () => {
+const SocialCaseTabs = ({ loading }) => {
   const history = useHistory()
   const { socialCaseId } = useParams()
   const { pathname } = useLocation()
@@ -20,7 +20,7 @@ const SocialCaseTabs = () => {
     close: 4
   }
   const tabs = {
-    0: { component: <Background />, path: '/details' },
+    0: { component: <Background loading={loading} />, path: '/details' },
     1: { component: <Analysis />, path: '/analysis' },
     2: { component: <Plan />, path: '/plan' },
     3: { component: <Records />, path: '/records' },
