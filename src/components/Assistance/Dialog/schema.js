@@ -1,7 +1,6 @@
 import * as Yup from 'yup'
 
 export const validationSchema = Yup.object().shape({
-  date: Yup.date().required('Seleccione fecha'),
   attention_place: Yup.string().required('Seleccione lugar de atención'),
   contact_method: Yup.string().required('Seleccione método de contacto lugar'),
   topic_id: Yup.string().required('Seleccione tema'),

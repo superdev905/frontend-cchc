@@ -471,6 +471,19 @@ const createAttendance = (lectureId, values) => () =>
         reject(err.response.data.detail)
       })
   })
+
+const updateAttendance = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.courses}/attendance`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const getAttendance = (lectureId) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.courses}/attendance/${lectureId}`)
@@ -573,6 +586,7 @@ const courseActions = {
   updateStatus,
   patchStatus,
   createAttendance,
+  updateAttendance,
   getAttendance,
   createStudentPayment,
   getStudentPayments,

@@ -63,11 +63,13 @@ const AssistanceDialog = ({
 
   useEffect(() => {
     setList(
-      studentList.map((item) => ({
-        isPresent: true,
-        studentId: item.student.id,
-        ...item
-      }))
+      studentList
+        .map((item) => ({
+          isPresent: true,
+          studentId: item.student.id,
+          ...item
+        }))
+        .sort((a, b) => b.student.employeeName - a.student.employeeName)
     )
   }, [studentList])
 

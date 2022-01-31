@@ -14,7 +14,7 @@ const validationSchema = Yup.object().shape({
   status: Yup.string().required('Seleccione estado de curso')
 })
 
-const UpdateCourse = ({ open, onClose }) => {
+const UpdateCourse = ({ open, onClose, status }) => {
   const dispatch = useDispatch()
   const { idCourse } = useParams()
 
@@ -26,7 +26,7 @@ const UpdateCourse = ({ open, onClose }) => {
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      status: ''
+      status: status || ''
     },
     onSubmit: (values) => {
       dispatch(courseActions.updateCourseStatus(idCourse, values))
@@ -59,6 +59,7 @@ const UpdateCourse = ({ open, onClose }) => {
             <Select
               label={'Estado de curso'}
               name="status"
+              value={formik.values.status}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.status && Boolean(formik.errors.status)}

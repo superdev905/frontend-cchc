@@ -110,6 +110,7 @@ const ClassesTab = () => {
           onClose={toggleOpenViewAttendance}
           idCourse={idCourse}
           lecture={current}
+          successFunction={fetchClasses}
         />
       )}
       {openAttendance && current && (
