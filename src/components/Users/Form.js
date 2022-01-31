@@ -141,7 +141,7 @@ const Form = ({
   }
 
   useEffect(() => {
-    if (formik.values) {
+    if (formik.values && formik.values.names) {
       formik.setFieldTouched('email')
       formik.setFieldTouched('role_id')
       formik.setFieldTouched('paternal_surname')
