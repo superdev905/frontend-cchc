@@ -97,7 +97,8 @@ const EmployeesRegistrationList = () => {
                   <Box>
                     <Button
                       disabled={
-                        benefit?.usersQuantity === studentsCourse.length
+                        benefit?.usersQuantity === studentsCourse.length ||
+                        course?.status !== 'CONVOCATORIA'
                       }
                       onClick={toggleOpenAdd}
                     >

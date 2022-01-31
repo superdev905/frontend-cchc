@@ -8,26 +8,21 @@ import { ConfirmDelete, DataTable, Dialog } from '../../Shared'
 import { useSuccess, useToggle } from '../../../hooks'
 import { formatDate } from '../../../formatters'
 
-const AssistanceDialog = ({
-  open,
-  onClose,
-  idCourse,
-  lecture,
-  successFunction
-}) => {
+const AssistanceDialog = ({ open, onClose, lecture, successFunction }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
   const [loading, setLoading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [list, setList] = useState([])
-  const { studentsCourse: studentList } = useSelector((state) => state.courses)
+
+  const { attendanceList } = useSelector((state) => state.courses)
   const { success, changeSuccess } = useSuccess()
   const { open: openConfirm, toggleOpen: toggleOpenConfirm } = useToggle()
 
   const fetchStudentList = () => {
-    dispatch(coursesActions.getAttendance(idCourse))
-    dispatch(coursesActions.getStudentsCourse(idCourse)).then(() => {
+    setLoading(true)
+    dispatch(coursesActions.getAttendance(lecture.id)).then(() => {
       setLoading(false)
     })
   }
@@ -42,10 +37,10 @@ const AssistanceDialog = ({
   const registerAttendance = () => {
     const data = list.map((item) => ({
       isPresent: item.isPresent,
-      studentId: item.studentId
+      id: item.id
     }))
     setIsSubmitting(true)
-    dispatch(coursesActions.createAttendance(lecture.id, { students: data }))
+    dispatch(coursesActions.updateAttendance({ attendances: data }))
       .then(() => {
         setIsSubmitting(false)
         changeSuccess(true, () => {
@@ -64,13 +59,11 @@ const AssistanceDialog = ({
 
   useEffect(() => {
     setList(
-      studentList.map((item) => ({
-        isPresent: true,
-        studentId: item.student.id,
-        ...item
-      }))
+      attendanceList
+        .map((item) => item)
+        .sort((a, b) => b.student.employeeName - a.student.employeeName)
     )
-  }, [studentList])
+  }, [attendanceList])
 
   useEffect(() => {
     if (open) {
@@ -142,7 +135,7 @@ const AssistanceDialog = ({
             Cancelar
           </Button>
           <SubmitButton onClick={toggleOpenConfirm}>
-            Registrar asistencia
+            Actualizar asistencia
           </SubmitButton>
         </Box>
         {openConfirm && (
@@ -154,7 +147,7 @@ const AssistanceDialog = ({
             confirmText={'Aceptar'}
             message={
               <Typography variant="h6">
-                ¿Estás seguro de registrar asistencia?
+                ¿Estás seguro de actualizar la asistencia?
               </Typography>
             }
             loading={isSubmitting}
