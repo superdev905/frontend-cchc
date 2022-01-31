@@ -183,11 +183,11 @@ const Form = ({
       dispatch(commonActions.getCharges())
       dispatch(commonActions.getRoles())
       dispatch(usersActions.getJefaturas())
-      dispatch(
-        companiesActions.getCompanies({ state: 'CREATED', all: true }, false)
-      ).then((list) => {
-        setCompanies(list)
-      })
+      dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
+        (list) => {
+          setCompanies(list)
+        }
+      )
     }
   }, [open])
   return (
