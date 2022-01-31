@@ -113,10 +113,6 @@ const PMAList = ({ list, loading, onEdit, onDelete }) => (
     columns={[
       { name: 'Fecha', selector: (row) => formatDate(row.date, {}) },
       {
-        name: 'Beneficio',
-        selector: (row) => row.benefit.name
-      },
-      {
         name: 'Estado de beca',
         selector: (row) => row.scholarshipStatus
       },

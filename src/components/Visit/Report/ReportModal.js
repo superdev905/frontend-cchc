@@ -143,7 +143,7 @@ const ReportModal = ({
                 itemId: item.id,
                 itemName: item.name,
                 isComplete: false,
-                value: ''
+                value: item.value
               }))
             )
           }
@@ -255,6 +255,7 @@ const ReportModal = ({
                           value={item.value}
                           onChange={(e) => handleChangeItem(e, item.itemId)}
                           error={item.value === ''}
+                          inputProps={{ readOnly: true }}
                         />
                       </Grid>
                     </Grid>
