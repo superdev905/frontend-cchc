@@ -23,6 +23,7 @@ function getStepContent(stepIndex, { onClose, successFunction }) {
 }
 
 const CreateDialog = ({ open, onClose, type, data, successFunction }) => {
+  console.log(data)
   const steps = getSteps()
   const dispatch = useDispatch()
   const { create } = useSelector((state) => state.scholarships)

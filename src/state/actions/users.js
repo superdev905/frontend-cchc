@@ -152,6 +152,19 @@ const getSocialAssistanceList =
         })
     })
 
+const getJefaturas = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.auth}/jefaturas`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: usersTypes.GET_JEFATURAS, payload: data })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 const usersActions = {
   getUsers,
   createUser,
@@ -162,7 +175,8 @@ const usersActions = {
   getOTECUsers,
   getBosses,
   getFoundationUsers,
-  getSocialAssistanceList
+  getSocialAssistanceList,
+  getJefaturas
 }
 
 export default usersActions

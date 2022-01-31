@@ -19,6 +19,7 @@ import { useSuccess } from '../../hooks'
 import generatePassword from '../../utils/generatePassword'
 import commonActions from '../../state/actions/common'
 import CustomTextField from '../UI/CustomTextField'
+import usersActions from '../../state/actions/users'
 
 const useStyles = makeStyles((theme) => ({
   label: {
@@ -59,7 +60,8 @@ const validationSchema = Yup.object().shape({
   charge_id: Yup.string('Seleccione cargo').nullable(),
   role_id: Yup.number('Seleccione rol').required('Seleccione rol'),
   charge_name: Yup.string(),
-  is_administrator: Yup.bool()
+  is_administrator: Yup.bool(),
+  businesses: Yup.array()
 })
 
 const validationSchemaUpdate = Yup.object().shape({
@@ -90,6 +92,7 @@ const Form = ({
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { charges, roles } = useSelector((state) => state.common)
+  const { jefaturas } = useSelector((state) => state.users)
 
   const getTitle = (actionType) => {
     if (actionType === 'VIEW') return 'Ver usuario'
@@ -110,6 +113,7 @@ const Form = ({
       email: type !== 'ADD' ? data.email : '',
       charge_id: type !== 'ADD' ? data.charge_id : '',
       role_id: type !== 'ADD' ? data.role_id : '',
+      jefatura_id: type !== 'ADD' ? data.jefatura_id : '',
       password: randomPassword,
       is_administrator: type !== 'ADD' ? data.is_administrator : false
     },
@@ -150,6 +154,7 @@ const Form = ({
       formik.resetForm()
       dispatch(commonActions.getCharges())
       dispatch(commonActions.getRoles())
+      dispatch(usersActions.getJefaturas())
     }
   }, [open])
 
@@ -264,6 +269,28 @@ const Form = ({
               >
                 <option value="">SIN ROL</option>
                 {roles.map((item) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Select
+                label="Jefatura"
+                name="jefatura_id"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.jefatura_id}
+                helperText={
+                  formik.touched.jefatura_id && formik.errors.jefatura_id
+                }
+                error={
+                  formik.touched.jefatura_id &&
+                  Boolean(formik.errors.jefatura_id)
+                }
+                inputProps={{ readOnly }}
+              >
+                <option value="">SIN JEFATURA</option>
+                {jefaturas.map((item) => (
                   <option value={item.id}>{item.name}</option>
                 ))}
               </Select>

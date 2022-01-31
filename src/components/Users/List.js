@@ -183,6 +183,11 @@ const List = () => {
             )
           },
           {
+            name: 'Jefatura',
+            hide: 'md',
+            cell: (row) => (row.jefatura ? row.jefatura.name : '---')
+          },
+          {
             name: '',
             right: true,
             cell: (row) => (
