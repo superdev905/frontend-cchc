@@ -71,7 +71,8 @@ const StepOne = () => {
         email,
         address,
         latitude,
-        longitude
+        longitude,
+        is_billing_business
       } = create.company
       const data = {
         rut,
@@ -84,7 +85,7 @@ const StepOne = () => {
         type: values.type,
         region_id: region,
         commune_id: commune,
-
+        is_billing_business,
         ...values
       }
       if (!data.parent_business_id) {

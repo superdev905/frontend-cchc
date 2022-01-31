@@ -2,10 +2,16 @@ import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import { Box, Grid, Typography } from '@material-ui/core'
+import {
+  Box,
+  FormControlLabel,
+  Grid,
+  Switch,
+  Typography
+} from '@material-ui/core'
 import commonActions from '../../../state/actions/common'
 import companiesActions from '../../../state/actions/companies'
-import { RutTextField, Select, TextField } from '../../UI'
+import { InputLabel, RutTextField, Select, TextField } from '../../UI'
 import useStyles from './styles'
 import Actions from './Actions'
 import { rutValidation } from '../../../validations'
@@ -23,7 +29,8 @@ const validationSchema = Yup.object({
   commune: Yup.string().required('Seleccione comuna'),
   longitude: Yup.string().required('Seleccione dirección'),
   latitude: Yup.string().required('Seleccione dirección'),
-  region: Yup.string().required('Seleccione región')
+  region: Yup.string().required('Seleccione región'),
+  is_billing_business: Yup.bool()
 })
 
 const StepOne = ({ onClose }) => {
@@ -45,7 +52,8 @@ const StepOne = ({ onClose }) => {
       commune: create?.company?.commune_id || create?.company?.commune || '',
       region: create?.company?.region_id || create?.company?.region || '',
       latitude: parseFloat(create?.company?.latitude) || location.latitude,
-      longitude: parseFloat(create?.company?.longitude) || location.longitude
+      longitude: parseFloat(create?.company?.longitude) || location.longitude,
+      is_billing_business: create?.company?.is_billing_business || false
     },
     onSubmit: (values) => {
       dispatch(
@@ -154,6 +162,24 @@ const StepOne = ({ onClose }) => {
               value={formik.values.email}
               helperText={formik.touched.email && formik.errors.email}
               error={formik.touched.email && Boolean(formik.errors.email)}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <InputLabel>¿Es empresa facturadora?</InputLabel>
+            <FormControlLabel
+              control={
+                <Switch
+                  color="primary"
+                  checked={formik.values.is_billing_business}
+                  onChange={(e) => {
+                    formik.setFieldValue(
+                      'is_billing_business',
+                      e.target.checked
+                    )
+                  }}
+                />
+              }
+              label="Empresa facturadora"
             />
           </Grid>
         </Grid>
