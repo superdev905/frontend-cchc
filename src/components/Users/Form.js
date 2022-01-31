@@ -72,11 +72,11 @@ const Form = ({
   const [readOnly] = useState(type === 'VIEW')
   const [randomPassword] = useState(generatePassword())
   const [companies, setCompanies] = useState([])
+  const [bosses, setBosses] = useState([])
   const [companiesSelected, setCompaniesSelected] = useState([])
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { charges, roles } = useSelector((state) => state.common)
-  const { jefaturas } = useSelector((state) => state.users)
 
   const getTitle = (actionType) => {
     if (actionType === 'VIEW') return 'Ver usuario'
@@ -99,10 +99,10 @@ const Form = ({
       email: type !== 'ADD' ? data.email : '',
       charge_id: type !== 'ADD' ? data.charge_id : '',
       role_id: type !== 'ADD' ? data.role_id : '',
-      jefatura_id: type !== 'ADD' ? data.jefatura_id : '',
+      boss_id: type !== 'ADD' ? data.boss_id : '',
       password: randomPassword,
       is_administrator: type !== 'ADD' ? data.is_administrator : false,
-      companies: type !== 'ADD' ? data.companies : ''
+      companies: type !== 'ADD' ? data.companies : []
     },
     onSubmit: (values, { resetForm }) => {
       const body = { ...values }
@@ -182,7 +182,9 @@ const Form = ({
       formik.resetForm()
       dispatch(commonActions.getCharges())
       dispatch(commonActions.getRoles())
-      dispatch(usersActions.getJefaturas())
+      dispatch(usersActions.getUsers({}, false)).then((res) => {
+        setBosses(res)
+      })
       dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
         (list) => {
           setCompanies(list)
@@ -312,22 +314,19 @@ const Form = ({
             <Grid item xs={12} md={6}>
               <Select
                 label="Jefatura"
-                name="jefatura_id"
+                name="boss_id"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.jefatura_id}
-                helperText={
-                  formik.touched.jefatura_id && formik.errors.jefatura_id
-                }
-                error={
-                  formik.touched.jefatura_id &&
-                  Boolean(formik.errors.jefatura_id)
-                }
+                value={formik.values.boss_id}
+                helperText={formik.touched.boss_id && formik.errors.boss_id}
+                error={formik.touched.boss_id && Boolean(formik.errors.boss_id)}
                 inputProps={{ readOnly }}
               >
-                <option value="">SIN JEFATURA</option>
-                {jefaturas.map((item) => (
-                  <option value={item.id}>{item.name}</option>
+                <option value="">SIN JEFE</option>
+                {bosses.map((item) => (
+                  <option value={item.id}>
+                    {`${item.names} ${item.paternal_surname} ${item.maternal_surname}`.toUpperCase()}
+                  </option>
                 ))}
               </Select>
             </Grid>

@@ -81,10 +81,11 @@ const StepOne = ({ onClose }) => {
         throw new Error('Error')
     }
   }
+  console.log(formik.values.commune)
 
   useEffect(() => {
     if (formik.values.region && regions.length > 0) {
-      console.log(regions, formik.values.region.id)
+      console.log(formik.values.region)
       handleSelectChange({
         target: { name: 'region', value: formik.values.region }
       })
@@ -198,7 +199,7 @@ const StepOne = ({ onClose }) => {
                   >
                     <option value={`INVALID`}>Seleccione una región</option>
                     {regions.map((item, index) => (
-                      <option key={`region--${index}`} value={`${item.id}`}>
+                      <option key={`region--${index}`} value={item.id}>
                         {item.name}
                       </option>
                     ))}
@@ -214,7 +215,7 @@ const StepOne = ({ onClose }) => {
                   >
                     <option value={`INVALID`}>Seleccione una comuna</option>
                     {communes.map((item, index) => (
-                      <option key={`region--${index}`} value={`${item.id}`}>
+                      <option key={`region--${index}`} value={item.id}>
                         {item.name}
                       </option>
                     ))}

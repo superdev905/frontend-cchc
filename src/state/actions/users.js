@@ -4,13 +4,15 @@ import usersTypes from '../types/users'
 import config from '../../config'
 
 const getUsers =
-  (query = {}) =>
+  (query = {}, handleDispatch = true) =>
   (dispatch) =>
     new Promise((resolve, reject) => {
       Axios.get(`${config.services.auth}/users?${queryString.stringify(query)}`)
         .then((response) => {
           const { data } = response
-          dispatch({ type: usersTypes.GET_USERS, payload: data })
+          if (handleDispatch) {
+            dispatch({ type: usersTypes.GET_USERS, payload: data })
+          }
           resolve(data)
         })
         .catch((err) => {

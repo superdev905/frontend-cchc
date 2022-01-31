@@ -185,7 +185,10 @@ const List = () => {
           {
             name: 'Jefatura',
             hide: 'md',
-            cell: (row) => (row.jefatura ? row.jefatura.name : '---')
+            cell: (row) =>
+              row.boss
+                ? `${row.boss.names} ${row.boss.paternal_surname}`.toUpperCase()
+                : '---'
           },
           {
             name: '',
