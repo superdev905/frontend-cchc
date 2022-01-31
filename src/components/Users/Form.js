@@ -56,7 +56,7 @@ const validationSchema = Yup.object().shape({
   names: Yup.string().required('Ingrese nombre del usuario'),
   maternal_surname: Yup.string().required('Ingrese materno'),
   paternal_surname: Yup.string().required('Ingrese paterno'),
-  email: Yup.string().email('Ingrese correo válido').required('Ingrese email'),
+  email: Yup.string().email('Ingrese correo válido').required('Ingrese correo'),
   charge_id: Yup.string('Seleccione cargo').nullable(),
   role_id: Yup.number('Seleccione rol').required('Seleccione rol'),
   charge_name: Yup.string(),
@@ -102,6 +102,8 @@ const Form = ({
 
   const formik = useFormik({
     validateOnMount: true,
+    validateOnChange: true,
+    validateOnBlur: true,
     validationSchema:
       type === 'ADD'
         ? validationSchema.concat(createValidation)
@@ -118,7 +120,11 @@ const Form = ({
       is_administrator: type !== 'ADD' ? data.is_administrator : false
     },
     onSubmit: (values, { resetForm }) => {
-      submitFunction(values)
+      const body = { ...values }
+      if (!body.jefatura_id) {
+        delete body.jefatura_id
+      }
+      submitFunction(body)
         .then(() => {
           formik.setSubmitting(false)
           resetForm()
@@ -137,6 +143,15 @@ const Form = ({
   })
 
   const validateEmail = (value) => value.length - (value.indexOf('.') + 1)
+
+  useEffect(() => {
+    if (formik.values) {
+      formik.setFieldTouched('email')
+      formik.setFieldTouched('role_id')
+      formik.setFieldTouched('paternal_surname')
+      formik.setFieldTouched('maternal_surname')
+    }
+  }, [formik.values])
 
   useEffect(() => {
     if (formik.values.charge_id && charges.length > 0) {
@@ -180,6 +195,7 @@ const Form = ({
                 required
                 value={formik.values.names}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={formik.touched.names && Boolean(formik.errors.names)}
                 helperText={formik.touched.names && formik.errors.names}
                 inputProps={{ readOnly }}
@@ -193,6 +209,7 @@ const Form = ({
                 required
                 value={formik.values.paternal_surname}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={
                   formik.touched.paternal_surname &&
                   Boolean(formik.errors.paternal_surname)
@@ -211,6 +228,7 @@ const Form = ({
                 required
                 value={formik.values.maternal_surname}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={
                   formik.touched.maternal_surname &&
                   Boolean(formik.errors.maternal_surname)
@@ -229,6 +247,7 @@ const Form = ({
                 required
                 value={formik.values.email}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
                 inputProps={{ readOnly }}
@@ -300,7 +319,6 @@ const Form = ({
               <Select
                 label="Cargo"
                 name="charge_id"
-                required
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.charge_id}

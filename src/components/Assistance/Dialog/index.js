@@ -326,7 +326,7 @@ const WorkerInterventionRecord = ({
       const foundCase = casesForSelect.find(
         (item) => item.id === parseInt(formik.values.case_id, 10)
       )
-      setSelectedPlans(foundCase.interventionPlans)
+      setSelectedPlans(foundCase?.interventionPlans || [])
     }
   }, [formik.values.case_id, casesForSelect])
 

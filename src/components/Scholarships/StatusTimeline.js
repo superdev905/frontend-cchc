@@ -50,10 +50,15 @@ const StatusTimeline = () => {
               </TimelineSeparator>
               <TimelineContent>
                 <Box p={1}>
-                  <Typography>{item.name}</Typography>
                   <Typography style={{ fontSize: '14px', opacity: 0.7 }}>
                     {`Por: ${item.approver.names} ${item.approver.paternalSurname}`}
                   </Typography>
+                  <Typography>{item.name}</Typography>
+                  <Box mt={2}>
+                    <Typography style={{ opacity: 0.8, fontStyle: 'italic' }}>
+                      {item.comments}
+                    </Typography>
+                  </Box>
                 </Box>
               </TimelineContent>
             </TimelineItem>

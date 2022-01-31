@@ -87,20 +87,27 @@ const ClassesCard = ({
   item,
   onDelete,
   onEdit,
-  onRegisterAttendance
+  onRegisterAttendance,
+  onViewAttendance
 }) => {
   const classes = useStyles({ completed })
   return (
     <Grid item xs={12} md={4} lg={3}>
       <Box p={2} className={classes.root}>
         <Box className={classes.actions}>
-          <Button
-            disabled={item.isCompleted}
-            onClick={onRegisterAttendance}
-            size={'small'}
-          >
-            Registrar assistencia
-          </Button>
+          {item.isCompleted ? (
+            <Button onClick={onViewAttendance} size={'small'}>
+              Ver assistencia
+            </Button>
+          ) : (
+            <Button
+              disabled={item.isCompleted}
+              onClick={onRegisterAttendance}
+              size={'small'}
+            >
+              Registrar assistencia
+            </Button>
+          )}
           <IconButton onClick={onEdit}>
             <EditIcon />
           </IconButton>
