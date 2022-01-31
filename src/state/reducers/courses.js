@@ -14,7 +14,8 @@ const initialState = {
   totalStatus: 0,
   courseDetails: null,
   courseDocDetails: null,
-  attendanceList: []
+  attendanceList: [],
+  studentDetails: null
 }
 
 const coursesReducer = (state = initialState, { type, payload }) => {
@@ -47,6 +48,8 @@ const coursesReducer = (state = initialState, { type, payload }) => {
       return { ...state, totalStatus: payload }
     case coursesTypes.GET_LECTURE_ATTENDANCE:
       return { ...state, attendanceList: payload }
+    case coursesTypes.GET_STUDENT_DETAILS:
+      return { ...state, studentDetails: payload }
     default:
       return state
   }

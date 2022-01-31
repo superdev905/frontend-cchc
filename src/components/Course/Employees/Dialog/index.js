@@ -30,11 +30,10 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const [currentPayment, setCurrentPayment] = useState(null)
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
-  const [student, setStudent] = useState(null)
   const [currentScore, setCurrentScore] = useState(null)
   const { isMobile } = useSelector((state) => state.ui)
-  /* const { scoresList } = useSelector((state) => state.courses)
-  console.log(scoresList) */
+  const { studentDetails: student } = useSelector((state) => state.courses)
+
   const { success, changeSuccess } = useSuccess()
   const {
     success: successDeletePayment,
@@ -53,9 +52,8 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const fetchDetails = () => {
     setLoading(true)
     dispatch(courses.getStudentDetails(idCourse, idEmployee))
-      .then((result) => {
+      .then(() => {
         setLoading(false)
-        setStudent(result)
       })
       .catch(() => {
         setTimeout(() => {
@@ -76,12 +74,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
     })
   }
 
-  const fetchStatus = () => {
-    setLoading(true)
-    dispatch(courses.getStatus({ courseId: idCourse })).then(() => {
-      setLoading(false)
-    })
-  }
+  const fetchStatus = () => {}
 
   const addScore = (values) => {
     dispatch(
@@ -109,7 +102,8 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
     dispatch(
       courses.createStatus({
         ...values,
-        studentId: student.studentId
+        studentId: student.studentId,
+        courseId: idCourse
       })
     )
       .then(() => {
@@ -385,11 +379,15 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
         <Box px={3}>
           <Box marginTop={2} className={classes.centeredSpaced}>
             <Typography>Estado de alumno</Typography>
-            <Button size="small" onClick={toggleOpenStatus}>
+            <Button
+              size="small"
+              onClick={toggleOpenStatus}
+              disabled={student?.status}
+            >
               Agregar
             </Button>
           </Box>
-          <StatusList />
+          <StatusList successFunction={fetchDetails} />
         </Box>
       </Box>
 

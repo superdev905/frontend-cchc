@@ -350,13 +350,17 @@ const getScores =
         })
     })
 
-const getStudentDetails = (courseId, employeeId) => () =>
+const getStudentDetails = (courseId, employeeId) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(
       `${config.services.courses}/courses/${courseId}/students/${employeeId}`
     )
       .then((response) => {
         const { data } = response
+        dispatch({
+          type: coursesTypes.GET_STUDENT_DETAILS,
+          payload: data
+        })
         resolve(data)
       })
       .catch((err) => {
