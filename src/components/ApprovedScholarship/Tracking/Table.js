@@ -117,6 +117,14 @@ const PMAList = ({ list, loading, onEdit, onDelete }) => (
         selector: (row) => row.scholarshipStatus
       },
       {
+        name: 'Empresa',
+        selector: (row) => row.businessName
+      },
+      {
+        name: 'Observaciones',
+        selector: (row) => row.businessName
+      },
+      {
         right: true,
         selector: (row) => (
           <>

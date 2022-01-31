@@ -35,7 +35,7 @@ export const BeaTrackingSchema = Yup.object().shape({
 })
 
 export const PmaTrackingSchema = Yup.object().shape({
-  benefitId: Yup.string(),
+  businessName: Yup.string(),
   scholarshipStatus: Yup.string().required('Seleccione estado de beca'),
   observations: Yup.string()
 })
