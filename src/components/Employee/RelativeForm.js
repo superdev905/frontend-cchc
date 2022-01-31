@@ -179,8 +179,6 @@ const EmployeeModal = ({
     }
   }, [!formik.isValid, formik.isSubmitting])
 
-  console.log(formik.isSubmitting)
-
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'} fullScreen={isMobile}>
       <Box>
