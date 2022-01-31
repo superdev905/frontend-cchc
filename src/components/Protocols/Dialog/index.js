@@ -184,7 +184,6 @@ const CreateProtocol = ({
             <DatePicker
               label="Fecha de inicio"
               required
-              disabledPast
               disabledFuture={false}
               value={formik.values.startDate}
               onChange={(date) => {

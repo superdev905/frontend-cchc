@@ -1,6 +1,6 @@
 import { capitalize } from 'lodash'
 import { Grid } from '@material-ui/core'
-import { Select, TextArea } from '../../UI'
+import { Select, TextArea, TextField } from '../../UI'
 
 const statusList = ['APROBADA', 'RECHAZADA', 'EN PROCESO']
 
@@ -44,6 +44,18 @@ const PmaTracking = ({ form /* , benefits */ }) => (
           <option value={item}>{capitalize(item)}</option>
         ))}
       </Select>
+    </Grid>
+    <Grid item xs={12}>
+      <TextField
+        label="Nombre de empresa"
+        required
+        name="businessName"
+        value={form.values.businessName}
+        onChange={form.handleChange}
+        onBlur={form.handleBlur}
+        error={form.touched.businessName && Boolean(form.errors.businessName)}
+        helperText={form.touched.businessName && form.errors.businessName}
+      />
     </Grid>
     <Grid item xs={12}>
       <TextArea

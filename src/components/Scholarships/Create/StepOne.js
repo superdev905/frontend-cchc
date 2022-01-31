@@ -16,6 +16,7 @@ import RowAutocomplete from './RowAutocomplete'
 import { formatSearchWithRut } from '../../../formatters'
 import { CompanyRow, CurrencyTextField, DatePicker } from '../../Shared'
 import validationSchema from './schemas'
+import constructionActions from '../../../state/actions/constructions'
 
 const StepOne = ({ onClose, data }) => {
   const classes = useStyles()
@@ -191,6 +192,14 @@ const StepOne = ({ onClose, data }) => {
 
   useEffect(() => {
     if (create.type === 'UPDATE') {
+      dispatch(
+        constructionActions.getConstruction(
+          create.application.constructionId,
+          false
+        )
+      ).then((res) => {
+        setSelectedConstruction(res)
+      })
       dispatch(
         employeeActions.getEmployeeDetails(create.application.employeeId, false)
       ).then((res) => {

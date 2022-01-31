@@ -135,6 +135,18 @@ const blockRelative = (id) => () =>
       })
   })
 
+const patchRelative = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.patch(`${config.services.employee}/employee-relatives/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const getEmployeeRelatives =
   (query = {}) =>
   () =>
@@ -468,7 +480,8 @@ const employeeActions = {
   updateEmployeeJob,
   patchEmployeeJob,
   getEmployeeRelative,
-  createEmployeeRevision
+  createEmployeeRevision,
+  patchRelative
 }
 
 export default employeeActions

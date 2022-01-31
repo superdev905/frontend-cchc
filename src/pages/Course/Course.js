@@ -145,6 +145,7 @@ const Course = ({ children }) => {
 
       {course && openUpdateCourse && (
         <UpdateCourse
+          status={course.status}
           open={openUpdateCourse}
           onClose={toggleOpenUpdateCourse}
         />

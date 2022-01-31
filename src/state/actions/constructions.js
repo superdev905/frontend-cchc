@@ -238,7 +238,7 @@ const patchContact = (id, values) => () =>
       })
   })
 
-export default {
+const constructionActions = {
   getConstructions,
   createConstruction,
   updateConstruction,
@@ -257,3 +257,5 @@ export default {
   patchContact,
   updateFilters
 }
+
+export default constructionActions

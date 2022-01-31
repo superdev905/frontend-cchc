@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useSnackbar } from 'notistack'
 import { Box, Typography } from '@material-ui/core'
+import { RestoreFromTrash as RestoreIcon } from '@material-ui/icons'
 import { useSuccess, useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
 import { ConfirmDelete, DataTable } from '../Shared'
@@ -10,9 +12,11 @@ import { formatDate } from '../../formatters'
 
 const FamiliarGroup = () => {
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const [tableData, setTableData] = useState([])
   const [currentRelative, setCurrentRelative] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const { employee } = useSelector((state) => state.employees)
   const { user } = useSelector((state) => state.auth)
@@ -21,6 +25,7 @@ const FamiliarGroup = () => {
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openView, toggleOpen: toggleOpenView } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const { open: openRestore, toggleOpen: toggleOpenRestore } = useToggle()
   const { success, changeSuccess } = useSuccess()
 
   const fetchRelatives = () => {
@@ -76,6 +81,22 @@ const FamiliarGroup = () => {
       })
       .catch(() => {
         setDeleting(false)
+      })
+  }
+  const handleAction = (idRelative, state, toggleFunction, message) => {
+    setSubmitting(true)
+    dispatch(employeesActions.patchRelative(idRelative, { state }))
+      .then(() => {
+        setSubmitting(false)
+        changeSuccess(true, () => {
+          enqueueSnackbar(message, { variant: 'success' })
+          toggleFunction()
+          fetchRelatives()
+        })
+      })
+      .catch((err) => {
+        setSubmitting(false)
+        enqueueSnackbar(err, { variant: 'error' })
       })
   }
 
@@ -148,10 +169,28 @@ const FamiliarGroup = () => {
                       setCurrentRelative(row)
                       toggleOpenView()
                     }}
-                    onDelete={() => {
-                      setCurrentRelative(row)
-                      toggleOpenDelete()
-                    }}
+                    onDelete={
+                      row.state !== 'DELETED'
+                        ? () => {
+                            setCurrentRelative(row)
+                            toggleOpenDelete()
+                          }
+                        : null
+                    }
+                    moreOptions={
+                      row.state === 'DELETED' && user.role.key === 'ADMIN'
+                        ? [
+                            {
+                              icon: <RestoreIcon color="primary" />,
+
+                              onClick: () => {
+                                setCurrentRelative(row)
+                                toggleOpenRestore()
+                              }
+                            }
+                          ]
+                        : []
+                    }
                   />
                 )
               }
@@ -198,6 +237,30 @@ const FamiliarGroup = () => {
             message={
               <span>
                 ¿Estás seguro de eliminar{' '}
+                <strong>{currentRelative.names}</strong>?
+              </span>
+            }
+          />
+        )}
+        {currentRelative && openRestore && (
+          <ConfirmDelete
+            event={'RESTORE'}
+            confirmText={'Restaurar'}
+            open={openRestore}
+            onClose={toggleOpenRestore}
+            loading={submitting}
+            success={success}
+            onConfirm={() =>
+              handleAction(
+                currentRelative.id,
+                'CREATED',
+                toggleOpenRestore,
+                'Familiar restaurado'
+              )
+            }
+            message={
+              <span>
+                ¿Estás seguro de restaurar{' '}
                 <strong>{currentRelative.names}</strong>?
               </span>
             }

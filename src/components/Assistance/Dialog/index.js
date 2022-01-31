@@ -189,6 +189,7 @@ const WorkerInterventionRecord = ({
 
       const body = {
         ...values,
+        date: new Date().toISOString(),
         attachments: attachmentsList,
         case_id: values.case_id === 'NEW' ? null : values.case_id,
         task_id: values.task_id ? values.task_id : null,
@@ -326,11 +327,12 @@ const WorkerInterventionRecord = ({
       const foundCase = casesForSelect.find(
         (item) => item.id === parseInt(formik.values.case_id, 10)
       )
-      setSelectedPlans(foundCase.interventionPlans)
+      setSelectedPlans(foundCase?.interventionPlans || [])
     }
   }, [formik.values.case_id, casesForSelect])
 
   useEffect(() => {
+    console.log(employee)
     formik.setFieldValue('attended_id', employee.id)
     formik.setFieldValue(
       'attended_name',
@@ -349,6 +351,7 @@ const WorkerInterventionRecord = ({
 
   useEffect(() => {
     if (open) {
+      formik.resetForm()
       setAttachments([])
       dispatch(commonActions.getAreas())
       dispatch(commonActions.getManagement())
@@ -376,10 +379,10 @@ const WorkerInterventionRecord = ({
             <Grid item xs={12} md={6}>
               <Box>
                 <LabeledRow label="Fecha:">
-                  {formatDate(formik.values.date)}
+                  {formatDate(formik.values.date || new Date())}
                 </LabeledRow>
                 <LabeledRow label="Hora:">
-                  {formatHours(formik.values.date)}
+                  {formatHours(formik.values.date || new Date())}
                 </LabeledRow>
                 <LabeledRow label="Origen Sistema:">
                   {formik.values.source_system}

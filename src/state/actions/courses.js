@@ -472,6 +472,34 @@ const createAttendance = (lectureId, values) => () =>
       })
   })
 
+const updateAttendance = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.courses}/attendance`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+const getAttendance = (lectureId) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.courses}/attendance/${lectureId}`)
+      .then((response) => {
+        const { data } = response
+        dispatch({
+          type: coursesTypes.GET_LECTURE_ATTENDANCE,
+          payload: data
+        })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const createStudentPayment = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.courses}/student-payments`, values)
@@ -558,6 +586,8 @@ const courseActions = {
   updateStatus,
   patchStatus,
   createAttendance,
+  updateAttendance,
+  getAttendance,
   createStudentPayment,
   getStudentPayments,
   updateStudentPayment,

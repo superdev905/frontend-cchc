@@ -1,6 +1,7 @@
 import * as Yup from 'yup'
 import { useEffect, useState } from 'react'
 import { useSnackbar } from 'notistack'
+import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { Box, Chip, Grid, makeStyles, Typography } from '@material-ui/core'
@@ -36,6 +37,7 @@ const ReportModal = ({
 }) => {
   const dispatch = useDispatch()
   const classes = useStyles()
+  const { idVisit } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const [reportItems, setReportItems] = useState([])
   const { isMobile } = useSelector((state) => state.ui)
@@ -119,7 +121,7 @@ const ReportModal = ({
   useEffect(() => {
     if (open) {
       fetchContacts()
-      dispatch(assistanceActions.getReportItems())
+      dispatch(assistanceActions.getVisitReportItems(idVisit))
         .then((items) => {
           if (type === 'UPDATE') {
             const list = []
@@ -141,7 +143,7 @@ const ReportModal = ({
                 itemId: item.id,
                 itemName: item.name,
                 isComplete: false,
-                value: ''
+                value: item.value
               }))
             )
           }
@@ -149,6 +151,7 @@ const ReportModal = ({
         .catch(() => {
           setReportItems([])
         })
+      dispatch(assistanceActions.getReportItems())
     }
   }, [open])
 
@@ -252,6 +255,7 @@ const ReportModal = ({
                           value={item.value}
                           onChange={(e) => handleChangeItem(e, item.itemId)}
                           error={item.value === ''}
+                          inputProps={{ readOnly: true }}
                         />
                       </Grid>
                     </Grid>

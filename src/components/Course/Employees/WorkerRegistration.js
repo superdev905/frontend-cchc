@@ -90,6 +90,8 @@ const WorkerRegistration = ({
             uploadDate: result.upload_date
           }
         }
+      } else {
+        delete form.file
       }
       submitFunction(form)
         .then(() => {

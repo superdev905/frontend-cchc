@@ -14,6 +14,7 @@ const QuestionList = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const [loading, setLoading] = useState(false)
+  const [list, setList] = useState([])
   const { user } = useSelector((state) => state.auth)
   const { query } = useSelector((state) => state.questions)
 
@@ -49,6 +50,20 @@ const QuestionList = () => {
     return '#FFF5F5'
   }
 
+  const getOrder = (type) => {
+    if (type === 'INGRESADO') return 3
+    if (type === 'ASIGNADA') return 2
+    return 1
+  }
+
+  useEffect(() => {
+    setList(
+      questions
+        .map((item) => ({ ...item, order: getOrder(item.status) }))
+        .sort((a, b) => b.order - a.order)
+    )
+  }, [questions])
+
   useEffect(() => {
     getQuestions()
   }, [query])
@@ -57,7 +72,7 @@ const QuestionList = () => {
     <Box>
       <Box mt={2} width="100%">
         <DataTable
-          data={questions}
+          data={list}
           selectableRows
           onSelectedRowsChange={handleSelectedRows}
           selectableRowDisabled={(row) =>
