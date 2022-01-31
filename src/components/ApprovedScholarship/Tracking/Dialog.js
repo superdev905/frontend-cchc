@@ -66,7 +66,7 @@ const BenefitDialog = ({
       }
 
     return {
-      benefitId: type === 'UPDATE' ? data.benefitId : benefitId,
+      businessName: type === 'UPDATE' ? data.businessName : '',
       scholarshipStatus: type === 'UPDATE' ? data.scholarshipStatus : '',
       observations: type === 'UPDATE' ? data.observations : ''
     }
@@ -87,6 +87,7 @@ const BenefitDialog = ({
     onSubmit: (values) => {
       submitFunction({
         ...values,
+        businessName: values.businessName.toUpperCase(),
         observations: values.observations.toUpperCase(),
         date: new Date()
       })
