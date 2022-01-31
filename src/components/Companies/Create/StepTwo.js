@@ -160,9 +160,13 @@ const StepOne = () => {
     if (formik.values.type !== 'EMPRESA RELACIONADA') {
       setErrorParent(false)
       setParentCompany(null)
+
       formik.setFieldValue('parent_business_id', '')
     } else {
       setErrorParent(!formik.values.parent_business_id)
+      setTimeout(() => {
+        formik.setFieldTouched(' parent_business_id')
+      }, 10)
     }
   }, [formik.values.type])
 
@@ -243,8 +247,10 @@ const StepOne = () => {
               }}
               disabled
               placeholder="Sin empresa madre"
-              error={errorParent}
-              helperText={errorParent && 'Seleccione empresa madre'}
+              error={needParent && errorParent}
+              helperText={
+                needParent && errorParent && 'Seleccione empresa madre'
+              }
             />
           </Grid>
           <Grid item xs={12} md={6}>

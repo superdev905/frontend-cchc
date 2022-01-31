@@ -89,7 +89,6 @@ const StepOne = ({ onClose }) => {
         throw new Error('Error')
     }
   }
-  console.log(formik.values.commune)
 
   useEffect(() => {
     if (formik.values.region && regions.length > 0) {
