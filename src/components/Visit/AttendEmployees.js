@@ -88,6 +88,10 @@ const List = () => {
           {
             name: 'Sexo',
             selector: (row) => row.employee.gender
+          },
+          {
+            name: 'Motivo',
+            selector: (row) => console.log(row)
           }
         ]}
         data={employeesToAttend}
