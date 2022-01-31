@@ -166,6 +166,18 @@ const Form = ({
   )
 
   useEffect(() => {
+    if (data?.companies) {
+      companies.filter((item) =>
+        data.companies.forEach((ele) => {
+          if (item.id === ele.business_id) {
+            setCompaniesSelected([...companiesSelected, item])
+          }
+        })
+      )
+    }
+  }, [open, data, companies])
+
+  useEffect(() => {
     if (open) {
       formik.resetForm()
       dispatch(commonActions.getCharges())
