@@ -134,7 +134,7 @@ const WorkerInterventionRecord = ({
     validateOnChange: true,
     validationSchema,
     initialValues: {
-      date: type === 'UPDATE' ? data.date : '',
+      date: type === 'UPDATE' ? data.date : new Date(),
       source_system: type === 'UPDATE' ? data.source_system : sourceSystem,
       source_business:
         type === 'UPDATE' ? data.source_business : 'FUNDACIÓN CHCC',
@@ -331,6 +331,7 @@ const WorkerInterventionRecord = ({
   }, [formik.values.case_id, casesForSelect])
 
   useEffect(() => {
+    console.log(employee)
     formik.setFieldValue('attended_id', employee.id)
     formik.setFieldValue(
       'attended_name',
@@ -347,8 +348,11 @@ const WorkerInterventionRecord = ({
     }
   }, [formik.values.area_id, areas])
 
+  console.log(formik.errors)
+
   useEffect(() => {
     if (open) {
+      formik.resetForm()
       setAttachments([])
       dispatch(commonActions.getAreas())
       dispatch(commonActions.getManagement())

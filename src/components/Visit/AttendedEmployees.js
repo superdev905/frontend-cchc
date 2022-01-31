@@ -228,7 +228,6 @@ const List = ({ isDisabled = false }) => {
                     <Button
                       size="small"
                       startIcon={<EditIcon />}
-                      disabled={row.is_old}
                       onClick={() => {
                         toggleOpenJobs()
                         setSelectedUser(row)
