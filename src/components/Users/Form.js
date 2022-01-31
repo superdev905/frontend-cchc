@@ -5,6 +5,7 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { Avatar, Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
+import { toNumber } from 'lodash'
 import { Dialog, CompanyRow } from '../Shared'
 import { SubmitButton, Button, TextField, Select } from '../UI'
 import { useSuccess } from '../../hooks'
@@ -159,6 +160,10 @@ const Form = ({
       formik.setFieldValue('charge_name', '')
     }
   }, [formik.values.charge_id, charges])
+
+  const selectedRole = roles.find(
+    (f) => toNumber(f.id) === toNumber(formik.values.role_id)
+  )
 
   useEffect(() => {
     if (open) {
@@ -335,7 +340,7 @@ const Form = ({
               </Select>
             </Grid>
 
-            {(formik.values.role_id === 5 || formik.values.role_id === '5') && (
+            {selectedRole?.key === 'JEFATURA' && (
               <Grid item xs={12}>
                 <Autocomplete
                   multiple
