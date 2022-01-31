@@ -109,6 +109,9 @@ const Form = ({
       if (!body.jefatura_id) {
         delete body.jefatura_id
       }
+      if (!body.boss_id) {
+        delete body.boss_id
+      }
       submitFunction(body)
         .then(() => {
           formik.setSubmitting(false)
@@ -324,7 +327,7 @@ const Form = ({
               >
                 <option value="">SIN JEFE</option>
                 {bosses.map((item) => (
-                  <option value={item.id}>
+                  <option key={`boss-${item.id}`} value={item.id}>
                     {`${item.names} ${item.paternal_surname} ${item.maternal_surname}`.toUpperCase()}
                   </option>
                 ))}
