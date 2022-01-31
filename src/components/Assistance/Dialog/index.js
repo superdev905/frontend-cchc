@@ -134,7 +134,7 @@ const WorkerInterventionRecord = ({
     validateOnChange: true,
     validationSchema,
     initialValues: {
-      date: type === 'UPDATE' ? data.date : new Date(),
+      date: type === 'UPDATE' ? data.date : '',
       source_system: type === 'UPDATE' ? data.source_system : sourceSystem,
       source_business:
         type === 'UPDATE' ? data.source_business : 'FUNDACIÓN CHCC',
@@ -189,6 +189,7 @@ const WorkerInterventionRecord = ({
 
       const body = {
         ...values,
+        date: new Date().toISOString(),
         attachments: attachmentsList,
         case_id: values.case_id === 'NEW' ? null : values.case_id,
         task_id: values.task_id ? values.task_id : null,
@@ -348,8 +349,6 @@ const WorkerInterventionRecord = ({
     }
   }, [formik.values.area_id, areas])
 
-  console.log(formik.errors)
-
   useEffect(() => {
     if (open) {
       formik.resetForm()
@@ -380,10 +379,10 @@ const WorkerInterventionRecord = ({
             <Grid item xs={12} md={6}>
               <Box>
                 <LabeledRow label="Fecha:">
-                  {formatDate(formik.values.date)}
+                  {formatDate(formik.values.date || new Date())}
                 </LabeledRow>
                 <LabeledRow label="Hora:">
-                  {formatHours(formik.values.date)}
+                  {formatHours(formik.values.date || new Date())}
                 </LabeledRow>
                 <LabeledRow label="Origen Sistema:">
                   {formik.values.source_system}
