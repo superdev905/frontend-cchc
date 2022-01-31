@@ -122,7 +122,6 @@ const ReportModal = ({
     if (open) {
       fetchContacts()
       dispatch(assistanceActions.getVisitReportItems(idVisit))
-      dispatch(assistanceActions.getReportItems())
         .then((items) => {
           if (type === 'UPDATE') {
             const list = []
@@ -152,6 +151,7 @@ const ReportModal = ({
         .catch(() => {
           setReportItems([])
         })
+      dispatch(assistanceActions.getReportItems())
     }
   }, [open])
 
