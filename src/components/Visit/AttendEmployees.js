@@ -91,7 +91,7 @@ const List = () => {
           },
           {
             name: 'Motivo',
-            selector: (row) => console.log(row)
+            selector: (row) => row.motive
           }
         ]}
         data={employeesToAttend}
