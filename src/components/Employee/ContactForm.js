@@ -330,27 +330,6 @@ const EmployeeModal = ({
               </Box>
               <Grid container spacing={1}>
                 <Grid item xs={12} md={6}>
-                  <Select
-                    label="A quien pertenece"
-                    name="phone_owner"
-                    required={formik.values.other_phone !== ''}
-                    value={formik.values.phone_owner}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.phone_owner &&
-                      Boolean(formik.errors.phone_owner)
-                    }
-                    helperText={
-                      formik.touched.phone_owner && formik.errors.phone_owner
-                    }
-                  >
-                    <option value="">SELECCIONE ESTADO</option>
-                    {phoneOwner.map((item) => (
-                      <option value={item}>{item}</option>
-                    ))}
-                  </Select>
-                </Grid>
-                <Grid item xs={12} md={6}>
                   <TextField
                     label="Telefóno móvil"
                     name="mobile_phone"
@@ -408,6 +387,29 @@ const EmployeeModal = ({
                     }}
                   />
                 </Grid>
+                {formik.values.other_phone && !formik.errors.other_phone && (
+                  <Grid item xs={12} md={6}>
+                    <Select
+                      label="A quien pertenece"
+                      name="phone_owner"
+                      required={formik.values.other_phone !== ''}
+                      value={formik.values.phone_owner}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.phone_owner &&
+                        Boolean(formik.errors.phone_owner)
+                      }
+                      helperText={
+                        formik.touched.phone_owner && formik.errors.phone_owner
+                      }
+                    >
+                      <option value="">SELECCIONE ESTADO</option>
+                      {phoneOwner.map((item) => (
+                        <option value={item}>{item}</option>
+                      ))}
+                    </Select>
+                  </Grid>
+                )}
                 <Grid item xs={12}>
                   <InputLabel>
                     Debes escribir al menos un número de contacto
