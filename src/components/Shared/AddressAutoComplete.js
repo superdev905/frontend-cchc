@@ -147,6 +147,7 @@ const AddressAutocomplete = ({
         setInputValue(newInputValue)
         onChange(newInputValue)
       }}
+      noOptionsText="Busca una dirección"
       renderInput={(params) => (
         <TextField
           {...params}

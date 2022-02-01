@@ -332,22 +332,22 @@ const WorkerInterventionRecord = ({
   }, [formik.values.case_id, casesForSelect])
 
   useEffect(() => {
-    console.log(employee)
-    formik.setFieldValue('attended_id', employee.id)
-    formik.setFieldValue(
-      'attended_name',
-      `${employee.names} ${employee.paternal_surname}`.toUpperCase()
-    )
-    setSelectedBeneficiary(employee)
-  }, [employee])
-
-  useEffect(() => {
     if (formik.values.area_id && areas.length > 0) {
       handleSelectChange({
         target: { name: 'area', value: formik.values.area_id }
       })
     }
   }, [formik.values.area_id, areas])
+
+  useEffect(() => {
+    if (selectedBeneficiary) {
+      formik.setFieldValue('attended_id', selectedBeneficiary.id)
+      formik.setFieldValue(
+        'attended_name',
+        `${selectedBeneficiary.names} ${selectedBeneficiary.paternal_surname}`.toUpperCase()
+      )
+    }
+  }, [selectedBeneficiary])
 
   useEffect(() => {
     if (open) {
@@ -357,7 +357,13 @@ const WorkerInterventionRecord = ({
       dispatch(commonActions.getManagement())
       dispatch(socialCasesActions.getListCases())
     }
-  }, [open])
+    setSelectedBeneficiary(employee)
+    formik.setFieldValue('attended_id', employee.id)
+    formik.setFieldValue(
+      'attended_name',
+      `${employee.names} ${employee.paternal_surname}`.toUpperCase()
+    )
+  }, [open, employee])
 
   useEffect(() => {
     if (formik.isSubmitting && !formik.isValid) {

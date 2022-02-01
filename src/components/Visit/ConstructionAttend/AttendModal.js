@@ -46,6 +46,8 @@ const AssistanceType = ({
     onSubmit: (values) => {
       submitFunction(values)
         .then(() => {
+          formik.resetForm()
+          setSelectedType(null)
           formik.setSubmitting(false)
           changeSuccess(false)
           if (successFunction) {
@@ -75,6 +77,7 @@ const AssistanceType = ({
 
   useEffect(() => {
     if (open) {
+      setSelectedType(null)
       dispatch(commonActions.getAssistanceTypes({}, false)).then(() => {})
     }
   }, [open])
