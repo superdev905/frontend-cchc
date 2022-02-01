@@ -92,7 +92,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Constructions />
@@ -108,7 +108,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Construction />
@@ -156,7 +156,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Calendar />
