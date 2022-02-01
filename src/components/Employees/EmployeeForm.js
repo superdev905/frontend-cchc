@@ -194,6 +194,8 @@ const EmployeeModal = ({
     }
   }, [formik.values.disability, hasDisability])
 
+  console.log(validAge)
+
   useEffect(() => {
     if (formik.values.rsh === 'NO') {
       formik.setFieldValue('rsh_percentage', '')
@@ -240,6 +242,11 @@ const EmployeeModal = ({
     if (value) {
       formik.setFieldValue('etnia', value)
     }
+  }
+
+  const getAgeValidation = () => {
+    if (type === 'UPDATE') return false
+    return !validAge
   }
 
   useEffect(() => {
@@ -813,7 +820,9 @@ const EmployeeModal = ({
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
-              disabled={formik.isSubmitting || getPollValidation() || !validAge}
+              disabled={
+                formik.isSubmitting || getPollValidation() || getAgeValidation()
+              }
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} trabajador`}
             </SubmitButton>
