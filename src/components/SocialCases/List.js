@@ -143,7 +143,7 @@ const SocialCasesList = () => {
           data={casesList}
           pagination
           onRowClicked={onRowClick}
-          paginationRowsPerPageOptions={[30, 40]}
+          paginationRowsPerPageOptions={[10, 20, 30, 40]}
           paginationPerPage={filters.size}
           paginationServer={true}
           onChangeRowsPerPage={(limit) => {

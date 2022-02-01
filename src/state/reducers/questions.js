@@ -9,7 +9,7 @@ const initialState = {
   stats: {},
   query: {
     page: 1,
-    size: 30
+    size: 10
   },
   uiFilters: {},
   selectedList: [],

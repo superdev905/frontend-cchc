@@ -162,7 +162,7 @@ const QuestionList = () => {
           ]}
           progressPending={loading}
           pagination
-          paginationRowsPerPageOptions={[30, 40]}
+          paginationRowsPerPageOptions={[10, 20, 30, 40]}
           paginationPerPage={query.size}
           paginationServer={true}
           onChangeRowsPerPage={(limit) => {

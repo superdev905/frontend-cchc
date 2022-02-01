@@ -16,7 +16,7 @@ const ListEmployees = () => {
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({
     skip: 0,
-    limit: 30,
+    limit: 10,
     search: '',
     state: ''
   })
@@ -188,7 +188,7 @@ const ListEmployees = () => {
           data={tableData}
           pagination
           onRowClicked={onRowClick}
-          paginationRowsPerPageOptions={[30, 40]}
+          paginationRowsPerPageOptions={[10, 20, 30, 40]}
           paginationPerPage={filters.limit}
           paginationServer={true}
           onChangeRowsPerPage={(limit) => {

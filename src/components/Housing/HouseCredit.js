@@ -11,7 +11,7 @@ const HouseAgreements = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const [loading, setLoading] = useState(false)
-  const [query, setQuery] = useState({ page: 1, size: 30, search: '' })
+  const [query, setQuery] = useState({ page: 1, size: 10, search: '' })
   const { agreementList, totalAgreements } = useSelector(
     (state) => state.housing
   )
@@ -100,7 +100,7 @@ const HouseAgreements = () => {
         ]}
         onRowClicked={(row) => onClickArrow(row.id)}
         pagination
-        paginationRowsPerPageOptions={[30, 40]}
+        paginationRowsPerPageOptions={[10, 20, 30, 40]}
         paginationPerPage={query.size}
         paginationServer
         onChangeRowsPerPage={(limit) => {
