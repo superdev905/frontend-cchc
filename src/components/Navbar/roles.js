@@ -104,8 +104,6 @@ const modulesByRole = {
     }
   ],
   JEFATURA: [
-    { title: 'Empresas', path: '/companies', icon: <BusinessIcon /> },
-    { title: 'Obras', path: '/obras', icon: <ConstructionIcon /> },
     {
       title: 'Trabajadores',
       path: '/employees',
