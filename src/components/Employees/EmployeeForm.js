@@ -3,6 +3,7 @@ import { Autocomplete } from '@material-ui/lab'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
+import { differenceInYears } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   Box,
@@ -98,6 +99,7 @@ const EmployeeModal = ({
   const [hasDisability, setHasDisability] = useState(
     type === 'UPDATE' ? data.disability === 'SI' : false
   )
+  const [validAge, setValidAge] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const { maritalStatus, nationalities, scholarshipList, banks, rshList } =
     useSelector((state) => state.common)
@@ -232,7 +234,6 @@ const EmployeeModal = ({
       formik.setFieldValue('account_number', '')
       formik.setFieldValue('bank_id', '')
     }
-    console.log(formik.values)
   }
 
   const onEtniaSelect = (__, value) => {
@@ -256,6 +257,19 @@ const EmployeeModal = ({
       dispatch(commonPublic.getRSH())
     }
   }, [])
+
+  useEffect(() => {
+    if (formik.values.born_date) {
+      const age = differenceInYears(new Date(), formik.values.born_date)
+      setValidAge(age > 15)
+      if (age < 15) {
+        formik.setFieldValue('born_date', null)
+        enqueueSnackbar('El trabajador no puede ser menor a 15 años', {
+          variant: 'error'
+        })
+      }
+    }
+  }, [formik.values.born_date])
 
   useEffect(() => {
     if (open) {
@@ -799,7 +813,7 @@ const EmployeeModal = ({
             </Button>
             <SubmitButton
               onClick={formik.handleSubmit}
-              disabled={formik.isSubmitting || getPollValidation()}
+              disabled={formik.isSubmitting || getPollValidation() || !validAge}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} trabajador`}
             </SubmitButton>
