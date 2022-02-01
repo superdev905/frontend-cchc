@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
+import { toNumber } from 'lodash'
 import {
   Avatar,
   Box,
@@ -12,12 +13,14 @@ import {
   InputAdornment,
   IconButton
 } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
-import { Dialog } from '../Shared'
+import { Dialog, CompanyRow } from '../Shared'
 import { SubmitButton, Button, TextField, Select } from '../UI'
 import { useSuccess } from '../../hooks'
 import generatePassword from '../../utils/generatePassword'
 import commonActions from '../../state/actions/common'
+import companiesActions from '../../state/actions/companies'
 import CustomTextField from '../UI/CustomTextField'
 
 const useStyles = makeStyles((theme) => ({
@@ -86,6 +89,8 @@ const Form = ({
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { charges, roles } = useSelector((state) => state.common)
+  const [companies, setCompanies] = useState([])
+  const [companiesSelected, setCompaniesSelected] = useState([])
 
   const getTitle = (actionType) => {
     if (actionType === 'VIEW') return 'Ver usuario'
@@ -107,7 +112,8 @@ const Form = ({
       charge_id: type !== 'ADD' ? data.charge_id : '',
       role_id: type !== 'ADD' ? data.role_id : '',
       password: randomPassword,
-      is_administrator: type !== 'ADD' ? data.is_administrator : false
+      is_administrator: type !== 'ADD' ? data.is_administrator : false,
+      companies: type !== 'ADD' ? data.companies : []
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction(values)
@@ -128,6 +134,22 @@ const Form = ({
     }
   })
 
+  const selectedRole = roles.find(
+    (f) => toNumber(f.id) === toNumber(formik.values.role_id)
+  )
+
+  const onConstructionChange = (__, comp) => {
+    setCompaniesSelected(comp)
+    const selectedCompanies = []
+    comp.forEach((values) => {
+      selectedCompanies.push({
+        business_id: values.id,
+        business_name: values.business_name
+      })
+    })
+    formik.setFieldValue('companies', selectedCompanies)
+  }
+
   useEffect(() => {
     if (formik.values.charge_id && charges.length > 0) {
       const currentCharge = charges.find(
@@ -144,6 +166,11 @@ const Form = ({
       formik.resetForm()
       dispatch(commonActions.getCharges())
       dispatch(commonActions.getRoles())
+      dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
+        (list) => {
+          setCompanies(list)
+        }
+      )
     }
   }, [open])
 
@@ -278,6 +305,28 @@ const Form = ({
                 ))}
               </Select>
             </Grid>
+            {selectedRole?.key === 'JEFATURA' && (
+              <Grid item xs={12}>
+                <Autocomplete
+                  multiple
+                  options={companies}
+                  value={companiesSelected || ''}
+                  getOptionSelected={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => option.business_name || ''}
+                  onChange={onConstructionChange}
+                  renderOption={(option) => (
+                    <CompanyRow.Autocomplete company={option} />
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Empresa Asociada"
+                      placeholder="EMPRESA"
+                    />
+                  )}
+                />
+              </Grid>
+            )}
 
             {type === 'UPDATE' && (
               <>
