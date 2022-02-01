@@ -151,6 +151,18 @@ const Form = ({
   }
 
   useEffect(() => {
+    if (data?.companies) {
+      companies.filter((item) =>
+        data.companies.forEach((ele) => {
+          if (item.id === ele.business_id) {
+            setCompaniesSelected([...companiesSelected, item])
+          }
+        })
+      )
+    }
+  }, [open, data, companies])
+
+  useEffect(() => {
     if (formik.values.charge_id && charges.length > 0) {
       const currentCharge = charges.find(
         (item) => item.id === parseInt(formik.values.charge_id, 10)
