@@ -328,7 +328,7 @@ const StepOne = ({ onClose, data }) => {
     dispatch(scholarshipsActions.getCareers())
   }, [])
 
-  console.log(formik.errors)
+  console.log(formik.values)
 
   return (
     <Box className={classes.form}>
@@ -407,6 +407,7 @@ const StepOne = ({ onClose, data }) => {
                       value={searchCompany}
                       onChange={(e) => {
                         setSearchCompany(formatSearchWithRut(e.target.value))
+                        formik.setFieldValue('businessRut', e.target.value)
                       }}
                     />
                   </Grid>
@@ -414,7 +415,6 @@ const StepOne = ({ onClose, data }) => {
                     <Select
                       label="Selecciona Empresa"
                       name="businessName"
-                      required
                       value={formik.values.businessName}
                       onChange={formik.handleChange}
                       error={Boolean(formik.errors.businessName)}
@@ -434,13 +434,28 @@ const StepOne = ({ onClose, data }) => {
                   <Grid item xs={12}>
                     {companies.length === 0 ? (
                       <>
-                        <EmptyState
-                          message={`${
-                            searchRut
-                              ? `No se encontraron resultados para: ${searchCompany}`
-                              : 'Ingrese el rut de la empresa'
-                          }`}
-                        />
+                        {searchCompany ? (
+                          <TextField
+                            label="Nombre empresa"
+                            value={formik.values.businessName}
+                            onChange={(e) => {
+                              formik.setFieldValue(
+                                'businessName',
+                                e.target.value
+                              )
+                              formik.setFieldValue('businessId', 'nuevo')
+                              formik.setFieldValue(
+                                'constructionName',
+                                'Empresa no registrada'
+                              )
+                              formik.setFieldValue('constructionId', 0)
+                            }}
+                          />
+                        ) : (
+                          <EmptyState
+                            message={'Ingrese el rut de la empresa'}
+                          />
+                        )}
                       </>
                     ) : (
                       <>
@@ -502,7 +517,6 @@ const StepOne = ({ onClose, data }) => {
                 ) : (
                   <>
                     <Autocomplete
-                      required
                       options={selectedCompany?.constructions || []}
                       value={''}
                       getOptionLabel={(option) => option.name || ''}
