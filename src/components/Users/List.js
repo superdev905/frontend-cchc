@@ -171,6 +171,7 @@ const List = () => {
             selector: (row) => row.email,
             hide: 'md'
           },
+
           {
             name: 'Rol',
             hide: 'md',
@@ -189,6 +190,17 @@ const List = () => {
               row.boss
                 ? `${row.boss.names} ${row.boss.paternal_surname}`.toUpperCase()
                 : '---'
+          },
+          {
+            name: 'Estado',
+            hide: 'md',
+            left: true,
+            cell: (row) => (
+              <StatusChip
+                label={row.state === 'ACTIVE' ? 'Activo' : 'Eliminado'}
+                success={row?.state === 'ACTIVE'}
+              />
+            )
           },
           {
             name: '',

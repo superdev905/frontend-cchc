@@ -3,17 +3,22 @@ import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { Avatar, Box, Grid, makeStyles, Typography } from '@material-ui/core'
-import { Autocomplete } from '@material-ui/lab'
-import { toNumber } from 'lodash'
-import { Dialog, CompanyRow } from '../Shared'
+import {
+  Avatar,
+  Box,
+  Grid,
+  makeStyles,
+  Typography,
+  InputAdornment,
+  IconButton
+} from '@material-ui/core'
+import { Visibility, VisibilityOff } from '@material-ui/icons'
+import { Dialog } from '../Shared'
 import { SubmitButton, Button, TextField, Select } from '../UI'
 import { useSuccess } from '../../hooks'
 import generatePassword from '../../utils/generatePassword'
 import commonActions from '../../state/actions/common'
-import companiesActions from '../../state/actions/companies'
 import CustomTextField from '../UI/CustomTextField'
-import usersActions from '../../state/actions/users'
 
 const useStyles = makeStyles((theme) => ({
   label: {
@@ -29,10 +34,6 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     width: 100,
     height: 100
-  },
-  customMessage: {
-    fontSize: '0.8rem',
-    color: 'red'
   },
   passwordTextField: {
     textTransform: 'inherit',
@@ -50,12 +51,21 @@ const validationSchema = Yup.object().shape({
   names: Yup.string().required('Ingrese nombre del usuario'),
   maternal_surname: Yup.string().required('Ingrese materno'),
   paternal_surname: Yup.string().required('Ingrese paterno'),
-  email: Yup.string().email('Ingrese correo válido').required('Ingrese correo'),
+  email: Yup.string().email('Ingrese correo válido').required('Ingrese email'),
   charge_id: Yup.string('Seleccione cargo').nullable(),
   role_id: Yup.number('Seleccione rol').required('Seleccione rol'),
   charge_name: Yup.string(),
-  is_administrator: Yup.bool(),
-  businesses: Yup.array()
+  is_administrator: Yup.bool()
+})
+
+const validationSchemaUpdate = Yup.object().shape({
+  password: Yup.string().min(
+    8,
+    'La contraseña debe tener 8 caracteres como mínimo'
+  ),
+  confirm_password: Yup.string('Confirme contraseña nueva')
+    .min(8, 'Debe ser mayor a 8 caracteres')
+    .oneOf([Yup.ref('password')], 'Las contraseñas deben ser iguales')
 })
 
 const Form = ({
@@ -71,9 +81,8 @@ const Form = ({
   const dispatch = useDispatch()
   const [readOnly] = useState(type === 'VIEW')
   const [randomPassword] = useState(generatePassword())
-  const [companies, setCompanies] = useState([])
-  const [bosses, setBosses] = useState([])
-  const [companiesSelected, setCompaniesSelected] = useState([])
+  const [visible, setVisible] = useState(false)
+  const [confirmVisible, setConfirmVisible] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
   const { charges, roles } = useSelector((state) => state.common)
@@ -86,12 +95,10 @@ const Form = ({
 
   const formik = useFormik({
     validateOnMount: true,
-    validateOnChange: true,
-    validateOnBlur: true,
     validationSchema:
       type === 'ADD'
         ? validationSchema.concat(createValidation)
-        : validationSchema,
+        : validationSchema.concat(validationSchemaUpdate),
     initialValues: {
       names: type !== 'ADD' ? data.names : '',
       maternal_surname: type !== 'ADD' ? data.maternal_surname : '',
@@ -99,20 +106,11 @@ const Form = ({
       email: type !== 'ADD' ? data.email : '',
       charge_id: type !== 'ADD' ? data.charge_id : '',
       role_id: type !== 'ADD' ? data.role_id : '',
-      boss_id: type !== 'ADD' ? data.boss_id : '',
       password: randomPassword,
-      is_administrator: type !== 'ADD' ? data.is_administrator : false,
-      companies: type !== 'ADD' ? data.companies : []
+      is_administrator: type !== 'ADD' ? data.is_administrator : false
     },
     onSubmit: (values, { resetForm }) => {
-      const body = { ...values }
-      if (!body.jefatura_id) {
-        delete body.jefatura_id
-      }
-      if (!body.boss_id) {
-        delete body.boss_id
-      }
-      submitFunction(body)
+      submitFunction(values)
         .then(() => {
           formik.setSubmitting(false)
           resetForm()
@@ -130,29 +128,6 @@ const Form = ({
     }
   })
 
-  const validateEmail = (value) => value.length - (value.indexOf('.') + 1)
-
-  const onConstructionChange = (__, comp) => {
-    setCompaniesSelected(comp)
-    const selectedCompanies = []
-    comp.forEach((values) => {
-      selectedCompanies.push({
-        business_id: values.id,
-        business_name: values.business_name
-      })
-    })
-    formik.setFieldValue('companies', selectedCompanies)
-  }
-
-  useEffect(() => {
-    if (formik.values && formik.values.names) {
-      formik.setFieldTouched('email')
-      formik.setFieldTouched('role_id')
-      formik.setFieldTouched('paternal_surname')
-      formik.setFieldTouched('maternal_surname')
-    }
-  }, [formik.values])
-
   useEffect(() => {
     if (formik.values.charge_id && charges.length > 0) {
       const currentCharge = charges.find(
@@ -164,37 +139,14 @@ const Form = ({
     }
   }, [formik.values.charge_id, charges])
 
-  const selectedRole = roles.find(
-    (f) => toNumber(f.id) === toNumber(formik.values.role_id)
-  )
-
-  useEffect(() => {
-    if (data?.companies) {
-      companies.filter((item) =>
-        data.companies.forEach((ele) => {
-          if (item.id === ele.business_id) {
-            setCompaniesSelected([...companiesSelected, item])
-          }
-        })
-      )
-    }
-  }, [open, data, companies])
-
   useEffect(() => {
     if (open) {
       formik.resetForm()
       dispatch(commonActions.getCharges())
       dispatch(commonActions.getRoles())
-      dispatch(usersActions.getBosses({})).then((res) => {
-        setBosses(res)
-      })
-      dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
-        (list) => {
-          setCompanies(list)
-        }
-      )
     }
   }, [open])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth={true}>
       <Box>
@@ -217,7 +169,6 @@ const Form = ({
                 required
                 value={formik.values.names}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 error={formik.touched.names && Boolean(formik.errors.names)}
                 helperText={formik.touched.names && formik.errors.names}
                 inputProps={{ readOnly }}
@@ -231,7 +182,6 @@ const Form = ({
                 required
                 value={formik.values.paternal_surname}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 error={
                   formik.touched.paternal_surname &&
                   Boolean(formik.errors.paternal_surname)
@@ -250,7 +200,6 @@ const Form = ({
                 required
                 value={formik.values.maternal_surname}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 error={
                   formik.touched.maternal_surname &&
                   Boolean(formik.errors.maternal_surname)
@@ -269,16 +218,10 @@ const Form = ({
                 required
                 value={formik.values.email}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
                 inputProps={{ readOnly }}
               />
-              {formik.values.email && validateEmail(formik.values.email) < 2 ? (
-                <Typography className={classes.customMessage}>
-                  El Correo Electrónico está Incompleto
-                </Typography>
-              ) : null}
             </Grid>
             {type === 'ADD' && (
               <Grid item xs={12} md={6}>
@@ -314,30 +257,12 @@ const Form = ({
                 ))}
               </Select>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Select
-                label="Jefatura"
-                name="boss_id"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.boss_id}
-                helperText={formik.touched.boss_id && formik.errors.boss_id}
-                error={formik.touched.boss_id && Boolean(formik.errors.boss_id)}
-                inputProps={{ readOnly }}
-              >
-                <option value="">SIN JEFE</option>
-                {bosses.map((item) => (
-                  <option key={`boss-${item.id}`} value={item.id}>
-                    {`${item.names} ${item.paternal_surname} ${item.maternal_surname}`.toUpperCase()}
-                  </option>
-                ))}
-              </Select>
-            </Grid>
 
             <Grid item xs={12} md={6}>
               <Select
                 label="Cargo"
                 name="charge_id"
+                required
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.charge_id}
@@ -354,27 +279,76 @@ const Form = ({
               </Select>
             </Grid>
 
-            {selectedRole?.key === 'JEFATURA' && (
-              <Grid item xs={12}>
-                <Autocomplete
-                  multiple
-                  options={companies}
-                  value={companiesSelected || ''}
-                  getOptionSelected={(option, value) => option.id === value.id}
-                  getOptionLabel={(option) => option.business_name || ''}
-                  onChange={onConstructionChange}
-                  renderOption={(option) => (
-                    <CompanyRow.Autocomplete company={option} />
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Empresa Asociada"
-                      placeholder="EMPRESA"
-                    />
-                  )}
-                />
-              </Grid>
+            {type === 'UPDATE' && (
+              <>
+                <Grid item xs={12} md={12}>
+                  <Typography>Actualizar contraseña</Typography>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    type={visible ? 'text' : 'password'}
+                    name="password"
+                    label="Nueva Contraseña"
+                    className={classes.passwordTextField}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.password && Boolean(formik.errors.password)
+                    }
+                    helperText={
+                      formik.touched.password && formik.errors.password
+                    }
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => setVisible(!visible)}
+                          >
+                            {visible ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    type={confirmVisible ? 'text' : 'password'}
+                    name="confirm_password"
+                    label="Confirmar Contraseña"
+                    value={formik.values.confirm_password}
+                    className={classes.passwordTextField}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.confirm_password &&
+                      Boolean(formik.errors.confirm_password)
+                    }
+                    helperText={
+                      formik.touched.confirm_password &&
+                      formik.errors.confirm_password
+                    }
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => setConfirmVisible(!confirmVisible)}
+                          >
+                            {confirmVisible ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                </Grid>
+              </>
             )}
           </Grid>
           <Box textAlign="center">
@@ -386,11 +360,7 @@ const Form = ({
                   Cancelar
                 </Button>
                 <SubmitButton
-                  disabled={
-                    !formik.isValid ||
-                    formik.isSubmitting ||
-                    validateEmail(formik.values.email) < 2
-                  }
+                  disabled={!formik.isValid || formik.isSubmitting}
                   loading={formik.isSubmitting}
                   onClick={formik.handleSubmit}
                   success={success}
