@@ -328,7 +328,7 @@ const StepOne = ({ onClose, data }) => {
     dispatch(scholarshipsActions.getCareers())
   }, [])
 
-  console.log(formik.values)
+  console.log(formik.errors)
 
   return (
     <Box className={classes.form}>
@@ -443,7 +443,7 @@ const StepOne = ({ onClose, data }) => {
                                 'businessName',
                                 e.target.value
                               )
-                              formik.setFieldValue('businessId', 'nuevo')
+                              formik.setFieldValue('businessId', 0)
                               formik.setFieldValue(
                                 'constructionName',
                                 'Empresa no registrada'
