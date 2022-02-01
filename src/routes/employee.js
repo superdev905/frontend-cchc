@@ -26,7 +26,7 @@ const companyRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Employees />
@@ -42,7 +42,7 @@ const companyRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Employee>
@@ -60,7 +60,7 @@ const companyRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Employee>
@@ -78,7 +78,7 @@ const companyRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Employee>
@@ -96,7 +96,7 @@ const companyRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Employee>
@@ -114,7 +114,7 @@ const companyRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Employee>
@@ -132,7 +132,7 @@ const companyRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Employee>
@@ -150,7 +150,7 @@ const companyRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Employee>

@@ -19,8 +19,8 @@ function RenderRoutes() {
       })
       .catch(() => {
         setLoading(false)
-        window.location.reload()
-        window.localStorage.removeItem('token')
+        // window.location.reload()
+        //  window.localStorage.removeItem('token')
       })
   }
 
