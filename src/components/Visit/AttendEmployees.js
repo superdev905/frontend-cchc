@@ -6,6 +6,7 @@ import { Box, Typography } from '@material-ui/core'
 import { DataTable } from '../Shared'
 import { SubmitButton, Wrapper } from '../UI'
 import assistanceActions from '../../state/actions/assistance'
+import housingActions from '../../state/actions/housing'
 
 const List = () => {
   const dispatch = useDispatch()
@@ -24,6 +25,9 @@ const List = () => {
   }
 
   const fetchEmployeesToAttend = () => {
+    dispatch(
+      housingActions.getEmployeeToAttend({ businessId: visit.business_id })
+    )
     dispatch(
       assistanceActions.getEmployeesToAttend({
         page: 1,
