@@ -185,7 +185,7 @@ const Form = ({
       formik.resetForm()
       dispatch(commonActions.getCharges())
       dispatch(commonActions.getRoles())
-      dispatch(usersActions.getUsers({}, false)).then((res) => {
+      dispatch(usersActions.getBosses({})).then((res) => {
         setBosses(res)
       })
       dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
