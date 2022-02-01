@@ -112,14 +112,44 @@ const modulesByRole = {
       icon: <EmployeeIcon />
     },
     {
-      title: 'Inclusión',
-      path: '/inclusion-cases',
-      icon: <AccessibleIcon />
+      title: 'Migrantes',
+      path: '/migrants',
+      icon: <MigrantIcon />
+    },
+    {
+      title: 'Cesantes',
+      path: '/unemployed',
+      icon: <UnemployedIcon />
+    },
+    {
+      title: 'Visitas',
+      path: '/visits',
+      icon: <AssistanceIcon />
+    },
+    {
+      title: 'Becas',
+      path: '/scholarships',
+      icon: <SchoolIcon />
+    },
+    {
+      title: 'Cursos',
+      path: '/courses',
+      icon: <BookIcon />
+    },
+    {
+      title: 'Vivienda',
+      path: '/housing',
+      icon: <HousingIcon />
     },
     {
       title: 'Caso Social',
       path: '/social-case',
       icon: <BookIcon />
+    },
+    {
+      title: 'Inclusión',
+      path: '/inclusion-cases',
+      icon: <AccessibleIcon />
     },
     {
       title: 'Consultas Web',

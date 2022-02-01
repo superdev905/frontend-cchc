@@ -15,7 +15,7 @@ const migrantRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Migrant />

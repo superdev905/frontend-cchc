@@ -17,7 +17,7 @@ const courseRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'OTEC']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'OTEC', 'JEFATURA']}
         yes={() => (
           <Layout>
             <Courses />
@@ -33,7 +33,7 @@ const courseRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'OTEC']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'OTEC', 'JEFATURA']}
         yes={() => (
           <Layout>
             <Course>
@@ -51,7 +51,7 @@ const courseRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'OTEC']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'OTEC', 'JEFATURA']}
         yes={() => (
           <Layout>
             <Course>
@@ -69,7 +69,7 @@ const courseRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'OTEC']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'OTEC', 'JEFATURA']}
         yes={() => (
           <Layout>
             <Course>
