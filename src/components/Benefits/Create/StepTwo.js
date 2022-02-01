@@ -33,6 +33,9 @@ const StepTwo = () => {
       isActive: true,
       createdDate: new Date().toISOString()
     }
+    if (!data.areaId) {
+      delete data.areaId
+    }
     setLoading(true)
     dispatch(benefitsActions.createBenefit(data))
       .then(() => {

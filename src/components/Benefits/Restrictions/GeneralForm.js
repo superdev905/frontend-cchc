@@ -39,19 +39,22 @@ const General = ({
       rshName: data?.rshName || '',
       legalCharge: data?.legalCharge || '',
       prevision: data?.prevision || '',
-      retired: data?.retired || '',
-      belongsToReconocer: data?.belongsToReconocer || '',
+      retired: data?.retired || 'NO APLICA',
+      belongsToReconocer: data?.belongsToReconocer || 'NO APLICA',
       isAdult: data?.isAdult || '',
-      gender: data?.gender || '',
-      activityType: data?.activityType || '',
-      inscriber: data?.inscriber || '',
-      funding: data?.funding || '',
+      gender: data?.gender || 'NO APLICA',
+      activityType: data?.activityType || 'NO APLICA',
+      inscriber: data?.inscriber || 'NO APLICA',
+      funding: data?.funding || 'NO APLICA',
       maxSalary: data?.maxSalary || ''
     },
     onSubmit: (values) => {
       const formattedBody = { ...values }
       if (!formattedBody.rshId) {
         formattedBody.rshId = null
+      }
+      if (!formattedBody.nationalityId) {
+        formattedBody.nationalityId = null
       }
       submitFunction(formattedBody)
         .then(() => {
@@ -179,7 +182,7 @@ const General = ({
                   Boolean(formik.errors.legalCharge)
                 }
               >
-                <option value="">NO APLICA</option>
+                <option value="NO APLICA">NO APLICA</option>
                 {decisionList.map((item, i) => (
                   <option key={`alive-${i}-${item}`} value={item}>
                     {item}
