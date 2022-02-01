@@ -138,7 +138,12 @@ const RevisionDialog = ({ open, onClose, successFunction }) => {
             <SubmitButton danger onClick={toggleOpenReject}>
               Rechazar
             </SubmitButton>
-            <SubmitButton onClick={toggleOpenApprove}>Aprobar</SubmitButton>
+            <SubmitButton
+              disabled={application?.revisionStatus?.status === 'RECHAZADA'}
+              onClick={toggleOpenApprove}
+            >
+              Aprobar
+            </SubmitButton>
           </Box>
         </Grid>
         <Grid item xs={12} lg={5}>

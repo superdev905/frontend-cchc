@@ -27,6 +27,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const [deletingPayment, setDeletingPayment] = useState(false)
   const [studentPayments, setStudentPayments] = useState([])
   const [scores, setScores] = useState([])
+  const [avg, setAvg] = useState(null)
   const [currentPayment, setCurrentPayment] = useState(null)
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -69,7 +70,15 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const fetchScores = () => {
     setLoading(true)
     dispatch(courses.getScores({ courseId: idCourse })).then((result) => {
-      setScores(result.items.filter((item) => item.studentId === idEmployee))
+      const score_ = result.items.filter(
+        (item) => item.studentId === idEmployee
+      )
+      let sum = 0
+      score_.forEach((item) => {
+        sum += item.score
+      })
+      setAvg((sum / score_.length).toFixed(1))
+      setScores(score_)
       setLoading(false)
     })
   }
@@ -361,7 +370,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
                   <ScoreCard
                     key={`score-i-${item.id}`}
                     score={item.score}
-                    avg={item.average}
+                    avg={avg && avg}
                     onEdit={() => {
                       setCurrentScore(item)
                       toggleOpenEditScore()
