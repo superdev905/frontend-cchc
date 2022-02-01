@@ -28,6 +28,17 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 17,
     fontWeight: 'bold',
     marginBottom: 5
+  },
+  box: {
+    width: '80px',
+    height: '80px',
+    borderRadius: '50%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    border: '2px solid red',
+    fontSize: '18px',
+    fontWeight: 'bold'
   }
 }))
 
