@@ -31,7 +31,7 @@ const HistoryJobs = ({ employeeId }) => {
         data.map((item) => ({
           ...item,
           startDate: formatDate(item.admission_date),
-          endDate: formatDate(item.leave_date),
+          endDate: item.leave_date ? formatDate(item.leave_date) : '---',
           stringSalary: formatCurrency(item.salary)
         }))
       )
