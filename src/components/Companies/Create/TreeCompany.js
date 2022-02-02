@@ -2,7 +2,8 @@ import TreeView from '@material-ui/lab/TreeView'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import TreeItem from '@material-ui/lab/TreeItem'
-import { Box, Checkbox, Typography, makeStyles } from '@material-ui/core'
+import { Box, Checkbox, makeStyles } from '@material-ui/core'
+import { CompanyRow } from '../../Shared'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -33,14 +34,10 @@ export default function RecursiveTreeView({ data, selectedId, onChange }) {
             color="primary"
             checked={node.id === selectedId}
             disabled={node.state === 'DELETED'}
-            onChange={() => onChange(node.id)}
+            onChange={() => onChange(node.id, node)}
           />
           <Box>
-            <Typography>
-              Razon social:{' '}
-              <span className={classes.businessName}>{node.business_name}</span>
-            </Typography>
-            <Typography className={classes.rut}>Rut: {node.rut}</Typography>
+            <CompanyRow.Autocomplete company={node} />
           </Box>
         </Box>
       }

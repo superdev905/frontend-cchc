@@ -76,10 +76,10 @@ const StepOne = () => {
       } = create.company
       const data = {
         rut,
-        name,
-        email,
-        business_name: create.company.business_name,
-        address,
+        name: name.toUpperCase(),
+        email: email.toUpperCase(),
+        business_name: create.company.business_name.toUpperCase(),
+        address: address.toUpperCase(),
         latitude,
         longitude,
         type: values.type,

@@ -205,12 +205,15 @@ const Details = ({ ...props }) => {
           />
         </Box>
       </Wrapper>
-      <ConstructionModal
-        open={openCreate}
-        onClose={toggleOpenCreate}
-        successFunction={fetchConstruction}
-        submitFunction={createConstruction}
-      />
+      {openCreate && (
+        <ConstructionModal
+          open={openCreate}
+          defaultCompany={company}
+          onClose={toggleOpenCreate}
+          successFunction={fetchConstruction}
+          submitFunction={createConstruction}
+        />
+      )}
       {currentConstruction && openUpdate && (
         <ConstructionModal
           type="UPDATE"

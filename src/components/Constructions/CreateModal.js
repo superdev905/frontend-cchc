@@ -5,7 +5,6 @@ import { useSnackbar } from 'notistack'
 import { useFormik } from 'formik'
 import { useParams } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { Autocomplete } from '@material-ui/lab'
 import commonActions from '../../state/actions/common'
 import companiesActions from '../../state/actions/companies'
 import pollActions from '../../state/actions/poll'
@@ -14,10 +13,11 @@ import { DatePicker, Map, AddressAutoComplete, Dialog } from '../Shared'
 import { SantiagoDefaultLocation as location } from '../../config'
 import { useSuccess, useToggle } from '../../hooks'
 import FacturationModal from '../Companies/Create/ParentBusiness'
-import { buildTreeData, searchFromTree } from '../../utils/buildTreeData'
+import { buildTreeData } from '../../utils/buildTreeData'
 import { PollsModule } from '../Polls'
 import { isPollListAnswered } from '../../validations'
 import Can from '../Can'
+import SearchCompany from '../Companies/SearchCompany'
 
 const businessSchema = Yup.object({
   business_selected_id: Yup.number().required('Seleccione empresa')
@@ -45,15 +45,16 @@ const ConstructionModal = ({
   construction,
   submitFunction,
   successFunction,
-  successMessage
+  successMessage,
+  defaultCompany
 }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const { idCompany } = useParams()
   const [treeData, setTreeData] = useState([])
   const [communes, setCommunes] = useState([])
-  const [companies, setCompanies] = useState([])
-  const [selectedCompany, setSelectedCompany] = useState(null)
+  const [companies] = useState([])
+  const [selectedCompany, setSelectedCompany] = useState(defaultCompany || null)
   const [companyBill, setCompanyBill] = useState(null)
   const { success, changeSuccess } = useSuccess()
   const { open: openFact, toggleOpen: toggleOpenFact } = useToggle()
@@ -138,7 +139,7 @@ const ConstructionModal = ({
         })
         .catch((err) => {
           formik.setSubmitting(false)
-          enqueueSnackbar(err.detail, {
+          enqueueSnackbar(err, {
             variant: 'error'
           })
         })
@@ -166,18 +167,6 @@ const ConstructionModal = ({
   const changeLocation = (targetLocation) => {
     formik.setFieldValue('longitude', targetLocation.lng)
     formik.setFieldValue('latitude', targetLocation.lat)
-  }
-  const onCompanySelect = (__, values) => {
-    setSelectedCompany(values)
-    formik.setFieldValue('business_selected_id', values ? values.id : '')
-    formik.setFieldTouched('business_selected_id')
-  }
-
-  const updateTreeData = (mainId) => {
-    const treeList = treeData.map((item) =>
-      searchFromTree(item, item, parseInt(mainId, 10))
-    )
-    setTreeData(treeList.filter((item) => item))
   }
 
   const getPollValidation = () => {
@@ -222,41 +211,11 @@ const ConstructionModal = ({
   }, [formik.values.business_selected_id])
 
   useEffect(() => {
-    if (selectedCompany) {
-      const mainId =
-        type === 'UPDATE'
-          ? selectedCompany.id
-          : formik.values.business_selected_id
-      updateTreeData(mainId)
-    }
-  }, [formik.values.business_selected_id, type, selectedCompany])
-
-  useEffect(() => {
     if (open) {
       setCompanyBill(null)
       dispatch(commonActions.getRegions())
       dispatch(commonActions.getTypologies())
       dispatch(commonActions.getEconomicSectors())
-
-      dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
-        (list) => {
-          setCompanies(list)
-          if (type === 'djdjdj') {
-            if (type !== 'UPDATE') {
-              setTreeData(buildTreeData(list))
-            } else {
-              const treeList = buildTreeData(list).map((item) =>
-                searchFromTree(
-                  item,
-                  item,
-                  parseInt(construction?.billing_business_id, 10)
-                )
-              )
-              setTreeData(treeList.filter((item) => item))
-            }
-          }
-        }
-      )
     }
   }, [open, type, selectClient])
 
@@ -267,6 +226,29 @@ const ConstructionModal = ({
       )
     }
   }, [regions])
+
+  useEffect(() => {
+    if (type === 'UPDATE') {
+      setSelectedCompany(construction.business)
+      dispatch(
+        companiesActions.getCompany(construction.billing_business_id, false)
+      ).then((res) => {
+        setCompanyBill({
+          id: res.id,
+          business_name: res.business_name
+        })
+      })
+      formik.setFieldValue(
+        'billing_business_id',
+        construction.billing_business_id
+      )
+      formik.setFieldValue('business_selected_id', construction.business_id)
+    } else {
+      formik.setFieldValue('business_selected_id', selectedCompany?.id || '')
+      formik.setFieldTouched('business_selected_id')
+    }
+  }, [selectedCompany, type, construction])
+  console.log(defaultCompany, selectedCompany)
 
   useEffect(() => {
     if (formik.isSubmitting && !formik.isValid) {
@@ -291,30 +273,21 @@ const ConstructionModal = ({
           >{`${type === 'CREATE' ? 'Nueva' : 'Editar'} obra`}</Typography>
           <Grid container spacing={2}>
             {selectClient && (
-              <Grid item xs={12} md={6}>
-                <Autocomplete
-                  options={companies}
-                  value={selectedCompany || ''}
-                  getOptionLabel={(option) => option.business_name || ''}
-                  onChange={onCompanySelect}
-                  renderOption={(option) => (
-                    <Box>
-                      <Typography>
-                        {`Razón social: `}
-                        <strong>{option.business_name}</strong>
-                      </Typography>
-                      <Typography>{`Rut: ${option.rut}`}</Typography>
-                    </Box>
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Selecciona empresa"
-                      placeholder="Nombre de empresa"
-                    />
-                  )}
-                />
-              </Grid>
+              <>
+                <Grid item xs={12}>
+                  <SearchCompany
+                    onSelected={(e) => {
+                      setSelectedCompany(e)
+                    }}
+                    onDelete={() => {
+                      setSelectedCompany(null)
+                      setCompanyBill(null)
+                      formik.setFieldValue('business_selected_id', '')
+                      formik.setFieldValue('billing_business_id', '')
+                    }}
+                  />
+                </Grid>
+              </>
             )}
             <Grid item xs={12} md={6}>
               <TextField
@@ -543,7 +516,11 @@ const ConstructionModal = ({
                       onClose={toggleOpenFact}
                       data={treeData}
                       selectedId={formik.values.billing_business_id}
-                      onChange={(id) => {
+                      onChange={(id, company) => {
+                        setCompanyBill({
+                          id: company.id,
+                          business_name: company.business_name
+                        })
                         formik.setFieldValue('billing_business_id', id)
                       }}
                     />
