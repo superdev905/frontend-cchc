@@ -21,6 +21,7 @@ import { useSuccess } from '../../hooks'
 import generatePassword from '../../utils/generatePassword'
 import commonActions from '../../state/actions/common'
 import companiesActions from '../../state/actions/companies'
+import usersActions from '../../state/actions/users'
 import CustomTextField from '../UI/CustomTextField'
 
 const useStyles = makeStyles((theme) => ({
@@ -91,6 +92,7 @@ const Form = ({
   const { charges, roles } = useSelector((state) => state.common)
   const [companies, setCompanies] = useState([])
   const [companiesSelected, setCompaniesSelected] = useState([])
+  const [bosses, setBosses] = useState([])
 
   const getTitle = (actionType) => {
     if (actionType === 'VIEW') return 'Ver usuario'
@@ -111,12 +113,20 @@ const Form = ({
       email: type !== 'ADD' ? data.email : '',
       charge_id: type !== 'ADD' ? data.charge_id : '',
       role_id: type !== 'ADD' ? data.role_id : '',
+      boss_id: type !== 'ADD' ? data.boss_id : '',
       password: randomPassword,
       is_administrator: type !== 'ADD' ? data.is_administrator : false,
       companies: type !== 'ADD' ? data.companies : []
     },
     onSubmit: (values, { resetForm }) => {
-      submitFunction(values)
+      const body = { ...values }
+      if (!body.jefatura_id) {
+        delete body.jefatura_id
+      }
+      if (!body.boss_id) {
+        delete body.boss_id
+      }
+      submitFunction(body)
         .then(() => {
           formik.setSubmitting(false)
           resetForm()
@@ -183,6 +193,9 @@ const Form = ({
           setCompanies(list)
         }
       )
+      dispatch(usersActions.getUsers({}, false)).then((res) => {
+        setBosses(res)
+      })
     }
   }, [open])
 
@@ -293,6 +306,25 @@ const Form = ({
                 <option value="">SIN ROL</option>
                 {roles.map((item) => (
                   <option value={item.id}>{item.name}</option>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Select
+                label="Jefatura"
+                name="boss_id"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.boss_id}
+                helperText={formik.touched.boss_id && formik.errors.boss_id}
+                error={formik.touched.boss_id && Boolean(formik.errors.boss_id)}
+                inputProps={{ readOnly }}
+              >
+                <option value="">SIN JEFE</option>
+                {bosses.map((item) => (
+                  <option key={`boss-${item.id}`} value={item.id}>
+                    {`${item.names} ${item.paternal_surname} ${item.maternal_surname}`.toUpperCase()}
+                  </option>
                 ))}
               </Select>
             </Grid>
