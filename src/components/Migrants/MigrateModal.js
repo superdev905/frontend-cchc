@@ -55,8 +55,10 @@ const MigrateModal = ({ open, onClose }) => {
       try {
         const { pollStatus } = moduleResponse
         formData.employeeId = parseInt(selectedEmployee.id, 10)
-        formData.pollId = parseInt(pollStatus[0].id, 10)
-        formData.responseId = parseInt(pollStatus[0].responseId, 10)
+        formData.pollId = pollStatus[0] ? parseInt(pollStatus[0].id, 10) : null
+        formData.responseId = pollStatus[0]
+          ? parseInt(pollStatus[0].responseId, 10)
+          : null
         formData.period = parseInt(formData.period, 10)
         dispatch(
           migrantsActions.createMigration({
@@ -80,6 +82,7 @@ const MigrateModal = ({ open, onClose }) => {
             })
           })
       } catch (error) {
+        console.log(error)
         enqueueSnackbar(error, {
           variant: 'error'
         })
@@ -361,12 +364,7 @@ const MigrateModal = ({ open, onClose }) => {
             <Button onClick={onClose} variant={'outlined'}>
               Cancelar
             </Button>
-            <Button
-              onClick={formik.handleSubmit}
-              disabled={
-                !moduleResponse?.pollStatus[0]?.isAnswered || !formik.isValid
-              }
-            >
+            <Button onClick={formik.handleSubmit} disabled={!formik.isValid}>
               Guardar
             </Button>
           </Box>
