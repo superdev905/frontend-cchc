@@ -212,6 +212,16 @@ const ConstructionModal = ({
   }, [idCompany, companies])
 
   useEffect(() => {
+    if (formik.values.business_selected_id) {
+      dispatch(
+        companiesActions.getTreeCompanies(formik.values.business_selected_id)
+      ).then((list) => {
+        setTreeData(buildTreeData(list))
+      })
+    }
+  }, [formik.values.business_selected_id])
+
+  useEffect(() => {
     if (selectedCompany) {
       const mainId =
         type === 'UPDATE'
@@ -231,17 +241,19 @@ const ConstructionModal = ({
       dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
         (list) => {
           setCompanies(list)
-          if (type !== 'UPDATE') {
-            setTreeData(buildTreeData(list))
-          } else {
-            const treeList = buildTreeData(list).map((item) =>
-              searchFromTree(
-                item,
-                item,
-                parseInt(construction?.billing_business_id, 10)
+          if (type === 'djdjdj') {
+            if (type !== 'UPDATE') {
+              setTreeData(buildTreeData(list))
+            } else {
+              const treeList = buildTreeData(list).map((item) =>
+                searchFromTree(
+                  item,
+                  item,
+                  parseInt(construction?.billing_business_id, 10)
+                )
               )
-            )
-            setTreeData(treeList.filter((item) => item))
+              setTreeData(treeList.filter((item) => item))
+            }
           }
         }
       )

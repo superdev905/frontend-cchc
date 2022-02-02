@@ -11,9 +11,9 @@ const updateFilters = (filters) => (dispatch) =>
 const updateCreate = (form) => (dispatch) =>
   dispatch({ type: businessTypes.BUSINESS_UPDATE_CREATE, payload: form })
 
-const getTreeCompanies = () => () =>
+const getTreeCompanies = (id) => () =>
   new Promise((resolve, reject) => {
-    Axios.get(`/business/tree`)
+    Axios.get(`/business/${id}/tree`)
       .then((response) => {
         const { data } = response
         resolve(data)
