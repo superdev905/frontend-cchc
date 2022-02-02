@@ -20,18 +20,22 @@ const Home = () => {
   const classes = useStyles()
 
   return (
-    <Box display="flex" justifyContent="space-evenly" mt={2}>
+    <Box display="flex" justifyContent="space-evenly">
       <Box>
         <Typography className={classes.tittle}>Visitas Pendientes</Typography>
         <VisitsPending />
       </Box>
       <Box>
-        <Typography className={classes.tittle}>
-          Beneficios Entregados
-        </Typography>
-        <BenefitsDelivery />
-        <Typography className={classes.tittle}>Atenciones</Typography>
-        <Atentions />
+        <Box>
+          <Typography className={classes.tittle}>
+            Beneficios Entregados
+          </Typography>
+          <BenefitsDelivery />
+        </Box>
+        <Box>
+          <Typography className={classes.tittle}>Atenciones</Typography>
+          <Atentions />
+        </Box>
       </Box>
     </Box>
   )
