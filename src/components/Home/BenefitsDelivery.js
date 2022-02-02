@@ -20,7 +20,7 @@ const BenefitsDelivery = ({ height }) => {
     <Box className={classes.cardRoot}>
       <Grid container spacing={4}>
         <Grid item xs={12} className={classes.name}>
-          <Typography variant="subtitle1">Nombre de Beneficio</Typography>
+          <Typography variant="h6">Nombre de Beneficio</Typography>
         </Grid>
         <Grid container justifyContent="space-evenly">
           <Grid item>

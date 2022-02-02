@@ -25,23 +25,19 @@ const VisitsPending = ({ height }) => {
       <Box className={classes.cardRoot}>
         <Grid container spacing={5} alignItems="center">
           <Grid item xs={12}>
-            <Typography
-              gutterBottom
-              variant="subtitle1"
-              className={classes.center}
-            >
+            <Typography gutterBottom variant="h6" className={classes.center}>
               Tipo de Visita / Tarea
             </Typography>
           </Grid>
         </Grid>
-        <Grid container sm justifyContent="space-around">
-          <Grid item xs={6}>
-            <Typography variant="body2" className={classes.date}>
+        <Grid container justifyContent="space-around">
+          <Grid item xs={8}>
+            <Typography variant="body1" className={classes.date}>
               11-02-2022
             </Typography>
           </Grid>
-          <Grid item xs={6}>
-            <Typography variant="body2">Obra</Typography>
+          <Grid item xs={3}>
+            <Typography variant="body1">Obra</Typography>
           </Grid>
         </Grid>
       </Box>
