@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FiArrowLeft as ArrowBack } from 'react-icons/fi'
+import { FiArrowLeft as ArrowBack, FiCheck as DoneIcon } from 'react-icons/fi'
 import {
   Box,
   Drawer,
@@ -9,10 +9,14 @@ import {
 } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
 import migrants from '../../state/actions/migrants'
-import { Button, InputLabel, LabeledRow, Text } from '../UI'
+import { ActionsTable, Button, InputLabel, LabeledRow, Text } from '../UI'
 import { formatDate } from '../../formatters'
 import UserCard from '../Users/Card'
 import { DataTable } from '../Shared'
+import { useToggle } from '../../hooks'
+import BenefitDialog from './BenefitDialog'
+import AssistanceDialog from '../Assistance/Dialog'
+import assistanceActions from '../../state/actions/assistance'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,6 +45,21 @@ const DetailsDrawer = ({ open, onClose, migrantId }) => {
   const { isMobile } = useSelector((state) => state.ui)
   const { migrant } = useSelector((state) => state.migrants)
   const [loading, setLoading] = useState(false)
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const { open: openAttention, toggleOpen: toggleOpenAttention } = useToggle()
+  const [benefit, setBenefit] = useState(null)
+
+  const createAttention = (values) =>
+    dispatch(
+      assistanceActions.createAssistance({
+        ...values,
+        employee_id: migrant.employee.id,
+        employee_name: migrant.employee.names,
+        employee_lastname: `${migrant.employee.paternalSurname}`,
+        employee_rut: migrant.employee.run
+      })
+    )
+
   const fetchData = () => {
     setLoading(true)
     dispatch(migrants.getMigrantDetails(migrantId)).then(() => {
@@ -116,21 +135,66 @@ const DetailsDrawer = ({ open, onClose, migrantId }) => {
           <Typography className={classes.heading}>Beneficios</Typography>
           <DataTable
             data={migrant?.benefits}
-            emptyMessage={'Este trabajador no tiene beneficios'}
             columns={[
               {
                 name: 'Fecha',
                 selector: (row) => (
-                  <Box>{row?.date ? formatDate(row.date) : 'Sin fecha'}</Box>
+                  <Box>
+                    {row.benefit.name.includes('ATENCIÓN SOCIAL') &&
+                    !row.isCompleted ? (
+                      <Button
+                        onClick={() => {
+                          setBenefit(row)
+                          toggleOpenAttention()
+                        }}
+                        size={'small'}
+                      >
+                        Atender
+                      </Button>
+                    ) : (
+                      <>{row.date ? formatDate(row.date) : 'Sin fecha'}</>
+                    )}
+                  </Box>
                 )
               },
               {
                 name: 'Tipo beneficio',
                 selector: (row) => row.benefit.name
+              },
+              {
+                name: '',
+                right: true,
+                maxWidth: '50px',
+                selector: (row) => (
+                  <>
+                    {row.isCompleted ? (
+                      <DoneIcon fontSize={'24px'} color="green" />
+                    ) : (
+                      <>
+                        {!row.benefit.name.includes('ATENCIÓN SOCIAL') && (
+                          <ActionsTable
+                            onEdit={() => {
+                              setBenefit(row)
+                              toggleOpenEdit()
+                            }}
+                          />
+                        )}
+                      </>
+                    )}
+                  </>
+                )
               }
             ]}
           />
         </Box>
+        {openEdit && benefit && (
+          <BenefitDialog
+            migrantId={migrant.id}
+            open={openEdit}
+            onClose={toggleOpenEdit}
+            benefit={benefit}
+          />
+        )}
         <Box mt={3}>
           <InputLabel>Registrado por: </InputLabel>
           {!loading && migrant?.author && <UserCard user={migrant.author} />}
@@ -139,6 +203,29 @@ const DetailsDrawer = ({ open, onClose, migrantId }) => {
         <Box textAlign="right" my={2}>
           <Button onClick={onClose}>Aceptar</Button>
         </Box>
+        {openAttention && (
+          <AssistanceDialog
+            sourceSystem={'MIGRANTES'}
+            onClose={toggleOpenAttention}
+            open={openAttention}
+            employee={migrant?.employee}
+            visitShift={''}
+            submitFunction={createAttention}
+            company={{ business_name: '' }}
+            construction={{ name: '' }}
+            successFunction={() => {
+              dispatch(
+                migrants.updateDeliveredBenefit(benefit.id, {
+                  date: new Date().toISOString(),
+                  isCompleted: true
+                })
+              ).then(() => {
+                fetchData()
+              })
+            }}
+            successMessage="Atención creada con éxito"
+          />
+        )}
       </Box>
     </Drawer>
   )

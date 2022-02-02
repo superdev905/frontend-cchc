@@ -82,7 +82,6 @@ const MigrateModal = ({ open, onClose }) => {
             })
           })
       } catch (error) {
-        console.log(error)
         enqueueSnackbar(error, {
           variant: 'error'
         })
@@ -302,6 +301,7 @@ const MigrateModal = ({ open, onClose }) => {
                         ) : (
                           <DatePicker
                             value={row.date}
+                            disabledFuture={false}
                             onChange={(e) => {
                               const updatedList = benefits.map((item) =>
                                 item.id === row.id ? { ...item, date: e } : item

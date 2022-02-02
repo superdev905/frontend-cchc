@@ -29,12 +29,16 @@ const EditDialog = ({ open, onClose, benefit, successFunction }) => {
       isActive: benefit?.isActive ? 'VIGENTE' : 'NO VIGENTE',
       totalCost: benefit?.totalCost || '',
       isCourse: benefit?.isCourse,
-      areaId: benefit?.areaId
+      areaId: benefit?.areaId || ''
     },
     onSubmit: (values) => {
+      const body = { ...values }
+      if (!body.areaId) {
+        delete body.areaId
+      }
       dispatch(
         benefitsActions.updateBenefit(benefit.id, {
-          ...values,
+          ...body,
           isActive: values.isActive === 'VIGENTE',
           createdDate: benefit.createdDate
         })

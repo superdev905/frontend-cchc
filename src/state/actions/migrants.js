@@ -91,11 +91,24 @@ const getBenefits =
           reject(err.response.data.detail)
         })
     })
+const updateDeliveredBenefit = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.migrant}/migrants/benefit/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getMigrants,
   createMigration,
   setFilters,
   getMigrantDetails,
   searchMigrants,
-  getBenefits
+  getBenefits,
+  updateDeliveredBenefit
 }
