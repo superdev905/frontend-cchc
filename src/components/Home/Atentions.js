@@ -24,12 +24,12 @@ const Atentions = ({ height }) => {
     <Box className={classes.cardRoot}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm spacing={2} className={classes.name}>
-          <Typography variant="subtitle1">Nombre Trabajador</Typography>
+          <Typography variant="h6">Nombre Trabajador</Typography>
           <Typography variant="subtitle1">Rut</Typography>
         </Grid>
         <Grid container justifyContent="space-around" className={classes.name}>
           <Grid item xs={4}>
-            <Typography variant="body2" className={classes.date}>
+            <Typography variant="body1" className={classes.date}>
               15-02-2022
             </Typography>
           </Grid>
