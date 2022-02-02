@@ -4,7 +4,7 @@ const initialState = {
   casesList: [],
   filters: {
     page: 1,
-    size: 30,
+    size: 10,
     search: '',
     businessId: '',
     STATE: '',

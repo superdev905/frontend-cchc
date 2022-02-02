@@ -33,7 +33,14 @@ const Details = () => {
               <Typography className={classes.heading}>Información</Typography>
               <Box>
                 {company && !company?.is_active && (
-                  <StatusChip error label="Empresa suspendida" />
+                  <Box mt={1}>
+                    <StatusChip error label="Empresa suspendida" />
+                  </Box>
+                )}
+                {company && company?.is_billing_business && (
+                  <Box mt={1}>
+                    <StatusChip success label="Esta empresa es facturadora" />
+                  </Box>
                 )}
                 <LabeledRow label="Razón social">
                   <Text>{company?.business_name}</Text>

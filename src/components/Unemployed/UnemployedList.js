@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
 const UnemployedList = () => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const [query, setQuery] = useState({ page: 1, size: 30, search: '' })
+  const [query, setQuery] = useState({ page: 1, size: 10, search: '' })
   const { unemployedList, totalUnemployed } = useSelector(
     (state) => state.unemployed
   )
@@ -117,7 +117,7 @@ const UnemployedList = () => {
           data={unemployedList}
           pagination
           onRowClicked={onRowClick}
-          paginationRowsPerPageOptions={[30, 40]}
+          paginationRowsPerPageOptions={[10, 20, 30, 40]}
           paginationServer={true}
           paginationTotalRows={10}
           paginationPerPage={50}

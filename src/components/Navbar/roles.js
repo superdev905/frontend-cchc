@@ -103,6 +103,65 @@ const modulesByRole = {
       icon: <SettingsIcon />
     }
   ],
+  JEFATURA: [
+    { title: 'Empresas', path: '/companies', icon: <BusinessIcon /> },
+    { title: 'Obras', path: '/obras', icon: <ConstructionIcon /> },
+    {
+      title: 'Trabajadores',
+      path: '/employees',
+      icon: <EmployeeIcon />
+    },
+    {
+      title: 'Migrantes',
+      path: '/migrants',
+      icon: <MigrantIcon />
+    },
+    {
+      title: 'Cesantes',
+      path: '/unemployed',
+      icon: <UnemployedIcon />
+    },
+    {
+      title: 'Visitas',
+      path: '/visits',
+      icon: <AssistanceIcon />
+    },
+    {
+      title: 'Becas',
+      path: '/scholarships',
+      icon: <SchoolIcon />
+    },
+    {
+      title: 'Cursos',
+      path: '/courses',
+      icon: <BookIcon />
+    },
+    {
+      title: 'Vivienda',
+      path: '/housing',
+      icon: <HousingIcon />
+    },
+    {
+      title: 'Caso Social',
+      path: '/social-case',
+      icon: <BookIcon />
+    },
+    {
+      title: 'Inclusión',
+      path: '/inclusion-cases',
+      icon: <AccessibleIcon />
+    },
+    {
+      title: 'Consultas Web',
+      path: '/question/dashboard',
+      icon: <LanguageIcon />
+    },
+    {
+      title: 'Protocolos',
+      path: '/protocols',
+      icon: <HelpIcon />
+    }
+  ],
   SOCIAL_ASSISTANCE: [
     { title: 'Empresas', path: '/companies', icon: <BusinessIcon /> },
     { title: 'Obras', path: '/obras', icon: <ConstructionIcon /> },

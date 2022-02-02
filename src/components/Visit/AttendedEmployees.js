@@ -16,7 +16,7 @@ import JobsDialog from './JobsDialog'
 import ConfirmationDialog from './ConfirmationDialog'
 import { EmployeeForm } from '../Employees'
 
-const List = ({ isDisabled = false }) => {
+const List = () => {
   const dispatch = useDispatch()
   const { idVisit } = useParams()
   const history = useHistory()
@@ -61,7 +61,6 @@ const List = ({ isDisabled = false }) => {
       <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}>
         No se encontraron trabajadores
         <Button
-          disabled={isDisabled}
           onClick={() => {
             dispatch(uiActions.setCurrentModule('EMPRESAS'))
             toggleOpenJEmployeeForm()
@@ -184,22 +183,29 @@ const List = ({ isDisabled = false }) => {
       />
       {visit && !visit.is_close ? (
         <Box marginTop="20px" p={1}>
-          <Typography style={{ marginBottom: '20px' }}>
-            Agregar nuevo trabajador
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Buscar trabajador"
-                disabled={isDisabled}
-                placeholder="Rut"
-                value={searchUser}
-                onChange={(e) => {
-                  setSearchUser(searchWithRut(e.target.value))
-                }}
-              />
+          <Box mb={2}>
+            <Typography
+              style={{
+                marginBottom: '20px',
+                fontSize: '18px',
+                fontWeight: 'bold'
+              }}
+            >
+              Atender trabajador
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Buscar trabajador"
+                  placeholder="BUSCAR POR: RUT, NOMBRES"
+                  value={searchUser}
+                  onChange={(e) => {
+                    setSearchUser(searchWithRut(e.target.value))
+                  }}
+                />
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
 
           <DataTable
             bordered

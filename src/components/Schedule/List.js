@@ -12,7 +12,7 @@ const List = () => {
   const [loading, setLoading] = useState(false)
   const [query, setQuery] = useState({
     page: 1,
-    size: 30,
+    size: 10,
     search: ''
   })
   const history = useHistory()
@@ -131,7 +131,7 @@ const List = () => {
           pointerOnHover
           onRowClicked={(row) => handleRowClick(row.id)}
           paginationServer={true}
-          paginationRowsPerPageOptions={[30, 40]}
+          paginationRowsPerPageOptions={[10, 20, 30, 40]}
           paginationPerPage={query.size}
           onChangeRowsPerPage={(limit) => {
             setQuery({ ...query, size: limit })

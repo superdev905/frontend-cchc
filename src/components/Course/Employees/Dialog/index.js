@@ -5,17 +5,21 @@ import { useSnackbar } from 'notistack'
 import { Box, Drawer, IconButton, Typography } from '@material-ui/core'
 import { FiArrowLeft as BackIcon } from 'react-icons/fi'
 import { formatCurrency, formatDate, formatText } from '../../../../formatters'
-import { Button, EmptyState, LabeledRow, Text } from '../../../UI'
+import { ActionsTable, Button, EmptyState, LabeledRow, Text } from '../../../UI'
 import { useToggle, useSuccess } from '../../../../hooks'
 import useStyles from './styles'
 import PaymentCard from '../../ExtraPayments/Card'
-import ScoreCard from '../Score/ScoreCard'
 import courses from '../../../../state/actions/courses'
 import EmployeeTracking from '../../EmployeeTracking'
 import AddScore from '../Score/AddScore'
 import CourseStatus from '../Status/CourseStatus'
 import StatusList from '../Status/List'
-import { ConfirmDelete, FileThumbnail, FileVisor } from '../../../Shared'
+import {
+  ConfirmDelete,
+  DataTable,
+  FileThumbnail,
+  FileVisor
+} from '../../../Shared'
 import StudentPaymentCard from '../PaymentCard'
 
 const EmployeeDialog = ({ open, onClose, idEmployee }) => {
@@ -30,11 +34,10 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const [currentPayment, setCurrentPayment] = useState(null)
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
-  const [student, setStudent] = useState(null)
   const [currentScore, setCurrentScore] = useState(null)
   const { isMobile } = useSelector((state) => state.ui)
-  /* const { scoresList } = useSelector((state) => state.courses)
-  console.log(scoresList) */
+  const { studentDetails: student } = useSelector((state) => state.courses)
+
   const { success, changeSuccess } = useSuccess()
   const {
     success: successDeletePayment,
@@ -53,9 +56,8 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const fetchDetails = () => {
     setLoading(true)
     dispatch(courses.getStudentDetails(idCourse, idEmployee))
-      .then((result) => {
+      .then(() => {
         setLoading(false)
-        setStudent(result)
       })
       .catch(() => {
         setTimeout(() => {
@@ -71,94 +73,54 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
   const fetchScores = () => {
     setLoading(true)
     dispatch(courses.getScores({ courseId: idCourse })).then((result) => {
-      setScores(result.items.filter((item) => item.studentId === idEmployee))
+      const score_ = result.items.filter(
+        (item) => item.studentId === idEmployee
+      )
+      setScores(score_)
       setLoading(false)
     })
   }
 
-  const fetchStatus = () => {
-    setLoading(true)
-    dispatch(courses.getStatus({ courseId: idCourse })).then(() => {
-      setLoading(false)
-    })
-  }
+  const fetchStatus = () => {}
 
-  const addScore = (values) => {
+  const addScore = (values) =>
     dispatch(
       courses.createScore({
         ...values,
         studentId: student.studentId
       })
     )
-      .then(() => {
-        setLoading(false)
-        changeSuccess(true)
-        toggleOpenAddScore()
-        fetchScores()
-        enqueueSnackbar('Nota agregada exitosamente', {
-          autoHideDuration: 1800,
-          variant: 'success'
-        })
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
 
-  const addStatus = (values) => {
+  const addStatus = (values) =>
     dispatch(
       courses.createStatus({
         ...values,
-        studentId: student.studentId
+        studentId: student.studentId,
+        courseId: idCourse
       })
     )
-      .then(() => {
-        setLoading(false)
-        changeSuccess(true)
-        toggleOpenStatus()
-        fetchStatus()
-        enqueueSnackbar('Estado agregado exitosamente', {
-          autoHideDuration: 1800,
-          variant: 'success'
-        })
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
 
-  const updateScore = (values) => {
+  const updateScore = (values) =>
     dispatch(
       courses.updateScore(currentScore.id, {
         ...values,
         studentId: student.studentId
       })
     )
-      .then(() => {
-        setLoading(false)
-        changeSuccess(true)
-        toggleOpenEditScore()
-        fetchScores()
-        enqueueSnackbar('Nota actualizada correctamente', {
-          autoHideDuration: 1800,
-          variant: 'success'
-        })
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
 
   const deleteScore = (id) => {
     dispatch(
       courses.patchScore(id, {
-        state: 'DELETED'
+        state: 'DELETED',
+        studentId: student.studentId,
+        courseId: idCourse
       })
     )
       .then(() => {
         setDeleting(false)
         changeSuccess(true)
         toggleOpenDeleteScore()
+        fetchDetails()
         fetchScores()
         enqueueSnackbar('Nota eliminada exitosamente', {
           autoHideDuration: 1500,
@@ -296,19 +258,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
           <Box className={classes.centeredSpaced}>
             <Typography>Porcentaje de asistencia</Typography>
           </Box>
-          <Box
-            style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              border: '2px solid red',
-              fontSize: '18px',
-              fontWeight: 'bold'
-            }}
-          >
+          <Box className={classes.box}>
             {student && `${student.attendancePercentage}`}
           </Box>
         </Box>
@@ -347,6 +297,7 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
             )}
           </Box>
         </Box>
+
         <Box px={3}>
           <Box marginBottom={2} className={classes.centeredSpaced}>
             <Typography>Notas</Typography>
@@ -362,34 +313,54 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
                 event={toggleOpenAddScore}
               />
             ) : (
-              <ScoreCard.Container>
-                {scores.map((item) => (
-                  <ScoreCard
-                    key={`score-i-${item.id}`}
-                    score={item.score}
-                    avg={item.average}
-                    onEdit={() => {
-                      setCurrentScore(item)
-                      toggleOpenEditScore()
-                    }}
-                    onDelete={() => {
-                      setCurrentScore(item)
-                      toggleOpenDeleteScore()
-                    }}
-                  />
-                ))}
-              </ScoreCard.Container>
+              <>
+                <DataTable
+                  data={scores}
+                  columns={[
+                    { name: 'Fecha', selector: (row) => formatDate(row.date) },
+                    { name: 'Nota', selector: (row) => row.score },
+                    {
+                      name: '',
+                      right: true,
+                      selector: (row) => (
+                        <ActionsTable
+                          onEdit={() => {
+                            setCurrentScore(row)
+                            toggleOpenEditScore()
+                          }}
+                          onDelete={() => {
+                            setCurrentScore(row)
+                            toggleOpenDeleteScore()
+                          }}
+                        />
+                      )
+                    }
+                  ]}
+                />
+              </>
             )}
+          </Box>
+        </Box>
+        <Box px={3}>
+          <Box className={classes.centeredSpaced}>
+            <Typography>Promedio</Typography>
+          </Box>
+          <Box className={classes.box}>
+            {student && `${parseFloat(student.average).toFixed(2)}`}
           </Box>
         </Box>
         <Box px={3}>
           <Box marginTop={2} className={classes.centeredSpaced}>
             <Typography>Estado de alumno</Typography>
-            <Button size="small" onClick={toggleOpenStatus}>
+            <Button
+              size="small"
+              onClick={toggleOpenStatus}
+              disabled={student?.status}
+            >
               Agregar
             </Button>
           </Box>
-          <StatusList />
+          <StatusList successFunction={fetchDetails} />
         </Box>
       </Box>
 
@@ -431,7 +402,11 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
         open={openAddScore}
         onClose={toggleOpenAddScore}
         submitFunction={addScore}
-        successFunction={fetchScores}
+        successMessage={'Nota creada'}
+        successFunction={() => {
+          fetchDetails()
+          fetchScores()
+        }}
       />
 
       {currentScore && openEditScore && (
@@ -441,7 +416,11 @@ const EmployeeDialog = ({ open, onClose, idEmployee }) => {
           onClose={toggleOpenEditScore}
           data={currentScore}
           submitFunction={updateScore}
-          successFunction={fetchScores}
+          successMessage={'Nota actualizada'}
+          successFunction={() => {
+            fetchDetails()
+            fetchScores()
+          }}
         />
       )}
 

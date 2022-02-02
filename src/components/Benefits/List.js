@@ -22,7 +22,7 @@ const BenefitList = () => {
   const history = useHistory()
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({
-    size: 30,
+    size: 10,
     page: 1,
     search: ''
   })
@@ -181,7 +181,7 @@ const BenefitList = () => {
         data={benefits}
         pagination
         onRowClicked={onRowClick}
-        paginationRowsPerPageOptions={[15, 30]}
+        paginationRowsPerPageOptions={[10, 20, 30, 40]}
         paginationPerPage={filters.size}
         paginationServer={true}
         onChangeRowsPerPage={(limit) => {

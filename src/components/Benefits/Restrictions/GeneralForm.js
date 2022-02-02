@@ -49,7 +49,11 @@ const General = ({
       maxSalary: data?.maxSalary || ''
     },
     onSubmit: (values) => {
-      submitFunction(values)
+      const formattedBody = { ...values }
+      if (!formattedBody.rshId) {
+        formattedBody.rshId = null
+      }
+      submitFunction(formattedBody)
         .then(() => {
           formik.setSubmitting(false)
           changeSuccess(true, () => {
@@ -215,7 +219,7 @@ const General = ({
                 helperText={formik.touched.retired && formik.errors.retired}
                 error={formik.touched.retired && Boolean(formik.errors.retired)}
               >
-                <option value="">NO APLICA</option>
+                <option value="NO APLICA">NO APLICA</option>
                 {decisionList.concat(['NO APLICA']).map((item) => (
                   <option value={item}>
                     {formatText.capitalizeString(item)}
@@ -240,7 +244,7 @@ const General = ({
                   Boolean(formik.errors.belongsToReconocer)
                 }
               >
-                <option value="">NO APLICA</option>
+                <option value="NO APLICA">NO APLICA</option>
                 {decisionList.map((item) => (
                   <option value={item}>
                     {formatText.capitalizeString(item)}
@@ -272,7 +276,7 @@ const General = ({
                 helperText={formik.touched.gender && formik.errors.gender}
                 error={formik.touched.gender && Boolean(formik.errors.gender)}
               >
-                <option value="">NO APLICA</option>
+                <option value="NO APLICA">NO APLICA</option>
                 {genderList.map((item, i) => (
                   <option key={`gender-${i}-${item.key}`} value={item.key}>
                     {item.name}
@@ -296,7 +300,7 @@ const General = ({
                   Boolean(formik.errors.activityType)
                 }
               >
-                <option value="">NO APLICA</option>
+                <option value="NO APLICA">NO APLICA</option>
                 {activityTypes.map((item) => (
                   <option value={item}>
                     {formatText.capitalizeString(item)}
@@ -317,7 +321,7 @@ const General = ({
                   formik.touched.inscriber && Boolean(formik.errors.inscriber)
                 }
               >
-                <option value="">NO APLICA</option>
+                <option value="NO APLICA">NO APLICA</option>
                 {inscribers.map((item) => (
                   <option value={item}>
                     {formatText.capitalizeString(item)}

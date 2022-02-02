@@ -8,7 +8,7 @@ const initialState = {
     seacrh: '',
     period: '',
     page: 1,
-    size: 50
+    size: 10
   },
   benefits: []
 }

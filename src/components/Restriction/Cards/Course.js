@@ -13,21 +13,21 @@ const Course = ({ restriction }) => (
           <Text>{restriction.instructorName}</Text>
         </LabeledRow>
         <LabeledRow label={'Lugar'}>
-          <Text>{restriction.place}</Text>
+          <Text>{restriction.place || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'Modalidad'}>
-          <Text>{restriction.modality}</Text>
+          <Text>{restriction.modality || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'Participantes'}>
-          <Text>{restriction.participants}</Text>
+          <Text>{restriction.participants || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'Horas curso'}>
-          <Text>{restriction.courseHours}</Text>
+          <Text>{restriction.courseHours || 'NO APLICA'}</Text>
         </LabeledRow>
       </Grid>
       <Grid item xs={12} md={6}>
         <LabeledRow label={'Nombre del oficio'}>
-          <Text>{restriction.occupationName}</Text>
+          <Text>{restriction.occupationName || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'Responsable fundacion'}>
           <Text>

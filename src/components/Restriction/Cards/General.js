@@ -7,36 +7,36 @@ const General = ({ restriction }) => (
     <Grid container>
       <Grid item xs={12} md={6}>
         <LabeledRow label={'Nacionalidad'}>
-          <Text>{restriction.nationalityName}</Text>
+          <Text>{restriction.nationalityName || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'RSH'}>
-          <Text>{restriction.rshName}</Text>
+          <Text>{restriction.rshName || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'Carga legal'}>
-          <Text>{restriction.legalCharge}</Text>
+          <Text>{restriction.legalCharge || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'Prevision'}>
-          <Text>{restriction.prevision}</Text>
+          <Text>{restriction.prevision || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'Mayor de edad'}>
-          <Text>{restriction.isAdult}</Text>
+          <Text>{restriction.isAdult || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'Pertenece a Reconocer'}>
-          <Text>{restriction.belongsToReconocer}</Text>
+          <Text>{restriction.belongsToReconocer || 'NO APLICA'}</Text>
         </LabeledRow>
       </Grid>
       <Grid item xs={12} md={6}>
         <LabeledRow label={'Sexo'}>
-          <Text>{restriction.gender}</Text>
+          <Text>{restriction.gender || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'Tipo de actividad'}>
-          <Text>{restriction.activityType}</Text>
+          <Text>{restriction.activityType || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'Quien inscribe'}>
-          <Text>{restriction.inscriber}</Text>
+          <Text>{restriction.inscriber || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'Financiamiento'}>
-          <Text>{restriction.funding}</Text>
+          <Text>{restriction.funding || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'Renta máxima'}>
           <Text>{formatCurrency(restriction.maxSalary)}</Text>

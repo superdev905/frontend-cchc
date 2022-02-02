@@ -160,7 +160,7 @@ const MigrantList = () => {
             toggleOpenDetails()
           }}
           pagination
-          paginationRowsPerPageOptions={[30, 40]}
+          paginationRowsPerPageOptions={[10, 20, 30, 40]}
           paginationServer={true}
           paginationTotalRows={totalDocs}
           paginationPerPage={filters.size}

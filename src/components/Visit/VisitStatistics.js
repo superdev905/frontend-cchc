@@ -82,12 +82,12 @@ const VisitStatistics = () => {
           <Grid>
             <LabeledRow label="Casa:">
               <Text loaderWidth="80%" loading={fetching}>
-                {data?.new}
+                {data?.house}
               </Text>
             </LabeledRow>{' '}
             <LabeledRow label="SubContrato:">
               <Text loaderWidth="80%" loading={fetching}>
-                {data?.old}
+                {data?.subcontract}
               </Text>
             </LabeledRow>
             <LabeledRow label="Total:">

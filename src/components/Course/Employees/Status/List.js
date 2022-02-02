@@ -1,52 +1,35 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import { Typography } from '@material-ui/core'
-import { ActionsTable, Wrapper } from '../../../UI'
-import { ConfirmDelete, DataTable } from '../../../Shared'
-import { useToggle, useSuccess } from '../../../../hooks'
+import { Box } from '@material-ui/core'
+import { ActionsTable } from '../../../UI'
+import { DataTable } from '../../../Shared'
+import { useToggle } from '../../../../hooks'
 import coursesActions from '../../../../state/actions/courses'
 import CourseStatus from './CourseStatus'
+import { formatDate } from '../../../../formatters'
 
-const StatusList = () => {
+const StatusList = ({ successFunction }) => {
   const dispatch = useDispatch()
-  const { idCourse } = useParams()
   const { enqueueSnackbar } = useSnackbar()
-  const { success, changeSuccess } = useSuccess()
   const [loading, setLoading] = useState(false)
-  const [deleting, setDeleting] = useState(false)
   const [currentStatus, setCurrentStatus] = useState(null)
-  const { statusList } = useSelector((state) => state.courses)
+  const { studentDetails } = useSelector((state) => state.courses)
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
-  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
-
-  const [filters] = useState({
-    page: 1,
-    size: 30,
-    search: '',
-    state: ''
-  })
-
-  const fetchStatus = () => {
-    setLoading(true)
-    dispatch(coursesActions.getStatus({ courseId: idCourse })).then(() => {
-      setLoading(false)
-    })
-  }
 
   const updateStatus = (values) => {
     dispatch(
-      coursesActions.updateStatus(currentStatus.id, {
+      coursesActions.updateStatus(studentDetails.status.id, {
         ...values,
-        studentId: currentStatus.studentId
+        studentId: studentDetails.studentId
       })
     )
       .then(() => {
         setLoading(false)
-        changeSuccess(true)
         toggleOpenUpdate()
-        fetchStatus()
+        if (successFunction) {
+          successFunction()
+        }
         enqueueSnackbar('Estado actualizado correctamente', {
           autoHideDuration: 2000,
           variant: 'success'
@@ -57,43 +40,18 @@ const StatusList = () => {
       })
   }
 
-  const deleteStatus = (id) => {
-    dispatch(
-      coursesActions.patchStatus(id, {
-        state: 'DELETED'
-      })
-    )
-      .then(() => {
-        setDeleting(false)
-        changeSuccess(true)
-        toggleOpenDelete()
-        fetchStatus()
-        enqueueSnackbar('Estado eliminado exitosamente', {
-          autoHideDuration: 1800,
-          variant: 'success'
-        })
-      })
-      .catch(() => {
-        setDeleting(false)
-      })
-  }
-
-  useEffect(() => {
-    fetchStatus()
-  }, [filters])
-
   return (
-    <Wrapper>
+    <Box mb={4}>
       <DataTable
         progressPending={loading}
-        emptyMessage={
-          filters.search
-            ? `No se encontraron resultados para: ${filters.search}`
-            : 'Aún no hay estados de alumno'
-        }
+        emptyMessage={'Aún no hay estados de alumno'}
         highlightOnHover
         pointerOnHover
         columns={[
+          {
+            name: 'Fecha',
+            selector: (row) => formatDate(row.date)
+          },
           {
             name: 'Estado de alumno',
             selector: (row) => row.studentStatus
@@ -109,16 +67,11 @@ const StatusList = () => {
                   setCurrentStatus(row)
                   toggleOpenUpdate()
                 }}
-                onDelete={() => {
-                  setCurrentStatus(row)
-                  toggleOpenDelete()
-                }}
-                //  onView={() => { props.history.push(`/obras/${row.id}`)  }}
               />
             )
           }
         ]}
-        data={statusList}
+        data={studentDetails?.status ? [{ ...studentDetails?.status }] : []}
       />
 
       {currentStatus && openUpdate && (
@@ -128,25 +81,9 @@ const StatusList = () => {
           onClose={toggleOpenUpdate}
           data={currentStatus}
           submitFunction={updateStatus}
-          successFunction={fetchStatus}
         />
       )}
-
-      {currentStatus && openDelete && (
-        <ConfirmDelete
-          open={openDelete}
-          onClose={toggleOpenDelete}
-          onConfirm={() => deleteStatus(currentStatus.id)}
-          message={
-            <Typography variant="h6">
-              ¿Estás seguro de eliminar este estado?
-            </Typography>
-          }
-          loading={deleting}
-          success={success}
-        />
-      )}
-    </Wrapper>
+    </Box>
   )
 }
 

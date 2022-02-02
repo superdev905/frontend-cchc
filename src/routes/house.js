@@ -14,7 +14,7 @@ const houseRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
         yes={() => (
           <Layout>
             <Housing />
@@ -30,7 +30,7 @@ const houseRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
         yes={() => (
           <Layout>
             <HousingNew />
@@ -46,7 +46,7 @@ const houseRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
         yes={() => (
           <Layout>
             <HousingWorker />

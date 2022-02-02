@@ -16,7 +16,7 @@ const CoursesList = () => {
 
   const [filters, setFilters] = useState({
     page: 1,
-    size: 30,
+    size: 10,
     search: '',
     state: ''
   })
@@ -136,7 +136,7 @@ const CoursesList = () => {
         data={coursesList}
         pagination
         onRowClicked={onRowClick}
-        paginationRowsPerPageOptions={[15, 30]}
+        paginationRowsPerPageOptions={[10, 20, 30, 40]}
         paginationPerPage={filters.size}
         paginationServer={true}
         onChangeRowsPerPage={(limit) => {

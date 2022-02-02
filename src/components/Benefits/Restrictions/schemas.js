@@ -43,11 +43,11 @@ export const generalSchema = Yup.object().shape({
 })
 
 export const scholarshipSchema = Yup.object().shape({
-  careerId: Yup.string(),
+  careerId: Yup.number(),
   averageLastYear: Yup.number()
     .min(1, 'El promedio debe ser mayor o igual a 1')
     .max(7, 'El promedio debe ser menor o igual a 7')
     .required('Ingrese nota'),
-  semester: Yup.string(),
+  semester: Yup.number().required('Ingrese semestre'),
   tracking: Yup.string()
 })

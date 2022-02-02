@@ -12,7 +12,13 @@ import { formatDate, formatSearchWithRut } from '../../formatters'
 const List = () => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const [query, setQuery] = useState({ search: '', status: '' })
+  const [query, setQuery] = useState({
+    search: '',
+    status: '',
+    page: 1,
+    size: 10
+  })
+  const [totalCases, setTotalCases] = useState(0)
   const { user } = useSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
   const { inclusionCases } = useSelector((state) => state.inclusion)
@@ -30,8 +36,9 @@ const List = () => {
   const getCases = () => {
     setLoading(true)
     dispatch(inclusionActions.getCases(query))
-      .then(() => {
+      .then((res) => {
         setLoading(false)
+        setTotalCases(res.total)
       })
       .catch(() => {
         setLoading(false)
@@ -150,6 +157,22 @@ const List = () => {
           highlightOnHover
           pointerOnHover
           selectableRowsHighlight
+          paginationRowsPerPageOptions={[10, 20, 30, 40]}
+          paginationPerPage={query.size}
+          paginationServer={true}
+          onChangeRowsPerPage={(limit) => {
+            setQuery({
+              ...query,
+              size: limit
+            })
+          }}
+          onChangePage={(page) => {
+            setQuery({
+              ...query,
+              page
+            })
+          }}
+          paginationTotalRows={totalCases}
         />
       </Box>
       {openCreate && (

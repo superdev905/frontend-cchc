@@ -14,7 +14,7 @@ const List = ({ ...props }) => {
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({
     page: 1,
-    size: 30,
+    size: 10,
     search: '',
     state: ''
   })
@@ -154,7 +154,7 @@ const List = ({ ...props }) => {
           data={list}
           onRowClicked={handleRowClick}
           pagination
-          paginationRowsPerPageOptions={[30, 40]}
+          paginationRowsPerPageOptions={[10, 20, 30, 40]}
           paginationPerPage={filters.size}
           paginationServer={true}
           onChangeRowsPerPage={(limit) => {

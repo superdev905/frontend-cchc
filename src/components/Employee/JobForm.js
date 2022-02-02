@@ -352,7 +352,7 @@ const HousingForm = ({
                 }
               >
                 <option value="">SELECCIONE OPCIÓN</option>
-                {['EMPRESA', 'SUB CONTRATRO', 'CESANTE'].map((item, index) => (
+                {['EMPRESA', 'SUB CONTRATO', 'CESANTE'].map((item, index) => (
                   <option key={`contract-type--${index}`} value={`${item}`}>
                     {item}
                   </option>
@@ -392,7 +392,7 @@ const HousingForm = ({
                 disabled={formik.values.contract_type !== 'CESANTE'}
               >
                 <option value="">SELECCIONE OPCIÓN</option>
-                {['EMPRESA', 'SUB CONTRATRO', 'CESANTE'].map((item, index) => (
+                {['EMPRESA', 'SUB CONTRATO', 'CESANTE'].map((item, index) => (
                   <option key={`contract-type--${index}`} value={`${item}`}>
                     {item}
                   </option>

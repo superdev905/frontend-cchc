@@ -241,6 +241,23 @@ const addEmployee = (id, values) => () =>
         reject(err.response.data.detail)
       })
   })
+const getEmployeeToAttend =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.housing
+        }/agreements/employees?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
 
 const housingActions = {
   createAgreement,
@@ -258,7 +275,8 @@ const housingActions = {
   createAnnexed,
   getAnnexed,
   validAnnexed,
-  addEmployee
+  addEmployee,
+  getEmployeeToAttend
 }
 
 export default housingActions

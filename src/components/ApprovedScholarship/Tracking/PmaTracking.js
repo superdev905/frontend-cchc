@@ -1,6 +1,7 @@
 import { capitalize } from 'lodash'
 import { Grid } from '@material-ui/core'
 import { Select, TextArea, TextField } from '../../UI'
+import SearchCompany from '../../Companies/SearchCompany'
 
 const statusList = ['APROBADA', 'RECHAZADA', 'EN PROCESO']
 
@@ -46,9 +47,22 @@ const PmaTracking = ({ form /* , benefits */ }) => (
       </Select>
     </Grid>
     <Grid item xs={12}>
+      <SearchCompany
+        onSelected={(e) => {
+          form.setFieldValue('businessId', e.id)
+          form.setFieldValue('businessFoundName', e.business_name)
+          form.setFieldValue('businessName', e.business_name)
+        }}
+        onDelete={() => {
+          form.setFieldValue('businessId', '')
+          form.setFieldValue('businessFoundName', '')
+          form.setFieldValue('businessName', '')
+        }}
+      />
+    </Grid>
+    <Grid item xs={12}>
       <TextField
         label="Nombre de empresa"
-        required
         name="businessName"
         value={form.values.businessName}
         onChange={form.handleChange}

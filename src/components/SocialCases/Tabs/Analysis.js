@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Typography, Grid } from '@material-ui/core'
+import { Skeleton } from '@material-ui/lab'
 import { Wrapper, EmptyState, LabeledRow, Text } from '../../UI'
 import DerivationModal from '../Analysis/DerivationModal'
+import socialCase from '../../../state/types/socialCase'
 import socialCasesActions from '../../../state/actions/socialCase'
 import contactActions from '../../../state/actions/contact'
 import { formatDate } from '../../../formatters'
@@ -15,11 +17,33 @@ const Analysis = () => {
   const { socialCaseId } = useParams()
   const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const { caseDetails, derivationDetails } = useSelector(
     (state) => state.socialCase
   )
   const [currentContact, setCurrentContact] = useState(null)
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
+
+  const openModal = () => {
+    setOpen(true)
+  }
+  const closeModal = () => {
+    setOpen(false)
+  }
+
+  const fetchDerivation = () => {
+    if (caseDetails?.derivationId) {
+      setLoading(true)
+
+      dispatch(
+        socialCasesActions.getDerivation(socialCaseId, caseDetails.derivationId)
+      ).then(() => {
+        setLoading(false)
+      })
+    } else {
+      dispatch({ type: socialCase.GET_DERIVATION_DETAILS, payload: null })
+    }
+  }
 
   const onEditContact = (values) =>
     dispatch(
@@ -31,115 +55,115 @@ const Analysis = () => {
       })
     )
 
-  const openModal = () => {
-    setOpen(true)
-  }
-  const closeModal = () => {
-    setOpen(false)
-  }
-
   useEffect(() => {
-    if (caseDetails) {
-      dispatch(
-        socialCasesActions.getDerivation(
-          socialCaseId,
-          caseDetails.derivationId
-        ),
-        closeModal()
-      )
-    }
+    fetchDerivation()
   }, [caseDetails])
 
   return (
     <Grid item xs={12}>
-      {!derivationDetails ? (
-        <Box>
-          <Wrapper>
-            <EmptyState
-              message={'Este caso no tiene derivación'}
-              event={openModal}
-              actionMessage={'Crear'}
-            />
-          </Wrapper>
-          {caseDetails && (
-            <DerivationModal
-              open={open}
-              onClose={closeModal}
-              assistanceID={caseDetails.assistanceId}
-            />
-          )}
-        </Box>
+      {loading ? (
+        <Skeleton height={'300px'} />
       ) : (
-        <Wrapper>
-          <Box>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
-                Detalles Delegación
-              </Typography>
-            </Box>
+        <>
+          {!derivationDetails ? (
             <Box>
-              <Grid container>
-                <Grid item xs={12} md={12}>
-                  <LabeledRow label={'Fecha'}>
-                    <Text>{formatDate(derivationDetails.date)} </Text>
-                  </LabeledRow>
-                  <LabeledRow label={'Estado'}>
-                    <Text>{derivationDetails.state} </Text>
-                  </LabeledRow>
-                  <LabeledRow label={'Prioridad'}>
-                    <Text>{derivationDetails.priority}</Text>
-                  </LabeledRow>
-                  <LabeledRow label={'Observaciones'}>
-                    <Text>{derivationDetails.observations}</Text>
-                  </LabeledRow>
-                </Grid>
-              </Grid>
-              <Box mt={2}>
-                <Typography
-                  style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 6 }}
-                >
-                  Profesionales
-                </Typography>
-                <Grid container spacing={2}>
-                  {derivationDetails.professionals.map((item) => (
-                    <Grid item xs={12} lg={6} key={`contact-card-${item.id}`}>
-                      <UserCard
-                        user={item}
-                        onEdit={() => {
-                          setCurrentContact(item)
-                          toggleOpenUpdate()
-                        }}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
-                {currentContact && openUpdate && (
-                  <ContactModal
-                    includeInterlocutor
-                    open={openUpdate}
-                    onClose={toggleOpenUpdate}
-                    type="UPDATE"
-                    data={currentContact}
-                    submitFunction={onEditContact}
-                    successFunc={() => {
-                      dispatch(
-                        socialCasesActions.getDerivation(
-                          socialCaseId,
-                          caseDetails.derivationId
-                        )
-                      )
-                    }}
-                    successMessage="Interlocutor actualizado con éxito"
-                  />
-                )}
-              </Box>
+              <Wrapper>
+                <EmptyState
+                  message={'Este caso no tiene derivación'}
+                  event={openModal}
+                  actionMessage={'Crear'}
+                />
+              </Wrapper>
+              {caseDetails && (
+                <DerivationModal
+                  open={open}
+                  onClose={closeModal}
+                  assistanceID={caseDetails.assistanceId}
+                />
+              )}
             </Box>
-          </Box>
-        </Wrapper>
+          ) : (
+            <Wrapper>
+              <Box>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography style={{ fontSize: '19px', fontWeight: 'bold' }}>
+                    Detalles Delegación
+                  </Typography>
+                </Box>
+                <Box>
+                  <Grid container>
+                    <Grid item xs={12} md={12}>
+                      <LabeledRow label={'Fecha'}>
+                        <Text>{formatDate(derivationDetails.date)} </Text>
+                      </LabeledRow>
+                      <LabeledRow label={'Estado'}>
+                        <Text>{derivationDetails.state} </Text>
+                      </LabeledRow>
+                      <LabeledRow label={'Prioridad'}>
+                        <Text>{derivationDetails.priority}</Text>
+                      </LabeledRow>
+                      <LabeledRow label={'Observaciones'}>
+                        <Text>{derivationDetails.observations}</Text>
+                      </LabeledRow>
+                    </Grid>
+                  </Grid>
+                  <Box mt={2}>
+                    <Typography
+                      style={{
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginBottom: 6
+                      }}
+                    >
+                      Profesionales
+                    </Typography>
+                    <Grid container spacing={2}>
+                      {derivationDetails.professionals.map((item) => (
+                        <Grid
+                          item
+                          xs={12}
+                          lg={6}
+                          key={`contact-card-${item.id}`}
+                        >
+                          <UserCard
+                            user={item}
+                            onEdit={() => {
+                              setCurrentContact(item)
+                              toggleOpenUpdate()
+                            }}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                    {currentContact && openUpdate && (
+                      <ContactModal
+                        includeInterlocutor
+                        open={openUpdate}
+                        onClose={toggleOpenUpdate}
+                        type="UPDATE"
+                        data={currentContact}
+                        submitFunction={onEditContact}
+                        successFunc={() => {
+                          dispatch(
+                            socialCasesActions.getDerivation(
+                              socialCaseId,
+                              caseDetails.derivationId
+                            )
+                          )
+                        }}
+                        successMessage="Interlocutor actualizado con éxito"
+                      />
+                    )}
+                  </Box>
+                </Box>
+              </Box>
+            </Wrapper>
+          )}
+        </>
       )}
     </Grid>
   )

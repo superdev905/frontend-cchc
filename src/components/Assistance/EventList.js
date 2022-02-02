@@ -18,7 +18,7 @@ const EventList = () => {
   const { user } = useSelector((state) => state.auth)
   const [filters, setFilters] = useState({
     page: 1,
-    size: 30,
+    size: 10,
     status: 'PROGRAMADA',
     search: '',
     user_id: user?.id,
@@ -134,7 +134,7 @@ const EventList = () => {
             pagination
             paginationServer={true}
             onRowClicked={onRowClick}
-            paginationRowsPerPageOptions={[30, 40]}
+            paginationRowsPerPageOptions={[10, 20, 30, 40]}
             paginationPerPage={filters.size}
             onChangeRowsPerPage={(limit) => {
               setFilters({ ...filters, size: limit })

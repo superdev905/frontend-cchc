@@ -21,7 +21,7 @@ const unemployedRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <Unemployed />
@@ -37,7 +37,7 @@ const unemployedRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <UnemployedDetails />
@@ -53,7 +53,7 @@ const unemployedRoutes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
         yes={() => (
           <Layout>
             <UnemployedHistory />
