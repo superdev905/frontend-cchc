@@ -1,75 +1,105 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { Autocomplete } from '@material-ui/lab'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { DatePicker, Dialog } from '../Shared'
-import companiesActions from '../../state/actions/companies'
-import { Button, SubmitButton, TextField } from '../UI'
+import { Button, SubmitButton } from '../UI'
+import AutocompleteVariable from './AutocompleteVariable'
 
-const ReportDialog = ({ open, onClose }) => {
-  const dispatch = useDispatch()
+const ReportDialog = ({ open, onClose, type }) => {
   const { isMobile } = useSelector((state) => state.ui)
-  const [companies, setCompanies] = useState([])
-  const [selectedCompany, setSelectedCompany] = useState(null)
+  const [formData, setFormData] = useState({
+    id: '',
+    startDate: '',
+    endDate: ''
+  })
 
-  const onCompanySelect = (__, values) => {
-    setSelectedCompany(values)
+  const getDocument = () => {
+    if (type === 'VISITS_COMPANY') {
+      console.log(`fetch ${type}:`)
+      console.log(formData)
+    }
+    if (type === 'ASSISTANCE_COMPANY') {
+      console.log(`fetch ${type}:`)
+      console.log(formData)
+    }
+    if (type === 'VISITS_EMPLOYEES') {
+      console.log(`fetch ${type}:`)
+      console.log(formData)
+    }
+    if (type === 'ASSISTANCE_ASSIGNED') {
+      console.log(`fetch ${type}:`)
+      console.log(formData)
+    }
+    if (type === 'ALL_VISITS') {
+      console.log(`fetch ${type}:`)
+      delete formData.id
+      console.log(formData)
+    }
+  }
+
+  const onSelectAutocomplete = (__, values) => {
+    setFormData({
+      ...formData,
+      id: !values ? '' : values.id
+    })
+  }
+
+  const onSelectStartDate = (date) => {
+    setFormData({
+      ...formData,
+      startDate: date.toISOString()
+    })
+  }
+
+  const onSelectEndDate = (date) => {
+    setFormData({
+      ...formData,
+      endDate: date.toISOString()
+    })
   }
 
   useEffect(() => {
     if (open) {
-      dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
-        (list) => {
-          setCompanies(list)
-        }
-      )
+      setFormData({
+        id: '',
+        startDate: '',
+        endDate: ''
+      })
     }
-  }, [open])
+  }, [])
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
       <Box>
         <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
-          Generar Reporte
+          Generar Reporte {type}
         </Typography>
         <Box p={2}>
           <Box>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
-                <DatePicker label="Desde" required />
+                <DatePicker label="Desde" onChange={onSelectStartDate} />
               </Grid>
               <Grid item xs={12} md={6}>
-                <DatePicker label="Hasta" required />
+                <DatePicker label="Hasta" onChange={onSelectEndDate} required />
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <Autocomplete
-                options={companies}
-                value={selectedCompany || ''}
-                getOptionLabel={(option) => option.business_name || ''}
-                onChange={onCompanySelect}
-                renderOption={(option) => (
-                  <Box>
-                    <Typography>
-                      {`Razón social: `}
-                      <strong>{option.business_name}</strong>
-                    </Typography>
-                    <Typography>{`Rut: ${option.rut}`}</Typography>
-                  </Box>
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Selecciona empresa"
-                    placeholder="Nombre de empresa"
-                  />
-                )}
+              <AutocompleteVariable
+                type={type}
+                onChange={onSelectAutocomplete}
               />
             </Grid>
             <Box textAlign="center" marginTop="10px">
               <Button onClick={onClose} variant="outlined">
                 Cancelar
               </Button>
-              <SubmitButton>Generar</SubmitButton>
+              <SubmitButton
+                onClick={getDocument}
+                disabled={formData.id === '' && type !== 'ALL_VISITS'}
+              >
+                Generar
+              </SubmitButton>
             </Box>
           </Box>
         </Box>

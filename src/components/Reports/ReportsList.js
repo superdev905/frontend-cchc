@@ -1,93 +1,124 @@
-import { useState } from 'react'
-import { Box, Grid, makeStyles } from '@material-ui/core'
-import { Select, Wrapper, SearchInput, ActionsTable, Button } from '../UI'
+import { useEffect, useState } from 'react'
+import { Box, Grid } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
+import { Wrapper, SearchInput, Button, TextField } from '../UI'
 import { useToggle } from '../../hooks'
 import { DataTable } from '../Shared'
+import modulesReports from '../../resources/modulesReports'
 import ReportDialog from './ReportDialog'
 
-const useStyles = makeStyles((theme) => ({
-  top: {
-    [theme.breakpoints.up('md')]: {
-      marginTop: 12
-    }
-  }
-}))
-
 const ReportsList = () => {
-  const classes = useStyles()
   const { open, toggleOpen } = useToggle()
+  const [type, setType] = useState('')
+  const [modules, setModules] = useState([])
+  const [listModules, setListModules] = useState([])
   const [filters, setFilters] = useState({
-    page: 1,
-    size: 30,
     search: '',
-    status: ''
+    module: ''
   })
-  const handleModuleChange = (e) => {
-    setFilters({ ...filters, status: e.target.value })
-  }
+
+  useEffect(() => {
+    const { search, module } = filters
+
+    if (search || module) {
+      setListModules(
+        modulesReports.filter(
+          (item) =>
+            item.module.includes(module) &&
+            item.name.toUpperCase().includes(search.toUpperCase())
+        )
+      )
+      return
+    }
+    setListModules(modulesReports)
+  }, [filters])
+
+  useEffect(() => {
+    const filtered = []
+    if (modulesReports) {
+      modulesReports.forEach((item) => {
+        if (filtered.indexOf(item.module) < 0) {
+          filtered.push(item.module)
+        }
+      })
+      setModules(filtered)
+      setListModules(modulesReports)
+    }
+  }, [])
 
   return (
     <Wrapper>
+      <ReportDialog open={open} onClose={toggleOpen} type={type} />
       <Box>
         <Grid container spacing={1} alignItems="center">
           <Grid item xs={12} md={3}>
-            <Select name="module" onChange={handleModuleChange}>
-              <option value="">Seleccione Módulo</option>
-              {['Atenciones', 'Calendario'].map((item, i) => (
-                <option key={`gender-${i}-${item}`} value={item}>
-                  {item}
-                </option>
-              ))}
-            </Select>
+            <Autocomplete
+              options={modules}
+              getOptionSelected={(option, value) => option === value}
+              getOptionLabel={(option) => option || ''}
+              onChange={(e, value) =>
+                setFilters({
+                  ...filters,
+                  module: !value ? '' : value
+                })
+              }
+              renderInput={(params) => (
+                <TextField {...params} placeholder="SELECCIONE MODULO" />
+              )}
+            />
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={9}>
             <SearchInput
               value={filters.search}
+              onChange={(e) =>
+                setFilters({
+                  ...filters,
+                  search: e.target.value
+                })
+              }
               placeholder="Buscar por Nombre:"
             />
           </Grid>
-          <Grid item xs={12} md={5} className={classes.top}>
-            <Box display="flex" justifyContent="flex-end">
-              <Button> Nuevo reporte</Button>
-            </Box>
+          <Grid item xs={12}>
+            <DataTable
+              emptyMessage={
+                filters.search
+                  ? `No se encontrarion resultador para: ${filters.search}`
+                  : 'No hay Reportes'
+              }
+              data={listModules}
+              highlightOnhover
+              pointerOnHover
+              columns={[
+                {
+                  name: 'Módulo',
+                  selector: (row) => row.module
+                },
+                {
+                  name: 'Nombre',
+                  selector: (row) => row.name
+                },
+                {
+                  name: 'Informe',
+                  right: true,
+                  cell: (row) => (
+                    <Button
+                      onClick={() => {
+                        toggleOpen()
+                        setType(row.type)
+                      }}
+                      disabled={!row.isActive}
+                    >
+                      Generar
+                    </Button>
+                  )
+                }
+              ]}
+              pagination={modulesReports.length}
+            />
           </Grid>
         </Grid>
       </Box>
-      <DataTable
-        emptyMessage={
-          filters.search
-            ? `No se encontrarion resultador para: ${filters.search}`
-            : 'No hay Reportes'
-        }
-        highlightOnhover
-        pointerOnHover
-        columns={[
-          {
-            name: 'Módulo',
-            selector: (row) => row.modules
-          },
-          {
-            name: 'Nombre',
-            selector: (row) => row.name
-          },
-          {
-            name: 'Disponible',
-            selector: (row) => row.available
-          },
-          {
-            name: '',
-            right: true,
-            cell: () => (
-              <ActionsTable
-                onDownload={() => {
-                  ;<ReportDialog open={open} onClose={toggleOpen} />
-                }}
-              />
-            )
-          }
-        ]}
-        pagination
-      />
     </Wrapper>
   )
 }
