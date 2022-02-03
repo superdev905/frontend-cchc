@@ -11,7 +11,8 @@ const useStyles = makeStyles((theme) => ({
   date: {
     backgroundColor: theme.palette.primary.main,
     borderRadius: theme.spacing(5),
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'white'
   },
   center: {
     textAlign: 'center'
@@ -21,26 +22,22 @@ const useStyles = makeStyles((theme) => ({
 const VisitsPending = ({ height }) => {
   const classes = useStyles({ height })
   return (
-    <Box mt={1} mb={2}>
-      <Box className={classes.cardRoot}>
-        <Grid container spacing={5} alignItems="center">
-          <Grid item xs={12}>
-            <Typography gutterBottom variant="h6" className={classes.center}>
-              Tipo de Visita / Tarea
-            </Typography>
-          </Grid>
+    <Box className={classes.cardRoot} boxShadow={3} mt={2} mb={2}>
+      <Grid container>
+        <Grid item xs={12}>
+          <Typography gutterBottom variant="h6" className={classes.center}>
+            Tipo de Visita / Tarea
+          </Typography>
+          <Typography variant="subtitle1" className={classes.center}>
+            Obra
+          </Typography>
         </Grid>
-        <Grid container justifyContent="space-around">
-          <Grid item xs={8}>
-            <Typography variant="body1" className={classes.date}>
-              11-02-2022
-            </Typography>
-          </Grid>
-          <Grid item xs={3}>
-            <Typography variant="body1">Obra</Typography>
-          </Grid>
+        <Grid item xs={12}>
+          <Typography variant="body1" className={classes.date}>
+            11-02-2022
+          </Typography>
         </Grid>
-      </Box>
+      </Grid>
     </Box>
   )
 }

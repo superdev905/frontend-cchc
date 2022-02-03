@@ -10,6 +10,11 @@ const useStyles = makeStyles((theme) => ({
   }),
   name: {
     textAlign: 'center'
+  },
+  date: {
+    backgroundColor: theme.palette.primary.main,
+    borderRadius: theme.spacing(5),
+    color: 'white'
   }
 }))
 
@@ -17,20 +22,24 @@ const BenefitsDelivery = ({ height }) => {
   const classes = useStyles({ height })
 
   return (
-    <Box className={classes.cardRoot}>
-      <Grid container spacing={4}>
+    <Box className={classes.cardRoot} boxShadow={3} mt={2} mb={2}>
+      <Grid container spacing={2}>
         <Grid item xs={12} className={classes.name}>
           <Typography variant="h6">Nombre de Beneficio</Typography>
         </Grid>
-        <Grid container justifyContent="space-evenly">
-          <Grid item>
+        <Grid container justifyContent="space-around" className={classes.name}>
+          <Grid item xs={4}>
             <Typography variant="body2">Estado</Typography>
           </Grid>
-          <Grid item>
-            <Typography variant="body2">Fecha de Inicio</Typography>
+          <Grid item xs={4}>
+            <Typography variant="body1" className={classes.date}>
+              02-02-2022
+            </Typography>
           </Grid>
-          <Grid item>
-            <Typography variant="body2">Fecha de Fin</Typography>
+          <Grid item xs={4}>
+            <Typography variant="body1" className={classes.date}>
+              04-12-2024
+            </Typography>
           </Grid>
         </Grid>
       </Grid>

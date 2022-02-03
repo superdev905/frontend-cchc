@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 const Wrapper = ({ children, p }) => {
   const classes = useStyles({ p })
   return (
-    <Box className={classes.root} p={p}>
+    <Box className={classes.root} p={p} boxShadow={1}>
       {children}
     </Box>
   )

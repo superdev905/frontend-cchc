@@ -13,7 +13,8 @@ const useStyles = makeStyles((theme) => ({
   },
   date: {
     backgroundColor: theme.palette.primary.main,
-    borderRadius: theme.spacing(5)
+    borderRadius: theme.spacing(5),
+    color: 'white'
   }
 }))
 
@@ -21,7 +22,7 @@ const Atentions = ({ height }) => {
   const classes = useStyles({ height })
 
   return (
-    <Box className={classes.cardRoot}>
+    <Box className={classes.cardRoot} boxShadow={3} mt={2} mb={2}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm spacing={2} className={classes.name}>
           <Typography variant="h6">Nombre Trabajador</Typography>
