@@ -1,0 +1,4 @@
+export default {
+  HOME_TYPE_TOGGLE: 'HOME_TYPE_TOGGLE',
+  GET_VISITS_HOME: 'GET_VISITS_HOME'
+}

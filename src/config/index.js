@@ -90,6 +90,11 @@ const services = {
   protocols: {
     development: `${BASEURL[env]}:5119/api/v1`,
     production: `${BASEURL[env]}:5120/api/v1`
+  },
+  home: {
+    development: `${BASEURL[env]}:5101/api/v1`,
+    testing: `${BASEURL[env]}:5101/api/v1`,
+    production: `${BASEURL[env]}:5101/api/v1`
   }
 }
 
@@ -111,7 +116,8 @@ const config = {
     migrant: services.migrant[env],
     inclusion: services.inclusion[env],
     unemployed: services.unemployed[env],
-    protocols: services.protocols[env]
+    protocols: services.protocols[env],
+    home: services.home[env]
   }
 }
 

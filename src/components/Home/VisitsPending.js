@@ -1,44 +1,72 @@
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import homeActions from '../../state/actions/home'
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: ({ height }) => ({
     backgroundColor: theme.palette.common.white,
     borderRadius: theme.spacing(2),
-    minHeight: height || 80,
-    maxHeight: height || 130,
+    minHeight: height || 100,
+    maxHeight: height || 200,
     padding: theme.spacing(4)
   }),
   date: {
     backgroundColor: theme.palette.primary.main,
     borderRadius: theme.spacing(5),
     textAlign: 'center',
+    fontSize: 10,
     color: 'white'
   },
-  center: {
-    textAlign: 'center'
+  type: {
+    textAlign: 'center',
+    fontSize: 15,
+    fontWeight: 'bold'
+  },
+  obra: {
+    textAlign: 'center',
+    fontSize: 10
   }
 }))
 
-const VisitsPending = ({ height }) => {
+const Card = ({ type, obra, date, height }) => {
   const classes = useStyles({ height })
   return (
     <Box className={classes.cardRoot} boxShadow={3} mt={2} mb={2}>
-      <Grid container>
-        <Grid item xs={12}>
-          <Typography gutterBottom variant="h6" className={classes.center}>
-            Tipo de Visita / Tarea
-          </Typography>
-          <Typography variant="subtitle1" className={classes.center}>
-            Obra
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="body1" className={classes.date}>
-            11-02-2022
-          </Typography>
-        </Grid>
+      <Grid item xs={12} spacing={1}>
+        <Box>
+          <Typography className={classes.type}>{type}</Typography>
+        </Box>
+      </Grid>
+      <Grid item xs={12}>
+        <Box mt={1} mb={1}>
+          <Typography className={classes.obra}>{obra}</Typography>
+        </Box>
+      </Grid>
+      <Grid item xs={12}>
+        <Box>
+          <Typography className={classes.date}>{date}</Typography>
+        </Box>
       </Grid>
     </Box>
+  )
+}
+
+const VisitsPending = () => {
+  const dispatch = useDispatch()
+
+  const getVisits = () => {
+    dispatch(homeActions.getVisitsHome())
+  }
+
+  useEffect(() => {
+    getVisits()
+  }, [])
+
+  return (
+    <Grid>
+      <Card />
+    </Grid>
   )
 }
 
