@@ -70,6 +70,7 @@ const WorkerInterventionRecord = ({
   const { casesForSelect } = useSelector((state) => state.socialCase)
   const { user } = useSelector((state) => state.auth)
   const [topics, setTopics] = useState([])
+  const [selectedTopic, setSelectedTopic] = useState(null)
   const [selectedManagement, setSelectedManagement] = useState('')
   const [activityDetails, setActivityDetails] = useState({
     benefit: null,
@@ -338,6 +339,14 @@ const WorkerInterventionRecord = ({
       })
     }
   }, [formik.values.area_id, areas])
+
+  useEffect(() => {
+    if (formik.values.topic_id) {
+      setSelectedTopic(
+        topics.find((item) => item.id === parseInt(formik.values.topic_id, 10))
+      )
+    }
+  }, [formik.values.topic_id])
 
   useEffect(() => {
     if (selectedBeneficiary) {
@@ -646,7 +655,7 @@ const WorkerInterventionRecord = ({
                 <option value="">SELECCIONE ESTADO</option>
                 {AttentionStatus.map((item, i) => (
                   <option key={`status-${i}-${item}`} value={`${item.name}`}>
-                    {`${item.short}: ${item.name}`}
+                    {`${item.short ? `${item.short}:` : ''} ${item.name}`}
                   </option>
                 ))}
               </Select>
@@ -998,7 +1007,7 @@ const WorkerInterventionRecord = ({
                 {formik.values.contact_method}
               </LabeledRow>
               <LabeledRow label="Area:">{formik.values.area_name}</LabeledRow>
-              <LabeledRow label="Tema:">{formik.values.topic_name}</LabeledRow>
+              <LabeledRow label="Tema:">{selectedTopic?.name || ''}</LabeledRow>
               <LabeledRow label="Estado:">{formik.values.status}</LabeledRow>
               <LabeledRow label="Informe empresa:">
                 {formik.values.company_report}
