@@ -175,13 +175,19 @@ const EventsCalendar = () => {
       })
   }
 
-  const onUpdateEvent = (values) =>
-    dispatch(
+  const onUpdateEvent = (values) => {
+    const body = { ...values }
+
+    if (!body.business_id) {
+      delete body.business_id
+    }
+    return dispatch(
       assistanceActions.updateEvent(currentEvent.visitId, {
-        ...values,
+        ...body,
         created_by: currentEvent.created_by
       })
     )
+  }
 
   const onNavigate = (targetDate) => {
     setCalendarDate(targetDate)
