@@ -82,7 +82,7 @@ const HousingNew = () => {
             item.maternal_surname || ''
           }`
         })),
-        professionals: professionalList.map((item) => ({
+        professionals: users.map((item) => ({
           userId: item.id,
           fullName: `${item.names} ${item.paternal_surname} ${
             item.maternal_surname || ''
