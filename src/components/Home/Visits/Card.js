@@ -56,11 +56,19 @@ const VisitCard = ({ visit }) => {
 
   return (
     <Box py={1} px={2} className={classes.root} onClick={handleOnClick}>
-      <Box display="flex" mb={1} alignItems={'center'}>
-        <Box className={classes.dot}></Box>
-        <Typography>
-          {`${formatHours(visit.startDate)}-${formatHours(visit.endDate)}`}
-        </Typography>
+      <Box
+        display="flex"
+        mb={1}
+        alignItems={'center'}
+        justifyContent={'space-between'}
+      >
+        <Box display="flex" alignItems={'center'}>
+          <Box className={classes.dot}></Box>
+          <Typography>
+            {`${formatHours(visit.startDate)}-${formatHours(visit.endDate)}`}
+          </Typography>
+        </Box>
+        <Typography className={classes.info}>{visit.status}</Typography>
       </Box>
       <Box>
         <Typography className={classes.title}>{visit.title}</Typography>

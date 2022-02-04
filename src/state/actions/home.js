@@ -25,9 +25,23 @@ const getVisitsHome =
         })
     })
 
+const getBenefitsDelivered = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.assistance}/home/delivered-benefits`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: homeTypes.GET_HOME_BENEFITS_DELIVERED, payload: data })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const homeActions = {
   cleanVisits,
-  getVisitsHome
+  getVisitsHome,
+  getBenefitsDelivered
 }
 
 export default homeActions
