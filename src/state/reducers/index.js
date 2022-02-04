@@ -25,6 +25,7 @@ import unemployed from './unemployed'
 import inclusion from './inclusion'
 import migrants from './migrants'
 import protocols from './protocols'
+import home from './home'
 
 const reducers = (history) =>
   combineReducers({
@@ -53,6 +54,7 @@ const reducers = (history) =>
     inclusion,
     migrants,
     protocols,
+    home,
     router: connectRouter(history)
   })
 

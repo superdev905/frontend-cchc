@@ -1,44 +1,26 @@
-import { Box, Typography, makeStyles } from '@material-ui/core'
-import VisitsPending from '../../components/Home/VisitsPending'
-import BenefitsDelivery from '../../components/Home/BenefitsDelivery'
-import Atentions from '../../components/Home/Atentions'
+import { Box, Grid } from '@material-ui/core'
+import {
+  NextVisits,
+  LastAttentions,
+  DeliveredBenefits
+} from '../../components/Home'
+import { ModuleIndicator } from '../../components/Shared'
 
-const useStyles = makeStyles((theme) => ({
-  tittle: {
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: 600,
-    color: '#6A707E',
-    textTransform: 'uppercase',
-    [theme.breakpoints.up('lg')]: {
-      fontSize: 22
-    }
-  }
-}))
-
-const Home = () => {
-  const classes = useStyles()
-
-  return (
-    <Box display="flex" justifyContent="space-evenly">
-      <Box>
-        <Typography className={classes.tittle}>Visitas Pendientes</Typography>
-        <VisitsPending />
-      </Box>
-      <Box>
+const Home = () => (
+  <Box>
+    <ModuleIndicator module={'HOME'} />
+    <Grid container spacing={2}>
+      <Grid item xs={12} lg={6}>
+        <NextVisits />
+      </Grid>
+      <Grid item xs={12} lg={6}>
         <Box>
-          <Typography className={classes.tittle}>
-            Beneficios Entregados
-          </Typography>
-          <BenefitsDelivery />
+          <DeliveredBenefits />
+          <LastAttentions />
         </Box>
-        <Box>
-          <Typography className={classes.tittle}>Atenciones</Typography>
-          <Atentions />
-        </Box>
-      </Box>
-    </Box>
-  )
-}
+      </Grid>
+    </Grid>
+  </Box>
+)
 
 export default Home
