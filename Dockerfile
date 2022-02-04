@@ -1,4 +1,4 @@
-FROM node:lts as build
+FROM node:12-alpine as build
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ RUN yarn install
 
 COPY . .
 
-RUN yarn build
+RUN yarn build --max-old-space-size=8192
 
 FROM nginx:stable-alpine
 
