@@ -1,10 +1,10 @@
 import axios from 'axios'
-// import config from './config'
+import config from './config'
 
-// const getBaseUrl = () => config.services.business
+const getBaseUrl = () => config.services.business
 
 const Axios = axios.create({
-  // baseURL: getBaseUrl(),
+  baseURL: getBaseUrl(),
   timeout: 30000,
   mode: 'no-cors',
   maxBodyLength: 10000000000,
