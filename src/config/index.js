@@ -26,7 +26,7 @@ const services = {
     testing: `${BASEURL[env]}:5195/api/v1`,
     production: `${BASEURL[env]}:5105/api/v1`,
     azure_test:
-      'http://parameter-test.southcentralus.azurecontainer.io:5195/api/v1'
+      'http://parameters-test.southcentralus.azurecontainer.io:5195/api/v1'
   },
   poll: {
     development: `${BASEURL[env]}:5190/api/v1`,
