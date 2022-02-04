@@ -37,11 +37,24 @@ const getBenefitsDelivered = () => (dispatch) =>
         reject(err.response.data.detail)
       })
   })
+const getLastAttentions = () => (dispatch) =>
+  new Promise((resolve, reject) => {
+    Axios.get(`${config.services.assistance}/home/attentions`)
+      .then((response) => {
+        const { data } = response
+        dispatch({ type: homeTypes.GET_HOME_LAST_ATTENTIONS, payload: data })
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 const homeActions = {
   cleanVisits,
   getVisitsHome,
-  getBenefitsDelivered
+  getBenefitsDelivered,
+  getLastAttentions
 }
 
 export default homeActions
