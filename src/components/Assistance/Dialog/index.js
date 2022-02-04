@@ -45,6 +45,8 @@ import CaseAdditionalForm from './CaseAdditionalForm'
 const attentionPlaces = ['OFICINA', 'TERRENO', 'VIRTUAL']
 
 const WorkerInterventionRecord = ({
+  eventType,
+  event,
   open,
   onClose,
   employee,
@@ -61,6 +63,7 @@ const WorkerInterventionRecord = ({
   defaultTaskId,
   defaultSocialCase
 }) => {
+  console.log(event)
   const dispatch = useDispatch()
   const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
@@ -393,6 +396,28 @@ const WorkerInterventionRecord = ({
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <Box>
+                {event && (
+                  <>
+                    {eventType === 'VISIT' ? (
+                      <>
+                        <LabeledRow label="Visita N°:">{event.id}</LabeledRow>
+                        <LabeledRow label="Titulo visita:">
+                          {event.title}
+                        </LabeledRow>
+                        <LabeledRow label="Estado de visita:">
+                          {event.status}
+                        </LabeledRow>
+                      </>
+                    ) : (
+                      <>
+                        <LabeledRow label="Caso Social:">{event.id}</LabeledRow>
+                        <LabeledRow label="Tipo de solicitud:">
+                          {event.requestType}
+                        </LabeledRow>
+                      </>
+                    )}
+                  </>
+                )}
                 <LabeledRow label="Fecha:">
                   {formatDate(formik.values.date || new Date())}
                 </LabeledRow>
@@ -1043,6 +1068,7 @@ const WorkerInterventionRecord = ({
 }
 
 WorkerInterventionRecord.defaultProps = {
+  eventType: 'VISIT',
   type: 'CREATE',
   sourceSystem: 'VISITAS',
   defaultCaseId: null,

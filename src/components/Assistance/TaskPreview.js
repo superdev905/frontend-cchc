@@ -142,6 +142,8 @@ const TaskPreview = ({ open, onClose, anchorEl, event }) => {
       </Box>
       {openAssistance && (
         <AssistanceDialog
+          event={task?.socialCase}
+          eventType={'SOCIAL_CASE'}
           sourceSystem={'CASOS SOCIALES'}
           open={openAssistance}
           onClose={toggleOpenAssistance}

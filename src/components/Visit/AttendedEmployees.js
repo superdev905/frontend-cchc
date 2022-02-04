@@ -280,6 +280,7 @@ const List = () => {
 
       {visit && selectedUser && open && (
         <AssistanceDialog
+          event={visit}
           open={open}
           employee={selectedUser}
           visitShift={visit.shift.name}
