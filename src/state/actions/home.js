@@ -11,7 +11,9 @@ const getVisitsHome =
   (dispatch) =>
     new Promise((resolve, reject) => {
       Axios.get(
-        `${config.services.home}/home/visits?${queryString.stringify(query)}`
+        `${config.services.assistance}/home/visits?${queryString.stringify(
+          query
+        )}`
       )
         .then((response) => {
           const { data } = response

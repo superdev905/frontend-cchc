@@ -1,4 +1,5 @@
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
+import { Wrapper } from '../UI'
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: ({ height }) => ({
@@ -29,32 +30,37 @@ const BenefitsDelivery = ({ height }) => {
   const classes = useStyles({ height })
 
   return (
-    <Box className={classes.cardRoot} boxShadow={3} mt={2} mb={2} ml={2}>
-      <Grid container fluid spacing={3}>
-        <Grid item xs={12}>
-          <Typography className={classes.name}>Nombre de Beneficio</Typography>
-          <Box mt={1} mb={1}>
-            <Typography className={classes.status}>Estado</Typography>
-          </Box>
-        </Grid>
-      </Grid>
-      <Grid container fluid spacing={1}>
-        <Grid item xs={6}>
-          <Box>
-            <Typography className={classes.date} noWrap>
-              02-02-2022
+    <Wrapper>
+      <Typography>Ultimos beneficios entregados</Typography>
+      <Box className={classes.cardRoot} boxShadow={3} mt={2} mb={2} ml={2}>
+        <Grid container fluid spacing={3}>
+          <Grid item xs={12}>
+            <Typography className={classes.name}>
+              Nombre de Beneficio
             </Typography>
-          </Box>
+            <Box mt={1} mb={1}>
+              <Typography className={classes.status}>Estado</Typography>
+            </Box>
+          </Grid>
         </Grid>
-        <Grid item xs={6}>
-          <Box>
-            <Typography className={classes.date} noWrap>
-              04-12-2024
-            </Typography>
-          </Box>
+        <Grid container fluid spacing={1}>
+          <Grid item xs={6}>
+            <Box>
+              <Typography className={classes.date} noWrap>
+                02-02-2022
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={6}>
+            <Box>
+              <Typography className={classes.date} noWrap>
+                04-12-2024
+              </Typography>
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </Wrapper>
   )
 }
 
