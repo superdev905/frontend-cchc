@@ -4,11 +4,13 @@ WORKDIR /app
 
 COPY package*.json ./
 
+RUN NODE_OPTIONS=--max_old_space_size=1024
+
 RUN yarn install 
 
 COPY . .
 
-RUN yarn build --max-old-space-size=8192
+RUN yarn build
 
 FROM nginx:stable-alpine
 
