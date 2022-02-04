@@ -87,7 +87,7 @@ const services = {
     testing: `${BASEURL[env]}:5196/api/v1`,
     production: `${BASEURL[env]}:5113/api/v1`,
     azure_test:
-      'http://social-test.southcentralus.azurecontainer.io:5191/api/v1'
+      'http://social-case-test.southcentralus.azurecontainer.io:5191/api/v1'
   },
   question: {
     development: `${BASEURL[env]}:5197/api/v1`,
