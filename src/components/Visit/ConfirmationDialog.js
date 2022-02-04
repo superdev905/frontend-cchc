@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles, Box, Typography } from '@material-ui/core'
+import { useSnackbar } from 'notistack'
 import employeeActions from '../../state/actions/employees'
 import { Dialog } from '../Shared'
 import { Button } from '../UI'
@@ -31,6 +32,7 @@ const ConfirmationDialog = ({
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
   const { user } = useSelector((state) => state.auth)
 
@@ -49,7 +51,7 @@ const ConfirmationDialog = ({
         onCloseAssistence()
       })
     } catch (err) {
-      console.error(err)
+      enqueueSnackbar(err, { variant: 'error' })
     }
   }
 

@@ -248,7 +248,6 @@ const ConstructionModal = ({
       formik.setFieldTouched('business_selected_id')
     }
   }, [selectedCompany, type, construction])
-  console.log(defaultCompany, selectedCompany)
 
   useEffect(() => {
     if (formik.isSubmitting && !formik.isValid) {

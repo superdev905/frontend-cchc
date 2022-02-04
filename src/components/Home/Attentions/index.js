@@ -33,8 +33,6 @@ const LastAttentions = () => {
     getLastAttentions()
   }, [])
 
-  console.log(currentId)
-
   return (
     <Wrapper>
       <Typography className={classes.title}>Ultimas atenciones</Typography>

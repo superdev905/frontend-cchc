@@ -328,8 +328,6 @@ const StepOne = ({ onClose, data }) => {
     dispatch(scholarshipsActions.getCareers())
   }, [])
 
-  console.log(formik.errors)
-
   return (
     <Box className={classes.form}>
       <Box>

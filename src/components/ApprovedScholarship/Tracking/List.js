@@ -19,7 +19,6 @@ const TrackingList = () => {
   const { approvedScholarship: details } = useSelector(
     (state) => state.scholarships
   )
-  console.log(details)
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()

@@ -74,7 +74,6 @@ const ListEmployees = () => {
         born_date: formatDate(item.born_date)
       }))
     )
-    console.log({ tableData })
   }, [listEmployees])
 
   useEffect(() => {

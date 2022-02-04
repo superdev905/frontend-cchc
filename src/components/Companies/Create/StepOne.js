@@ -92,7 +92,6 @@ const StepOne = ({ onClose }) => {
 
   useEffect(() => {
     if (formik.values.region && regions.length > 0) {
-      console.log(formik.values.region)
       handleSelectChange({
         target: { name: 'region', value: formik.values.region }
       })

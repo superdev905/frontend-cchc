@@ -63,7 +63,6 @@ const WorkerInterventionRecord = ({
   defaultTaskId,
   defaultSocialCase
 }) => {
-  console.log(event)
   const dispatch = useDispatch()
   const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()

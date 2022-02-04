@@ -194,8 +194,6 @@ const EmployeeModal = ({
     }
   }, [formik.values.disability, hasDisability])
 
-  console.log(validAge)
-
   useEffect(() => {
     if (formik.values.rsh === 'NO') {
       formik.setFieldValue('rsh_percentage', '')

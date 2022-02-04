@@ -113,9 +113,7 @@ const General = ({
 
   useEffect(() => {
     dispatch(commonActions.getNationalities())
-    dispatch(commonActions.getRSH()).then((response) => {
-      console.log(response)
-    })
+    dispatch(commonActions.getRSH())
   }, [])
 
   return (

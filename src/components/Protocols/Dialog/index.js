@@ -68,7 +68,6 @@ const CreateProtocol = ({
     },
     onSubmit: async (values) => {
       let file = protocolFile
-      console.log(values)
       if (uploadFile) {
         const formData = new FormData()
         formData.append('file', uploadFile, uploadFile.name)

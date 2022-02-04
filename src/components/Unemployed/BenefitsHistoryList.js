@@ -33,19 +33,9 @@ const BenefitsHistoryList = () => {
 
   const fetchBenefitsHistory = () => {
     setLoading(true)
-    /* dispatch(migrantsActions.getMigrants(formatQuery(filters)))
-      .then(() => {
-        setLoading(false)
-      })
-      .catch(() => {
-        setLoading(false)
-      }) */
-    console.log('fetch')
   }
 
-  const updateQuery = (values) => {
-    console.log(values)
-  }
+  const updateQuery = () => {}
 
   const handleDeleteFilter = (key) => {
     const copyLocalQuery = { ...query }
@@ -56,8 +46,6 @@ const BenefitsHistoryList = () => {
     }
     dispatch(unemployedActions.setFilters(copyLocalFilters))
     dispatch(unemployedActions.setQuery(copyLocalQuery))
-
-    /* dispatch(socialCaseActions.setFilters(newFilter)) */
   }
 
   useEffect(() => {
