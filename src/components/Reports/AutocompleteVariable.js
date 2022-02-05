@@ -21,14 +21,14 @@ const AutocompleteVariable = ({ type, onChange }) => {
         }
       )
     }
-    if (type === 'VISITS_EMPLOYEES') {
+    if (type === 'VISITS_ASSIGNED') {
       dispatch(employeesActions.getEmployees({ state: 'CREATED' }, false)).then(
         (list) => {
           setEmployees(list)
         }
       )
     }
-    if (type === 'ASSISTANCE_ASSIGNED') {
+    if (type === 'ASSISTANCE_EMPLOYEE') {
       dispatch(usersActions.getFoundationUsers()).then((list) => {
         setUsersList(list)
       })
@@ -60,7 +60,7 @@ const AutocompleteVariable = ({ type, onChange }) => {
           )}
         />
       )}
-      {type === 'VISITS_EMPLOYEES' && (
+      {type === 'ASSISTANCE_EMPLOYEE' && (
         <Autocomplete
           options={employees}
           getOptionLabel={(option) =>
@@ -86,7 +86,7 @@ const AutocompleteVariable = ({ type, onChange }) => {
           )}
         />
       )}
-      {type === 'ASSISTANCE_ASSIGNED' && (
+      {type === 'VISITS_ASSIGNED' && (
         <Autocomplete
           options={users}
           getOptionLabel={(option) =>

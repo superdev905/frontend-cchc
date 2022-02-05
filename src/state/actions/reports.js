@@ -1,3 +1,4 @@
+import { saveAs } from 'file-saver'
 import queryString from 'query-string'
 import Axios from '../../Axios'
 import questionsTypes from '../types/questions'
@@ -23,8 +24,119 @@ const getStats = (query) => (dispatch) =>
       })
   })
 
+const getVisitsReport = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.assistance}/reports/visits`, values, {
+      responseType: 'arraybuffer'
+    })
+      .then((response) => {
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+
+        saveAs(blob, `Visitas-${new Date().getTime()}`)
+        resolve(response.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const getVisitsReportByCompany = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.assistance}/reports/visit-by-company`,
+      values,
+      {
+        responseType: 'arraybuffer'
+      }
+    )
+      .then((response) => {
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+
+        saveAs(blob, `Visitas-empresa-${new Date().getTime()}`)
+        resolve(response.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const getVisitsReportByAssigned = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.assistance}/reports/visit-by-assigned`,
+      values,
+      {
+        responseType: 'arraybuffer'
+      }
+    )
+      .then((response) => {
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+
+        saveAs(blob, `Visitas-assigned-${new Date().getTime()}`)
+        resolve(response.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const getAssistanceReportByEmployee = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.assistance}/reports/assistance-employee`,
+      values,
+      {
+        responseType: 'arraybuffer'
+      }
+    )
+      .then((response) => {
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+
+        saveAs(blob, `Assistance-employee-${new Date().getTime()}`)
+        resolve(response.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
+const getAssistanceReportByCompany = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.assistance}/reports/assistance-company`,
+      values,
+      {
+        responseType: 'arraybuffer'
+      }
+    )
+      .then((response) => {
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+
+        saveAs(blob, `Assistance-company-${new Date().getTime()}`)
+        resolve(response.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
 const reportsActions = {
-  getStats
+  getStats,
+  getVisitsReport,
+  getVisitsReportByCompany,
+  getVisitsReportByAssigned,
+  getAssistanceReportByEmployee,
+  getAssistanceReportByCompany
 }
 
 export default reportsActions

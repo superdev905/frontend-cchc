@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Box, Grid, Typography } from '@material-ui/core'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { DatePicker, Dialog } from '../Shared'
 import { Button, SubmitButton } from '../UI'
 import AutocompleteVariable from './AutocompleteVariable'
+import reportsActions from '../../state/actions/reports'
 
 const ReportDialog = ({ open, onClose, type }) => {
   const { isMobile } = useSelector((state) => state.ui)
+  const dispatch = useDispatch()
   const [formData, setFormData] = useState({
     id: '',
     startDate: '',
@@ -15,25 +17,25 @@ const ReportDialog = ({ open, onClose, type }) => {
 
   const getDocument = () => {
     if (type === 'VISITS_COMPANY') {
-      console.log(`fetch ${type}:`)
-      console.log(formData)
+      dispatch(reportsActions.getVisitsReportByCompany(formData))
+      onClose()
     }
     if (type === 'ASSISTANCE_COMPANY') {
-      console.log(`fetch ${type}:`)
-      console.log(formData)
+      dispatch(reportsActions.getAssistanceReportByCompany(formData))
+      onClose()
     }
-    if (type === 'VISITS_EMPLOYEES') {
-      console.log(`fetch ${type}:`)
-      console.log(formData)
+    if (type === 'VISITS_ASSIGNED') {
+      dispatch(reportsActions.getVisitsReportByAssigned(formData))
+      onClose()
     }
-    if (type === 'ASSISTANCE_ASSIGNED') {
-      console.log(`fetch ${type}:`)
-      console.log(formData)
+    if (type === 'ASSISTANCE_EMPLOYEE') {
+      dispatch(reportsActions.getAssistanceReportByEmployee(formData))
+      onClose()
     }
     if (type === 'ALL_VISITS') {
-      console.log(`fetch ${type}:`)
       delete formData.id
-      console.log(formData)
+      dispatch(reportsActions.getVisitsReport(formData))
+      onClose()
     }
   }
 
@@ -66,13 +68,13 @@ const ReportDialog = ({ open, onClose, type }) => {
         endDate: ''
       })
     }
-  }, [])
+  }, [open])
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
       <Box>
         <Typography variant="h6" align="center" style={{ fontWeight: 'bold' }}>
-          Generar Reporte {type}
+          Generar Reporte
         </Typography>
         <Box p={2}>
           <Box>
@@ -81,7 +83,7 @@ const ReportDialog = ({ open, onClose, type }) => {
                 <DatePicker label="Desde" onChange={onSelectStartDate} />
               </Grid>
               <Grid item xs={12} md={6}>
-                <DatePicker label="Hasta" onChange={onSelectEndDate} required />
+                <DatePicker label="Hasta" onChange={onSelectEndDate} />
               </Grid>
             </Grid>
             <Grid item xs={12}>

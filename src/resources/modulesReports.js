@@ -13,14 +13,14 @@ const modulesReports = [
   },
   {
     module: 'Visitas',
-    name: 'Atenciones por Trabajador',
-    type: 'VISITS_EMPLOYEES',
+    name: 'Atenciones por Profesional',
+    type: 'VISITS_ASSIGNED',
     isActive: true
   },
   {
     module: 'Calendario',
-    name: 'Asistencias por Profesional',
-    type: 'ASSISTANCE_ASSIGNED',
+    name: 'Asistencias por Trabajador',
+    type: 'ASSISTANCE_EMPLOYEE',
     isActive: true
   },
   {
