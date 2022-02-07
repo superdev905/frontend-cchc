@@ -5,6 +5,7 @@ import {
   Delete as DeleteIcon,
   Visibility as ViewIcon
 } from '@material-ui/icons/'
+import { FiDownload as DownloadIcon } from 'react-icons/fi'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,10 +23,12 @@ const useStyles = makeStyles((theme) => ({
 
 const ActionGroup = ({
   onEdit,
+  disableEdit,
   onDelete,
   disabledDelete,
-  disableEdit,
   onView,
+  onDownload,
+  disabledDownload,
   moreOptions
 }) => {
   const classes = useStyles()
@@ -54,6 +57,11 @@ const ActionGroup = ({
       {onDelete && (
         <IconButton onClick={onDelete} disabled={disabledDelete}>
           <DeleteIcon className={classes.btnDelete} />
+        </IconButton>
+      )}
+      {onDownload && (
+        <IconButton onClick={onDownload} disabled={disabledDownload}>
+          <DownloadIcon className={classes.btnPrimary} />
         </IconButton>
       )}
     </Box>

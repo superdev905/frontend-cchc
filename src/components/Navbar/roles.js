@@ -18,6 +18,7 @@ import {
   Help as HelpIcon
 } from '@material-ui/icons'
 import LanguageIcon from '@material-ui/icons/Language'
+import AssessmentIcon from '@material-ui/icons/Assessment'
 
 const modulesByRole = {
   COMMON: [{ title: 'Home', path: '/home', icon: <DashboardIcon /> }],
@@ -89,6 +90,11 @@ const modulesByRole = {
       title: 'Protocolos',
       path: '/protocols',
       icon: <HelpIcon />
+    },
+    {
+      title: 'Reportes',
+      path: '/reports',
+      icon: <AssessmentIcon />
     },
     {
       index: 5,
