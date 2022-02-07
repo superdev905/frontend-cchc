@@ -21,14 +21,14 @@ const AutocompleteVariable = ({ type, onChange }) => {
         }
       )
     }
-    if (type === 'VISITS_ASSIGNED') {
+    if (type === 'ASSISTANCE_EMPLOYEE') {
       dispatch(employeesActions.getEmployees({ state: 'CREATED' }, false)).then(
         (list) => {
           setEmployees(list)
         }
       )
     }
-    if (type === 'ASSISTANCE_EMPLOYEE') {
+    if (type === 'VISITS_ASSIGNED') {
       dispatch(usersActions.getFoundationUsers()).then((list) => {
         setUsersList(list)
       })
