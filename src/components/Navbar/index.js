@@ -23,7 +23,7 @@ import authActions from '../../state/actions/auth'
 import useStyles from './styles'
 import useMenu from '../../hooks/useMenu'
 import LeftDrawer from './LeftDrawer'
-import { ReportWidget, ProtocolWidget } from '../Widgets'
+import { ProtocolWidget } from '../Widgets'
 
 const ResponsiveDrawer = ({ ...props }) => {
   const { window } = props
@@ -78,7 +78,6 @@ const ResponsiveDrawer = ({ ...props }) => {
             width="100%"
             alignItems="center"
           >
-            <ReportWidget />
             <ProtocolWidget />
             <Box display={'flex'}>
               {user &&
