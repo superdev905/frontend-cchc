@@ -8,6 +8,7 @@ import reportsActions from '../../state/actions/reports'
 
 const ReportDialog = ({ open, onClose, type }) => {
   const { isMobile } = useSelector((state) => state.ui)
+  const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
   const [formData, setFormData] = useState({
     id: '',
@@ -16,26 +17,41 @@ const ReportDialog = ({ open, onClose, type }) => {
   })
 
   const getDocument = () => {
+    setLoading(true)
     if (type === 'VISITS_COMPANY') {
-      dispatch(reportsActions.getVisitsReportByCompany(formData))
-      onClose()
+      dispatch(reportsActions.getVisitsReportByCompany(formData)).then(() => {
+        setLoading(false)
+        onClose()
+      })
     }
     if (type === 'ASSISTANCE_COMPANY') {
-      dispatch(reportsActions.getAssistanceReportByCompany(formData))
-      onClose()
+      dispatch(reportsActions.getAssistanceReportByCompany(formData)).then(
+        () => {
+          setLoading(false)
+          onClose()
+        }
+      )
     }
     if (type === 'VISITS_ASSIGNED') {
-      dispatch(reportsActions.getVisitsReportByAssigned(formData))
-      onClose()
+      dispatch(reportsActions.getVisitsReportByAssigned(formData)).then(() => {
+        setLoading(false)
+        onClose()
+      })
     }
     if (type === 'ASSISTANCE_EMPLOYEE') {
-      dispatch(reportsActions.getAssistanceReportByEmployee(formData))
-      onClose()
+      dispatch(reportsActions.getAssistanceReportByEmployee(formData)).then(
+        () => {
+          setLoading(false)
+          onClose()
+        }
+      )
     }
     if (type === 'ALL_VISITS') {
       delete formData.id
-      dispatch(reportsActions.getVisitsReport(formData))
-      onClose()
+      dispatch(reportsActions.getVisitsReport(formData)).then(() => {
+        setLoading(false)
+        onClose()
+      })
     }
   }
 
@@ -98,6 +114,7 @@ const ReportDialog = ({ open, onClose, type }) => {
               </Button>
               <SubmitButton
                 onClick={getDocument}
+                loading={loading}
                 disabled={formData.id === '' && type !== 'ALL_VISITS'}
               >
                 Generar
