@@ -1,18 +1,16 @@
 import { Box, Chip, Grid } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useHistory, useParams } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { formatDate, formatSearchWithRut } from '../../formatters'
 import { useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
-import assistanceActions from '../../state/actions/assistance'
 import { DataTable } from '../Shared'
 import { Button, SearchInput, Select, StatusChip, Wrapper } from '../UI'
 import EmployeeForm from './EmployeeForm'
 
 const ListEmployees = () => {
   const dispatch = useDispatch()
-  const { idEmployee } = useParams()
   const history = useHistory()
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
@@ -56,24 +54,7 @@ const ListEmployees = () => {
         setLoading(false)
       })
   }
-  const fetchList = () => {
-    setLoading(true)
-    dispatch(
-      assistanceActions.getAttention({
-        id_employee: idEmployee
-      })
-    ).then((data) => {
-      setLoading(false)
-      setTableData(
-        data.map((item) => ({
-          ...item,
-          stringDate: formatDate(item.date, {}),
-          is_social_case: `${item.is_social_case}`,
-          status: `${item.status}`
-        }))
-      )
-    })
-  }
+
   const onRowClick = (row) => {
     history.push(`/employee/${row.id}/info`)
   }
@@ -98,10 +79,6 @@ const ListEmployees = () => {
   useEffect(() => {
     fetchEmployees()
   }, [filters])
-
-  useEffect(() => {
-    fetchList()
-  }, [])
 
   return (
     <Box>
@@ -180,8 +157,8 @@ const ListEmployees = () => {
               maxWidth: '150px',
               selector: (row) => (
                 <Chip
-                  label={row.social_case_status ? 'Si' : 'NO'}
-                  color={row.social_case_status ? 'primary' : 'secondary'}
+                  label={row.has_social_case ? 'Si' : 'NO'}
+                  color={row.has_social_case ? 'primary' : 'secondary'}
                 />
               )
             },
@@ -190,8 +167,8 @@ const ListEmployees = () => {
               center: true,
               selector: (row) => (
                 <Chip
-                  label={row.has_attentions ? 'Si' : 'NO'}
-                  color={row.has_attentions ? 'primary' : 'secondary'}
+                  label={row.hast_follow_attentions ? 'Si' : 'NO'}
+                  color={row.hast_follow_attentions ? 'primary' : 'secondary'}
                 />
               )
             },

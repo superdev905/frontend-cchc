@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, useHistory, useLocation } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid } from '@material-ui/core'
 import BackHeading from '../../components/Shared/BackHeading'
@@ -12,14 +12,12 @@ const SocialCaseDetails = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const { socialCaseId } = useParams()
-  const { pathname } = useLocation()
+
   const [loading, setLoading] = useState(false)
   const { caseDetails } = useSelector((state) => state.socialCase)
 
   useEffect(() => {
-    if ((pathname.includes('/details') && !caseDetails) || !caseDetails) {
-      setLoading(true)
-    }
+    setLoading(true)
     dispatch(socialCasesActions.getSocialCaseById(socialCaseId)).then(() => {
       setLoading(false)
     })
