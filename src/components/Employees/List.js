@@ -16,7 +16,7 @@ const ListEmployees = () => {
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({
     skip: 0,
-    limit: 10,
+    size: 10,
     search: '',
     state: ''
   })
@@ -43,8 +43,7 @@ const ListEmployees = () => {
     dispatch(
       employeesActions.getEmployees({
         ...filters,
-        search: filters.search.trim(),
-        include_total: true
+        search: filters.search.trim()
       })
     )
       .then(() => {

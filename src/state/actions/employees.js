@@ -13,7 +13,10 @@ const getEmployees =
         .then((response) => {
           const { data } = response
           if (handleDispatch) {
-            dispatch({ type: employeesTypes.GET_EMPLOYEES, payload: data.docs })
+            dispatch({
+              type: employeesTypes.GET_EMPLOYEES,
+              payload: data.items
+            })
             dispatch({
               type: employeesTypes.SET_EMPLOYEES_TOTAL,
               payload: data.total
