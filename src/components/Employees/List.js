@@ -70,7 +70,9 @@ const ListEmployees = () => {
     setTableData(
       listEmployees.map((item) => ({
         ...item,
-        last_name: `${item.paternal_surname} ${item.maternal_surname}`
+        last_name: `${item.paternal_surname} ${
+          item.maternal_surname || ''
+        }`.trim()
       }))
     )
   }, [listEmployees])
