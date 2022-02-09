@@ -47,6 +47,7 @@ const WorkerRegistration = ({
   const { isMobile } = useSelector((state) => state.ui)
   const [currentDate] = useState(new Date())
   const [searchRut, setSearchRut] = useState('')
+  const [loading, setLoading] = useState(false)
   const [searchList, setSearchList] = useState([])
   const [selectedEmployee, setSelectedEmployee] = useState(null)
   const [uploadFile, setUploadFile] = useState(null)
@@ -129,14 +130,16 @@ const WorkerRegistration = ({
 
   useEffect(() => {
     if (searchRut) {
+      setLoading(true)
       dispatch(
         employeesActions.getEmployees(
           { state: 'CREATED', search: searchRut },
           false
         )
       ).then((list) => {
+        setLoading(false)
         setSearchList(
-          list.map((item) => ({ ...item, avatarBg: generateColor() }))
+          list.items.map((item) => ({ ...item, avatarBg: generateColor() }))
         )
       })
     } else {
@@ -261,27 +264,38 @@ const WorkerRegistration = ({
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    {searchList.length === 0 ? (
+                    {loading ? (
                       <>
-                        <EmptyState
-                          message={`${
-                            searchRut
-                              ? `No se encontraron resultados para: ${searchRut}`
-                              : 'Ingrese el rut del trabajador'
-                          }`}
-                        />
+                        <Skeleton height={'40px'} />
+                        <Skeleton height={'40px'} />
+                        <Skeleton height={'40px'} />
+                        <Skeleton height={'40px'} />
                       </>
                     ) : (
                       <>
-                        {searchList.map((item) => (
-                          <EmployeeRow
-                            selectable
-                            option={item}
-                            onClick={() => {
-                              setSelectedEmployee(item)
-                            }}
-                          />
-                        ))}
+                        {searchList.length === 0 ? (
+                          <>
+                            <EmptyState
+                              message={`${
+                                searchRut
+                                  ? `No se encontraron resultados para: ${searchRut}`
+                                  : 'Ingrese el rut del trabajador'
+                              }`}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            {searchList.map((item) => (
+                              <EmployeeRow
+                                selectable
+                                option={item}
+                                onClick={() => {
+                                  setSelectedEmployee(item)
+                                }}
+                              />
+                            ))}
+                          </>
+                        )}
                       </>
                     )}
                   </Grid>

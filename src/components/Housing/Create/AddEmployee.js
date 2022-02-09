@@ -17,6 +17,7 @@ const AddEmployee = ({ open, onClose, loader, onAdd }) => {
   const { isMobile } = useSelector((state) => state.ui)
   const { user } = useSelector((state) => state.auth)
   const [employeeList, setEmployeeList] = useState([])
+  const [loading, setLoading] = useState(false)
   const [searchRut, setSearchRut] = useState('')
   const [searchList, setSearchList] = useState([])
   const [selectedEmployee, setSelectedEmployee] = useState(null)
@@ -29,14 +30,16 @@ const AddEmployee = ({ open, onClose, loader, onAdd }) => {
 
   useEffect(() => {
     if (searchRut) {
+      setLoading(true)
       dispatch(
         employeesActions.getEmployees(
           { state: 'CREATED', search: searchRut },
           false
         )
       ).then((list) => {
+        setLoading(false)
         setSearchList(
-          list.map((item) => ({ ...item, avatarBg: generateColor() }))
+          list.items.map((item) => ({ ...item, avatarBg: generateColor() }))
         )
       })
     } else {
@@ -90,6 +93,7 @@ const AddEmployee = ({ open, onClose, loader, onAdd }) => {
             </>
           ) : (
             <Box>
+              {}
               {selectedEmployee ? (
                 <Box>
                   <Typography>Trabajador</Typography>
@@ -112,31 +116,43 @@ const AddEmployee = ({ open, onClose, loader, onAdd }) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    {searchList.length === 0 ? (
+                    {loading ? (
                       <>
-                        <EmptyState
-                          message={`${
-                            searchRut
-                              ? `No se encontraron resultados para: ${searchRut}`
-                              : 'Ingrese el rut del trabajador'
-                          }`}
-                          event={searchRut ? toggleOpenForm : null}
-                          actionMessage={searchRut ? 'Nuevo Trabajador' : null}
-                        />
+                        <Skeleton height={'50px'} />
+                        <Skeleton height={'50px'} />
+                        <Skeleton height={'50px'} />
                       </>
                     ) : (
                       <>
-                        {searchList.map((item) => (
-                          <EmployeeRow
-                            selectable
-                            option={item}
-                            onClick={() => {
-                              addEmployee(item)
-                              onAdd(item)
-                              onClose()
-                            }}
-                          />
-                        ))}
+                        {searchList.length === 0 ? (
+                          <>
+                            <EmptyState
+                              message={`${
+                                searchRut
+                                  ? `No se encontraron resultados para: ${searchRut}`
+                                  : 'Ingrese el rut del trabajador'
+                              }`}
+                              event={searchRut ? toggleOpenForm : null}
+                              actionMessage={
+                                searchRut ? 'Nuevo Trabajador' : null
+                              }
+                            />
+                          </>
+                        ) : (
+                          <>
+                            {searchList.map((item) => (
+                              <EmployeeRow
+                                selectable
+                                option={item}
+                                onClick={() => {
+                                  addEmployee(item)
+                                  onAdd(item)
+                                  onClose()
+                                }}
+                              />
+                            ))}
+                          </>
+                        )}
                       </>
                     )}
                   </Grid>

@@ -24,7 +24,7 @@ const AutocompleteVariable = ({ type, onChange }) => {
     if (type === 'ASSISTANCE_EMPLOYEE') {
       dispatch(employeesActions.getEmployees({ state: 'CREATED' }, false)).then(
         (list) => {
-          setEmployees(list)
+          setEmployees(list.items)
         }
       )
     }
