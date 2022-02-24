@@ -1,8 +1,8 @@
 const env = process.env.REACT_APP_NODE_ENV
 
 const BASEURL = {
-  production: 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com',
-  testing: 'http://fcchc-itprocess.southcentralus.cloudapp.azure.com',
+  production: 'http://fcchc-frontend-test.southcentralus.azurecontainer.io',
+  testing: 'http://fcchc-frontend-test.southcentralus.azurecontainer.io',
   development: 'http://localhost'
 }
 
