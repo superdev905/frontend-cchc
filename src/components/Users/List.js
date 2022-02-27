@@ -32,7 +32,6 @@ const List = () => {
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({
     skip: 0,
-    limit: 15,
     search: '',
     state: ''
   })
