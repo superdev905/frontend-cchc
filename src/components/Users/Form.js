@@ -193,7 +193,7 @@ const Form = ({
           setCompanies(list)
         }
       )
-      dispatch(usersActions.getUsers({}, false)).then((res) => {
+      dispatch(usersActions.getBosses({}, false)).then((res) => {
         setBosses(res)
       })
     }
