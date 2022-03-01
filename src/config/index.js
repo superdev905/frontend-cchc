@@ -14,6 +14,7 @@ const services = {
       'http://business-api.southcentralus.azurecontainer.io:5193/api/v1',
     azure_test:
       'http://business-test.southcentralus.azurecontainer.io:5193/api/v1'
+    //azure_test: 'http://localhost:5193/api/v1'
   },
   assistance: {
     development: `${BASEURL[env]}:5100/api/v1`,
@@ -22,6 +23,7 @@ const services = {
       'http://assistance-api.southcentralus.azurecontainer.io:5191/api/v1',
     azure_test:
       'http://assistance-test.southcentralus.azurecontainer.io:5191/api/v1'
+    //azure_test: 'http://localhost:5191/api/v1'
   },
   parameters: {
     development: `${BASEURL[env]}:5200/api/v1`,
@@ -30,18 +32,21 @@ const services = {
       'http://parameters-api.southcentralus.azurecontainer.io:5195/api/v1',
     azure_test:
       'http://parameters-test.southcentralus.azurecontainer.io:5195/api/v1'
+    //azure_test: 'http://localhost:5195/api/v1'
   },
   poll: {
     development: `${BASEURL[env]}:5190/api/v1`,
     testing: `${BASEURL[env]}:5197/api/v1`,
     production: 'http://poll-api.southcentralus.azurecontainer.io:5197/api/v1',
     azure_test: 'http://poll-test.southcentralus.azurecontainer.io:5197/api/v1'
+    //azure_test: 'http://localhost:5197/api/v1'
   },
   auth: {
     development: `${BASEURL[env]}:5500/api/v1`,
     testing: `${BASEURL[env]}:5192/api/v1`,
     production: 'http://auth-api.southcentralus.azurecontainer.io:5192/api/v1',
     azure_test: 'http://auth-test.southcentralus.azurecontainer.io:5192/api/v1'
+    //azure_test: 'http://localhost:5192/api/v1'
   },
   employee: {
     development: `${BASEURL[env]}:8000/api/v1`,
@@ -50,6 +55,7 @@ const services = {
       'http://employee-api.southcentralus.azurecontainer.io:5194/api/v1',
     azure_test:
       'http://employee-test.southcentralus.azurecontainer.io:5194/api/v1'
+    //azure_test: 'http://localhost:5194/api/v1'
   },
   scholarship: {
     development: `${BASEURL[env]}:5191/api/v1`,
@@ -58,6 +64,7 @@ const services = {
       'http://scholarship-api.southcentralus.azurecontainer.io:5198/api/v1',
     azure_test:
       'http://scholarship-test.southcentralus.azurecontainer.io:5198/api/v1'
+    //azure_test: 'http://localhost:5198/api/v1'
   },
   courses: {
     development: `${BASEURL[env]}:5192/api/v1`,
@@ -66,6 +73,7 @@ const services = {
       'http://courses-api.southcentralus.azurecontainer.io:5199/api/v1',
     azure_test:
       'http://courses-test.southcentralus.azurecontainer.io:5199/api/v1'
+    //azure_test: 'http://localhost:5199/api/v1'
   },
   benefits: {
     development: `${BASEURL[env]}:5193/api/v1`,
@@ -74,6 +82,7 @@ const services = {
       'http://benefits-api.southcentralus.azurecontainer.io:5191/api/v1',
     azure_test:
       'http://benefits-test.southcentralus.azurecontainer.io:5191/api/v1'
+    //azure_test: 'http://localhost:5191/api/v1'
   },
   schedule: {
     development: `${BASEURL[env]}:5300/api/v1`,
@@ -82,6 +91,7 @@ const services = {
       'http://schedule-api.southcentralus.azurecontainer.io:5191/api/v1',
     azure_test:
       'http://schedule-test.southcentralus.azurecontainer.io:5191/api/v1'
+    //azure_test: 'http://localhost:5191/api/v1'
   },
   housing: {
     development: `${BASEURL[env]}:5195/api/v1`,
@@ -90,6 +100,7 @@ const services = {
       'http://vivienda-api.southcentralus.azurecontainer.io:5191/api/v1',
     azure_test:
       'http://vivienda-test.southcentralus.azurecontainer.io:5191/api/v1'
+    //azure_test: 'http://localhost:5191/api/v1'
   },
   socialCase: {
     development: `${BASEURL[env]}:5196/api/v1`,
@@ -98,6 +109,7 @@ const services = {
       'http://social-case-api.southcentralus.azurecontainer.io:5191/api/v1',
     azure_test:
       'http://social-case-test.southcentralus.azurecontainer.io:5191/api/v1'
+    //azure_test: 'http://localhost:5191/api/v1'
   },
   question: {
     development: `${BASEURL[env]}:5197/api/v1`,
@@ -106,6 +118,7 @@ const services = {
       'http://consultas-api.southcentralus.azurecontainer.io:5194/api/v1',
     azure_test:
       'http://consultas-test.southcentralus.azurecontainer.io:5194/api/v1'
+    //azure_test: 'http://localhost:5194/api/v1'
   },
   migrant: {
     development: `${BASEURL[env]}:5198/api/v1`,
@@ -114,6 +127,7 @@ const services = {
       'http://migrantes-api.southcentralus.azurecontainer.io:5195/api/v1',
     azure_test:
       'http://migrantes-test.southcentralus.azurecontainer.io:5195/api/v1'
+    //azure_test: 'http://localhost:5195/api/v1'
   },
   inclusion: {
     development: `${BASEURL[env]}:5115/api/v1`,
@@ -122,6 +136,7 @@ const services = {
       'http://inclusion-api.southcentralus.azurecontainer.io:5196/api/v1',
     azure_test:
       'http://inclusion-test.southcentralus.azurecontainer.io:5196/api/v1'
+    //azure_test: 'http://localhost:5196/api/v1'
   },
   unemployed: {
     development: `${BASEURL[env]}:5118/api/v1`,
@@ -130,6 +145,7 @@ const services = {
       'http://cesantes-api.southcentralus.azurecontainer.io:5197/api/v1',
     azure_test:
       'http://cesantes-test.southcentralus.azurecontainer.io:5197/api/v1'
+    //azure_test: 'http://localhost:5197/api/v1'
   },
   protocols: {
     development: `${BASEURL[env]}:5119/api/v1`,
@@ -137,6 +153,7 @@ const services = {
       'http://protocolos-api.southcentralus.azurecontainer.io:5197/api/v1',
     azure_test:
       'http://protocolos-test.southcentralus.azurecontainer.io:5197/api/v1'
+    //azure_test: 'http://localhost:5197/api/v1'
   }
 }
 
