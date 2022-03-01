@@ -1,7 +1,8 @@
-import { Box, Chip, Grid } from '@material-ui/core'
+import { Box, Chip, Grid, IconButton } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+import SearchIcon from '@material-ui/icons/Search'
 import { formatDate, formatSearchWithRut } from '../../formatters'
 import { useToggle } from '../../hooks'
 import employeesActions from '../../state/actions/employees'
@@ -79,7 +80,7 @@ const ListEmployees = () => {
 
   useEffect(() => {
     fetchEmployees()
-  }, [filters])
+  }, [])
 
   return (
     <Box>
@@ -111,7 +112,11 @@ const ListEmployees = () => {
                 value={filters.search}
                 placeholder="Buscar por: Nombres, RUN"
                 onChange={handleSearchChange}
-              />
+              >
+                <IconButton onClick={() => fetchEmployees()}>
+                  <SearchIcon />
+                </IconButton>
+              </SearchInput>
             </Grid>
             <Grid item xs={12} md={6}>
               <Box display="flex" justifyContent="flex-end">

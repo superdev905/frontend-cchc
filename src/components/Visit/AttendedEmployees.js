@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams, useLocation } from 'react-router-dom'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid, IconButton, Typography } from '@material-ui/core'
 import { Edit as EditIcon, ArrowForward as ArrowIcon } from '@material-ui/icons'
+import SearchIcon from '@material-ui/icons/Search'
 import assistanceAction from '../../state/actions/assistance'
 import employeesActions from '../../state/actions/employees'
 import uiActions from '../../state/actions/ui'
@@ -76,6 +77,25 @@ const List = () => {
     <Button onClick={() => toggleOpenConfirmation()}>Validar Datos</Button>
   )
 
+  const searchEmployee = () => {
+    setSearching(true)
+    setSearchResult([])
+    dispatch(
+      assistanceAction.searchEmployee({
+        employee_rut: searchUser,
+        visit_id: idVisit
+      })
+    ).then((result) => {
+      setSearching(false)
+      setSearchResult(
+        result.map((item) => ({
+          ...item,
+          fullName: `${item.names} ${item.paternal_surname} ${item?.maternal_surname}`
+        }))
+      )
+    })
+  }
+
   const createAttention = (values) =>
     dispatch(
       assistanceAction.createAssistance({
@@ -126,7 +146,7 @@ const List = () => {
       setSearching(false)
       setSearchResult([])
     }
-  }, [searchUser])
+  }, [])
 
   return (
     <Wrapper>
@@ -196,7 +216,6 @@ const List = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} md={4}>
                 <TextField
-                  label="Buscar trabajador"
                   placeholder="BUSCAR POR: RUT, NOMBRES"
                   value={searchUser}
                   onChange={(e) => {
@@ -204,6 +223,9 @@ const List = () => {
                   }}
                 />
               </Grid>
+              <IconButton onClick={() => searchEmployee()}>
+                <SearchIcon />
+              </IconButton>
             </Grid>
           </Box>
 

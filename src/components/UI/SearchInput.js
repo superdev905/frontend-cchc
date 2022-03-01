@@ -1,10 +1,8 @@
 import { makeStyles } from '@material-ui/core/styles'
 import { Box, InputBase } from '@material-ui/core/'
-import SearchIcon from '@material-ui/icons/Search'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: 8,
     display: 'flex',
     alignItems: 'center',
     backgroundColor: theme.palette.gray.gray100,
@@ -25,12 +23,18 @@ const useStyles = makeStyles((theme) => ({
     padding: 10
   }
 }))
-const SearchInput = ({ placeholder, onChange, id, value, CustomInput }) => {
+const SearchInput = ({
+  placeholder,
+  onChange,
+  id,
+  value,
+  CustomInput,
+  children
+}) => {
   const classes = useStyles()
 
   return (
     <Box className={classes.root}>
-      <SearchIcon style={{ fill: '#C2CFE0' }} />
       {
         <CustomInput
           className={classes.input}
@@ -41,6 +45,7 @@ const SearchInput = ({ placeholder, onChange, id, value, CustomInput }) => {
           inputProps={{ 'aria-label': 'search input' }}
         />
       }
+      {children}
     </Box>
   )
 }
