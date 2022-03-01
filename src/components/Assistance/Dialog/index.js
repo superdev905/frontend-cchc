@@ -222,7 +222,7 @@ const WorkerInterventionRecord = ({
               result.id
             )
           }
-          if (formik.values.case_id === 'NEW') {
+          if (formik.values.case_id === 'NEW' && company.id) {
             const newCase = {
               date: new Date().toISOString(),
               assistanceId: result.id,
