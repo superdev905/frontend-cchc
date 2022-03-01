@@ -24,7 +24,7 @@ const validationSchema = Yup.object({
     .test('Check rut', 'Ingrese rut válido', (v) => rutValidation(v)),
   name: Yup.string(),
   business_name: Yup.string().required('Ingrese razón social'),
-  email: Yup.string().email('Ingrese correo válido').required('Ingrese correo'),
+  email: Yup.string().email('Ingrese correo válido'),
   address: Yup.string().required('Ingrese dirección'),
   commune: Yup.string().required('Seleccione comuna'),
   longitude: Yup.string().required('Seleccione dirección'),
@@ -154,7 +154,6 @@ const StepOne = ({ onClose }) => {
             <TextField
               label="Correo"
               name="email"
-              required
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.email}

@@ -20,7 +20,8 @@ const services = {
     testing: `${BASEURL[env]}:5191/api/v1`,
     production:
       'http://assistance-api.southcentralus.azurecontainer.io:5191/api/v1',
-    azure_test: 'http://localhost:5192/api/v1'
+    azure_test:
+      'http://assistance-test.southcentralus.azurecontainer.io:5191/api/v1'
   },
   parameters: {
     development: `${BASEURL[env]}:5200/api/v1`,
@@ -95,7 +96,8 @@ const services = {
     testing: `${BASEURL[env]}:5196/api/v1`,
     production:
       'http://social-case-api.southcentralus.azurecontainer.io:5191/api/v1',
-    azure_test: 'http://localhost:5191/api/v1'
+    azure_test:
+      'http://social-case-test.southcentralus.azurecontainer.io:5191/api/v1'
   },
   question: {
     development: `${BASEURL[env]}:5197/api/v1`,
