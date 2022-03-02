@@ -143,8 +143,10 @@ const WorkerInterventionRecord = ({
         type === 'UPDATE' ? data.source_business : 'FUNDACIÓN CHCC',
       attention_place: type === 'UPDATE' ? data.attention_place : '',
       contact_method: type === 'UPDATE' ? data.contact_method : '',
-      business_name: type === 'UPDATE' ? data.business_name : '',
-      construction_name: type === 'UPDATE' ? data.construction_name : '',
+      business_name:
+        type === 'UPDATE' ? data.business_name : company.business_name,
+      construction_name:
+        type === 'UPDATE' ? data.construction_name : company.construction_name,
       area_id: type === 'UPDATE' ? data.area_id : null,
       area_name: type === 'UPDATE' ? data.area_name : '',
       topic_id: type === 'UPDATE' ? data.topic_id : '',
