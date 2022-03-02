@@ -104,7 +104,7 @@ const ListEmployees = () => {
   }, [listEmployees])
 
   useEffect(() => {
-    if (setLooking(true)) {
+    if (looking) {
       fetchEmployees()
     }
   }, [filters])
