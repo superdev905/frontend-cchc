@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { startOfWeek, subDays } from 'date-fns'
 import { useHistory } from 'react-router-dom'
+import SearchIcon from '@material-ui/icons/Search'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, IconButton } from '@material-ui/core'
 import assistanceActions from '../../state/actions/assistance'
 import { Button, SearchInput, Wrapper } from '../UI'
 import { DataTable } from '../Shared'
@@ -15,6 +16,7 @@ const EventList = () => {
   const [currentDate] = useState(new Date())
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
+  const [looking, setLooking] = useState(false)
   const { user } = useSelector((state) => state.auth)
   const [filters, setFilters] = useState({
     page: 1,
@@ -35,6 +37,14 @@ const EventList = () => {
     history.push('/visits-close')
   }
 
+  const changePage = (page) => {
+    setFilters({ ...filters, page })
+    setLoading(true)
+    dispatch(assistanceActions.getEvents({ ...filters, page })).then(() => {
+      setLoading(false)
+    })
+  }
+
   const fetchList = () => {
     setLoading(true)
     dispatch(
@@ -46,6 +56,11 @@ const EventList = () => {
 
   const onRowClick = (row) => {
     history.push(`/visit/${row.id}`)
+  }
+
+  const searchButton = () => {
+    setLooking(true)
+    fetchList()
   }
 
   useEffect(() => {
@@ -61,7 +76,9 @@ const EventList = () => {
   }, [listEvents])
 
   useEffect(() => {
-    fetchList()
+    if (setLooking(true)) {
+      fetchList()
+    }
   }, [filters])
 
   return (
@@ -72,11 +89,16 @@ const EventList = () => {
             <Grid item xs={12} md={5}>
               <SearchInput
                 value={filters.search}
+                status={looking}
                 onChange={(e) => {
                   setFilters({ ...filters, search: e.target.value })
                 }}
                 placeholder={'Buscar por: Título, Empresa, Obra'}
-              />
+              >
+                <IconButton onClick={searchButton}>
+                  <SearchIcon />
+                </IconButton>
+              </SearchInput>
             </Grid>
             <Grid item xs={12} md={7}>
               <Box display="flex" justifyContent="flex-end">
@@ -91,8 +113,8 @@ const EventList = () => {
           <DataTable
             emptyMessage={
               filters.search
-                ? `No se encontraron resultados para: ${filters.search}`
-                : 'No hay visitas registradas'
+                ? `Buscando Visita : ${filters.search}`
+                : 'Para encontrar Visitas utilice el buscador'
             }
             data={tableData}
             progressPending={loading}
@@ -139,9 +161,7 @@ const EventList = () => {
             onChangeRowsPerPage={(limit) => {
               setFilters({ ...filters, size: limit })
             }}
-            onChangePage={(page) => {
-              setFilters({ ...filters, page })
-            }}
+            onChangePage={changePage}
             paginationTotalRows={totalPages}
           />
         </Wrapper>

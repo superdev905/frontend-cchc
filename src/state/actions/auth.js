@@ -93,6 +93,7 @@ const logout = () => (dispatch) =>
     window.sessionStorage.clear()
     dispatch({ type: authTypes.LOGOUT_SUCCESS })
     window.location.reload()
+    window.location.href = '/login'
     resolve()
   })
 

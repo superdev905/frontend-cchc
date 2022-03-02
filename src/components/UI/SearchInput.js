@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 const SearchInput = ({
   placeholder,
   onChange,
+  status,
   id,
   value,
   CustomInput,
@@ -39,6 +40,7 @@ const SearchInput = ({
         <CustomInput
           className={classes.input}
           id={id}
+          status={status}
           value={value}
           onChange={onChange}
           placeholder={placeholder}

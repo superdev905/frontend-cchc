@@ -15,7 +15,9 @@ const ListEmployees = () => {
   const history = useHistory()
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
+  const [looking, setLooking] = useState(false)
   const [filters, setFilters] = useState({
+    page: 1,
     skip: 0,
     size: 10,
     search: '',
@@ -55,6 +57,11 @@ const ListEmployees = () => {
       })
   }
 
+  const searchButton = () => {
+    setLooking(true)
+    fetchEmployees()
+  }
+
   const onRowClick = (row) => {
     history.push(`/employee/${row.id}/info`)
   }
@@ -62,6 +69,24 @@ const ListEmployees = () => {
   const afterCreateEmployee = (createData) => {
     history.push(`/employee/${createData.id}/info`)
   }
+
+  const changePage = (page) => {
+    setFilters({ ...filters, page })
+    setLoading(true)
+    dispatch(
+      employeesActions.getEmployees({
+        ...filters,
+        page
+      })
+    )
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
   const createEmployee = (values) =>
     dispatch(
       employeesActions.createEmployee({ ...values, created_by: user.id })
@@ -79,8 +104,10 @@ const ListEmployees = () => {
   }, [listEmployees])
 
   useEffect(() => {
-    fetchEmployees()
-  }, [])
+    if (setLooking(true)) {
+      fetchEmployees()
+    }
+  }, [filters])
 
   return (
     <Box>
@@ -110,10 +137,11 @@ const ListEmployees = () => {
             <Grid item xs={12} md={4}>
               <SearchInput
                 value={filters.search}
+                status={looking}
                 placeholder="Buscar por: Nombres, RUN"
                 onChange={handleSearchChange}
               >
-                <IconButton onClick={() => fetchEmployees()}>
+                <IconButton onClick={searchButton}>
                   <SearchIcon />
                 </IconButton>
               </SearchInput>
@@ -131,8 +159,8 @@ const ListEmployees = () => {
           progressPending={loading}
           emptyMessage={
             filters.search
-              ? `No se encontraron resultados para: ${filters.search}`
-              : 'Aún no hay trabajadores creados'
+              ? `Buscando : ${filters.search}`
+              : 'Para encontrar Trabajadores utilice el buscador'
           }
           highlightOnHover
           pointerOnHover
@@ -199,9 +227,7 @@ const ListEmployees = () => {
           onChangeRowsPerPage={(limit) => {
             setFilters({ ...filters, limit })
           }}
-          onChangePage={(page) => {
-            setFilters({ ...filters, skip: page })
-          }}
+          onChangePage={changePage}
           paginationTotalRows={totalDocs}
         />
         <EmployeeForm
