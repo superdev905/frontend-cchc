@@ -29,6 +29,9 @@ const customStyles = {
     style: {
       fontSize: '15px'
     }
+  },
+  pagination: {
+    style: { justifyContent: 'flex-start' }
   }
 }
 

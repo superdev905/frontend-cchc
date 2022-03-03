@@ -96,7 +96,7 @@ const EventList = () => {
                 placeholder={'Buscar por: Título, Empresa, Obra'}
               >
                 <IconButton onClick={searchButton}>
-                  <SearchIcon />
+                  <SearchIcon color="primary" fontSize="large" />
                 </IconButton>
               </SearchInput>
             </Grid>

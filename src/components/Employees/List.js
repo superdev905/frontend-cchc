@@ -142,7 +142,7 @@ const ListEmployees = () => {
                 onChange={handleSearchChange}
               >
                 <IconButton onClick={searchButton}>
-                  <SearchIcon />
+                  <SearchIcon color="primary" fontSize="large" />
                 </IconButton>
               </SearchInput>
             </Grid>

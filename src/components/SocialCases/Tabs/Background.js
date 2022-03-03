@@ -89,7 +89,10 @@ const Background = ({ loading }) => {
             <Grid item xs={12} md={6}>
               <Typography className={classes.heading}>Area</Typography>
               <LabeledRow label={'Nombre'}>
-                <Text>{caseDetails?.area?.name}</Text>
+                <Text loading={loading}>{caseDetails?.area?.name}</Text>
+              </LabeledRow>
+              <LabeledRow label={'Tema'}>
+                <Text loading={loading}>{caseDetails?.area.tema}</Text>
               </LabeledRow>
             </Grid>
 
@@ -99,10 +102,15 @@ const Background = ({ loading }) => {
               </Typography>
 
               <LabeledRow width={200} label={'Profesional'}>
-                <Text>{`${caseDetails?.professional?.names} ${caseDetails?.professional?.paternalSurname} ${caseDetails?.professional?.maternalSurname}`}</Text>
+                <Text
+                  loading={loading}
+                >{`${caseDetails?.professional?.names} ${caseDetails?.professional?.paternalSurname} ${caseDetails?.professional?.maternalSurname}`}</Text>
               </LabeledRow>
               <LabeledRow width={200} label={'Tipo de Solicitud'}>
-                <Text>{caseDetails?.requestType}</Text>
+                <Text loading={loading}>{caseDetails?.requestType}</Text>
+              </LabeledRow>
+              <LabeledRow label={'Comentario'}>
+                <Text loading={loading}>{caseDetails?.comments}</Text>
               </LabeledRow>
             </Grid>
           </Grid>

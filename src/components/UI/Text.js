@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import { Box, makeStyles, Typography } from '@material-ui/core'
-import { Skeleton } from '@material-ui/lab'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 const useStyles = makeStyles(() => ({
   text: {
@@ -14,11 +14,7 @@ const Text = ({ loading, loaderWidth, children, className }) => {
   return (
     <Box>
       {loading ? (
-        <Skeleton
-          width={loaderWidth}
-          variant="text"
-          className={classes.text}
-        ></Skeleton>
+        <LinearProgress width={loaderWidth} />
       ) : (
         <Typography className={clsx(classes.text, className)}>
           {children}
