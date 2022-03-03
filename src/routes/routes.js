@@ -74,7 +74,9 @@ const routes = [
           'SOCIAL_ASSISTANCE',
           'OTEC',
           'JEFATURA',
-          'ANALISTA_CASOS'
+          'ANALISTA_CASOS',
+          'SOCIAL_CASES',
+          'CESANTES'
         ]}
         yes={() => (
           <Layout>
@@ -85,15 +87,13 @@ const routes = [
       />
     )
   },
-  ...companyRoutes,
-  ...employeeRoutes,
   {
     path: '/obras',
     key: 'CONSTRUCTION',
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'ANALISTA_CASOS']}
         yes={() => (
           <Layout>
             <Constructions />
@@ -109,7 +109,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'ANALISTA_CASOS']}
         yes={() => (
           <Layout>
             <Construction />
@@ -125,7 +125,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN']}
         yes={() => (
           <Layout>
             <Settings />
@@ -269,7 +269,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN']}
         yes={() => (
           <Layout>
             <Polls />
@@ -285,7 +285,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN']}
         yes={() => (
           <Layout>
             <Poll />
@@ -307,7 +307,9 @@ const routes = [
           'SOCIAL_ASSISTANCE',
           'OTEC',
           'JEFATURA',
-          'ANALISTA_CASOS'
+          'ANALISTA_CASOS',
+          'SOCIAL_CASES',
+          'CESANTES'
         ]}
         yes={() => (
           <Layout>
@@ -372,7 +374,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'PROJECTS']}
         yes={() => (
           <Layout>
             <Benefits />
@@ -388,7 +390,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'PROJECTS']}
         yes={() => (
           <Layout>
             <BenefitPage />
@@ -404,7 +406,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA']}
         yes={() => (
           <Layout>
             <ScheduleList />
@@ -420,7 +422,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA']}
         yes={() => (
           <Layout>
             <ScheduleNew />
@@ -436,7 +438,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA']}
         yes={() => (
           <Layout>
             <Schedule />
@@ -452,7 +454,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA']}
         yes={() => (
           <Layout>
             <Housing />
@@ -468,7 +470,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA']}
         yes={() => (
           <Layout>
             <HousingNew />
@@ -484,7 +486,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE']}
+        availableTo={['ADMIN', 'JEFATURA']}
         yes={() => (
           <Layout>
             <Agreement />
@@ -500,7 +502,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
+        availableTo={['ADMIN', 'JEFATURA']}
         yes={() => (
           <Layout>
             <AgreementEmployee />
@@ -510,15 +512,13 @@ const routes = [
       />
     )
   },
-  ...coursesRoutes,
-  ...webQuestionEmployee,
   {
     path: '/question/list',
     key: 'WEB-CONSULT',
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA', 'SOCIAL_CASES']}
         yes={() => (
           <Layout>
             <QuestionPage />
@@ -534,7 +534,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA', 'SOCIAL_CASES']}
         yes={() => (
           <Layout>
             <Question />
@@ -550,7 +550,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
+        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA', 'SOCIAL_CASES']}
         yes={() => (
           <Layout>
             <QuestionDashboard />
@@ -560,16 +560,13 @@ const routes = [
       />
     )
   },
-  ...SocialCaseRoutes,
-  ...MigrantRoutes,
-  ...UnemployedRoutes,
   {
     path: '/inclusive',
     key: 'INCLUSIVE',
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'SOCIAL_ASSISTANCE', 'JEFATURA']}
+        availableTo={['ADMIN', 'JEFATURA', 'SOCIAL_CASES']}
         yes={() => (
           <Layout>
             <InclusivePage />
@@ -585,12 +582,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={[
-          'ADMIN',
-          'SOCIAL_ASSISTANCE',
-          'JEFATURA',
-          'ANALISTA_CASOS'
-        ]}
+        availableTo={['ADMIN', 'JEFATURA', 'ANALISTA_CASOS']}
         yes={() => (
           <Layout>
             <InclusiveCases />
@@ -606,12 +598,7 @@ const routes = [
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={[
-          'ADMIN',
-          'SOCIAL_ASSISTANCE',
-          'JEFATURA',
-          'ANALISTA_CASOS'
-        ]}
+        availableTo={['ADMIN', 'JEFATURA', 'ANALISTA_CASOS']}
         yes={() => (
           <Layout>
             <InclusionCase />
@@ -621,14 +608,21 @@ const routes = [
       />
     )
   },
-  ...SocialCaseRoutes,
   {
     path: '/protocols',
     key: 'PROTOCOLS',
     exact: true,
     component: ({ authenticated }) => (
       <Can
-        availableTo={['ADMIN', 'JEFATURA']}
+        availableTo={[
+          'ADMIN',
+          'PROJECTS',
+          'SOCIAL_ASSISTANCE',
+          'JEFATURA',
+          'ANALISTA_CASOS',
+          'SOCIAL_CASES',
+          'CESANTES'
+        ]}
         yes={() => (
           <Layout>
             <Protocols />
@@ -654,7 +648,12 @@ const routes = [
       />
     )
   },
+  ...companyRoutes,
+  ...employeeRoutes,
+  ...coursesRoutes,
+  ...webQuestionEmployee,
   ...SocialCaseRoutes,
+  ...UnemployedRoutes,
   ...MigrantRoutes
 ]
 export default routes
