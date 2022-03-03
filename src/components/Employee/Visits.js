@@ -143,7 +143,8 @@ const AttentionDetails = () => {
             submitFunction={createAttention}
             company={{
               business_name: employee?.current_job?.business_name,
-              id: employee?.current_job?.business_id
+              id: employee?.current_job?.business_id,
+              construction_name: employee.current_job.construction_name
             }}
             construction={{ name: '' }}
             successFunction={fetchList}
