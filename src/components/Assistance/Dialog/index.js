@@ -513,7 +513,6 @@ const WorkerInterventionRecord = ({
                     ) : (
                       <Box>
                         <Autocomplete
-                          required
                           options={beneficiaryList}
                           value={formik.values.beneficiary_selected}
                           getOptionLabel={(option) => option.names || ''}

@@ -266,7 +266,6 @@ const HousingForm = ({
                 name="specialty_id"
                 onChange={formik.handleChange}
                 value={formik.values.specialty_id}
-                required
                 error={
                   formik.touched.specialty_id &&
                   Boolean(formik.errors.specialty_id)
@@ -290,7 +289,6 @@ const HousingForm = ({
                 name="specialty_detail_id"
                 onChange={formik.handleChange}
                 value={formik.values.specialty_detail_id}
-                required
                 error={
                   formik.touched.specialty_detail_id &&
                   Boolean(formik.errors.specialty_detail_id)

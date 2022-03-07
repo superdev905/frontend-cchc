@@ -20,8 +20,7 @@ const SearchCompany = ({ onSelected, onDelete }) => {
     dispatch(
       companiesActions.searchCompanies({
         search: searchWithRut(e.target.value),
-        page: 1,
-        size: 20
+        page: 1
       })
     ).then((res) => {
       setList(res)
