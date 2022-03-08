@@ -1012,6 +1012,7 @@ const WorkerInterventionRecord = ({
           event="CREATE"
           maxWidth="md"
           fullWidth
+          disabled={formik.isSubmitting}
           open={openConfirm}
           onClose={toggleOpenConfirm}
           loading={formik.isSubmitting}

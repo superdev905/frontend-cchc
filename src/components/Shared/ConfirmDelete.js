@@ -12,7 +12,8 @@ const ConfirmDelete = ({
   success,
   loading,
   maxWidth,
-  fullWidth
+  fullWidth,
+  disabled
 }) => (
   <Dialog
     open={open}
@@ -34,6 +35,7 @@ const ConfirmDelete = ({
             onClick={onConfirm}
             loading={loading}
             success={success}
+            disabled={disabled}
           >
             {confirmText}
           </SubmitButton>
