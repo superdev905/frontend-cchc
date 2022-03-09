@@ -102,6 +102,7 @@ const CustomDataTable = ({
   loaderRows,
   styles,
   emptyMessage,
+  progressPending,
   bordered,
   background,
   ...props
@@ -123,6 +124,7 @@ const CustomDataTable = ({
       pagination={pagination}
       responsive={responsive}
       persistTableHead={true}
+      progressPending={progressPending}
       noDataComponent={<EmptyState message={emptyMessage} />}
       progressComponent={
         <Box width="100%">

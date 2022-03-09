@@ -1012,10 +1012,9 @@ const WorkerInterventionRecord = ({
           event="CREATE"
           maxWidth="md"
           fullWidth
-          disabled={formik.isSubmitting}
+          disabled={!formik.isValid || formik.isSubmitting}
           open={openConfirm}
           onClose={toggleOpenConfirm}
-          loading={formik.isSubmitting}
           success={success}
           confirmText="Guardar"
           message={
