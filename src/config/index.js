@@ -48,7 +48,7 @@ const services = {
     development: `${BASEURL[env]}:8000/api/v1`,
     testing: `${BASEURL[env]}:5194/api/v1`,
     production:
-      'http://employee-api.southcentralus.azurecontainer.io:5194/api/v1',
+      'http://assistance-service-prod.southcentralus.cloudapp.azure.com:5194/api/v1',
     azure_test:
       'http://employee-test.southcentralus.azurecontainer.io:5194/api/v1'
   },
