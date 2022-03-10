@@ -1,14 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
-import {
-  Box,
-  Grid,
-  Typography,
-  makeStyles,
-  IconButton
-} from '@material-ui/core'
-import { LocationOn as LocationOnIcon } from '@material-ui/icons'
+import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { endOfWeek } from 'date-fns'
 import startOfWeek from 'date-fns/startOfWeek'
@@ -295,25 +288,6 @@ const Details = ({ fetching, fetchDetails }) => {
             <LabeledRow label="Fin:">
               <Text loading={fetching}>
                 {visit ? formatHours(visit.end_date) : ''}
-              </Text>
-            </LabeledRow>{' '}
-            <LabeledRow label="Profesional:">
-              <Text loading={loading || fetching}>
-                {`${visit?.assigned?.names} ${visit?.assigned?.paternal_surname} ${visit?.assigned?.maternal_surname}`}
-              </Text>
-            </LabeledRow>
-            <LabeledRow label="Dirección:">
-              <Text loading={loading || fetching}>
-                {visit?.construction?.address}
-                {' - '}
-                <IconButton
-                  size="small"
-                  onClick={toggleOpenView}
-                  color="primary"
-                >
-                  Ver Ubicación:
-                  <LocationOnIcon />
-                </IconButton>
               </Text>
             </LabeledRow>
           </Grid>

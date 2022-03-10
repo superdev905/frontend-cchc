@@ -294,10 +294,7 @@ const List = () => {
         </Box>
       ) : (
         <Box mt={2}>
-          <Locked
-            title={'Visita cerrada'}
-            message={'No se puede agregan mas atenciones'}
-          />
+          <Locked message={'No se puede agregan mas atenciones'} />
         </Box>
       )}
 
