@@ -25,8 +25,7 @@ const services = {
   parameters: {
     development: `${BASEURL[env]}:5200/api/v1`,
     testing: `${BASEURL[env]}:5195/api/v1`,
-    production:
-      'http://parameters-api.southcentralus.azurecontainer.io:5195/api/v1',
+    production: 'http://40.74.233.194:5195/api/v1',
     azure_test:
       'http://parameters-test.southcentralus.azurecontainer.io:5195/api/v1'
   },
