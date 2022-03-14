@@ -13,18 +13,25 @@ import VisitStatusChip from './VisitStatusChip'
 const EventList = () => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const [currentDate] = useState(new Date())
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
   const [looking, setLooking] = useState(false)
   const { user } = useSelector((state) => state.auth)
+
+  const filterDate = (currentDate, days) => {
+    currentDate.setDate(currentDate.getDate() + days)
+    return currentDate
+  }
+
   const [filters, setFilters] = useState({
     page: 1,
     size: 10,
     status: 'PROGRAMADA',
     search: '',
     user_id: user?.id,
-    start_date: new Date(subDays(startOfWeek(currentDate), 1)).toISOString()
+    start_date: new Date(
+      subDays(startOfWeek(filterDate(new Date(), -30)), 1)
+    ).toISOString()
   })
   const { listEvents, totalEvents: totalPages } = useSelector(
     (state) => state.assistance
