@@ -207,8 +207,8 @@ const WorkerInterventionRecord = ({
       }
 
       submitFunction(body).then((result) => {
-        formik.setSubmitting(false)
         changeSuccess(true, () => {
+          formik.setSubmitting(false)
           enqueueSnackbar(successMessage, {
             variant: 'success',
             autoHideDuration: 1500
@@ -995,11 +995,7 @@ const WorkerInterventionRecord = ({
 
             <SubmitButton
               onClick={toggleOpenConfirm}
-              disabled={
-                formik.isSubmitting ||
-                getActivityValidation() ||
-                !formik.isValid
-              }
+              disabled={getActivityValidation()}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Registro`}
             </SubmitButton>
@@ -1013,7 +1009,7 @@ const WorkerInterventionRecord = ({
           maxWidth="md"
           fullWidth
           disabled={!formik.isValid || formik.isSubmitting}
-          loading={formik.isSubmitting}
+          loading={formik.isValidating}
           open={openConfirm}
           onClose={toggleOpenConfirm}
           success={success}

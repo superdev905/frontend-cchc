@@ -1,4 +1,3 @@
-import { FiLock as LockedIcon } from 'react-icons/fi'
 import { Box, makeStyles, Typography } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
@@ -28,9 +27,6 @@ const Locked = ({ title, message }) => {
   const classes = useStyles()
   return (
     <Box className={classes.root}>
-      <Box>
-        <LockedIcon className={classes.icon} />
-      </Box>
       <Typography className={classes.title}> {title}</Typography>
       <Typography className={classes.message}> {message}</Typography>
     </Box>

@@ -67,19 +67,8 @@ const Details = ({ fetching, fetchDetails }) => {
     end_date: endOfWeek(currentDate)
   })
 
-  const fetchEvents = (query) => {
-    dispatch(
-      assistanceActions.getCalendarEvents({
-        ...query,
-        start_date: query.start_date
-          ? new Date(query.start_date).toISOString()
-          : null,
-        end_date: query.end_date
-          ? new Date(query.end_date).toISOString()
-          : null,
-        user_id: user?.id || null
-      })
-    )
+  const fetchEvents = () => {
+    dispatch(assistanceActions.getCalendarEvents())
   }
 
   const onCancelEvent = () => {

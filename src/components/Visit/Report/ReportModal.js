@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { Box, Chip, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
+import { Editor } from '@tinymce/tinymce-react'
 import { Dialog } from '../../Shared'
 import { SubmitButton, TextArea, Button, TextField, InputLabel } from '../../UI'
 import { useSuccess } from '../../../hooks'
@@ -221,19 +222,26 @@ const ReportModal = ({
         </Grid>
 
         <Grid item xs={12}>
-          <TextArea
-            label="Observaciones"
-            required
-            name="observations"
+          <Editor
+            initialValue=""
             value={formik.values.observations}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={
-              formik.touched.observations && Boolean(formik.errors.observations)
-            }
-            helperText={
-              formik.touched.observations && formik.errors.observations
-            }
+            init={{
+              height: 500,
+              menubar: false,
+              plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount'
+              ],
+              toolbar:
+                'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ',
+              content_style:
+                'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+            }}
           />
         </Grid>
         <Grid item xs={12}>

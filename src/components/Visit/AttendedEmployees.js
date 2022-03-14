@@ -294,7 +294,7 @@ const List = () => {
         </Box>
       ) : (
         <Box mt={2}>
-          <Locked message={'No se puede agregan mas atenciones'} />
+          <Locked message={'No se puede agregar más atenciones'} />
         </Box>
       )}
 
