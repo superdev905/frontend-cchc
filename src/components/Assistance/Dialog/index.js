@@ -207,8 +207,8 @@ const WorkerInterventionRecord = ({
       }
 
       submitFunction(body).then((result) => {
+        formik.setSubmitting(false)
         changeSuccess(true, () => {
-          formik.setSubmitting(false)
           enqueueSnackbar(successMessage, {
             variant: 'success',
             autoHideDuration: 1500
