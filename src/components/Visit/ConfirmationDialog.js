@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
+import { useState } from 'react'
 import { makeStyles, Box, Typography } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
 import employeeActions from '../../state/actions/employees'
@@ -32,6 +33,7 @@ const ConfirmationDialog = ({
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const [trying, setTrying] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
   const { user } = useSelector((state) => state.auth)
@@ -43,9 +45,11 @@ const ConfirmationDialog = ({
         assistanceId: user.id,
         date: new Date().toISOString()
       }
+      setTrying(true)
       dispatch(
         employeeActions.createEmployeeRevision(employeeId, formData)
       ).then(() => {
+        setTrying(false)
         onCloseJobs()
         onClose()
         onCloseAssistence()
@@ -67,7 +71,9 @@ const ConfirmationDialog = ({
           declaro que todos los datos en la ficha del trabajador con nombre:{' '}
           <b>{employeeNames}</b> y rut: <b>{employeeRun}</b> son fidedignos.
         </Typography>
-        <Button onClick={applyConfirmation}>Confirmar</Button>
+        <Button onClick={applyConfirmation} disabled={trying}>
+          Confirmar
+        </Button>
       </Box>
     </Dialog>
   )
