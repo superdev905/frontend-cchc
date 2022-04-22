@@ -52,7 +52,7 @@ const services = {
     development: `${BASEURL[env]}:5191/api/v1`,
     testing: `${BASEURL[env]}:5199/api/v1`,
     production:
-      'http://scholarship-api.southcentralus.azurecontainer.io:5198/api/v1',
+      'http://scholarship-api.centralus.azurecontainer.io:5198/api/v1',
     azure_test:
       'http://scholarship-test.southcentralus.azurecontainer.io:5198/api/v1'
   },
@@ -75,16 +75,14 @@ const services = {
   schedule: {
     development: `${BASEURL[env]}:5300/api/v1`,
     testing: `${BASEURL[env]}:5199/api/v1`,
-    production:
-      'http://schedule-api.southcentralus.azurecontainer.io:5191/api/v1',
+    production: 'http://schedule-api.centralus.azurecontainer.io:5191/api/v1',
     azure_test:
       'http://schedule-test.southcentralus.azurecontainer.io:5191/api/v1'
   },
   housing: {
     development: `${BASEURL[env]}:5195/api/v1`,
     testing: `${BASEURL[env]}:5199/api/v1`,
-    production:
-      'http://vivienda-api.southcentralus.azurecontainer.io:5191/api/v1',
+    production: 'http://vivienda-api.centralus.azurecontainer.io:5191/api/v1',
     azure_test:
       'http://vivienda-test.southcentralus.azurecontainer.io:5191/api/v1'
   },
@@ -100,7 +98,7 @@ const services = {
     development: `${BASEURL[env]}:5197/api/v1`,
     testing: `${BASEURL[env]}:5196/api/v1`,
     production:
-      'http://consultas-web-api.southcentralus.azurecontainer.io:5194/api/v1',
+      'http://consultas-api.southcentralus.azurecontainer.io:5194/api/v1',
     azure_test:
       'http://consultas-test.southcentralus.azurecontainer.io:5194/api/v1'
   },
@@ -115,8 +113,7 @@ const services = {
   inclusion: {
     development: `${BASEURL[env]}:5115/api/v1`,
     testing: `${BASEURL[env]}:5196/api/v1`,
-    production:
-      'http://inclusion-api.southcentralus.azurecontainer.io:5196/api/v1',
+    production: 'http://inclusion-api.centralus.azurecontainer.io:5196/api/v1',
     azure_test:
       'http://inclusion-test.southcentralus.azurecontainer.io:5196/api/v1'
   },
