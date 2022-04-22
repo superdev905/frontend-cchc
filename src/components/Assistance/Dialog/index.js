@@ -16,7 +16,7 @@ import {
 import { Autocomplete } from '@material-ui/lab'
 import RowAutocomplete from './RowAutocomplete'
 import EmployeeRow from './EmployeeRow'
-import { ConfirmDelete, Dialog, FilePicker } from '../../Shared'
+import { Dialog, FilePicker } from '../../Shared'
 import {
   Button,
   Select,
@@ -41,6 +41,7 @@ import useStyles from './styles'
 import { validationSchema, caseAdditionalSchema } from './schema'
 import socialCasesActions from '../../../state/actions/socialCase'
 import CaseAdditionalForm from './CaseAdditionalForm'
+import ConfirmAttend from './ConfirmAttend'
 
 const attentionPlaces = ['OFICINA', 'TERRENO', 'VIRTUAL']
 
@@ -67,6 +68,7 @@ const WorkerInterventionRecord = ({
   const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
   const { success, changeSuccess } = useSuccess()
+  const [trying, setTrying] = useState(false)
   const [attachments, setAttachments] = useState([])
   const { areas, managementList } = useSelector((state) => state.common)
   const { casesForSelect } = useSelector((state) => state.socialCase)
@@ -201,13 +203,14 @@ const WorkerInterventionRecord = ({
         assigned_id: user.id,
         created_by: user.id
       }
+      setTrying(true)
 
       if (!body.case_id) {
         delete body.case_id
       }
 
       submitFunction(body).then((result) => {
-        formik.setSubmitting(false)
+        setTrying(false)
         changeSuccess(true, () => {
           enqueueSnackbar(successMessage, {
             variant: 'success',
@@ -995,11 +998,7 @@ const WorkerInterventionRecord = ({
 
             <SubmitButton
               onClick={toggleOpenConfirm}
-              disabled={
-                formik.isSubmitting ||
-                getActivityValidation() ||
-                !formik.isValid
-              }
+              disabled={getActivityValidation() || formik.isSubmitting}
             >
               {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Registro`}
             </SubmitButton>
@@ -1008,53 +1007,64 @@ const WorkerInterventionRecord = ({
       </Box>
 
       {formik.values && openConfirm && (
-        <ConfirmDelete
-          event="CREATE"
+        <ConfirmAttend
           maxWidth="md"
           fullWidth
-          disabled={!formik.isValid || formik.isSubmitting}
-          loading={formik.isSubmitting}
           open={openConfirm}
           onClose={toggleOpenConfirm}
-          success={success}
-          confirmText="Guardar"
           message={
-            <Box textAlign="left">
-              <Typography
-                style={{
-                  fontSize: '18px',
-                  textAlign: 'center',
-                  marginBottom: 25,
-                  fontWeight: 'bold'
-                }}
-              >
-                ¿Estás seguro de guardar esta atención?
-              </Typography>
-              <LabeledRow label="Lugar de atención:">
-                {formik.values.attention_place}
-              </LabeledRow>
-              <LabeledRow label="Metodo de contacto:">
-                {formik.values.contact_method}
-              </LabeledRow>
-              <LabeledRow label="Area:">{formik.values.area_name}</LabeledRow>
-              <LabeledRow label="Tema:">{selectedTopic?.name || ''}</LabeledRow>
-              <LabeledRow label="Estado:">{formik.values.status}</LabeledRow>
-              <LabeledRow label="Informe empresa:">
-                {formik.values.company_report}
-              </LabeledRow>
-              <LabeledRow label="Caso social:">
-                {formik.values.is_social_case}
-              </LabeledRow>
-              <LabeledRow label="Atención para:">
-                {selectedBeneficiary?.names}{' '}
-                {selectedBeneficiary?.paternal_surname}{' '}
-                {selectedBeneficiary?.maternal_surname}
-              </LabeledRow>
-            </Box>
+            <>
+              <Box textAlign="left">
+                <Typography
+                  style={{
+                    fontSize: '18px',
+                    textAlign: 'center',
+                    marginBottom: 25,
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ¿Estás seguro de guardar esta atención?
+                </Typography>
+                <LabeledRow label="Lugar de atención:">
+                  {formik.values.attention_place}
+                </LabeledRow>
+                <LabeledRow label="Metodo de contacto:">
+                  {formik.values.contact_method}
+                </LabeledRow>
+                <LabeledRow label="Area:">{formik.values.area_name}</LabeledRow>
+                <LabeledRow label="Tema:">
+                  {selectedTopic?.name || ''}
+                </LabeledRow>
+                <LabeledRow label="Estado:">{formik.values.status}</LabeledRow>
+                <LabeledRow label="Informe empresa:">
+                  {formik.values.company_report}
+                </LabeledRow>
+                <LabeledRow label="Caso social:">
+                  {formik.values.is_social_case}
+                </LabeledRow>
+                <LabeledRow label="Atención para:">
+                  {selectedBeneficiary?.names}{' '}
+                  {selectedBeneficiary?.paternal_surname}{' '}
+                  {selectedBeneficiary?.maternal_surname}
+                </LabeledRow>
+              </Box>
+              <Box textAlign="center" marginTop="15px">
+                <Button variant="outlined" onClick={onClose}>
+                  Cancelar
+                </Button>
+                <SubmitButton
+                  onClick={() => {
+                    formik.handleSubmit()
+                  }}
+                  loading={trying}
+                  disabled={trying}
+                  success={success}
+                >
+                  Guardar
+                </SubmitButton>
+              </Box>
+            </>
           }
-          onConfirm={() => {
-            formik.handleSubmit()
-          }}
         />
       )}
 

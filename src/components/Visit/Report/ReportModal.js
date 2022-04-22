@@ -54,6 +54,7 @@ const ReportModal = ({
       contacts: type === 'UPDATE' ? [] : []
     },
     onSubmit: (values) => {
+      formik.isSubmitting(true)
       const formData = { ...values }
       formData.contacts = formData.contacts.map((item) => ({
         contact_id: item.id,
@@ -273,7 +274,9 @@ const ReportModal = ({
         <SubmitButton
           loading={formik.isSubmitting}
           onClick={formik.handleSubmit}
-          disabled={!formik.isValid || getItemsValidation()}
+          disabled={
+            !formik.isValid || getItemsValidation() || formik.isSubmitting
+          }
           success={success}
         >{`${
           type === 'UPDATE' ? 'Actualizar' : 'Agregar'
