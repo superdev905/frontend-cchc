@@ -130,10 +130,9 @@ const services = {
   },
   protocols: {
     development: `${BASEURL[env]}:5119/api/v1`,
-    production:
-      'http://protocolos-api.southcentralus.azurecontainer.io:5197/api/v1',
+    production: 'http://protocols-api.centralus.azurecontainer.io:5197/api/v1',
     azure_test:
-      'http://protocolos-test.southcentralus.azurecontainer.io:5197/api/v1'
+      'http://protocols-test.southcentralus.azurecontainer.io:5197/api/v1'
   }
 }
 
