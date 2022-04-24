@@ -48,7 +48,7 @@ const Closing = () => {
               <Grid container>
                 <Grid item xs={12} md={6}>
                   <LabeledRow label={'Fecha'}>
-                    <Text>{formatDate(caseDetails?.closing.date)} </Text>
+                    <Text>{formatDate(caseDetails?.closing?.date)} </Text>
                   </LabeledRow>
                   <LabeledRow label={'Estado'}>
                     <Text>{caseDetails?.closing.state} </Text>
