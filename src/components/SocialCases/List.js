@@ -129,6 +129,10 @@ const SocialCasesList = () => {
               hide: 'md'
             },
             {
+              name: 'Asistente',
+              selector: (row) => row.assistanceId
+            },
+            {
               name: '',
               right: true,
               cell: (row) => (

@@ -1,4 +1,5 @@
 const Etnias = [
+  'No informada',
   'Mapuche',
   'Aymara',
   'Rapa Nui',

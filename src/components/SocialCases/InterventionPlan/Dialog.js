@@ -113,7 +113,6 @@ const PlanDialog = ({
               <DatePicker
                 label="Fecha"
                 disabledFuture={false}
-                disabledPast
                 required
                 value={formik.values.nextDate}
                 onChange={(newDate) => {
