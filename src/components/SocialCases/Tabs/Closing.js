@@ -51,13 +51,13 @@ const Closing = () => {
                     <Text>{formatDate(caseDetails?.closing?.date)} </Text>
                   </LabeledRow>
                   <LabeledRow label={'Estado'}>
-                    <Text>{caseDetails?.closing.state} </Text>
+                    <Text>{caseDetails?.closing?.state} </Text>
                   </LabeledRow>
                   <LabeledRow label={'Encargado'}>
-                    <Text>{caseDetails?.closing.professionalNames}</Text>
+                    <Text>{caseDetails?.closing?.professionalNames}</Text>
                   </LabeledRow>
                   <LabeledRow label={'Observaciones'}>
-                    <Text>{caseDetails?.closing.observations}</Text>
+                    <Text>{caseDetails?.closing?.observations}</Text>
                   </LabeledRow>
                 </Grid>
               </Grid>
