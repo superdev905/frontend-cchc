@@ -1,5 +1,5 @@
-/* import { useEffect } from 'react'
-import { useParams } from 'react-router-dom' */
+import { useEffect, useState } from 'react'
+/*  import { useParams } from 'react-router-dom' */
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import employeesActions from '../../state/actions/employees'
@@ -16,13 +16,13 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const Details = ({ loading }) => {
+const Details = () => {
   const dispatch = useDispatch()
   const classes = useStyles()
   /* const { idEmployee } = useParams() */
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { employee } = useSelector((state) => state.employees)
-
+  const [loading, setLoading] = useState(true)
   const updateEmployeeInfo = (values) =>
     dispatch(
       employeesActions.updateEmployee(employee.id, {
@@ -31,14 +31,19 @@ const Details = ({ loading }) => {
       })
     )
   const getEmployeeDetails = () => {
+    setLoading(true)
     dispatch(employeesActions.getEmployeeDetails(employee.id))
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }
 
-  /* useEffect(() => {
+  useEffect(() => {
     getEmployeeDetails()
-    console.log({ employee })
-  }, []) */
-
+  }, [])
   return (
     <Box width="100%">
       <Wrapper>
