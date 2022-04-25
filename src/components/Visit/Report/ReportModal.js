@@ -41,9 +41,10 @@ const ReportModal = ({
   const { enqueueSnackbar } = useSnackbar()
   const [reportItems, setReportItems] = useState([])
   const { isMobile } = useSelector((state) => state.ui)
-  const { visit } = useSelector((state) => state.assistance)
+  const { visit, listItems } = useSelector((state) => state.assistance)
   const { contacts } = useSelector((state) => state.constructions)
   const { success, changeSuccess } = useSuccess()
+  console.log(listItems)
 
   const formik = useFormik({
     validateOnMount: true,
