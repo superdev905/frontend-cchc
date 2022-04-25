@@ -124,6 +124,21 @@ const changePasswordProfile = (userId, oldPassword, newPassword) => () =>
       })
   })
 
+const reportEmail = (fileName, url, contacts) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.auth}/mail`, {
+      fileName,
+      url,
+      contacts
+    })
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+
 const authActions = {
   loginUser,
   getLoggedUser,
@@ -133,7 +148,8 @@ const authActions = {
   checkRecovery,
   resetPassword,
   changePasswordFirstLogin,
-  changePasswordProfile
+  changePasswordProfile,
+  reportEmail
 }
 
 export default authActions

@@ -38,7 +38,7 @@ const services = {
   auth: {
     development: `${BASEURL[env]}:5500/api/v1`,
     testing: `${BASEURL[env]}:5192/api/v1`,
-    production: 'http://157.55.183.184:5192/api/v1',
+    production: 'http://localhost:3997/api/v1',
     azure_test: 'http://auth-test.southcentralus.azurecontainer.io:5192/api/v1'
   },
   employee: {

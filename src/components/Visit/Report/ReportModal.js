@@ -54,7 +54,6 @@ const ReportModal = ({
       contacts: type === 'UPDATE' ? [] : []
     },
     onSubmit: (values) => {
-      formik.isSubmitting(true)
       const formData = { ...values }
       formData.contacts = formData.contacts.map((item) => ({
         contact_id: item.id,
