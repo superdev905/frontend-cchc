@@ -79,11 +79,12 @@ const getEventDetails = (idEvent) => (dispatch) =>
         reject(err.response.data.detail)
       })
   })
-const getVisitReportItems = (id) => () =>
+const getVisitReportItems = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.assistance}/visits/${id}/report-items`)
       .then((response) => {
         const { data } = response
+        dispatch({ type: assistanceTypes.GET_ITEMS, payload: data })
         resolve(data)
       })
       .catch((err) => {

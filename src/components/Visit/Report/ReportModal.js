@@ -1,26 +1,17 @@
 import * as Yup from 'yup'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useSnackbar } from 'notistack'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
-import { Box, Chip, Grid, makeStyles, Typography } from '@material-ui/core'
+import { Box, Chip, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import { Dialog } from '../../Shared'
 import { SubmitButton, TextArea, Button, TextField, InputLabel } from '../../UI'
 import { useSuccess } from '../../../hooks'
 import constructionsActions from '../../../state/actions/constructions'
 import assistanceActions from '../../../state/actions/assistance'
-import { isValidNumber } from '../../../validations'
-
-const useStyles = makeStyles((theme) => ({
-  itemWrapper: {
-    border: `1px solid ${theme.palette.gray.gray500}`,
-    borderRadius: 5,
-    marginBottom: 8,
-    padding: '5px 8px'
-  }
-}))
+import List from './List'
 
 const validationSchema = Yup.object().shape({
   observations: Yup.string().required('Ingrese observacion'),
@@ -36,12 +27,10 @@ const ReportModal = ({
   successFunction
 }) => {
   const dispatch = useDispatch()
-  const classes = useStyles()
   const { idVisit } = useParams()
   const { enqueueSnackbar } = useSnackbar()
-  const [reportItems, setReportItems] = useState([])
   const { isMobile } = useSelector((state) => state.ui)
-  const { visit } = useSelector((state) => state.assistance)
+  const { visit, listItems } = useSelector((state) => state.assistance)
   const { contacts } = useSelector((state) => state.constructions)
   const { success, changeSuccess } = useSuccess()
 
@@ -60,9 +49,9 @@ const ReportModal = ({
         contact_names: item.full_name,
         contact_email: item.email
       }))
-      formData.items = reportItems.map((item) => ({
-        item_id: item.itemId,
-        item_name: item.itemName,
+      formData.items = listItems.map((item) => ({
+        item_id: item.id,
+        item_name: item.name,
         value: item.value
       }))
       submitFunction(formData)
@@ -102,55 +91,13 @@ const ReportModal = ({
     dispatch(constructionsActions.getContacts(visit.construction_id))
   }
 
-  const handleChangeItem = (e, id) => {
-    setReportItems(
-      reportItems.map((item) =>
-        item.itemId === id
-          ? {
-              ...item,
-              value: isValidNumber(e.target.value)
-            }
-          : item
-      )
-    )
-  }
-
   const getItemsValidation = () =>
-    reportItems.filter((item) => item.value === '').length > 0
+    listItems.filter((item) => item.value === '').length > 0
 
   useEffect(() => {
     if (open) {
       fetchContacts()
       dispatch(assistanceActions.getVisitReportItems(idVisit))
-        .then((items) => {
-          if (type === 'UPDATE') {
-            const list = []
-            data.items.forEach((reportItem) => {
-              const currentItem = items.find(
-                (value) => value.id === reportItem.item_id
-              )
-              list.push({
-                itemId: currentItem.id,
-                itemName: currentItem.name,
-                isComplete: false,
-                value: reportItem.value
-              })
-            })
-            setReportItems(list)
-          } else {
-            setReportItems(
-              items.map((item) => ({
-                itemId: item.id,
-                itemName: item.name,
-                isComplete: false,
-                value: item.value
-              }))
-            )
-          }
-        })
-        .catch(() => {
-          setReportItems([])
-        })
       dispatch(assistanceActions.getReportItems())
     }
   }, [open])
@@ -241,28 +188,7 @@ const ReportModal = ({
             <InputLabel required>Items</InputLabel>
           </Box>
           <Box>
-            <Grid container>
-              {reportItems.map((item, index) => (
-                <Grid key={`report-item-${index}`} item xs={12}>
-                  <Box className={classes.itemWrapper}>
-                    <Grid container alignItems="center">
-                      <Grid item xs={10}>
-                        <Typography>{item.itemName}</Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <TextField
-                          type="number"
-                          value={item.value}
-                          onChange={(e) => handleChangeItem(e, item.itemId)}
-                          error={item.value === ''}
-                          inputProps={{ readOnly: true }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
+            <List />
           </Box>
         </Grid>
       </Grid>
