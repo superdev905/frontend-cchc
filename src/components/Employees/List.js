@@ -62,6 +62,9 @@ const ListEmployees = () => {
     fetchEmployees()
   }
 
+  useEffect(() => {
+    dispatch(employeesActions.getEmployeeNull())
+  }, [])
   const onRowClick = (row) => {
     history.push(`/employee/${row.id}/info`)
   }

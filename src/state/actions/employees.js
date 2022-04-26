@@ -49,6 +49,12 @@ const getEmployeeDetails =
         })
     })
 
+const getEmployeeNull = () => (dispatch) =>
+  dispatch({
+    type: employeesTypes.GET_EMPLOYEE_DETAILS,
+    payload: null
+  })
+
 const createEmployee = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.employee}/employees`, values)
@@ -484,7 +490,8 @@ const employeeActions = {
   patchEmployeeJob,
   getEmployeeRelative,
   createEmployeeRevision,
-  patchRelative
+  patchRelative,
+  getEmployeeNull
 }
 
 export default employeeActions
