@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-/*  import { useParams } from 'react-router-dom' */
+/* import { useParams } from 'react-router-dom' */
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
-import employeesActions from '../../state/actions/employees'
+import employeeActions from '../../state/actions/employees'
 import { formatDate } from '../../formatters'
 import { useToggle } from '../../hooks'
 import { Button, LabeledRow, Text, Wrapper } from '../UI'
@@ -19,31 +19,29 @@ const useStyles = makeStyles(() => ({
 const Details = () => {
   const dispatch = useDispatch()
   const classes = useStyles()
+  const [loading, setLoading] = useState(true)
   /* const { idEmployee } = useParams() */
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { employee } = useSelector((state) => state.employees)
-  const [loading, setLoading] = useState(true)
   const updateEmployeeInfo = (values) =>
     dispatch(
-      employeesActions.updateEmployee(employee.id, {
+      employeeActions.updateEmployee(employee.id, {
         ...values,
         created_by: employee.created_by
       })
     )
-  const getEmployeeDetails = () => {
-    setLoading(true)
-    dispatch(employeesActions.getEmployeeDetails(employee.id))
-      .then(() => {
-        setLoading(false)
-      })
-      .catch(() => {
-        setLoading(false)
-      })
-  }
 
   useEffect(() => {
-    getEmployeeDetails()
-  }, [])
+    if (employee) {
+      updateEmployeeInfo(employee)
+        .then(() => {
+          setLoading(false)
+        })
+        .catch(() => {
+          setLoading(false)
+        })
+    }
+  }, [employee])
   return (
     <Box width="100%">
       <Wrapper>
@@ -177,7 +175,7 @@ const Details = () => {
           onClose={toggleOpenEdit}
           data={employee}
           submitFunction={updateEmployeeInfo}
-          successFunction={getEmployeeDetails}
+          successFunction={employeeActions.getEmployeeDetails}
         />
       )}
     </Box>
