@@ -1,5 +1,5 @@
-import { useState, Fragment } from 'react'
-import { useDispatch } from 'react-redux'
+import { useState, Fragment, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Autocomplete } from '@material-ui/lab'
 import { Box, CircularProgress } from '@material-ui/core'
 import companiesActions from '../../../state/actions/companies'
@@ -7,13 +7,23 @@ import searchWithRut from '../../../formatters/searchWithRut'
 import { InputLabel, TextField } from '../../UI'
 import { CompanyRow } from '../../Shared'
 
-const SearchCompany = ({ onSelected, onDelete }) => {
+const SearchCompany = ({ onSelected, onDelete, onDefaultValue }) => {
   const dispatch = useDispatch()
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [searchValue, setSearchValue] = useState('')
   const [loading, setLoading] = useState(false)
   const [list, setList] = useState([])
+  const { companyCalendar } = useSelector((state) => state.companies)
+  const defaultCompany = () => {
+    dispatch(companiesActions.getMainCompany(onDefaultValue))
+  }
+  useEffect(() => {
+    setSelectedCompany(companyCalendar)
+  }, [companyCalendar])
 
+  useEffect(() => {
+    defaultCompany()
+  }, [onDefaultValue])
   const searchCompanies = (e) => {
     setSearchValue(searchWithRut(e.target.value))
     setLoading(true)

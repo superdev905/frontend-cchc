@@ -58,12 +58,15 @@ const getAvailableCompanies = () => () =>
       })
   })
 
-const getMainCompany = (companyId) => () =>
+const getMainCompany = (companyId) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`/business/${companyId}`)
       .then((response) => {
         const { data } = response
-
+        dispatch({
+          type: businessTypes.GET_COMPANY,
+          payload: data
+        })
         resolve(data)
       })
       .catch((err) => {

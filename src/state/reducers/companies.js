@@ -1,6 +1,7 @@
 import businessTypes from '../types/companies'
 
 const initialState = {
+  companyCalendar: {},
   list: [],
   total: 0,
   showCreateModal: false,
@@ -38,6 +39,8 @@ const companiesReducer = (state = initialState, { type, payload }) => {
       return { ...state, contacts: payload }
     case businessTypes.BUSINESS_GET_CONSTRUCTIONS:
       return { ...state, constructions: payload }
+    case businessTypes.GET_COMPANY:
+      return { ...state, companyCalendar: payload }
     default:
       return state
   }

@@ -54,7 +54,11 @@ const EventForm = ({
 }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
-  const [selectedCompany, setSelectedCompany] = useState(null)
+  const [selectedCompany, setSelectedCompany] = useState(
+    type === 'CREATE'
+      ? { id: '', business_name: '' }
+      : { id: event.business_id, business_name: event.business_name }
+  )
   const [constructions, setConstructions] = useState([])
   const [selectedCons, setSelectedCons] = useState(null)
   const { user } = useSelector((state) => state.auth)
@@ -186,7 +190,7 @@ const EventForm = ({
       const targetCompany = companies.find(
         (item) => item.id === formik.values.business_id
       )
-      setSelectedCompany(targetCompany)
+      /* setSelectedCompany(targetCompany) */
       const listCons = targetCompany?.constructions
       setSelectedCons(
         listCons?.find((item) => item.id === formik.values.construction_id)
@@ -258,7 +262,7 @@ const EventForm = ({
       })
     }
   }, [!formik.isValid, formik.isSubmitting])
-
+  console.log(selectedCons)
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <Box>
@@ -366,6 +370,7 @@ const EventForm = ({
             <>
               <Grid item xs={12}>
                 <SearchCompany
+                  onDefaultValue={formik.values.business_id}
                   onSelected={(company) => setSelectedCompany(company)}
                   onDelete={() => {
                     setSelectedCompany(null)
