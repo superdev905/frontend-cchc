@@ -117,10 +117,14 @@ const EventForm = ({
     }
   })
   useEffect(() => {
-    dispatch(constructionsActions.getConstruction(event.construction_id))
-  }, [event.construction_id])
+    if (formik.values.shift_id && type === 'UPDATE') {
+      dispatch(constructionsActions.getConstruction(event?.construction_id))
+    }
+  }, [event?.construction_id])
   useEffect(() => {
-    setSelectedCons(construction)
+    if (formik.values.shift_id && type === 'UPDATE') {
+      setSelectedCons(construction)
+    }
   }, [construction])
   useEffect(() => {
     if (selectedCompany) {
