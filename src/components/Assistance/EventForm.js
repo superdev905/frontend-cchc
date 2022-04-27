@@ -214,8 +214,8 @@ const EventForm = ({
   useEffect(() => {
     if (open) {
       dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
-        (list) => {
-          setCompanies(list)
+        (List) => {
+          setCompanies(List)
         }
       )
       dispatch(commonActions.getEventTypes())
@@ -384,6 +384,7 @@ const EventForm = ({
                 <SearchCompany
                   onDefaultValue={formik.values.business_id}
                   onSelected={(company) => setSelectedCompany(company)}
+                  type={type}
                   onDelete={() => {
                     setSelectedCompany(null)
                     setConstructions([])

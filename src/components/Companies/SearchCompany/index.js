@@ -7,23 +7,32 @@ import searchWithRut from '../../../formatters/searchWithRut'
 import { InputLabel, TextField } from '../../UI'
 import { CompanyRow } from '../../Shared'
 
-const SearchCompany = ({ onSelected, onDelete, onDefaultValue }) => {
+const SearchCompany = ({ onSelected, onDelete, onDefaultValue, type }) => {
   const dispatch = useDispatch()
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [searchValue, setSearchValue] = useState('')
   const [loading, setLoading] = useState(false)
   const [list, setList] = useState([])
   const { companyCalendar } = useSelector((state) => state.companies)
+  const test = useSelector((state) => state)
+  console.log(test)
+
   const defaultCompany = () => {
     dispatch(companiesActions.getMainCompany(onDefaultValue))
   }
+
   useEffect(() => {
-    setSelectedCompany(companyCalendar)
+    if (type !== 'CREATE') {
+      setSelectedCompany(companyCalendar)
+    }
   }, [companyCalendar])
 
   useEffect(() => {
-    defaultCompany()
-  }, [onDefaultValue])
+    if (type !== 'CREATE') {
+      defaultCompany()
+    }
+  }, [type])
+
   const searchCompanies = (e) => {
     setSearchValue(searchWithRut(e.target.value))
     setLoading(true)
