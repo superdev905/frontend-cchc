@@ -117,8 +117,9 @@ const EventForm = ({
     }
   })
   useEffect(() => {
-    dispatch(constructionsActions.getConstruction(event.construction_id))
-  }, [event.construction_id])
+    if (type !== 'CREATE')
+      dispatch(constructionsActions.getConstruction(event.construction_id))
+  }, [type])
   useEffect(() => {
     setSelectedCons(construction)
   }, [construction])
