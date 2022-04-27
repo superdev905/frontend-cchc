@@ -61,7 +61,7 @@ const EventForm = ({
   )
   const [constructions, setConstructions] = useState([])
   const [selectedCons, setSelectedCons] = useState(null)
-  const { construction } = useSelector((state) => state.constructions)
+  const { construction, list } = useSelector((state) => state.constructions)
   const { user } = useSelector((state) => state.auth)
   const { eventTypes, shiftList } = useSelector((state) => state.common)
   const [companies, setCompanies] = useState([])
@@ -126,15 +126,18 @@ const EventForm = ({
       setSelectedCons(construction)
     }
   }, [construction])
+
+  useEffect(() => {
+    setConstructions(list)
+  }, [list])
+
   useEffect(() => {
     if (selectedCompany) {
       dispatch(
         constructionsActions.getConstructions({
           business_id: selectedCompany.id
         })
-      ).then((response) => {
-        setConstructions(response)
-      })
+      )
     }
     formik.setFieldValue('business_id', selectedCompany?.id || '')
     formik.setFieldValue('business_name', selectedCompany?.business_name || '')
