@@ -61,6 +61,7 @@ const EventForm = ({
   )
   const [constructions, setConstructions] = useState([])
   const [selectedCons, setSelectedCons] = useState(null)
+  const { construction } = useSelector((state) => state.constructions)
   const { user } = useSelector((state) => state.auth)
   const { eventTypes, shiftList } = useSelector((state) => state.common)
   const [companies, setCompanies] = useState([])
@@ -115,7 +116,12 @@ const EventForm = ({
       })
     }
   })
-
+  useEffect(() => {
+    dispatch(constructionsActions.getConstruction(event.construction_id))
+  }, [event.construction_id])
+  useEffect(() => {
+    setSelectedCons(construction)
+  }, [construction])
   useEffect(() => {
     if (selectedCompany) {
       dispatch(
@@ -262,7 +268,6 @@ const EventForm = ({
       })
     }
   }, [!formik.isValid, formik.isSubmitting])
-  console.log(selectedCons)
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <Box>
