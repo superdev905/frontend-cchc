@@ -45,6 +45,7 @@ const HousingForm = ({
   const { isMobile } = useSelector((state) => state.ui)
   const [subSpec, setSubSpec] = useState([])
   const { specList } = useSelector((state) => state.common)
+  const { list } = useSelector((state) => state.constructions)
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [constructionList, setConstructionList] = useState([])
 
@@ -100,16 +101,16 @@ const HousingForm = ({
 
   const handleGetConstructions = (idCompany) => {
     dispatch(
-      constructionsActions.getConstructions(
-        {
-          business_id: idCompany
-        },
-        false
-      )
-    ).then((res) => {
-      setConstructionList(res.filter((item) => !item.is_suspended))
-    })
+      constructionsActions.getConstructions({
+        business_id: idCompany
+      })
+    )
   }
+
+  useEffect(() => {
+    const finalList = list.filter((item) => !item.is_suspended)
+    setConstructionList(finalList)
+  }, [list])
 
   useEffect(() => {
     if (formik.values.contract_type !== 'CESANTE') {

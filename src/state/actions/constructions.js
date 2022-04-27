@@ -101,11 +101,11 @@ const getConstructions =
           if (handleDispatch) {
             dispatch({
               type: constructionTypes.GET_CONSTRUCTIONS,
-              payload: data.items
+              payload: data
             })
             dispatch({
               type: constructionTypes.SET_CONSTRUCTIONS_TOTAL,
-              payload: data.total
+              payload: data.length
             })
           }
           resolve(data.items)
