@@ -15,7 +15,6 @@ const ListEmployees = () => {
   const history = useHistory()
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
-  const [looking, setLooking] = useState(false)
   const [filters, setFilters] = useState({
     page: 1,
     skip: 0,
@@ -58,7 +57,6 @@ const ListEmployees = () => {
   }
 
   const searchButton = () => {
-    setLooking(true)
     fetchEmployees()
   }
 
@@ -106,12 +104,6 @@ const ListEmployees = () => {
     )
   }, [listEmployees])
 
-  useEffect(() => {
-    if (looking) {
-      fetchEmployees()
-    }
-  }, [filters])
-
   return (
     <Box>
       <Wrapper>
@@ -140,7 +132,6 @@ const ListEmployees = () => {
             <Grid item xs={12} md={4}>
               <SearchInput
                 value={filters.search}
-                status={looking}
                 placeholder="Buscar por: Nombres, RUN"
                 onChange={handleSearchChange}
               >
