@@ -48,6 +48,7 @@ const HousingForm = ({
   const { constructionByCompany } = useSelector((state) => state.constructions)
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [constructionList, setConstructionList] = useState([])
+  console.log(constructionByCompany)
 
   const formik = useFormik({
     validateOnMount: true,
@@ -106,6 +107,10 @@ const HousingForm = ({
       })
     )
   }
+
+  useEffect(() => {
+    setConstructionList(constructionByCompany)
+  }, [constructionByCompany])
 
   useEffect(() => {
     if (formik.values.contract_type !== 'CESANTE') {
