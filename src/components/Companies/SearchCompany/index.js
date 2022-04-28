@@ -14,8 +14,6 @@ const SearchCompany = ({ onSelected, onDelete, onDefaultValue, type }) => {
   const [loading, setLoading] = useState(false)
   const [list, setList] = useState([])
   const { companyCalendar } = useSelector((state) => state.companies)
-  const test = useSelector((state) => state)
-  console.log(test)
 
   const defaultCompany = () => {
     dispatch(companiesActions.getMainCompany(onDefaultValue))

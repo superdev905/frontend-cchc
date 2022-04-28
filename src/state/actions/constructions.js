@@ -101,6 +101,30 @@ const getConstructions =
           if (handleDispatch) {
             dispatch({
               type: constructionTypes.GET_CONSTRUCTIONS,
+              payload: data.items
+            })
+            dispatch({
+              type: constructionTypes.SET_CONSTRUCTIONS_TOTAL,
+              payload: data.length
+            })
+          }
+          resolve(data.items)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const getConstructionsCompany =
+  (query, handleDispatch = true) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(`/constructions/company?${queryString.stringify(query)}`)
+        .then((response) => {
+          const { data } = response
+          if (handleDispatch) {
+            dispatch({
+              type: constructionTypes.GET_CONSTRUCTIONS_BY_COMPANY,
               payload: data
             })
             dispatch({
@@ -255,7 +279,8 @@ const constructionActions = {
   updateContact,
   deleteContact,
   patchContact,
-  updateFilters
+  updateFilters,
+  getConstructionsCompany
 }
 
 export default constructionActions

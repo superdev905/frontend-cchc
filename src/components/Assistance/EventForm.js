@@ -61,7 +61,9 @@ const EventForm = ({
   )
   const [constructions, setConstructions] = useState([])
   const [selectedCons, setSelectedCons] = useState(null)
-  const { construction, list } = useSelector((state) => state.constructions)
+  const { construction, constructionByCompany } = useSelector(
+    (state) => state.constructions
+  )
   const { user } = useSelector((state) => state.auth)
   const { eventTypes, shiftList } = useSelector((state) => state.common)
   const [companies, setCompanies] = useState([])
@@ -128,13 +130,13 @@ const EventForm = ({
   }, [construction])
 
   useEffect(() => {
-    setConstructions(list)
-  }, [list])
+    setConstructions(constructionByCompany)
+  }, [constructionByCompany])
 
   useEffect(() => {
     if (selectedCompany) {
       dispatch(
-        constructionsActions.getConstructions({
+        constructionsActions.getConstructionsCompany({
           business_id: selectedCompany.id
         })
       )
@@ -396,7 +398,7 @@ const EventForm = ({
               </Grid>
               <Grid item xs={12}>
                 <Autocomplete
-                  options={constructions.filter(
+                  options={constructions?.filter(
                     (item) =>
                       item.status !== 'NO_VIGENTE' &&
                       item.state !== 'DELETED' &&

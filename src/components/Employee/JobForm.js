@@ -45,7 +45,9 @@ const HousingForm = ({
   const { isMobile } = useSelector((state) => state.ui)
   const [subSpec, setSubSpec] = useState([])
   const { specList } = useSelector((state) => state.common)
-  const { list } = useSelector((state) => state.constructions)
+  const { list, constructionByCompany } = useSelector(
+    (state) => state.constructions
+  )
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [constructionList, setConstructionList] = useState([])
 
@@ -101,15 +103,14 @@ const HousingForm = ({
 
   const handleGetConstructions = (idCompany) => {
     dispatch(
-      constructionsActions.getConstructions({
+      constructionsActions.getConstructionsCompany({
         business_id: idCompany
       })
     )
   }
 
   useEffect(() => {
-    const finalList = list.filter((item) => !item.is_suspended)
-    setConstructionList(finalList)
+    setConstructionList(constructionByCompany)
   }, [list])
 
   useEffect(() => {
@@ -196,6 +197,7 @@ const HousingForm = ({
                 </Box>
               ) : (
                 <SearchCompany
+                  type={type}
                   onSelected={(value) => {
                     setSelectedCompany(value)
                   }}

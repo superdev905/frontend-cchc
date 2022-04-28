@@ -12,7 +12,8 @@ const initialState = {
     limit: 20,
     search: '',
     state: ''
-  }
+  },
+  constructionByCompany: []
 }
 
 const constructionReducer = (state = initialState, { type, payload }) => {
@@ -31,6 +32,8 @@ const constructionReducer = (state = initialState, { type, payload }) => {
       return { ...state, contacts: payload }
     case constructionTypes.CONSTRUCTIONS_UPDATE_FILTERS:
       return { ...state, filters: payload }
+    case constructionTypes.GET_CONSTRUCTIONS_BY_COMPANY:
+      return { ...state, constructionByCompany: payload }
 
     default:
       return state
