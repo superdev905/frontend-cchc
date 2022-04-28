@@ -81,6 +81,7 @@ const WorkerInterventionRecord = ({
     activity: null
   })
   const [selectedPlans, setSelectedPlans] = useState([])
+  const [casoSocial, setCasoSocial] = useState([])
   const [beneficiaryList, setBeneficiaryList] = useState([])
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null)
   const { open: openBenefit, toggleOpen: toggleOpenBenefit } = useToggle()
@@ -389,6 +390,17 @@ const WorkerInterventionRecord = ({
       })
     }
   }, [!formik.isValid, formik.isSubmitting])
+
+  useEffect(() => {
+    if (casesForSelect.length > 0) {
+      const casos = casesForSelect?.filter(
+        (filter) => filter.employeeNames === employee.fullName
+      )
+      setCasoSocial(casos)
+    } else {
+      setCasoSocial([])
+    }
+  }, [employee, casesForSelect])
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
@@ -862,7 +874,7 @@ const WorkerInterventionRecord = ({
                     >
                       <option value="">SELECCIONE OPCIÓN</option>
                       {[{ id: 'NEW', name: 'NUEVO' }]
-                        .concat(casesForSelect)
+                        .concat(casoSocial)
                         .map((item, i) => (
                           <option key={`case_id-${i}-${item}`} value={item.id}>
                             {item.id === 'NEW'
@@ -895,6 +907,10 @@ const WorkerInterventionRecord = ({
                       }
                     >
                       <option value="">SELECCIONE PLAN DE INTERVENCIÓN</option>
+                      <option value="autoderivation">AUTODERIVACIÓN</option>
+                      <option value="jointIntervention">
+                        INTERVENCIÓN CONJUNTA
+                      </option>
                       {selectedPlans.map((item, i) => (
                         <option key={`plan-${i}-${item}`} value={item.id}>
                           {item.managementName}
