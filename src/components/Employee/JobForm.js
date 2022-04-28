@@ -111,7 +111,7 @@ const HousingForm = ({
 
   useEffect(() => {
     setConstructionList(constructionByCompany)
-  }, [list])
+  }, [constructionByCompany])
 
   useEffect(() => {
     if (formik.values.contract_type !== 'CESANTE') {
