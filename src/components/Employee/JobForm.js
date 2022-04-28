@@ -45,9 +45,7 @@ const HousingForm = ({
   const { isMobile } = useSelector((state) => state.ui)
   const [subSpec, setSubSpec] = useState([])
   const { specList } = useSelector((state) => state.common)
-  const { list, constructionByCompany } = useSelector(
-    (state) => state.constructions
-  )
+  const { constructionByCompany } = useSelector((state) => state.constructions)
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [constructionList, setConstructionList] = useState([])
 
