@@ -1,8 +1,5 @@
-import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Box, Grid, Typography, makeStyles, Paper } from '@material-ui/core'
-import assistanceActions from '../../state/actions/assistance'
 import { LabeledRow, Text, Wrapper } from '../UI'
 
 const useStyles = makeStyles(() => ({
@@ -17,19 +14,8 @@ const useStyles = makeStyles(() => ({
 
 const VisitStatistics = () => {
   const classes = useStyles()
-  const dispatch = useDispatch()
-  const { idVisit } = useParams()
-  const [fetching, setFetching] = useState(false)
-  const [data, setData] = useState({ total: 0, new: 0, old: 0 })
   const { attendedEmployeeList } = useSelector((state) => state.assistance)
-
-  useEffect(() => {
-    setFetching(true)
-    dispatch(assistanceActions.getVisitStatistics(idVisit)).then((result) => {
-      setFetching(false)
-      setData(result)
-    })
-  }, [idVisit, attendedEmployeeList])
+  const attendedEmployee = attendedEmployeeList.length
 
   return (
     <Wrapper>
@@ -50,21 +36,15 @@ const VisitStatistics = () => {
           <hr></hr>
           <Grid>
             <LabeledRow label="Nuevos:">
-              <Text loaderWidth="80%" loading={fetching}>
-                {data?.new}
-              </Text>
+              <Text loaderWidth="80%"></Text>
             </LabeledRow>
 
             <LabeledRow label="Antiguos:">
-              <Text loaderWidth="80%" loading={fetching}>
-                {data?.old}
-              </Text>
+              <Text loaderWidth="80%"></Text>
             </LabeledRow>
 
             <LabeledRow label="Total:">
-              <Text loaderWidth="80%" loading={fetching}>
-                {data?.total}
-              </Text>
+              <Text loaderWidth="80%">{attendedEmployee}</Text>
             </LabeledRow>
           </Grid>
         </Paper>
@@ -81,19 +61,13 @@ const VisitStatistics = () => {
           <hr></hr>
           <Grid>
             <LabeledRow label="Casa:">
-              <Text loaderWidth="80%" loading={fetching}>
-                {data?.house}
-              </Text>
+              <Text loaderWidth="80%"></Text>
             </LabeledRow>{' '}
             <LabeledRow label="SubContrato:">
-              <Text loaderWidth="80%" loading={fetching}>
-                {data?.subcontract}
-              </Text>
+              <Text loaderWidth="80%"></Text>
             </LabeledRow>
             <LabeledRow label="Total:">
-              <Text loaderWidth="80%" loading={fetching}>
-                {data?.total}
-              </Text>
+              <Text loaderWidth="80%">{attendedEmployee}</Text>
             </LabeledRow>
           </Grid>
         </Paper>
