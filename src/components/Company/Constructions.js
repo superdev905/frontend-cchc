@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { Box, Typography } from '@material-ui/core'
 import { RestoreFromTrash as RestoreIcon } from '@material-ui/icons'
-import companyActions from '../../state/actions/companies'
 import constructionActions from '../../state/actions/constructions'
 import { ActionsTable, Button, StatusChip, Wrapper } from '../UI'
 import { useSuccess, useToggle } from '../../hooks'
@@ -24,7 +23,9 @@ const Details = ({ ...props }) => {
     state: 'ACTIVE'
   })
   const [tableData, setTableData] = useState([])
-  const { constructions, company } = useSelector((state) => state.companies)
+  const { company } = useSelector((state) => state.companies)
+  const { constructionByCompany } = useSelector((state) => state.constructions)
+
   const { open: openCreate, toggleOpen: toggleOpenCreate } = useToggle()
   const { open: openUpdate, toggleOpen: toggleOpenUpdate } = useToggle()
   const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
@@ -42,7 +43,7 @@ const Details = ({ ...props }) => {
   const fetchConstruction = () => {
     setTableData([])
     setLoading(true)
-    dispatch(companyActions.getConstructions(query)).then(() => {
+    dispatch(constructionActions.getConstructionsCompany(query)).then(() => {
       setLoading(false)
     })
   }
@@ -92,18 +93,17 @@ const Details = ({ ...props }) => {
   useEffect(() => {
     fetchConstruction()
   }, [query])
-
   useEffect(() => {
     setTableData(
-      constructions.map((item) => ({
+      constructionByCompany /*  .map((item) => ({
         ...item,
         is_partner: Boolean(item.is_partner),
         createDate: new Date(item.created_at).toLocaleDateString('es-CL', {
           dateStyle: 'long'
         })
-      }))
+      })) */
     )
-  }, [constructions])
+  }, [constructionByCompany])
 
   return (
     <Box>
