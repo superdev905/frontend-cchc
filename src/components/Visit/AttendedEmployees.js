@@ -162,7 +162,6 @@ const List = () => {
         bordered
         background
         emptyMessage="No hay trabajadores atendidos"
-        progressPending={searching}
         columns={[
           {
             name: 'Run',
