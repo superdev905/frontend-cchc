@@ -48,6 +48,7 @@ const HousingForm = ({
   const { constructionByCompany } = useSelector((state) => state.constructions)
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [constructionList, setConstructionList] = useState([])
+  console.log(constructionByCompany)
 
   const formik = useFormik({
     validateOnMount: true,
@@ -151,6 +152,7 @@ const HousingForm = ({
     formik.setFieldValue('business_name', selectedCompany?.business_name)
     if (selectedCompany) {
       handleGetConstructions(selectedCompany.id)
+      setConstructionList(constructionByCompany)
     }
   }, [selectedCompany])
 
@@ -208,7 +210,7 @@ const HousingForm = ({
             </Grid>
             <Grid item xs={12}>
               <Autocomplete
-                options={constructionList}
+                options={constructionByCompany}
                 value={
                   constructionList.length > 0 && formik.values.construction_id
                     ? constructionList[
