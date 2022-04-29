@@ -41,12 +41,12 @@ const General = ({
       prevision: data?.prevision || '',
       retired: data?.retired || 'NO APLICA',
       belongsToReconocer: data?.belongsToReconocer || 'NO APLICA',
-      isAdult: data?.isAdult || '',
+      isAdult: data?.isAdult || 'NO APLICA',
       gender: data?.gender || 'NO APLICA',
       activityType: data?.activityType || 'NO APLICA',
       inscriber: data?.inscriber || 'NO APLICA',
       funding: data?.funding || 'NO APLICA',
-      maxSalary: data?.maxSalary || ''
+      maxSalary: data?.maxSalary || 'NO APLICA'
     },
     onSubmit: (values) => {
       const formattedBody = { ...values }

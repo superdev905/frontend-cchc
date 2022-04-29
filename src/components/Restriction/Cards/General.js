@@ -39,7 +39,7 @@ const General = ({ restriction }) => (
           <Text>{restriction.funding || 'NO APLICA'}</Text>
         </LabeledRow>
         <LabeledRow label={'Renta máxima'}>
-          <Text>{formatCurrency(restriction.maxSalary)}</Text>
+          <Text>{formatCurrency(restriction.maxSalary) || 'NO APLICA'}</Text>
         </LabeledRow>
       </Grid>
     </Grid>
