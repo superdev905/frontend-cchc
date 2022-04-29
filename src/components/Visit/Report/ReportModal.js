@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { Box, Chip, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { Dialog } from '../../Shared'
 import { SubmitButton, TextArea, Button, TextField, InputLabel } from '../../UI'
 import { useSuccess } from '../../../hooks'
@@ -168,19 +170,12 @@ const ReportModal = ({
         </Grid>
 
         <Grid item xs={12}>
-          <TextArea
-            label="Observaciones"
-            required
-            name="observations"
-            value={formik.values.observations}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.observations && Boolean(formik.errors.observations)
-            }
-            helperText={
-              formik.touched.observations && formik.errors.observations
-            }
+          <CKEditor
+            editor={ClassicEditor}
+            onChange={(e, editor) => {
+              const observation = editor.getData()
+              formik.setFieldValue('observations', observation)
+            }}
           />
         </Grid>
         <Grid item xs={12}>
