@@ -97,7 +97,12 @@ const FilePicker = ({ id, onChange, acceptedFiles, onDelete, icon }) => {
           ></input>
           <label className={classes.label} htmlFor={id}>
             <Box p={2} className={classes.labelWrapper}>
-              <Box>{icon}</Box>
+              <Box display="flex" justifyContent="center" alignItems="center">
+                <Box>{icon}</Box>
+                <IconButton onClick={onRemove}>
+                  <CloseIcon />
+                </IconButton>
+              </Box>
               <Typography>
                 <strong>Selecciona un archivo</strong>
               </Typography>
