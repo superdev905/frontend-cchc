@@ -12,7 +12,7 @@ import { ConfirmDelete } from '../Shared'
 const InfoContact = () => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState(false)
   const [contacts, setContacts] = useState([])
   const { success, changeSuccess } = useSuccess()
@@ -44,7 +44,6 @@ const InfoContact = () => {
     )
 
   const fetchContacts = (run) => {
-    setLoading(true)
     dispatch(employeesActions.getEmployeeContact({ employee_run: run }))
       .then((list) => {
         setLoading(false)
