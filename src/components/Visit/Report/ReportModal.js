@@ -1,7 +1,6 @@
 import * as Yup from 'yup'
 import { useEffect } from 'react'
 import { useSnackbar } from 'notistack'
-import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { Box, Chip, Grid, Typography } from '@material-ui/core'
@@ -12,7 +11,6 @@ import { Dialog } from '../../Shared'
 import { SubmitButton, TextArea, Button, TextField, InputLabel } from '../../UI'
 import { useSuccess } from '../../../hooks'
 import constructionsActions from '../../../state/actions/constructions'
-import assistanceActions from '../../../state/actions/assistance'
 import List from './List'
 
 const validationSchema = Yup.object().shape({
@@ -29,10 +27,12 @@ const ReportModal = ({
   successFunction
 }) => {
   const dispatch = useDispatch()
-  const { idVisit } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const { isMobile } = useSelector((state) => state.ui)
-  const { visit, listItems } = useSelector((state) => state.assistance)
+  const { visit } = useSelector((state) => state.assistance)
+  const { assistanceConstructionList } = useSelector(
+    (state) => state.assistance
+  )
   const { contacts } = useSelector((state) => state.constructions)
   const { success, changeSuccess } = useSuccess()
 
@@ -51,10 +51,10 @@ const ReportModal = ({
         contact_names: item.full_name,
         contact_email: item.email
       }))
-      formData.items = listItems.map((item) => ({
+      formData.items = assistanceConstructionList.map((item) => ({
         item_id: item.id,
-        item_name: item.name,
-        value: item.value
+        item_name: item.type_name,
+        value: item.quantity
       }))
       submitFunction(formData)
         .then(() => {
@@ -93,14 +93,9 @@ const ReportModal = ({
     dispatch(constructionsActions.getContacts(visit.construction_id))
   }
 
-  const getItemsValidation = () =>
-    listItems.filter((item) => item.value === '').length > 0
-
   useEffect(() => {
     if (open) {
       fetchContacts()
-      dispatch(assistanceActions.getVisitReportItems(idVisit))
-      dispatch(assistanceActions.getReportItems())
     }
   }, [open])
 
@@ -172,6 +167,7 @@ const ReportModal = ({
         <Grid item xs={12}>
           <CKEditor
             editor={ClassicEditor}
+            data={formik.values.observations}
             onChange={(e, editor) => {
               const observation = editor.getData()
               formik.setFieldValue('observations', observation)
@@ -194,9 +190,7 @@ const ReportModal = ({
         <SubmitButton
           loading={formik.isSubmitting}
           onClick={formik.handleSubmit}
-          disabled={
-            !formik.isValid || getItemsValidation() || formik.isSubmitting
-          }
+          disabled={!formik.isValid || formik.isSubmitting}
           success={success}
         >{`${
           type === 'UPDATE' ? 'Actualizar' : 'Agregar'

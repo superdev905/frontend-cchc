@@ -26,7 +26,8 @@ const List = () => {
     page: 1,
     size: 30,
     search: '',
-    user_id: user?.id
+    user_id: user?.id,
+    role: user.role.key
   })
   const { open, anchorEl, handleClose, handleOpen } = useMenu()
   const { open: openVisitClose, toggleOpen: toggleOpenVisitClose } = useToggle()

@@ -43,7 +43,9 @@ const AttentionDetails = () => {
         employee_id: employee.id,
         employee_name: employee.names,
         employee_lastname: `${employee.paternal_surname}`,
-        employee_rut: employee.run
+        employee_rut: employee.run,
+        business_id: employee.current_job.business_id || '',
+        construction_id: employee.current_job.construction_id || ''
       })
     )
 
