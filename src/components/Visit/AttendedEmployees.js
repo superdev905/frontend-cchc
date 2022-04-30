@@ -62,6 +62,7 @@ const List = () => {
       <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}>
         No se encontraron trabajadores
         <Button
+          disabled={visit?.status === 'PROGRAMADA'}
           onClick={() => {
             dispatch(uiActions.setCurrentModule('EMPRESAS'))
             toggleOpenJEmployeeForm()
@@ -216,6 +217,7 @@ const List = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} md={4}>
                 <TextField
+                  disabled={visit.status === 'PROGRAMADA'}
                   placeholder="BUSCAR POR: RUT, NOMBRES"
                   value={searchUser}
                   onChange={(e) => {
@@ -223,7 +225,10 @@ const List = () => {
                   }}
                 />
               </Grid>
-              <IconButton onClick={() => searchEmployee()}>
+              <IconButton
+                disabled={visit.status === 'PROGRAMADA'}
+                onClick={() => searchEmployee()}
+              >
                 <SearchIcon />
               </IconButton>
             </Grid>
