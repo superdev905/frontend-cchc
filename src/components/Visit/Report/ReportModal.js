@@ -97,8 +97,10 @@ const ReportModal = ({
     formik.setFieldValue('observations', value)
   }
 
+  /*
   const getItemsValidation = () =>
     listItems.filter((item) => item.value === '').length > 0
+    */
 
   useEffect(() => {
     if (open) {
@@ -176,7 +178,6 @@ const ReportModal = ({
             theme="snow"
             value={formik.values.observations}
             onChange={handleObservations}
-            style={{ minHeight: '300px' }}
           />
         </Grid>
         <Grid item xs={12}>
