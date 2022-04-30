@@ -13,21 +13,23 @@ const useStyles = makeStyles((theme) => ({
 
 const List = () => {
   const classes = useStyles()
-  const { listItems } = useSelector((state) => state.assistance)
+  const { assistanceConstructionList } = useSelector(
+    (state) => state.assistance
+  )
   return (
     <Grid container>
-      {listItems.map((item, index) => (
+      {assistanceConstructionList.map((item, index) => (
         <Grid key={`report-item-${index}`} item xs={12}>
           <Box className={classes.itemWrapper}>
             <Grid container alignItems="center">
               <Grid item xs={10}>
-                <Typography>{item.name}</Typography>
+                <Typography>{item.type_name}</Typography>
               </Grid>
               <Grid item xs={2}>
                 <TextField
                   type="number"
-                  value={item.value}
-                  error={item.value === ''}
+                  value={item.quantity}
+                  error={item.quantity === ''}
                   inputProps={{ readOnly: true }}
                 />
               </Grid>

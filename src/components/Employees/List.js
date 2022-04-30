@@ -61,6 +61,10 @@ const ListEmployees = () => {
   }
 
   useEffect(() => {
+    fetchEmployees()
+  }, [])
+
+  useEffect(() => {
     dispatch(employeesActions.getEmployeeNull())
   }, [])
   const onRowClick = (row) => {
