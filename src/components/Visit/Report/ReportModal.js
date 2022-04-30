@@ -6,14 +6,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { Box, Chip, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
-import { CKEditor } from '@ckeditor/ckeditor5-react'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import ReactQuill from 'react-quill'
 import { Dialog } from '../../Shared'
 import { SubmitButton, TextArea, Button, TextField, InputLabel } from '../../UI'
 import { useSuccess } from '../../../hooks'
 import constructionsActions from '../../../state/actions/constructions'
 import assistanceActions from '../../../state/actions/assistance'
 import List from './List'
+import 'react-quill/dist/quill.snow.css'
 
 const validationSchema = Yup.object().shape({
   observations: Yup.string().required('Ingrese observacion'),
@@ -93,6 +93,10 @@ const ReportModal = ({
     dispatch(constructionsActions.getContacts(visit.construction_id))
   }
 
+  const handleObservations = (value) => {
+    formik.setFieldValue('observations', value)
+  }
+
   const getItemsValidation = () =>
     listItems.filter((item) => item.value === '').length > 0
 
@@ -170,12 +174,11 @@ const ReportModal = ({
         </Grid>
 
         <Grid item xs={12}>
-          <CKEditor
-            editor={ClassicEditor}
-            onChange={(e, editor) => {
-              const observation = editor.getData()
-              formik.setFieldValue('observations', observation)
-            }}
+          <ReactQuill
+            theme="snow"
+            value={formik.values.observations}
+            onChange={handleObservations}
+            style={{ minHeight: '300px' }}
           />
         </Grid>
         <Grid item xs={12}>
