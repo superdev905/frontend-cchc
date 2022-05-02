@@ -175,6 +175,7 @@ const WorkerInterventionRecord = ({
       beneficiary_selected: type === 'UPDATE' ? data.beneficiary_selected : ''
     },
     onSubmit: async (values) => {
+      setTrying(true)
       const attachmentsList = []
       await Promise.all(
         attachments.map(async (item) => {

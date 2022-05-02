@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Box, Grid, Typography, makeStyles, Paper } from '@material-ui/core'
-import assistanceActions from '../../state/actions/assistance'
 import { LabeledRow, Text, Wrapper } from '../UI'
 
 const useStyles = makeStyles(() => ({
@@ -17,21 +15,33 @@ const useStyles = makeStyles(() => ({
 
 const VisitStatistics = () => {
   const classes = useStyles()
-  const dispatch = useDispatch()
-  const { idVisit } = useParams()
-  const [fetching, setFetching] = useState(false)
-  const [data, setData] = useState({ total: 0, new: 0, old: 0 })
-  const { totalUsers } = useSelector((state) => state.assistance)
+  const [data, setData] = useState({
+    total: 0,
+    new: 0,
+    old: 0,
+    house: 0,
+    subcontract: 0
+  })
+  const { totalUsers, visit } = useSelector((state) => state.assistance)
 
   useEffect(() => {
-    setFetching(true)
-    dispatch(assistanceActions.getVisitStatistics(idVisit)).then((result) => {
-      setFetching(false)
-      setData(result)
-    })
-  }, [idVisit, totalUsers])
-
-  console.log(data)
+    if (totalUsers.length > 0) {
+      let old = 0
+      let newAtention = 0
+      let house = 0
+      let subcontract = 0
+      totalUsers?.forEach((user) => {
+        if (user?.constructionId === visit?.construction_id) {
+          house += 1
+          old += 1
+        } else {
+          newAtention += 1
+          subcontract += 1
+        }
+      })
+      setData({ new: newAtention, old, house, subcontract })
+    }
+  }, [totalUsers])
 
   return (
     <Wrapper>
@@ -51,16 +61,16 @@ const VisitStatistics = () => {
           </Typography>
           <hr></hr>
           <Grid>
-            <LabeledRow label="Nuevos:" loading={fetching}>
+            <LabeledRow label="Nuevos:">
               <Text loaderWidth="80%">{data.new}</Text>
             </LabeledRow>
 
-            <LabeledRow label="Antiguos:" loading={fetching}>
+            <LabeledRow label="Antiguos:">
               <Text loaderWidth="80%">{data.old}</Text>
             </LabeledRow>
 
-            <LabeledRow label="Total:" loading={fetching}>
-              <Text loaderWidth="80%">{totalUsers}</Text>
+            <LabeledRow label="Total:">
+              <Text loaderWidth="80%">{totalUsers.length}</Text>
             </LabeledRow>
           </Grid>
         </Paper>
@@ -76,14 +86,14 @@ const VisitStatistics = () => {
           </Typography>
           <hr></hr>
           <Grid>
-            <LabeledRow label="Casa:" loading={fetching}>
+            <LabeledRow label="Casa:">
               <Text loaderWidth="80%">{data.house}</Text>
             </LabeledRow>{' '}
-            <LabeledRow label="SubContrato:" loading={fetching}>
+            <LabeledRow label="SubContrato:">
               <Text loaderWidth="80%">{data.subcontract}</Text>
             </LabeledRow>
-            <LabeledRow label="Total:" loading={fetching}>
-              <Text loaderWidth="80%">{totalUsers}</Text>
+            <LabeledRow label="Total:">
+              <Text loaderWidth="80%">{totalUsers.length}</Text>
             </LabeledRow>
           </Grid>
         </Paper>

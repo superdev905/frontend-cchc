@@ -336,7 +336,8 @@ const getAssistanceList =
                 P: 0,
                 V: 0,
                 PS: 0,
-                B: 0
+                B: 0,
+                constructionId: attended[5]
               })
             })
           )
