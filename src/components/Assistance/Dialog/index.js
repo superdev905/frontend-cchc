@@ -212,7 +212,7 @@ const WorkerInterventionRecord = ({
       }
 
       submitFunction(body).then((result) => {
-        setTrying(false)
+        setTrying(true)
         changeSuccess(true, () => {
           enqueueSnackbar(successMessage, {
             variant: 'success',
@@ -1074,7 +1074,7 @@ const WorkerInterventionRecord = ({
                     formik.handleSubmit()
                   }}
                   loading={trying}
-                  disabled={trying}
+                  disabled={false}
                   success={success}
                 >
                   Guardar
