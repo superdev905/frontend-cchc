@@ -314,11 +314,37 @@ const getAssistanceList =
       )
         .then((response) => {
           const { data } = response
+          const result = []
+          data?.forEach((item) =>
+            item.forEach((attended) => {
+              result.push({
+                id: attended[0],
+                run: attended[1],
+                fullName: `${attended[2]} ${attended[3]}`,
+                atention: attended[4],
+                tag: 'A',
+                S: 0,
+                IN: 0,
+                FN: 0,
+                D: 0,
+                F: 0,
+                E: 0,
+                L: 0,
+                FR: 0,
+                AI: 0,
+                AG: 0,
+                P: 0,
+                V: 0,
+                PS: 0,
+                B: 0
+              })
+            })
+          )
           dispatch({
             type: assistanceTypes.GET_ATTENDED_EMPLOYEES,
-            payload: data.items
+            payload: result
           })
-          resolve(data.items)
+          resolve(data)
         })
         .catch((err) => {
           reject(err.response.data.detail)
@@ -474,6 +500,12 @@ const getCalendarStats =
         })
     })
 
+const totalUsers = (data) => (dispatch) =>
+  dispatch({
+    type: assistanceTypes.TOTAL_USERS,
+    payload: data
+  })
+
 const assistanceActions = {
   toggleModal,
   getCalendarEvents,
@@ -506,7 +538,8 @@ const assistanceActions = {
   getEmployeesToAttend,
   cleanCalendarEvents,
   getCalendarStats,
-  getVisitReportItems
+  getVisitReportItems,
+  totalUsers
 }
 
 export default assistanceActions

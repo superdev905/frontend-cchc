@@ -19,6 +19,7 @@ const VisitDetails = ({ fetching }) => {
   const { visit } = useSelector((state) => state.assistance)
   const [loading, setLoading] = useState(false)
   const [userDetails, setUserDetails] = useState(null)
+  console.log(userDetails)
 
   useEffect(() => {
     if (visit) {
@@ -83,7 +84,7 @@ const VisitDetails = ({ fetching }) => {
             <LabeledRow label="Profesional:">
               <Text loading={loading || fetching}>
                 {userDetails
-                  ? `${userDetails?.names} ${userDetails?.paternal_surname} ${userDetails?.maternal_surname}`
+                  ? `${userDetails[0]?.names} ${userDetails[0]?.paternal_surname} ${userDetails[0]?.maternal_surname}`
                   : ''}
               </Text>
             </LabeledRow>

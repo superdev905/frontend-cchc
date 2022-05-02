@@ -38,6 +38,22 @@ const List = () => {
   const { visit, attendedEmployeeList } = useSelector(
     (state) => state.assistance
   )
+  const atentionType = [
+    { name: 'SALUD', short: 'S' },
+    { name: 'INCORPORACION', short: 'IN' },
+    { name: 'FINIQUITADO', short: 'FN' },
+    { name: 'DEUDA / AHORRO', short: 'D' },
+    { name: 'FAMILIA', short: 'F' },
+    { name: 'EDUCACIÓN', short: 'E' },
+    { name: 'LEGAL', short: 'L' },
+    { name: 'FUNDACION RECONOCER', short: 'FR' },
+    { name: 'ATENCIÓN INDIVIDUAL', short: 'AI' },
+    { name: 'ATENCION GRUPAL', short: 'AG' },
+    { name: 'PREVISIÓN', short: 'P' },
+    { name: 'VIVIENDA', short: 'V' },
+    { name: 'PROYECTOS SOCIALES', short: 'PS' },
+    { name: 'BENEFICIOS DE EMPRESA', short: 'B' }
+  ]
 
   const fetchAttendedList = () => {
     dispatch(assistanceAction.getAssistanceList({ visit_id: idVisit }))
@@ -62,7 +78,7 @@ const List = () => {
       <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}>
         No se encontraron trabajadores
         <Button
-          disabled={visit?.status === 'PROGRAMADA' || visit.is_close_pending}
+          disabled={visit?.status === 'PROGRAMADA'}
           onClick={() => {
             dispatch(uiActions.setCurrentModule('EMPRESAS'))
             toggleOpenJEmployeeForm()
@@ -116,13 +132,32 @@ const List = () => {
     fetchAttendedList()
   }, [])
 
+  const attended = (arr) => {
+    const unique = []
+    arr.forEach((element) => {
+      const [type] = atentionType?.filter((f) => f.name === element.atention)
+      if (unique.length > 0) {
+        const add = []
+        unique.forEach((el, index) => {
+          if (el.id === element.id) {
+            add.push(true)
+            unique[index] = { ...el, [type.short]: el[type.short] + 1 }
+          }
+        })
+        if (add.length === 0) {
+          unique.push({ ...element, [type.short]: +1 })
+        }
+      } else {
+        unique.push({ ...element, [type.short]: +1 })
+      }
+    })
+    return unique
+  }
+
   useEffect(() => {
-    setAttendedList(
-      attendedEmployeeList.map((item) => ({
-        ...item,
-        fullName: `${item.employee_fullname}`
-      }))
-    )
+    const result = attended(attendedEmployeeList)
+    setAttendedList(result)
+    dispatch(assistanceAction.totalUsers(result.length))
   }, [attendedEmployeeList])
 
   useEffect(() => {
@@ -166,7 +201,7 @@ const List = () => {
         columns={[
           {
             name: 'Run',
-            selector: (row) => row.employee_run,
+            selector: (row) => row.run,
             sortable: true,
             width: '150px'
           },
@@ -192,7 +227,7 @@ const List = () => {
                   {
                     icon: <ArrowIcon />,
                     onClick: () => {
-                      history.push(`${pathname}/attended/${row.employee_id}`)
+                      history.push(`${pathname}/attended/${row.id}`)
                     }
                   }
                 ]}
@@ -217,9 +252,7 @@ const List = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} md={4}>
                 <TextField
-                  disabled={
-                    visit.status === 'PROGRAMADA' || visit.is_close_pending
-                  }
+                  disabled={visit.status === 'PROGRAMADA'}
                   placeholder="BUSCAR POR: RUT, NOMBRES"
                   value={searchUser}
                   onChange={(e) => {
@@ -228,9 +261,7 @@ const List = () => {
                 />
               </Grid>
               <IconButton
-                disabled={
-                  visit.status === 'PROGRAMADA' || visit.is_close_pending
-                }
+                disabled={visit.status === 'PROGRAMADA'}
                 onClick={() => searchEmployee()}
               >
                 <SearchIcon />
