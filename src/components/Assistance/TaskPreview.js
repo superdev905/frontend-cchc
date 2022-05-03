@@ -18,7 +18,6 @@ import assistanceActions from '../../state/actions/assistance'
 import employeesActions from '../../state/actions/employees'
 import AssistanceDialog from './Dialog'
 import { useToggle } from '../../hooks'
-import users from '../../state/types/users'
 
 const useStyles = makeStyles((theme) => ({
   root: {
