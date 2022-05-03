@@ -812,23 +812,19 @@ const WorkerInterventionRecord = ({
                   <Grid item xs={12} md={3} lg={2}>
                     <InputLabel required>Caso Social</InputLabel>
                     <Box>
-                      {company.id ? (
-                        <FormControlLabel
-                          value="end"
-                          control={
-                            <Radio
-                              color="primary"
-                              checked={formik.values.is_social_case === 'SI'}
-                              onChange={() => {
-                                formik.setFieldValue('is_social_case', 'SI')
-                              }}
-                            />
-                          }
-                          label="SI"
-                        />
-                      ) : (
-                        ''
-                      )}
+                      <FormControlLabel
+                        value="end"
+                        control={
+                          <Radio
+                            color="primary"
+                            checked={formik.values.is_social_case === 'SI'}
+                            onChange={() => {
+                              formik.setFieldValue('is_social_case', 'SI')
+                            }}
+                          />
+                        }
+                        label="SI"
+                      />
                       <FormControlLabel
                         value="end"
                         control={
