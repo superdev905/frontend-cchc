@@ -105,14 +105,6 @@ const ConstructionModal = ({
       if (selectClient) {
         data.business_id = parseInt(values.business_selected_id, 10)
       }
-
-      if (data.billing_business_id) {
-        dispatch(
-          companiesActions.patchCompany(data.billing_business_id, {
-            is_billing_business: true
-          })
-        )
-      }
       submitFunction(data)
         .then((result) => {
           if (type === 'CREATE' && moduleResponse.pollStatus.length > 0) {

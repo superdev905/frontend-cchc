@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiCheck as CompletedIcon } from 'react-icons/fi'
 import {
@@ -15,8 +15,10 @@ import { formatDate } from '../../formatters'
 import { Button, LabeledRow } from '../UI'
 import socialCasesActions from '../../state/actions/socialCase'
 import assistanceActions from '../../state/actions/assistance'
+import employeesActions from '../../state/actions/employees'
 import AssistanceDialog from './Dialog'
 import { useToggle } from '../../hooks'
+import users from '../../state/types/users'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,13 +56,30 @@ const TaskPreview = ({ open, onClose, anchorEl, event }) => {
   const { interventionPlanTask: task } = useSelector(
     (state) => state.socialCase
   )
+  const { employee } = useSelector((state) => state.employees)
+  const [loading, setLoading] = useState(true)
+
   const { open: openAssistance, toggleOpen: toggleOpenAssistance } = useToggle()
+
+  const getUser = (employeeId) => {
+    dispatch(employeesActions.getEmployeeDetails(employeeId))
+  }
 
   useEffect(() => {
     if (open) {
       dispatch(socialCasesActions.getInterventionTaskDetails(event.taskId))
     }
   }, [open])
+
+  useEffect(() => {
+    getUser(task?.socialCase.employeeId)
+  }, [task])
+
+  useEffect(() => {
+    if (employee) {
+      setLoading(false)
+    }
+  }, [employee])
 
   const createAttention = (values) =>
     dispatch(
@@ -131,13 +150,15 @@ const TaskPreview = ({ open, onClose, anchorEl, event }) => {
         <Divider />
 
         <Box display="flex" justifyContent="flex-end">
-          <Button
-            size="small"
-            disabled={event.isCompleted}
-            onClick={toggleOpenAssistance}
-          >
-            Registrar atención
-          </Button>
+          {!loading && (
+            <Button
+              size="small"
+              disabled={event.isCompleted}
+              onClick={toggleOpenAssistance}
+            >
+              Registrar atención
+            </Button>
+          )}
         </Box>
       </Box>
       {openAssistance && (
@@ -157,7 +178,7 @@ const TaskPreview = ({ open, onClose, anchorEl, event }) => {
             toggleOpenAssistance()
             onClose()
           }}
-          employee={task?.socialCase?.employee}
+          employee={employee}
         />
       )}
     </Menu>
