@@ -19,7 +19,6 @@ const VisitDetails = ({ fetching }) => {
   const { visit } = useSelector((state) => state.assistance)
   const [loading, setLoading] = useState(false)
   const [userDetails, setUserDetails] = useState(null)
-  console.log(userDetails)
 
   useEffect(() => {
     if (visit) {

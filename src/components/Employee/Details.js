@@ -34,11 +34,25 @@ const Details = ({ employeeId }) => {
   useEffect(() => {
     if (employee) {
       updateEmployeeInfo(employee)
-    }
-    if (employee.id === employeeId) {
-      setLoading(false)
+        .then(() => {
+          if (employee.id === employeeId) {
+            setLoading(false)
+          }
+          if (!employeeId && employee.id) {
+            setLoading(false)
+          }
+        })
+        .catch(() => {
+          if (employee.id === employeeId) {
+            setLoading(false)
+          }
+          if (!employeeId && employee.id) {
+            setLoading(false)
+          }
+        })
     }
   }, [employee])
+
   return (
     <Box width="100%">
       <Wrapper>
