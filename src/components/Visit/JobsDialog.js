@@ -21,7 +21,7 @@ const JobsDialog = ({
   customButon
 }) => {
   const tabsComponents = {
-    0: <EmployeeDetails />,
+    0: <EmployeeDetails employeeId={employeeId} />,
     1: <EmployeeInfoContact />,
     2: <EmployeeFamiliarGroup />,
     3: <Situation employeeId={employeeId} />,

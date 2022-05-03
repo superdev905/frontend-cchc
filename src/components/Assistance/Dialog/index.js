@@ -394,8 +394,11 @@ const WorkerInterventionRecord = ({
 
   useEffect(() => {
     if (casesForSelect.length > 0) {
-      const casos = casesForSelect?.filter(
-        (filter) => filter.employeeNames === employee.fullName
+      const casos = casesForSelect?.filter((filter) =>
+        employee.fullName
+          ? filter.employeeNames === employee.fullName
+          : filter.employeeNames ===
+            `${employee.names} ${employee.paternal_surname} ${employee.maternal_surname}`
       )
       setCasoSocial(casos)
     } else {

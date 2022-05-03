@@ -16,7 +16,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const Details = () => {
+const Details = ({ employeeId }) => {
   const dispatch = useDispatch()
   const classes = useStyles()
   const [loading, setLoading] = useState(true)
@@ -34,12 +34,9 @@ const Details = () => {
   useEffect(() => {
     if (employee) {
       updateEmployeeInfo(employee)
-        .then(() => {
-          setLoading(false)
-        })
-        .catch(() => {
-          setLoading(false)
-        })
+    }
+    if (employee.id === employeeId) {
+      setLoading(false)
     }
   }, [employee])
   return (
