@@ -115,15 +115,13 @@ const ReportModal = ({
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <TextArea
-            label="Casos relevantes"
-            required
-            name="relevant"
+          <Typography style={{ marginBottom: '5px', color: '#4A5568' }}>
+            Casos relevantes *
+          </Typography>
+          <ReactQuill
+            theme="snow"
             value={formik.values.relevant}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.relevant && Boolean(formik.errors.relevant)}
-            helperText={formik.touched.relevant && formik.errors.relevant}
+            onChange={(e) => formik.setFieldValue('relevant', e)}
           />
         </Grid>
 
@@ -174,6 +172,9 @@ const ReportModal = ({
         </Grid>
 
         <Grid item xs={12}>
+          <Typography style={{ marginBottom: '5px', color: '#4A5568' }}>
+            Observaciones *
+          </Typography>
           <ReactQuill
             theme="snow"
             value={formik.values.observations}

@@ -56,6 +56,9 @@ const General = ({
       if (!formattedBody.nationalityId) {
         formattedBody.nationalityId = null
       }
+      if (formattedBody.maxSalary === 'NO APLICA') {
+        formattedBody.maxSalary = 0
+      }
       submitFunction(formattedBody)
         .then(() => {
           formik.setSubmitting(false)
