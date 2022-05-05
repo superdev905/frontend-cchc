@@ -127,9 +127,6 @@ const Details = ({ fetching, fetchDetails }) => {
       })
   }
 
-  const name = `${user.names} ${user.paternal_surname} ${user.maternal_surname}`
-  const email = user.emai
-
   const onRequestVisitClose = () => {
     setLoading(true)
     dispatch(assistanceActions.requestVisitClose(visit.id))
@@ -140,6 +137,8 @@ const Details = ({ fetching, fetchDetails }) => {
           enqueueSnackbar('Solicitud exitosa', {
             variant: 'success'
           })
+          const name = `${user.names} ${user.paternal_surname} ${user.maternal_surname}`
+          const { email } = user
           dispatch(
             authActions.reportEmail(
               reportName,
