@@ -6,7 +6,7 @@ import { Alert } from '@material-ui/lab'
 import { endOfWeek } from 'date-fns'
 import startOfWeek from 'date-fns/startOfWeek'
 import assistanceActions from '../../state/actions/assistance'
-//  import authActions from '../../state/actions/auth'
+import authActions from '../../state/actions/auth'
 import { formatDate, formatHours } from '../../formatters'
 import { useSuccess, useToggle } from '../../hooks'
 import { LabeledRow, StatusChip, Text, Wrapper, Button } from '../UI'
@@ -42,10 +42,10 @@ const Details = ({ fetching, fetchDetails }) => {
   const { open: openReport, toggleOpen: toggleOpenReport } = useToggle()
   const { open: openViewReport, toggleOpen: toggleOpenViewReport } = useToggle()
   const { open: openEditReport, toggleOpen: toggleOpenEditReport } = useToggle()
-  /*  const { visit: report } = useSelector((state) => state.assistance)
+  const { visit: report } = useSelector((state) => state.assistance)
   const reportName = report?.report?.report_key
   const reportUrl = report?.report?.report_url
-  const contacts = report?.report?.contacts */
+  const contacts = report?.report?.contacts
 
   const createReport = (values) => {
     const data = {
@@ -127,6 +127,9 @@ const Details = ({ fetching, fetchDetails }) => {
       })
   }
 
+  const name = `${user.names} ${user.paternal_surname} ${user.maternal_surname}`
+  const email = user.emai
+
   const onRequestVisitClose = () => {
     setLoading(true)
     dispatch(assistanceActions.requestVisitClose(visit.id))
@@ -137,7 +140,15 @@ const Details = ({ fetching, fetchDetails }) => {
           enqueueSnackbar('Solicitud exitosa', {
             variant: 'success'
           })
-          /*  dispatch(authActions.reportEmail(reportName, reportUrl, contacts))
+          dispatch(
+            authActions.reportEmail(
+              reportName,
+              reportUrl,
+              contacts,
+              name,
+              email
+            )
+          )
             .then(() => {
               setLoading(false)
               changeSuccess(true, () => {
@@ -149,7 +160,7 @@ const Details = ({ fetching, fetchDetails }) => {
             .catch((err) => {
               setLoading(false)
               enqueueSnackbar(err, { variant: 'error' })
-            })  */
+            })
           toggleOpenVisitClose()
           fetchDetails()
         })

@@ -4,6 +4,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import { Box, IconButton } from '@material-ui/core'
 import { ArrowBack as BackIcon } from '@material-ui/icons'
 import assistanceActions from '../../state/actions/assistance'
+import commonActions from '../../state/actions/common'
 import { PageHeading } from '../../components/UI'
 import {
   VisitDetails,
@@ -36,6 +37,11 @@ const Visit = () => {
   useEffect(() => {
     getDetails()
   }, [idVisit])
+
+  useEffect(() => {
+    dispatch(commonActions.getAssistanceTypes())
+  }, [])
+
   return (
     <Box>
       <Box marginBottom="10px" display="flex" alignItems="center">

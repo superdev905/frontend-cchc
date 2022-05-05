@@ -52,7 +52,7 @@ const ReportModal = ({
         contact_email: item.email
       }))
       formData.items = assistanceConstructionList.map((item) => ({
-        item_id: item.id,
+        item_id: item.type_id,
         item_name: item.type_name,
         value: item.quantity
       }))
