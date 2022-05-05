@@ -78,7 +78,7 @@ const List = () => {
       <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}>
         No se encontraron trabajadores
         <Button
-          disabled={visit?.status === 'PROGRAMADA' || visit.is_close_pending}
+          disabled={visit?.status === 'PROGRAMADA' || visit?.is_close_pending}
           onClick={() => {
             dispatch(uiActions.setCurrentModule('EMPRESAS'))
             toggleOpenJEmployeeForm()
