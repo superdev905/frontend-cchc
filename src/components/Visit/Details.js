@@ -132,7 +132,6 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
     setLoading(true)
     dispatch(assistanceActions.requestVisitClose(visit.id))
       .then(() => {
-        setLoading(false)
         fetchEvents(filters)
         changeSuccess(true, () => {
           enqueueSnackbar('Solicitud exitosa', {
@@ -150,19 +149,19 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
             )
           )
             .then(() => {
-              setLoading(false)
+              toggleOpenVisitClose()
+              fetchDetails()
               changeSuccess(true, () => {
                 enqueueSnackbar('Correo enviado exitosamente', {
                   variant: 'success'
                 })
               })
+              setLoading(false)
             })
             .catch((err) => {
               setLoading(false)
               enqueueSnackbar(err, { variant: 'error' })
             })
-          toggleOpenVisitClose()
-          fetchDetails()
         })
       })
       .catch((err) => {
