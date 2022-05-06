@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import { Box, Grid, Typography, makeStyles, Paper } from '@material-ui/core'
 import { LabeledRow, Text, Wrapper } from '../UI'
+import assistanceActions from '../../state/actions/assistance'
 
 const useStyles = makeStyles(() => ({
   Paper: {
@@ -15,33 +17,15 @@ const useStyles = makeStyles(() => ({
 
 const VisitStatistics = () => {
   const classes = useStyles()
-  const [data, setData] = useState({
-    total: 0,
-    new: 0,
-    old: 0,
-    house: 0,
-    subcontract: 0
-  })
-  const { totalUsers, visit } = useSelector((state) => state.assistance)
+  const dispatch = useDispatch()
+  const { totalUsers, visitStatistics } = useSelector(
+    (state) => state.assistance
+  )
+  const { idVisit } = useParams()
 
   useEffect(() => {
-    if (totalUsers.length > 0) {
-      let old = 0
-      let newAtention = 0
-      let house = 0
-      let subcontract = 0
-      totalUsers?.forEach((user) => {
-        if (user?.constructionId === visit?.construction_id) {
-          house += 1
-          old += 1
-        } else {
-          newAtention += 1
-          subcontract += 1
-        }
-      })
-      setData({ new: newAtention, old, house, subcontract })
-    }
-  }, [totalUsers])
+    dispatch(assistanceActions.getVisitStatistics(idVisit))
+  }, [idVisit, totalUsers])
 
   return (
     <Wrapper>
@@ -62,15 +46,15 @@ const VisitStatistics = () => {
           <hr></hr>
           <Grid>
             <LabeledRow label="Nuevos:">
-              <Text loaderWidth="80%">{data.new}</Text>
+              <Text loaderWidth="80%">{visitStatistics?.new}</Text>
             </LabeledRow>
 
             <LabeledRow label="Antiguos:">
-              <Text loaderWidth="80%">{data.old}</Text>
+              <Text loaderWidth="80%">{visitStatistics?.old}</Text>
             </LabeledRow>
 
             <LabeledRow label="Total:">
-              <Text loaderWidth="80%">{totalUsers.length}</Text>
+              <Text loaderWidth="80%">{visitStatistics?.total}</Text>
             </LabeledRow>
           </Grid>
         </Paper>
@@ -87,13 +71,13 @@ const VisitStatistics = () => {
           <hr></hr>
           <Grid>
             <LabeledRow label="Casa:">
-              <Text loaderWidth="80%">{data.house}</Text>
+              <Text loaderWidth="80%">{visitStatistics?.house}</Text>
             </LabeledRow>{' '}
             <LabeledRow label="SubContrato:">
-              <Text loaderWidth="80%">{data.subcontract}</Text>
+              <Text loaderWidth="80%">{visitStatistics?.subcontract}</Text>
             </LabeledRow>
             <LabeledRow label="Total:">
-              <Text loaderWidth="80%">{totalUsers.length}</Text>
+              <Text loaderWidth="80%">{visitStatistics?.total}</Text>
             </LabeledRow>
           </Grid>
         </Paper>

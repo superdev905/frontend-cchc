@@ -14,7 +14,9 @@ const initialState = {
   employeesToAttend: [],
   calendarStats: [],
   listItems: [],
-  totalUsers: 0
+  totalUsers: 0,
+  historicly: [],
+  visitStatistics: []
 }
 
 const assistanceReducer = (state = initialState, { type, payload }) => {
@@ -47,6 +49,10 @@ const assistanceReducer = (state = initialState, { type, payload }) => {
       return { ...state, listItems: payload }
     case assistanceTypes.TOTAL_USERS:
       return { ...state, totalUsers: payload }
+    case assistanceTypes.EMPLOYEE_ATTENDED_HISTORICLY:
+      return { ...state, historicly: payload }
+    case assistanceTypes.GET_VISIT_STATISTICS:
+      return { ...state, visitStatistics: payload }
 
     default:
       return state

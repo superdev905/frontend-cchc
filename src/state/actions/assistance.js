@@ -92,11 +92,15 @@ const getVisitReportItems = (id) => (dispatch) =>
       })
   })
 
-const getVisitStatistics = (idVisit) => () =>
+const getVisitStatistics = (idVisit) => (dispatch) =>
   new Promise((resolve, reject) => {
     Axios.get(`${config.services.assistance}/visits/${idVisit}/statistics`)
       .then((response) => {
         const { data } = response
+        dispatch({
+          type: assistanceTypes.GET_VISIT_STATISTICS,
+          payload: data
+        })
         resolve(data)
       })
       .catch((err) => {
@@ -322,6 +326,7 @@ const getAssistanceList =
                 run: attended[1],
                 fullName: `${attended[2]} ${attended[3]}`,
                 atention: attended[4],
+                quantity: attended[6],
                 tag: 'A',
                 S: 0,
                 IN: 0,
@@ -457,6 +462,46 @@ const getAttendedEmployeeByBusiness =
         })
     })
 
+const getAttendedEmployeeByBusinessAndConstruction =
+  (query = {}) =>
+  () =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.assistance
+        }/assistance/business-construction?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
+const getAttendedHistoricalEmployees =
+  (query = {}) =>
+  (dispatch) =>
+    new Promise((resolve, reject) => {
+      Axios.get(
+        `${
+          config.services.assistance
+        }/assistance/business-history?${queryString.stringify(query)}`
+      )
+        .then((response) => {
+          const { data } = response
+          dispatch({
+            type: assistanceTypes.EMPLOYEE_ATTENDED_HISTORICLY,
+            payload: data
+          })
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const getEmployeesToAttend =
   (query = {}) =>
   (dispatch) =>
@@ -540,7 +585,9 @@ const assistanceActions = {
   cleanCalendarEvents,
   getCalendarStats,
   getVisitReportItems,
-  totalUsers
+  totalUsers,
+  getAttendedEmployeeByBusinessAndConstruction,
+  getAttendedHistoricalEmployees
 }
 
 export default assistanceActions

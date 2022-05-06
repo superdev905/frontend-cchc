@@ -31,7 +31,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const Details = ({ fetching, fetchDetails }) => {
+const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
   const dispatch = useDispatch()
   const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
@@ -138,14 +138,15 @@ const Details = ({ fetching, fetchDetails }) => {
             variant: 'success'
           })
           const name = `${user.names} ${user.paternal_surname} ${user.maternal_surname}`
-          const { email } = user
+          const { email, bossEmail } = user
           dispatch(
             authActions.reportEmail(
               reportName,
               reportUrl,
               contacts,
               name,
-              email
+              email,
+              bossEmail
             )
           )
             .then(() => {
@@ -188,6 +189,11 @@ const Details = ({ fetching, fetchDetails }) => {
   return (
     <Wrapper>
       <Box p={1} display="flex" justifyContent="flex-end">
+        <Button onClick={() => setHistorial(!historial)}>
+          {historial
+            ? 'Ocultar historial de atenciones'
+            : 'Mostrar Historial de atenciones'}
+        </Button>
         <Button
           onClick={toggleOpenStart}
           disabled={

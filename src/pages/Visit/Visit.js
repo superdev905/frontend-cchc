@@ -11,7 +11,8 @@ import {
   ContactList,
   AttendedEmployees,
   AttendEmployees,
-  VisitStatistics
+  VisitStatistics,
+  HistorialList
 } from '../../components/Visit'
 import ConstructionAttend from '../../components/Visit/ConstructionAttend/ConstructionAttend'
 import { VisitDotacion } from '../../components/Assistance'
@@ -19,6 +20,7 @@ import { VisitDotacion } from '../../components/Assistance'
 const Visit = () => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
+  const [historial, setHistorial] = useState(false)
   const { idVisit } = useParams()
   const history = useHistory()
   const { visit } = useSelector((state) => state.assistance)
@@ -50,9 +52,20 @@ const Visit = () => {
         </IconButton>
         <PageHeading>{`Visita ${idVisit}`}</PageHeading>
       </Box>
-      <VisitDetails fetching={loading} fetchDetails={getDetails} />
+      <VisitDetails
+        fetching={loading}
+        fetchDetails={getDetails}
+        setHistorial={setHistorial}
+        historial={historial}
+      />
 
       <ContactList />
+      {historial && (
+        <HistorialList
+          business_id={visit.business_id}
+          construction_id={visit.construction_id}
+        />
+      )}
       <AttendedEmployees
         isDisabled={
           visit?.status === 'CANCELADA' ||

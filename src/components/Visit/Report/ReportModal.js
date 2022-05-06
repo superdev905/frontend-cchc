@@ -94,7 +94,17 @@ const ReportModal = ({
   }
 
   const handleObservations = (value) => {
-    formik.setFieldValue('observations', value)
+    formik.setFieldValue(
+      'observations',
+      value.replace('span', 'label').replace('/span', '/label')
+    )
+  }
+
+  const handleRelevant = (value) => {
+    formik.setFieldValue(
+      'relevant',
+      value.replace('span', 'label').replace('/span', '/label')
+    )
   }
 
   /*
@@ -121,7 +131,7 @@ const ReportModal = ({
           <ReactQuill
             theme="snow"
             value={formik.values.relevant}
-            onChange={(e) => formik.setFieldValue('relevant', e)}
+            onChange={handleRelevant}
           />
         </Grid>
 

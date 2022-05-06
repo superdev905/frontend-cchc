@@ -141,14 +141,14 @@ const List = () => {
         unique.forEach((el, index) => {
           if (el.id === element.id) {
             add.push(true)
-            unique[index] = { ...el, [type.short]: el[type.short] + 1 }
+            unique[index] = { ...el, [type.short]: element.quantity }
           }
         })
         if (add.length === 0) {
-          unique.push({ ...element, [type.short]: +1 })
+          unique.push({ ...element, [type.short]: element.quantity })
         }
       } else {
-        unique.push({ ...element, [type.short]: +1 })
+        unique.push({ ...element, [type.short]: element.quantity })
       }
     })
     return unique
