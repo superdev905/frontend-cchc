@@ -127,7 +127,8 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
       })
   }
 
-  const onRequestVisitClose = () => {
+  const onRequestVisitClose = (e) => {
+    e.preventDefault()
     setLoading(true)
     dispatch(assistanceActions.requestVisitClose(visit.id))
       .then(() => {
@@ -386,7 +387,7 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
           success={success}
           onClose={toggleOpenVisitClose}
           loading={loading}
-          onConfirm={() => onRequestVisitClose()}
+          onConfirm={(e) => onRequestVisitClose(e)}
           message={
             <Box>
               <Typography variant="h6">
