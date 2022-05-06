@@ -172,7 +172,10 @@ const WorkerInterventionRecord = ({
         type === 'UPDATE' ? data.is_attended_relative : false,
       attention_beneficiary:
         type === 'UPDATE' ? data.attention_beneficiary : '',
-      beneficiary_selected: type === 'UPDATE' ? data.beneficiary_selected : ''
+      beneficiary_selected:
+        type === 'UPDATE' && data.is_attended_relative
+          ? data.beneficiary_selected
+          : ''
     },
     onSubmit: async (values) => {
       setTrying(true)
@@ -355,7 +358,7 @@ const WorkerInterventionRecord = ({
         topics.find((item) => item.id === parseInt(formik.values.topic_id, 10))
       )
     }
-  }, [formik.values.topic_id])
+  }, [formik.values.topic_id, data, topics])
 
   useEffect(() => {
     if (selectedBeneficiary) {
@@ -394,13 +397,22 @@ const WorkerInterventionRecord = ({
 
   useEffect(() => {
     if (casesForSelect.length > 0) {
-      const casos = casesForSelect?.filter((filter) =>
-        employee.fullName
-          ? filter.employeeNames === employee.fullName
-          : filter.employeeNames ===
-            `${employee.names} ${employee.paternal_surname} ${employee.maternal_surname}`
-      )
-      setCasoSocial(casos)
+      if (type !== 'UPDATE') {
+        const casos = casesForSelect?.filter((filter) =>
+          employee.fullName
+            ? filter.employeeNames === employee.fullName
+            : filter.employeeNames ===
+              `${employee.names} ${employee.paternal_surname} ${employee.maternal_surname}`
+        )
+        setCasoSocial(casos)
+      } else {
+        const casos = casesForSelect?.filter(
+          (filter) =>
+            filter.employeeNames ===
+            `${data.employee_name} ${data.employee_lastname}`
+        )
+        setCasoSocial(casos)
+      }
     } else {
       setCasoSocial([])
     }

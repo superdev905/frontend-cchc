@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { Box, Typography } from '@material-ui/core'
 import assistanceActions from '../../state/actions/assistance'
+import commonActions from '../../state/actions/common'
 import { ActionsTable, Wrapper } from '../UI'
 import { DataTable } from '../Shared'
 import { formatDate } from '../../formatters'
@@ -14,6 +15,7 @@ const AttentionDetails = () => {
   const dispatch = useDispatch()
   const { idVisit, idEmployee } = useParams()
   const [list, setList] = useState([])
+  const [assistance, setAssistance] = useState()
   const { open: openDetails, toggleOpen: toggleOpenDetails } = useToggle()
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const [currentData, setCurrentData] = useState(null)
@@ -37,7 +39,7 @@ const AttentionDetails = () => {
 
   const editAttention = (values) =>
     dispatch(
-      assistanceActions.createAssistance({
+      assistanceActions.editAssistance(assistance.id, {
         ...values,
         employee_id: employee.id,
         employee_name: employee.names,
@@ -49,6 +51,7 @@ const AttentionDetails = () => {
     )
   useEffect(() => {
     fetchList()
+    dispatch(commonActions.getManagement())
   }, [])
 
   return (
@@ -97,6 +100,7 @@ const AttentionDetails = () => {
                 cell: (row) => (
                   <ActionsTable
                     onEdit={() => {
+                      setAssistance(row)
                       toggleOpenEdit()
                     }}
                     onView={() => {
@@ -133,6 +137,8 @@ const AttentionDetails = () => {
               id: employee?.current_job?.business_id,
               construction_name: employee.current_job.construction_name
             }}
+            data={assistance}
+            type="UPDATE"
             construction={{ name: '' }}
             successFunction={fetchList}
             successMessage="Atención editada con éxito"

@@ -307,6 +307,18 @@ const createAssistance = (values) => () =>
       })
   })
 
+const editAssistance = (id, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.assistance}/assistance/${id}`, values)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const getAssistanceList =
   (query = {}) =>
   (dispatch) =>
@@ -587,7 +599,8 @@ const assistanceActions = {
   getVisitReportItems,
   totalUsers,
   getAttendedEmployeeByBusinessAndConstruction,
-  getAttendedHistoricalEmployees
+  getAttendedHistoricalEmployees,
+  editAssistance
 }
 
 export default assistanceActions
