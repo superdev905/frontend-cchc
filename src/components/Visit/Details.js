@@ -139,15 +139,14 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
             variant: 'success'
           })
           const name = `${user.names} ${user.paternal_surname} ${user.maternal_surname}`
-          const { email, bossEmail } = user
+          const { email } = user
           dispatch(
             authActions.reportEmail(
               reportName,
               reportUrl,
               contacts,
               name,
-              email,
-              bossEmail
+              email
             )
           )
             .then(() => {

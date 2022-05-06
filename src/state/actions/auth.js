@@ -124,20 +124,25 @@ const changePasswordProfile = (userId, oldPassword, newPassword) => () =>
       })
   })
 
-const reportEmail = (fileName, url, contacts, name, email, bossEmail) => () =>
+const reportEmail = (fileName, url, contacts, name, email) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.auth}/mail`, {
       fileName,
       url,
       contacts,
       name,
-      email,
-      bossEmail
+      email
     })
       .then((response) => {
+        console.log('-----Respuesta exitosa del server------')
+        console.log(response)
+        console.log('-----Fin respuesta del server------')
         resolve(response.data)
       })
       .catch((error) => {
+        console.log('-----Respuesta al no contactarse con el back------')
+        console.log(error)
+        console.log('-----Fin Respuesta al no contactarse con el back------')
         reject(error)
       })
   })
