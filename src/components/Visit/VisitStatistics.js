@@ -33,12 +33,12 @@ const VisitStatistics = () => {
   useEffect(() => {
     dispatch(
       assistanceActions.getAttendedHistoricalEmployees({
-        business_id: visit.business_id,
-        construction_id: visit.construction_id,
+        business_id: visit?.business_id,
+        construction_id: visit?.construction_id,
         visit_id: idVisit
       })
     )
-  }, [])
+  }, [visit])
 
   return (
     <Wrapper>
