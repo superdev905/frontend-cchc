@@ -24,9 +24,7 @@ const VisitStatistics = () => {
   const historico = []
   const [newAttendedWorkers, setNewAttendedWorkers] = useState(0)
   const [oldAttendedWorkers, setOldAttendedWorkers] = useState(0)
-  const { historicly, visit, attendedEmployeeList } = useSelector(
-    (state) => state.assistance
-  )
+  const { historicly, visit } = useSelector((state) => state.assistance)
   const { idVisit } = useParams()
 
   useEffect(() => {
@@ -56,10 +54,10 @@ const VisitStatistics = () => {
   }, [historicly])
 
   useEffect(() => {
-    if (historicly.length > 0 && attendedEmployeeList.length > 0) {
+    if (historicly.length > 0 && totalUsers.length > 0) {
       let newWorker = 0
       let old = 0
-      attendedEmployeeList.forEach((user) => {
+      totalUsers.forEach((user) => {
         const add = historico.some((hist) => hist.id === user.id)
         if (add) {
           old += 1
@@ -70,7 +68,7 @@ const VisitStatistics = () => {
       setNewAttendedWorkers(newWorker)
       setOldAttendedWorkers(old)
     }
-  }, [historicly, attendedEmployeeList])
+  }, [historicly, totalUsers])
 
   return (
     <Wrapper>
