@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { Box, Grid, Typography, makeStyles, Paper } from '@material-ui/core'
@@ -21,9 +21,12 @@ const VisitStatistics = () => {
   const { totalUsers, visitStatistics } = useSelector(
     (state) => state.assistance
   )
-  const { historicly } = useSelector((state) => state.assistance)
-  const { visit } = useSelector((state) => state.assistance)
-  console.log(historicly)
+  const historico = []
+  const [newAttendedWorkers, setNewAttendedWorkers] = useState(0)
+  const [oldAttendedWorkers, setOldAttendedWorkers] = useState(0)
+  const { historicly, visit, attendedEmployeeList } = useSelector(
+    (state) => state.assistance
+  )
   const { idVisit } = useParams()
 
   useEffect(() => {
@@ -39,6 +42,35 @@ const VisitStatistics = () => {
       })
     )
   }, [visit])
+
+  useEffect(() => {
+    if (historicly.length > 0) {
+      historicly.forEach((hist) => {
+        historico.push({
+          id: hist[0],
+          fullName: `${hist[1]} ${hist[2]}`,
+          run: hist[3]
+        })
+      })
+    }
+  }, [historicly])
+
+  useEffect(() => {
+    if (historicly.length > 0 && attendedEmployeeList.length > 0) {
+      let newWorker = 0
+      let old = 0
+      attendedEmployeeList.forEach((user) => {
+        const add = historico.some((hist) => hist.id === user.id)
+        if (add) {
+          old += 1
+        } else {
+          newWorker += 1
+        }
+      })
+      setNewAttendedWorkers(newWorker)
+      setOldAttendedWorkers(old)
+    }
+  }, [historicly, attendedEmployeeList])
 
   return (
     <Wrapper>
@@ -59,11 +91,11 @@ const VisitStatistics = () => {
           <hr></hr>
           <Grid>
             <LabeledRow label="Nuevos:">
-              <Text loaderWidth="80%">{visitStatistics?.new}</Text>
+              <Text loaderWidth="80%">{newAttendedWorkers}</Text>
             </LabeledRow>
 
             <LabeledRow label="Antiguos:">
-              <Text loaderWidth="80%">{visitStatistics?.old}</Text>
+              <Text loaderWidth="80%">{oldAttendedWorkers}</Text>
             </LabeledRow>
 
             <LabeledRow label="Total:">
