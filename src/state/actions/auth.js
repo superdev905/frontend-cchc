@@ -126,7 +126,7 @@ const changePasswordProfile = (userId, oldPassword, newPassword) => () =>
 
 const reportEmail = (fileName, url, contacts, name, email) => () =>
   new Promise((resolve, reject) => {
-    Axios.post(`${config.services.auth}/users/mail`, {
+    Axios.post(`${config.services.auth}/mail`, {
       fileName,
       url,
       contacts,
