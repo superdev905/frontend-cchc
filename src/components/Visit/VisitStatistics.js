@@ -21,11 +21,24 @@ const VisitStatistics = () => {
   const { totalUsers, visitStatistics } = useSelector(
     (state) => state.assistance
   )
+  const { historicly } = useSelector((state) => state.assistance)
+  const { visit } = useSelector((state) => state.assistance)
+  console.log(historicly)
   const { idVisit } = useParams()
 
   useEffect(() => {
     dispatch(assistanceActions.getVisitStatistics(idVisit))
   }, [idVisit, totalUsers])
+
+  useEffect(() => {
+    dispatch(
+      assistanceActions.getAttendedHistoricalEmployees({
+        business_id: visit.business_id,
+        construction_id: visit.construction_id,
+        visit_id: idVisit
+      })
+    )
+  }, [])
 
   return (
     <Wrapper>
