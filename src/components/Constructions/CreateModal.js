@@ -267,6 +267,7 @@ const ConstructionModal = ({
               <>
                 <Grid item xs={12}>
                   <SearchCompany
+                    type={type}
                     onSelected={(e) => {
                       setSelectedCompany(e)
                     }}
