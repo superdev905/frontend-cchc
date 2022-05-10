@@ -5,9 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { Box, Chip, Grid, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
-import ReactQuill from 'react-quill'
 import { Dialog } from '../../Shared'
-import { SubmitButton, Button, TextField, InputLabel } from '../../UI'
+import { SubmitButton, Button, TextField, InputLabel, TextArea } from '../../UI'
 import { useSuccess } from '../../../hooks'
 import constructionsActions from '../../../state/actions/constructions'
 import List from './List'
@@ -93,20 +92,6 @@ const ReportModal = ({
     dispatch(constructionsActions.getContacts(visit.construction_id))
   }
 
-  const handleObservations = (value) => {
-    formik.setFieldValue(
-      'observations',
-      value.replace('span', 'label').replace('/span', '/label')
-    )
-  }
-
-  const handleRelevant = (value) => {
-    formik.setFieldValue(
-      'relevant',
-      value.replace('span', 'label').replace('/span', '/label')
-    )
-  }
-
   /*
   const getItemsValidation = () =>
     listItems.filter((item) => item.value === '').length > 0
@@ -125,13 +110,15 @@ const ReportModal = ({
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography style={{ marginBottom: '5px', color: '#4A5568' }}>
-            Casos relevantes *
-          </Typography>
-          <ReactQuill
-            theme="snow"
+          <TextArea
+            label="Casos Relevantes"
+            required
+            name="relevant"
             value={formik.values.relevant}
-            onChange={handleRelevant}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.relevant && Boolean(formik.errors.relevant)}
+            helperText={formik.touched.relevant && formik.errors.relevant}
           />
         </Grid>
 
@@ -182,13 +169,19 @@ const ReportModal = ({
         </Grid>
 
         <Grid item xs={12}>
-          <Typography style={{ marginBottom: '5px', color: '#4A5568' }}>
-            Observaciones *
-          </Typography>
-          <ReactQuill
-            theme="snow"
+          <TextArea
+            label="Observaciones"
+            required
+            name="observations"
             value={formik.values.observations}
-            onChange={handleObservations}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.observations && Boolean(formik.errors.observations)
+            }
+            helperText={
+              formik.touched.observations && formik.errors.observations
+            }
           />
         </Grid>
         <Grid item xs={12}>
