@@ -558,6 +558,22 @@ const getCalendarStats =
         })
     })
 
+const sendEmail =
+  (url, visit_id, construction_name, date, assistant_name, to) => () =>
+    new Promise((resolve, reject) => {
+      Axios.post(
+        `${config.services.assistance}/visits/mail?url=${url}&visit_id=${visit_id}&construction_name=${construction_name}&date=${date}&assistant_name=${assistant_name}`,
+        to
+      )
+        .then((response) => {
+          const { data } = response
+          resolve(data)
+        })
+        .catch((err) => {
+          reject(err.response.data.detail)
+        })
+    })
+
 const totalUsers = (data) => (dispatch) =>
   dispatch({
     type: assistanceTypes.TOTAL_USERS,
@@ -600,7 +616,8 @@ const assistanceActions = {
   totalUsers,
   getAttendedEmployeeByBusinessAndConstruction,
   getAttendedHistoricalEmployees,
-  editAssistance
+  editAssistance,
+  sendEmail
 }
 
 export default assistanceActions

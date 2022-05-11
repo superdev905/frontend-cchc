@@ -6,7 +6,6 @@ import { Alert } from '@material-ui/lab'
 import { endOfWeek } from 'date-fns'
 import startOfWeek from 'date-fns/startOfWeek'
 import assistanceActions from '../../state/actions/assistance'
-import authActions from '../../state/actions/auth'
 import { formatDate, formatHours } from '../../formatters'
 import { useSuccess, useToggle } from '../../hooks'
 import { LabeledRow, StatusChip, Text, Wrapper, Button } from '../UI'
@@ -43,9 +42,12 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
   const { open: openViewReport, toggleOpen: toggleOpenViewReport } = useToggle()
   const { open: openEditReport, toggleOpen: toggleOpenEditReport } = useToggle()
   const { visit: report } = useSelector((state) => state.assistance)
-  const reportName = report?.report?.report_key
   const reportUrl = report?.report?.report_url
-  const contacts = report?.report?.contacts
+  const contacts = []
+
+  report?.report?.contacts?.forEach((mail) => {
+    contacts.push(mail.contact_email)
+  })
 
   const createReport = (values) => {
     const data = {
@@ -139,13 +141,19 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
           })
           const name = `${user.names} ${user.paternal_surname} ${user.maternal_surname}`
           const { email } = user
+          contacts.push(email)
+          const date = new Date()
+          const actualDate = `${date.getFullYear()}-${
+            date.getMonth() + 1
+          }-${date.getDay()}`
           dispatch(
-            authActions.reportEmail(
-              reportName,
+            assistanceActions.sendEmail(
               reportUrl,
-              contacts,
+              visit.id,
+              visit.construction_name,
+              actualDate,
               name,
-              email
+              contacts
             )
           )
             .then(() => {
