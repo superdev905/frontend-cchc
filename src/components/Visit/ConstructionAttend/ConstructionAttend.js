@@ -105,11 +105,14 @@ const AttendModalList = () => {
             <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>
               Atenciones en obra
             </Typography>
-            {visit && visit?.status !== 'PROGRAMADA' && !visit.is_close && (
-              <Button startIcon={<AddIcon />} onClick={addButtonClick}>
-                Agregar
-              </Button>
-            )}
+            {visit &&
+              visit?.status !== 'PROGRAMADA' &&
+              visit?.status !== 'TERMINADA' &&
+              !visit.is_close && (
+                <Button startIcon={<AddIcon />} onClick={addButtonClick}>
+                  Agregar
+                </Button>
+              )}
           </Box>
           <DataTable
             background

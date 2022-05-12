@@ -142,16 +142,15 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
           const name = `${user.names} ${user.paternal_surname} ${user.maternal_surname}`
           const { email } = user
           contacts.push(email)
-          const date = new Date()
-          const actualDate = `${date.getFullYear()}-${
-            date.getMonth() + 1
-          }-${date.getDay()}`
+          const { end_date } = visit
+          const date = end_date.split('T')[0]
           dispatch(
             assistanceActions.sendEmail(
               reportUrl,
               visit.id,
+              visit.business_name,
               visit.construction_name,
-              actualDate,
+              date,
               name,
               contacts
             )
