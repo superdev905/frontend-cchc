@@ -37,7 +37,7 @@ const Historial = ({ business_id, construction_id }) => {
       .catch(() => {
         setLoading(false)
       })
-  }, [])
+  }, [filters])
 
   return (
     <Wrapper>
@@ -81,7 +81,7 @@ const Historial = ({ business_id, construction_id }) => {
           paginationRowsPerPageOptions={[10, 20]}
           paginationServer={true}
           onChangeRowsPerPage={(limit) => {
-            setFilters({ ...filters, size: limit })
+            setFilters({ page: 1, size: limit })
           }}
           onChangePage={(page) => {
             setFilters({ ...filters, page })
