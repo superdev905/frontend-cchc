@@ -35,7 +35,7 @@ const List = () => {
   const [searchResult, setSearchResult] = useState([])
   const [attendedList, setAttendedList] = useState([])
 
-  const { visit, attendedEmployeeList } = useSelector(
+  const { visit, attendedEmployeeList, historicly } = useSelector(
     (state) => state.assistance
   )
   const atentionType = [
@@ -154,11 +154,28 @@ const List = () => {
     return unique
   }
 
+  const newOrOld = (arr) => {
+    const unique = []
+    if (arr.length > 0) {
+      arr.forEach((validatedUser) => {
+        const old = historicly.some((hist) => hist[0] === validatedUser.id)
+        if (old) {
+          unique.push({ ...validatedUser, tag: 'A' })
+        } else {
+          unique.push({ ...validatedUser, tag: 'N' })
+        }
+      })
+      return unique
+    }
+    return unique
+  }
+
   useEffect(() => {
     const result = attended(attendedEmployeeList)
-    setAttendedList(result)
+    const newResult = newOrOld(result)
+    setAttendedList(newResult)
     dispatch(assistanceAction.totalUsers(result))
-  }, [attendedEmployeeList])
+  }, [attendedEmployeeList, historicly])
 
   useEffect(() => {
     if (searchUser) {

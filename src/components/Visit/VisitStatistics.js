@@ -18,13 +18,11 @@ const useStyles = makeStyles(() => ({
 const VisitStatistics = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const { totalUsers, visitStatistics } = useSelector(
-    (state) => state.assistance
-  )
-  const historico = []
   const [newAttendedWorkers, setNewAttendedWorkers] = useState(0)
   const [oldAttendedWorkers, setOldAttendedWorkers] = useState(0)
-  const { historicly, visit } = useSelector((state) => state.assistance)
+  const { historicly, visit, totalUsers, visitStatistics } = useSelector(
+    (state) => state.assistance
+  )
   const { idVisit } = useParams()
 
   useEffect(() => {
@@ -42,23 +40,11 @@ const VisitStatistics = () => {
   }, [visit])
 
   useEffect(() => {
-    if (historicly.length > 0) {
-      historicly.forEach((hist) => {
-        historico.push({
-          id: hist[0],
-          fullName: `${hist[1]} ${hist[2]}`,
-          run: hist[3]
-        })
-      })
-    }
-  }, [historicly])
-
-  useEffect(() => {
-    if (historicly.length > 0 && totalUsers.length > 0) {
+    if (totalUsers.length > 0) {
       let newWorker = 0
       let old = 0
       totalUsers.forEach((user) => {
-        const add = historico.some((hist) => hist.id === user.id)
+        const add = historicly.some((hist) => hist[0] === user.id)
         if (add) {
           old += 1
         } else {
