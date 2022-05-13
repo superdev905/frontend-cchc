@@ -67,19 +67,19 @@ const ActivityTimeLine = () => {
             </TimelineSeparator>
             <TimelineContent>
               <Box p={2} className={classes.timelineContent}>
-                <Typography className={classes.heading}>
+                {/* <Typography className={classes.heading}>
                   Nombre: {item.name}
-                </Typography>
-                <Typography>{item.description}</Typography>
+      </Typography>
+                <Typography>{item.description}</Typography> */}
                 <Typography>Trabajador: {item.employeeName}</Typography>
-                <Typography>Cupos anuales: {item.annualAmount} </Typography>
+                {/* <Typography>Cupos anuales: {item.annualAmount} </Typography>
                 <Typography>
                   Costo del beneficio: {item.benefitCost}{' '}
                 </Typography>
-                <Typography>Financiamento: {item.founding} </Typography>
+              <Typography>Financiamento: {item.founding} </Typography>  */}
 
                 <Box>
-                  <Typography className={classes.date} align="right">
+                  <Typography className={classes.date}>
                     {`${formatDate(item.createdDate, {
                       weekday: 'long',
                       year: 'numeric',

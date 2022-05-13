@@ -1,13 +1,16 @@
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import { Box, Grid } from '@material-ui/core'
-import { CurrencyTextField, DatePicker } from '../../Shared'
-import { Button, Select, SubmitButton, TextArea, TextField } from '../../UI'
+import { Box /* , Grid  */ } from '@material-ui/core'
+//  import { CurrencyTextField, DatePicker } from '../../Shared'
+import {
+  Button,
+  /* Select, */ SubmitButton /*  , TextArea, TextField */
+} from '../../UI'
 import { useSuccess } from '../../../hooks'
 
-const options = ['PROYECTO SOCIAL', 'GOBIERNO', 'PROPIA EMPRESA', 'OTRO']
+//  const options = ['PROYECTO SOCIAL', 'GOBIERNO', 'PROPIA EMPRESA', 'OTRO']
 
-const statusList = ['VIGENTE', 'NO VIGENTE']
+//  const statusList = ['VIGENTE', 'NO VIGENTE']
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Ingrese nombre del curso'),
@@ -30,17 +33,17 @@ const CreateActivity = ({ onClose, type, data, submitFunction }) => {
     validateOnMount: true,
     validationSchema,
     initialValues: {
-      name: type === 'UPDATE' ? data.name : '',
-      founding: type === 'UPDATE' ? data.founding : '',
-      annualAmount: type === 'UPDATE' ? data.annualAmount : '',
-      benefitCost: type === 'UPDATE' ? data.benefitCost : '',
-      startDate: type === 'UPDATE' ? data.startDate : null,
-      endDate: type === 'UPDATE' ? data.endDate : null,
-      isActive: type === 'UPDATE' ? data.isActive : '',
-      reuseQuantity: type === 'UPDATE' ? data.reuseQuantity : '',
-      executeSchedule: type === 'UPDATE' ? data.executeSchedule : '',
-      temporality: type === 'UPDATE' ? data.temporality : '',
-      description: type === 'UPDATE' ? data.description : ''
+      name: type === 'UPDATE' ? data.name : data.name,
+      founding: type === 'UPDATE' ? data.founding : 'PROYECTO SOCIAL',
+      annualAmount: type === 'UPDATE' ? data.annualAmount : data.annualAmount,
+      benefitCost: type === 'UPDATE' ? data.benefitCost : data.benefitCost,
+      startDate: type === 'UPDATE' ? data.startDate : data.startDate,
+      endDate: type === 'UPDATE' ? data.endDate : data.endDate,
+      isActive: type === 'UPDATE' ? data.isActive : data.isActive,
+      reuseQuantity: type === 'UPDATE' ? data.reuseQuantity : 9,
+      executeSchedule: type === 'UPDATE' ? data.executeSchedule : '9',
+      temporality: type === 'UPDATE' ? data.temporality : 9,
+      description: type === 'UPDATE' ? data.description : 'ENTREGA DE BENEFICIO'
     },
     onSubmit: (values, { resetForm }) => {
       submitFunction({
@@ -55,7 +58,7 @@ const CreateActivity = ({ onClose, type, data, submitFunction }) => {
   return (
     <Box>
       <Box>
-        <Grid container spacing={2}>
+        {/* <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
               label="Nombre"
@@ -66,7 +69,7 @@ const CreateActivity = ({ onClose, type, data, submitFunction }) => {
               onBlur={formik.handleBlur}
               error={formik.touched.name && Boolean(formik.errors.name)}
               helperText={formik.touched.name && formik.errors.name}
-            />
+  />
           </Grid>
 
           <Grid item xs={12} md={6}>
@@ -85,6 +88,24 @@ const CreateActivity = ({ onClose, type, data, submitFunction }) => {
                 <option value={item}>{item}</option>
               ))}
             </Select>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              label="Temporalidad"
+              name="temporality"
+              required
+              type="number"
+              value={formik.values.temporality}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.temporality && Boolean(formik.errors.temporality)
+              }
+              helperText={
+                formik.touched.temporality && formik.errors.temporality
+              }
+            />
           </Grid>
 
           <Grid item xs={12} md={6}>
@@ -171,7 +192,7 @@ const CreateActivity = ({ onClose, type, data, submitFunction }) => {
               {statusList.map((item) => (
                 <option value={item}>{item}</option>
               ))}
-            </Select>
+              </Select> 
           </Grid>
 
           <Grid item xs={12} md={6}>
@@ -210,23 +231,6 @@ const CreateActivity = ({ onClose, type, data, submitFunction }) => {
               }
             />
           </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              label="Temporalidad"
-              name="temporality"
-              required
-              type="number"
-              value={formik.values.temporality}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.temporality && Boolean(formik.errors.temporality)
-              }
-              helperText={
-                formik.touched.temporality && formik.errors.temporality
-              }
-            />
-          </Grid>
           <Grid item xs={12} md={12}>
             <TextArea
               label="Descripción"
@@ -243,7 +247,7 @@ const CreateActivity = ({ onClose, type, data, submitFunction }) => {
               }
             />
           </Grid>
-        </Grid>
+        </Grid> */}
 
         <Box textAlign="center" marginTop="10px">
           <Button onClick={onClose} variant="outlined">
@@ -255,7 +259,7 @@ const CreateActivity = ({ onClose, type, data, submitFunction }) => {
             loading={formik.isSubmitting}
             success={success}
           >
-            {`${type === 'UPDATE' ? 'Actualizar' : 'Crear'} Actividad`}
+            {`${type === 'UPDATE' ? 'Actualizar' : 'Asignar'} Beneficio`}
           </SubmitButton>
         </Box>
       </Box>

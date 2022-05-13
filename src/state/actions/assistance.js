@@ -559,12 +559,21 @@ const getCalendarStats =
     })
 
 const sendEmail =
-  (url, visit_id, business_name, construction_name, date, assistant_name, to) =>
+  (
+    url,
+    visit_id,
+    business_name,
+    construction_name,
+    date,
+    assistant_name,
+    to,
+    bccBoss
+  ) =>
   () =>
     new Promise((resolve, reject) => {
       Axios.post(
         `${config.services.assistance}/visits/mail?url=${url}&visit_id=${visit_id}&business_name=${business_name}&construction_name=${construction_name}&date=${date}&assistant_name=${assistant_name}`,
-        to
+        { to, bccBoss }
       )
         .then((response) => {
           const { data } = response

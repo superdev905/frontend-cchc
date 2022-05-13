@@ -77,14 +77,23 @@ const BenefitDialog = ({ open, onClose, employee, onSave }) => {
         <Box mt={3}>
           {selectedBenefit && (
             <Box>
-              <Typography className={classes.heading}>
+              {/* <Typography className={classes.heading}>
                 Detalles de actividad
-              </Typography>
+          </Typography> */}
               <ActivityForm
+                data={{
+                  name: selectedBenefit.name,
+                  annualAmount: selectedBenefit.usersQuantity,
+                  benefitCost: selectedBenefit.totalCost,
+                  startDate: selectedBenefit.createdDate,
+                  endDate: selectedBenefit.endDate,
+                  isActive: selectedBenefit.isActive
+                }}
                 submitFunction={(values) => {
                   onSave(selectedBenefit, values)
                   onClose()
                 }}
+                onClose={onClose}
               />{' '}
             </Box>
           )}

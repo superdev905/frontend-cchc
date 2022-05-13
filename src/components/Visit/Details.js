@@ -44,6 +44,7 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
   const { visit: report } = useSelector((state) => state.assistance)
   const reportUrl = report?.report?.report_url
   const contacts = []
+  const bossContact = []
 
   report?.report?.contacts?.forEach((mail) => {
     contacts.push(mail.contact_email)
@@ -140,8 +141,12 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
             variant: 'success'
           })
           const name = `${user.names} ${user.paternal_surname} ${user.maternal_surname}`
-          const { email } = user
+          const { email, bossEmail } = user
           contacts.push(email)
+          if (bossEmail) {
+            contacts.push(bossEmail)
+            bossContact.push(bossEmail)
+          }
           const { end_date } = visit
           const date = end_date.split('T')[0]
           dispatch(
@@ -152,7 +157,8 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
               visit.construction_name,
               date,
               name,
-              contacts
+              contacts,
+              bossContact
             )
           )
             .then(() => {
@@ -236,7 +242,8 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
             visit?.status === 'CANCELADA' ||
             visit?.is_close_pending ||
             visit?.is_close ||
-            visit?.is_close_pending
+            visit?.is_close_pending ||
+            !visit?.report
           }
         >
           Enviar reporte y cierre

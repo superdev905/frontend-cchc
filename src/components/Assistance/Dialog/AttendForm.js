@@ -12,7 +12,7 @@ import { Button, Select, InputLabel, TextArea } from '../../UI'
 import commonActions from '../../../state/actions/common'
 import { AttentionStatus } from '../../../config'
 import { useSuccess, useToggle } from '../../../hooks'
-import { ActivityCard, BenefitCard } from '../../Benefits'
+import { /* ActivityCard, */ BenefitCard } from '../../Benefits'
 import benefitsActions from '../../../state/actions/benefits'
 import useStyles from './styles'
 
@@ -252,7 +252,7 @@ const WorkerInterventionRecord = ({ employee, type, visitShift, formik }) => {
                 {activityDetails.benefit && activityDetails.activity ? (
                   <>
                     <BenefitCard benefit={activityDetails.benefit} selected />
-                    <ActivityCard activity={activityDetails.activity} />
+                    {/* <ActivityCard activity={activityDetails.activity} />  */}
                   </>
                 ) : (
                   <Box>
