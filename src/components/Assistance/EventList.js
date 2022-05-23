@@ -5,6 +5,7 @@ import SearchIcon from '@material-ui/icons/Search'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid, IconButton } from '@material-ui/core'
 import assistanceActions from '../../state/actions/assistance'
+import authActions from '../../state/actions/auth'
 import { Button, SearchInput, Wrapper } from '../UI'
 import { DataTable } from '../Shared'
 import { formatDate, formatHours } from '../../formatters'
@@ -61,13 +62,24 @@ const EventList = () => {
     })
   }
 
+  const logAction = (action) => {
+    const values = {
+      user_id: user.id,
+      user_name: `${user.names} ${user.paternal_surname} ${user.maternal_surname}`,
+      action
+    }
+    dispatch(authActions.logs(values))
+  }
+
   const onRowClick = (row) => {
+    logAction(`SELECCIONA VISITA ${row.id}`)
     history.push(`/visit/${row.id}`)
   }
 
   const searchButton = () => {
     setLooking(true)
     fetchList()
+    logAction('BOTON BUSCAR MODULO VISITAS')
   }
 
   useEffect(() => {

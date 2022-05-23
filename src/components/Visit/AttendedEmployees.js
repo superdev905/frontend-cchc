@@ -6,6 +6,7 @@ import { Edit as EditIcon, ArrowForward as ArrowIcon } from '@material-ui/icons'
 import SearchIcon from '@material-ui/icons/Search'
 import assistanceAction from '../../state/actions/assistance'
 import employeesActions from '../../state/actions/employees'
+import authActions from '../../state/actions/auth'
 import uiActions from '../../state/actions/ui'
 import { areaConfig } from '../../config'
 import { DataTable } from '../Shared'
@@ -94,9 +95,19 @@ const List = () => {
     <Button onClick={() => toggleOpenConfirmation()}>Validar Datos</Button>
   )
 
+  const logAction = (action) => {
+    const values = {
+      user_id: user.id,
+      user_name: `${user.names} ${user.paternal_surname} ${user.maternal_surname}`,
+      action
+    }
+    dispatch(authActions.logs(values))
+  }
+
   const searchEmployee = () => {
     setSearching(true)
     setSearchResult([])
+    logAction('BOTON BUSCAR TRABAJADOR')
     dispatch(
       assistanceAction.searchEmployee({
         employee_rut: searchUser,

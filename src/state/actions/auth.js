@@ -147,6 +147,17 @@ const reportEmail = (fileName, url, contacts, name, email) => () =>
       })
   })
 
+const logs = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.auth}/auth/log`, values)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+
 const authActions = {
   loginUser,
   getLoggedUser,
@@ -157,7 +168,8 @@ const authActions = {
   resetPassword,
   changePasswordFirstLogin,
   changePasswordProfile,
-  reportEmail
+  reportEmail,
+  logs
 }
 
 export default authActions

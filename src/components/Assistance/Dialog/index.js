@@ -41,6 +41,7 @@ import useStyles from './styles'
 import { validationSchema, caseAdditionalSchema } from './schema'
 import socialCasesActions from '../../../state/actions/socialCase'
 import CaseAdditionalForm from './CaseAdditionalForm'
+import authActions from '../../../state/actions/auth'
 import ConfirmAttend from './ConfirmAttend'
 
 const attentionPlaces = ['OFICINA', 'TERRENO', 'VIRTUAL']
@@ -133,6 +134,15 @@ const WorkerInterventionRecord = ({
       requestType: ''
     }
   })
+
+  const logAction = (action) => {
+    const values = {
+      user_id: user.id,
+      user_name: `${user.names} ${user.paternal_surname} ${user.maternal_surname}`,
+      action
+    }
+    dispatch(authActions.logs(values))
+  }
 
   const formik = useFormik({
     validateOnMount: true,
@@ -1083,6 +1093,9 @@ const WorkerInterventionRecord = ({
                 <SubmitButton
                   onClick={() => {
                     formik.handleSubmit()
+                    logAction(
+                      `BOTON GUARDAR AL CREAR ATENCIÓN, USUARIO ATENDIDO: ${employee.run}`
+                    )
                   }}
                   loading={trying}
                   disabled={false}

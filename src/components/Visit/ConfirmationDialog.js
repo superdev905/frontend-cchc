@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { makeStyles, Box, Typography } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
 import employeeActions from '../../state/actions/employees'
+import authActions from '../../state/actions/auth'
 import { Dialog } from '../Shared'
 import { Button } from '../UI'
 
@@ -38,7 +39,17 @@ const ConfirmationDialog = ({
   const { isMobile } = useSelector((state) => state.ui)
   const { user } = useSelector((state) => state.auth)
 
+  const logAction = (action) => {
+    const values = {
+      user_id: user.id,
+      user_name: `${user.names} ${user.paternal_surname} ${user.maternal_surname}`,
+      action
+    }
+    dispatch(authActions.logs(values))
+  }
+
   const applyConfirmation = () => {
+    logAction('BOTON CONFIRMAR EN MODAL VALIDAR DATOS')
     try {
       const formData = {
         employeeId,
