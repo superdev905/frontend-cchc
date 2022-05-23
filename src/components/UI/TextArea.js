@@ -6,6 +6,7 @@ import {
   InputLabel,
   FormHelperText
 } from '@material-ui/core'
+import { useEffect, useRef, useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   label: {
@@ -43,13 +44,18 @@ const TextArea = ({
   ...props
 }) => {
   const classes = useStyles({ fullWidth, error })
+  const [cursor, setCursor] = useState()
+  const ref = useRef(null)
 
-  const handleOnChange = (event) => {
-    if (onChange) {
-      const currentEvent = { ...event }
-      currentEvent.target.value = currentEvent.target.value.toUpperCase()
-      onChange(currentEvent)
-    }
+  useEffect(() => {
+    const input = ref.current
+    if (input) input.setSelectionRange(cursor, cursor)
+  }, [ref, cursor, value])
+
+  const handleOnChange = (e) => {
+    setCursor(e.target.selectionStart)
+    e.target.value = e.target.value.toUpperCase()
+    onChange(e)
   }
 
   return (
@@ -58,6 +64,7 @@ const TextArea = ({
         {label}
       </InputLabel>
       <TextareaAutosize
+        ref={ref}
         className={classes.textarea}
         rowsMin={rowsMin}
         onChange={handleOnChange}
