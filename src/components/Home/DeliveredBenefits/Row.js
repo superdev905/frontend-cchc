@@ -69,7 +69,13 @@ const DeliveredRow = ({ data }) => {
           <Typography className={classes.date}>
             {new Date(data.date).getDate()}
           </Typography>
-          <Typography className={classes.month}>Octrube</Typography>
+          <Typography className={classes.month}>
+            <strong>
+              {new Date(data.date)
+                .toLocaleString('default', { month: 'long' })
+                .toLocaleUpperCase()}
+            </strong>
+          </Typography>
         </Box>
         <Box width={'100%'}>
           <Box className={classes.infoWrapper}>
