@@ -140,7 +140,15 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
           enqueueSnackbar('Solicitud exitosa', {
             variant: 'success'
           })
-          const name = `${user.names} ${user.paternal_surname} ${user.maternal_surname}`
+          const name = `${
+            user.names.charAt(0).toUpperCase() + user.names.slice(1)
+          } ${
+            user.paternal_surname.charAt(0).toUpperCase() +
+            user.paternal_surname.slice(1)
+          } ${
+            user.maternal_surname.charAt(0).toUpperCase() +
+            user.maternal_surname.slice(1)
+          }`
           const { email, bossEmail } = user
           contacts.push(email)
           if (bossEmail) {
