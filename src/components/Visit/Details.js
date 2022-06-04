@@ -12,6 +12,7 @@ import { LabeledRow, StatusChip, Text, Wrapper, Button } from '../UI'
 import ReportModal from './Report/ReportModal'
 import { ConfirmDelete, FileVisor } from '../Shared'
 import MapModal from '../Constructions/MapModal'
+import PrintModal from './printModal/printModal'
 
 const useStyles = makeStyles(() => ({
   Cancel: {
@@ -66,6 +67,7 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
 
   const { open: openCancel, toggleOpen: toggleOpenCancel } = useToggle()
   const { open: openStart, toggleOpen: toggleOpenStart } = useToggle()
+  const { open: printVisit, toggleOpen: togglePrintVisit } = useToggle()
   const { open: openView, toggleOpen: toggleOpenView } = useToggle()
   const { open: openVisitClose, toggleOpen: toggleOpenVisitClose } = useToggle()
 
@@ -209,6 +211,7 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
   return (
     <Wrapper>
       <Box p={1} display="flex" justifyContent="flex-end">
+        <Button onClick={togglePrintVisit}>Imprimir Visita</Button>
         <Button onClick={() => setHistorial(!historial)}>
           {historial
             ? 'Ocultar historial de atenciones'
@@ -347,6 +350,10 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
           </Grid>
         </Grid>
       </Box>
+
+      {printVisit && (
+        <PrintModal open={printVisit} onClose={togglePrintVisit} />
+      )}
 
       {visit && openReport && (
         <ReportModal

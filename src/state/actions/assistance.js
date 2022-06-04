@@ -338,7 +338,7 @@ const getAssistanceList =
                 run: attended[1],
                 fullName: `${attended[2]} ${attended[3]}`,
                 atention: attended[4],
-                quantity: attended[6],
+                quantity: attended[7],
                 tag: 'A',
                 S: 0,
                 IN: 0,
@@ -354,7 +354,8 @@ const getAssistanceList =
                 V: 0,
                 PS: 0,
                 B: 0,
-                constructionId: attended[5]
+                constructionId: attended[5],
+                date: attended[6]
               })
             })
           )
@@ -590,6 +591,12 @@ const totalUsers = (data) => (dispatch) =>
     payload: data
   })
 
+const statisticsPrint = (data) => (dispatch) =>
+  dispatch({
+    type: assistanceTypes.GET_STATISTICS_PRINT,
+    payload: data
+  })
+
 const assistanceActions = {
   toggleModal,
   getCalendarEvents,
@@ -627,7 +634,8 @@ const assistanceActions = {
   getAttendedEmployeeByBusinessAndConstruction,
   getAttendedHistoricalEmployees,
   editAssistance,
-  sendEmail
+  sendEmail,
+  statisticsPrint
 }
 
 export default assistanceActions

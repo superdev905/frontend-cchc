@@ -185,7 +185,7 @@ const List = () => {
     const result = attended(attendedEmployeeList)
     const newResult = newOrOld(result)
     setAttendedList(newResult)
-    dispatch(assistanceAction.totalUsers(result))
+    dispatch(assistanceAction.totalUsers(newResult))
   }, [attendedEmployeeList, historicly])
 
   useEffect(() => {

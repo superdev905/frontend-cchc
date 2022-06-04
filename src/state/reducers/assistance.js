@@ -16,7 +16,8 @@ const initialState = {
   listItems: [],
   totalUsers: 0,
   historicly: [],
-  visitStatistics: []
+  visitStatistics: [],
+  statisticsPrint: {}
 }
 
 const assistanceReducer = (state = initialState, { type, payload }) => {
@@ -53,6 +54,8 @@ const assistanceReducer = (state = initialState, { type, payload }) => {
       return { ...state, historicly: payload }
     case assistanceTypes.GET_VISIT_STATISTICS:
       return { ...state, visitStatistics: payload }
+    case assistanceTypes.GET_STATISTICS_PRINT:
+      return { ...state, statisticsPrint: payload }
 
     default:
       return state

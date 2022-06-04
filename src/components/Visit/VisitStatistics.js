@@ -31,6 +31,18 @@ const VisitStatistics = () => {
 
   useEffect(() => {
     dispatch(
+      assistanceActions.statisticsPrint({
+        new: newAttendedWorkers,
+        old: oldAttendedWorkers,
+        total: visitStatistics?.total,
+        house: visitStatistics?.house,
+        subcontract: visitStatistics?.subcontract
+      })
+    )
+  }, [totalUsers, visitStatistics, newAttendedWorkers, oldAttendedWorkers])
+
+  useEffect(() => {
+    dispatch(
       assistanceActions.getAttendedHistoricalEmployees({
         business_id: visit?.business_id,
         construction_id: visit?.construction_id,
