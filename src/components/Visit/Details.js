@@ -36,7 +36,13 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
   const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
   const { user } = useSelector((state) => state.auth)
-  const { visit } = useSelector((state) => state.assistance)
+  const {
+    visit,
+    totalUsers,
+    assistanceConstructionList,
+    statisticsPrint,
+    visitStatistics
+  } = useSelector((state) => state.assistance)
   const [loading, setLoading] = useState(false)
   const [currentDate] = useState(new Date())
   const { open: openReport, toggleOpen: toggleOpenReport } = useToggle()
@@ -211,7 +217,18 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
   return (
     <Wrapper>
       <Box p={1} display="flex" justifyContent="flex-end">
-        <Button onClick={togglePrintVisit}>Imprimir Visita</Button>
+        <Button
+          disabled={
+            !visit ||
+            !totalUsers ||
+            !assistanceConstructionList ||
+            !statisticsPrint ||
+            visitStatistics.length === 0
+          }
+          onClick={togglePrintVisit}
+        >
+          Imprimir Visita
+        </Button>
         <Button onClick={() => setHistorial(!historial)}>
           {historial
             ? 'Ocultar historial de atenciones'

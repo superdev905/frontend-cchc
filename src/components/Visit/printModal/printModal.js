@@ -13,8 +13,6 @@ import StatisticsTable from './tables/statistics/StatisticsTable'
 const PrintModal = ({ open, onClose }) => {
   const { visit, totalUsers, assistanceConstructionList, statisticsPrint } =
     useSelector((state) => state.assistance)
-  const test = useSelector((state) => state)
-  console.log(test)
   const classes = useStyles()
 
   return (
