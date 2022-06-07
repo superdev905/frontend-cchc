@@ -103,6 +103,8 @@ const EventForm = ({
           values.type_description === 'VISITA'
             ? `${values.type_description} - ${values.business_name} - ${values.construction_name}`
             : values.type_description,
+        business_id:
+          values.type_description === 'TAREA' ? null : values.business_id,
         status: reschedule ? 'REPROGRAMADA' : values.status,
         start_date: new Date(values.start_date).toISOString(),
         end_date: new Date(values.end_date).toISOString()
