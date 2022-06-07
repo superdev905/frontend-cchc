@@ -253,7 +253,12 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
             >
               Actualizar reporte
             </Button>
-            <Button onClick={toggleOpenViewReport}>Ver reporte</Button>
+            <Button
+              disabled={Boolean(visit?.report) || visit?.is_close}
+              onClick={toggleOpenViewReport}
+            >
+              Ver reporte{' '}
+            </Button>
           </Box>
         ) : (
           <Button
