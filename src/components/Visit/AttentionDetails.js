@@ -103,6 +103,7 @@ const AttentionDetails = () => {
                       setAssistance(row)
                       toggleOpenEdit()
                     }}
+                    disabled={!row.isActive}
                     onView={() => {
                       setCurrentData(row)
                       toggleOpenDetails()
