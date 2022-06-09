@@ -5,7 +5,7 @@ import { Wrapper, SearchInput, Button, TextField } from '../UI'
 import { useToggle } from '../../hooks'
 import { DataTable } from '../Shared'
 import modulesReports from '../../resources/modulesReports'
-import ReportDialog from './ReportDialog'
+import ReportVisit from './ReportVisit'
 
 const ReportsList = () => {
   const { open, toggleOpen } = useToggle()
@@ -48,7 +48,7 @@ const ReportsList = () => {
 
   return (
     <Wrapper>
-      <ReportDialog open={open} onClose={toggleOpen} type={type} />
+      <ReportVisit open={open} onClose={toggleOpen} type={type} />
       <Box>
         <Grid container spacing={1} alignItems="center">
           <Grid item xs={12} md={3}>
