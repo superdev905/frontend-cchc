@@ -71,7 +71,9 @@ const ReportDialog = ({ open, onClose, type }) => {
               <Button onClick={onClose} variant="outlined">
                 Cancelar
               </Button>
-              <SubmitButton /*onClick={togglePrintVisit}*/>Generar</SubmitButton>
+              <SubmitButton /*  onClick={togglePrintVisit}  */>
+                Generar
+              </SubmitButton>
             </Box>
           </Box>
         </Box>

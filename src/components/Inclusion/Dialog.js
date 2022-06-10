@@ -3,7 +3,14 @@ import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
+import {
+  Box,
+  Grid,
+  makeStyles,
+  Typography,
+  IconButton
+} from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import { Autocomplete, Skeleton } from '@material-ui/lab'
 import { useSuccess } from '../../hooks'
 import companiesActions from '../../state/actions/companies'
@@ -61,6 +68,7 @@ const InclusiveCreate = ({
   const [searching, setSearching] = useState(false)
   const [chargeList, setChargeList] = useState([])
   const [bossesList, setBossesList] = useState([])
+  const [Buscar, setBuscar] = useState(false)
 
   const { constructions: constructionsList } = useSelector(
     (state) => state.companies
@@ -162,7 +170,7 @@ const InclusiveCreate = ({
   }
 
   useEffect(() => {
-    if (searchEmployee) {
+    if (searchEmployee && Buscar) {
       setSearching(true)
       dispatch(
         employeeActions.getEmployees(
@@ -174,10 +182,11 @@ const InclusiveCreate = ({
         )
       ).then((list) => {
         setSearching(false)
-        setEmployees(list)
+        setEmployees(list.items)
+        setBuscar(false)
       })
     }
-  }, [searchEmployee])
+  }, [Buscar])
 
   useEffect(() => {
     if (open) {
@@ -304,7 +313,7 @@ const InclusiveCreate = ({
             </Typography>
             <Grid container spacing={2}>
               {!selectedEmployee && (
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} style={{ display: 'flex' }}>
                   <RutTextField
                     label="Rut"
                     value={searchEmployee}
@@ -313,6 +322,9 @@ const InclusiveCreate = ({
                       setSearchEmployee(e.target.value)
                     }}
                   />
+                  <IconButton onClick={() => setBuscar(true)}>
+                    <SearchIcon color="primary" fontSize="large" />
+                  </IconButton>
                 </Grid>
               )}
 
@@ -377,9 +389,11 @@ const InclusiveCreate = ({
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <SearchCompany
+                onDefaultValue={formik.values.businessId}
                 onSelected={(value) => {
                   setSelectedCompany(value)
                 }}
+                type={type !== 'UPDATE' ? 'CREATE' : type}
                 onDelete={() => {
                   setSelectedCompany(null)
                 }}
