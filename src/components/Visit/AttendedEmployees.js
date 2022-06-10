@@ -329,7 +329,14 @@ const List = () => {
                       size="small"
                       startIcon={<EditIcon />}
                       onClick={() => {
-                        toggleOpenJobs()
+                        const isAttended = attendedList.some(
+                          (usuario) => usuario.id === row.id
+                        )
+                        if (isAttended) {
+                          toggleOpen()
+                        } else {
+                          toggleOpenJobs()
+                        }
                         setSelectedUser(row)
                       }}
                     >
