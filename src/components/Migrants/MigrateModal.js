@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
-import { Box, Typography, Grid } from '@material-ui/core'
+import { Box, Typography, Grid, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import { FiCheck as DoneIcon } from 'react-icons/fi'
 import { Skeleton } from '@material-ui/lab'
 import { useFormik } from 'formik'
@@ -36,6 +37,7 @@ const MigrateModal = ({ open, onClose }) => {
   const { open: openEmployeeForm, toggleOpen: toggleOpenJEmployeeForm } =
     useToggle()
   const { open: openAttention, toggleOpen: toggleOpenAttention } = useToggle()
+  const [Buscar, setBuscar] = useState(false)
 
   const onCreateEmployee = (values) =>
     dispatch(
@@ -114,7 +116,7 @@ const MigrateModal = ({ open, onClose }) => {
   }, [benefitsList])
 
   useEffect(() => {
-    if (searchRut && formik.values.period) {
+    if (searchRut && formik.values.period && Buscar) {
       setLoading(true)
       setSelectedEmployee(null)
       setSearchList([])
@@ -128,12 +130,10 @@ const MigrateModal = ({ open, onClose }) => {
         setSearchList(
           list.map((item) => ({ ...item, avatarBg: generateColor() }))
         )
+        setBuscar(false)
       })
-    } else {
-      setSearchList([])
-      setSelectedEmployee(null)
     }
-  }, [searchRut, formik.values.period])
+  }, [Buscar, formik.values.period])
 
   useEffect(() => {
     if (open) {
@@ -194,7 +194,7 @@ const MigrateModal = ({ open, onClose }) => {
             {!selectedEmployee && (
               <Grid item xs={12}>
                 <Grid container spacing={1}>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} style={{ display: 'flex' }}>
                     <TextField
                       label="Buscar trabajador"
                       placeholder={'Ingrese rut'}
@@ -208,6 +208,9 @@ const MigrateModal = ({ open, onClose }) => {
                         !formik.values.period && 'Seleccione un período'
                       }
                     />
+                    <IconButton onClick={() => setBuscar(true)}>
+                      <SearchIcon color="primary" fontSize="large" />
+                    </IconButton>
                   </Grid>
                   <Grid item xs={12}>
                     {loading ? (
