@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Skeleton } from '@material-ui/lab'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid, Typography, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import { Dialog } from '../../Shared'
 import { formatSearchWithRut } from '../../../formatters'
 import { EmptyState, TextField } from '../../UI'
@@ -17,11 +18,12 @@ const AddEmployee = ({ open, onClose, loader, onAdd }) => {
   const { isMobile } = useSelector((state) => state.ui)
   const { user } = useSelector((state) => state.auth)
   const [employeeList, setEmployeeList] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [searching, setSearching] = useState(false)
   const [searchRut, setSearchRut] = useState('')
   const [searchList, setSearchList] = useState([])
   const [selectedEmployee, setSelectedEmployee] = useState(null)
   const { open: openForm, toggleOpen: toggleOpenForm } = useToggle()
+  const [Buscar, setBuscar] = useState(false)
 
   const addEmployee = (selected) => {
     const updatedList = employeeList.concat(selected)
@@ -29,23 +31,22 @@ const AddEmployee = ({ open, onClose, loader, onAdd }) => {
   }
 
   useEffect(() => {
-    if (searchRut) {
-      setLoading(true)
+    if (searchRut && Buscar) {
+      setSearching(true)
       dispatch(
         employeesActions.getEmployees(
           { state: 'CREATED', search: searchRut },
           false
         )
       ).then((list) => {
-        setLoading(false)
+        setSearching(false)
         setSearchList(
           list.items.map((item) => ({ ...item, avatarBg: generateColor() }))
         )
+        setBuscar(false)
       })
-    } else {
-      setSearchList([])
     }
-  }, [searchRut])
+  }, [Buscar])
 
   useEffect(() => {
     if (open) {
@@ -106,7 +107,7 @@ const AddEmployee = ({ open, onClose, loader, onAdd }) => {
                 </Box>
               ) : (
                 <Grid container spacing={1}>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} style={{ display: 'flex' }}>
                     <TextField
                       label="Rut de trabajador"
                       value={searchRut}
@@ -114,9 +115,12 @@ const AddEmployee = ({ open, onClose, loader, onAdd }) => {
                         setSearchRut(formatSearchWithRut(e.target.value))
                       }}
                     />
+                    <IconButton onClick={() => setBuscar(true)}>
+                      <SearchIcon color="primary" fontSize="large" />
+                    </IconButton>
                   </Grid>
                   <Grid item xs={12}>
-                    {loading ? (
+                    {searching ? (
                       <>
                         <Skeleton height={'50px'} />
                         <Skeleton height={'50px'} />
