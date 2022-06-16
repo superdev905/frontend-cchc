@@ -40,7 +40,7 @@ const validationSchema = Yup.object().shape({
   observations: Yup.string().required('Ingrese observaciones')
 })
 
-const HousingNew = () => {
+const HousingNew = ({ type }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
@@ -141,12 +141,14 @@ const HousingNew = () => {
               <Grid item xs={12} md={12}>
                 <Box>
                   <SearchCompany
+                    onDefaultValue={formik.values.businessId}
                     onSelected={(value) => {
                       setSelectedCompany(value)
                       formik.setFieldValue('businessId', value.id)
                       formik.setFieldValue('businessName', value.business_name)
                       formik.setFieldValue('number', value.rut)
                     }}
+                    type={type !== 'UPDATE' ? 'CREATE' : type}
                     onDelete={() => {
                       setSelectedCompany(null)
                       setCompanyDetails(null)
