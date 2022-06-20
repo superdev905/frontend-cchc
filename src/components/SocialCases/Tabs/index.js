@@ -38,7 +38,7 @@ const SocialCaseTabs = ({ loading }) => {
         fullWidth
         value={getValue()}
         tabs={[
-          'Antecendes',
+          'Antecedentes',
           'Análisis',
           'Planes de intervención',
           'Registros de intervencion',

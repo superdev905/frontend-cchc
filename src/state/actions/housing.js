@@ -258,7 +258,17 @@ const getEmployeeToAttend =
           reject(err.response.data.detail)
         })
     })
-
+const deleteEmployee = (id) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(`${config.services.housing}/employees/edit/${id}`)
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 const housingActions = {
   createAgreement,
   getAgreements,
@@ -276,7 +286,8 @@ const housingActions = {
   getAnnexed,
   validAnnexed,
   addEmployee,
-  getEmployeeToAttend
+  getEmployeeToAttend,
+  deleteEmployee
 }
 
 export default housingActions

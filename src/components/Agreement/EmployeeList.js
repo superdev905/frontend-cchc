@@ -46,23 +46,20 @@ const EmployeeList = ({ annexedId, status }) => {
 
   const blockEmployee = () => {
     setDeleting(true)
-    dispatch(
-      employeesActions.patchEmployee(employees.employeeId, {
-        state: 'DELETED'
-      })
-    )
+    dispatch(housingActions.deleteEmployee(currentEmployee.employeeId))
       .then(() => {
         setDeleting(false)
+        toggleOpenDelete()
       })
       .catch(() => {
         setDeleting(false)
+        toggleOpenDelete()
       })
   }
 
   useEffect(() => {
     fetchEmployees()
-  }, [query, annexedId])
-
+  }, [query, annexedId, deleting])
   return (
     <Box>
       <Typography
@@ -117,10 +114,10 @@ const EmployeeList = ({ annexedId, status }) => {
           {
             name: '',
             right: true,
-            selector: () => (
+            selector: (row) => (
               <Button
                 danger
-                onClick={(row) => {
+                onClick={() => {
                   toggleOpenDelete()
                   setCurrentEmployee(row)
                 }}
@@ -159,8 +156,8 @@ const EmployeeList = ({ annexedId, status }) => {
           onClose={toggleOpenDelete}
           message={
             <Typography variant="h6">
-              ¿Estas seguro de a eliminar:{' '}
-              <strong>{`${currentEmployee.full_Name}`}</strong>?
+              ¿Estas seguro de eliminar a:{' '}
+              <strong>{`${currentEmployee.fullName}`}</strong>?
             </Typography>
           }
           loading={deleting}

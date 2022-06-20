@@ -2,7 +2,7 @@ import { Box, Grid, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { useSnackbar } from 'notistack'
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { formatDate } from '../../formatters'
 import { useToggle } from '../../hooks'
 import housingActions from '../../state/actions/housing'
@@ -18,6 +18,7 @@ const Annexed = ({ data, index }) => {
   const [details, setDetails] = useState(null)
   const [validating, setValidating] = useState(false)
   const { open: openValid, toggleOpen: toggleOpenValidate } = useToggle()
+  const { totalEmployees } = useSelector((state) => state.housing)
 
   const fetchDetails = () => {
     setLoading(true)
@@ -60,7 +61,7 @@ const Annexed = ({ data, index }) => {
             </LabeledRow>
             <LabeledRow width="220px" label="Cantidad de trabajadores">
               <Text loading={loading} loaderWidth="30%">
-                {details?.totalEmployees}
+                {totalEmployees}
               </Text>
             </LabeledRow>
             <LabeledRow label="Observaciones">
