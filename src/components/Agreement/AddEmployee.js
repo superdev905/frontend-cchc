@@ -5,7 +5,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { Skeleton } from '@material-ui/lab'
 import { addMonths } from 'date-fns'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid, Typography, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import { Dialog } from '../Shared'
 import { formatSearchWithRut } from '../../formatters'
 import { Button, EmptyState, SubmitButton, TextField } from '../UI'
@@ -37,6 +38,7 @@ const WorkerRegistration = ({
   const [loading, setLoading] = useState(false)
   const [searchList, setSearchList] = useState([])
   const [selectedEmployee, setSelectedEmployee] = useState(null)
+  const [Buscar, setBuscar] = useState(false)
 
   const formik = useFormik({
     validateOnMount: true,
@@ -85,7 +87,7 @@ const WorkerRegistration = ({
   }, [selectedEmployee])
 
   useEffect(() => {
-    if (searchRut) {
+    if (searchRut && Buscar) {
       setLoading(true)
       dispatch(
         employeesActions.getEmployees(
@@ -97,11 +99,10 @@ const WorkerRegistration = ({
         setSearchList(
           list.items.map((item) => ({ ...item, avatarBg: generateColor() }))
         )
+        setBuscar(false)
       })
-    } else {
-      setSearchList([])
     }
-  }, [searchRut])
+  }, [Buscar])
 
   useEffect(() => {
     if (open) {
@@ -151,7 +152,7 @@ const WorkerRegistration = ({
                 </Box>
               ) : (
                 <Grid container spacing={1}>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} style={{ display: 'flex' }}>
                     <TextField
                       label="Rut de trabajador"
                       value={searchRut}
@@ -159,6 +160,9 @@ const WorkerRegistration = ({
                         setSearchRut(formatSearchWithRut(e.target.value))
                       }}
                     />
+                    <IconButton onClick={() => setBuscar(true)}>
+                      <SearchIcon color="primary" fontSize="large" />
+                    </IconButton>
                   </Grid>
                   <Grid item xs={12}>
                     {loading ? (
