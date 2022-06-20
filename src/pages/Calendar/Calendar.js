@@ -257,7 +257,8 @@ const EventsCalendar = () => {
         startDate: query.start_date
           ? new Date(query.start_date).toISOString()
           : null,
-        endDate: query.end_date ? new Date(query.end_date).toISOString() : null
+        endDate: query.end_date ? new Date(query.end_date).toISOString() : null,
+        user_id: user.id
       })
     )
   }
@@ -297,17 +298,17 @@ const EventsCalendar = () => {
   }, [rangeDate])
 
   useEffect(() => {
-    if (!calendarView) {
+    if (!calendarView && user) {
       fetchEvents(filters)
       fetchInterventionPlanTasks(filters)
-    } else if (calendarView === 'TASKS') {
+    } else if (calendarView === 'TASKS' && user) {
       dispatch(assistanceActions.cleanCalendarEvents())
       fetchInterventionPlanTasks(filters)
     } else {
       dispatch(socialCasesActions.cleanCalendarPlans())
       fetchEvents(filters)
     }
-  }, [filters, calendarView])
+  }, [filters, calendarView, user])
 
   return (
     <div>
