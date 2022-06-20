@@ -37,7 +37,6 @@ const AttentionDetails = () => {
       )
     })
   }
-
   const createAttention = (values) =>
     dispatch(
       assistanceActions.createAssistance({
@@ -67,7 +66,7 @@ const AttentionDetails = () => {
   useEffect(() => {
     fetchList()
   }, [])
-  console.log(currentData)
+
   return (
     <Box width="100%">
       <Wrapper>

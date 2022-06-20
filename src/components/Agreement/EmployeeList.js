@@ -62,7 +62,7 @@ const EmployeeList = ({ annexedId, status }) => {
   useEffect(() => {
     fetchEmployees()
   }, [query, annexedId])
-  console.log(employees)
+
   return (
     <Box>
       <Typography
