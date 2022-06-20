@@ -8,18 +8,20 @@ import { ActionsTable, Button, Wrapper } from '../UI'
 import { DataTable } from '../Shared'
 import { formatDate } from '../../formatters'
 import { useToggle } from '../../hooks'
-import AssistanceDialog from '../Assistance/Dialog'
 import { AssistanceDetailsModal } from '../Assistance'
+import AssistanceEditModal from '../Assistance/Dialog'
 
 const AttentionDetails = () => {
   const dispatch = useDispatch()
   const { idEmployee } = useParams()
   const [list, setList] = useState([])
   const { employee } = useSelector((state) => state.employees)
-
   const { open: openAdd, toggleOpen: toggleOpenAdd } = useToggle()
   const { open: openView, toggleOpen: toggleOpenView } = useToggle()
-  const [currentData, setCurrentData] = useState(null)
+  const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
+  const [currentData, setCurrentData] = useState()
+  const [assistance, setAssistance] = useState()
+
   const [loading, setLoading] = useState(false)
 
   const fetchList = () => {
@@ -49,10 +51,23 @@ const AttentionDetails = () => {
       })
     )
 
+  const editAttention = (values) =>
+    dispatch(
+      assistanceActions.editAssistance(currentData?.id, {
+        ...values,
+        employee_id: employee.id,
+        employee_name: employee.names,
+        employee_lastname: `${employee.paternal_surname}`,
+        employee_rut: employee.run,
+        business_id: employee.current_job.business_id || '',
+        construction_id: employee.current_job.construction_id || ''
+      })
+    )
+
   useEffect(() => {
     fetchList()
   }, [])
-
+  console.log(currentData)
   return (
     <Box width="100%">
       <Wrapper>
@@ -114,6 +129,10 @@ const AttentionDetails = () => {
                 cell: (row) => (
                   <ActionsTable
                     {...row}
+                    onEdit={() => {
+                      setAssistance(row)
+                      toggleOpenEdit()
+                    }}
                     onView={() => {
                       setCurrentData(row)
                       toggleOpenView()
@@ -151,6 +170,26 @@ const AttentionDetails = () => {
             construction={{ name: '' }}
             successFunction={fetchList}
             successMessage="Atención creada con éxito"
+          />
+        )}
+        {openEdit && (
+          <AssistanceEditModal
+            open={openEdit}
+            onClose={toggleOpenEdit}
+            sourceSystem={'OFICINA'}
+            employee={employee}
+            visitShift={''}
+            submitFunction={editAttention}
+            company={{
+              business_name: employee?.current_job?.business_name,
+              id: employee?.current_job?.business_id,
+              construction_name: employee.current_job.construction_name
+            }}
+            data={assistance}
+            type="UPDATE"
+            construction={{ name: '' }}
+            successFunction={fetchList}
+            successMessage="Atención editada con éxito"
           />
         )}
       </Wrapper>

@@ -17,6 +17,7 @@ import { useToggle } from '../../hooks'
 import BenefitDialog from './BenefitDialog'
 import AssistanceDialog from '../Assistance/Dialog'
 import assistanceActions from '../../state/actions/assistance'
+import AttentionDetails from './AttentionList'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,7 +73,6 @@ const DetailsDrawer = ({ open, onClose, migrantId }) => {
       fetchData()
     }
   }, [open])
-
   return (
     <Drawer
       classes={{ paper: classes.root }}
@@ -186,6 +186,9 @@ const DetailsDrawer = ({ open, onClose, migrantId }) => {
               }
             ]}
           />
+        </Box>
+        <Box mt={2}>
+          <AttentionDetails />
         </Box>
         {openEdit && benefit && (
           <BenefitDialog

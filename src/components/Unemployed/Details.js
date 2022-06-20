@@ -8,6 +8,7 @@ import PaymentsList from './Payment/List'
 import { UserCard } from '../Users'
 import { useToggle } from '../../hooks'
 import BenefitsList from './BenefitsList'
+import AttentionDetails from './AttentionList'
 
 const useStyles = makeStyles((theme) => ({
   heading: {
@@ -122,6 +123,9 @@ const Details = ({ loading }) => {
 
         <Box mt={2}>
           <PaymentsList />
+        </Box>
+        <Box mt={2}>
+          <AttentionDetails />
         </Box>
       </Box>
     </Box>

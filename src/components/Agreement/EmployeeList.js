@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { useToggle } from '../../hooks'
-import { DataTable } from '../Shared'
-import { ActionsTable, Button, SearchInput } from '../UI'
+import { ConfirmDelete, DataTable } from '../Shared'
+import { Button, SearchInput } from '../UI'
 import housingActions from '../../state/actions/housing'
+import employeesActions from '../../state/actions/employees'
 import { formatDate } from '../../formatters'
 import AddEmployee from './AddEmployee'
 
@@ -14,6 +15,9 @@ const EmployeeList = ({ annexedId, status }) => {
   const history = useHistory()
   const { agreementId } = useParams()
   const [loading, setLoading] = useState(false)
+  const { open: openDelete, toggleOpen: toggleOpenDelete } = useToggle()
+  const [deleting, setDeleting] = useState(false)
+  const [currentEmployee, setCurrentEmployee] = useState(null)
   const { open, toggleOpen } = useToggle()
   const [query, setQuery] = useState({
     page: 1,
@@ -40,9 +44,25 @@ const EmployeeList = ({ annexedId, status }) => {
   const addEmployee = (values) =>
     dispatch(housingActions.addEmployee(annexedId, values))
 
+  const blockEmployee = () => {
+    setDeleting(true)
+    dispatch(
+      employeesActions.patchEmployee(employees.employeeId, {
+        state: 'DELETED'
+      })
+    )
+      .then(() => {
+        setDeleting(false)
+      })
+      .catch(() => {
+        setDeleting(false)
+      })
+  }
+
   useEffect(() => {
     fetchEmployees()
   }, [query, annexedId])
+  console.log(employees)
   return (
     <Box>
       <Typography
@@ -97,7 +117,17 @@ const EmployeeList = ({ annexedId, status }) => {
           {
             name: '',
             right: true,
-            selector: () => <ActionsTable onView={() => {}} />
+            selector: () => (
+              <Button
+                danger
+                onClick={(row) => {
+                  toggleOpenDelete()
+                  setCurrentEmployee(row)
+                }}
+              >
+                Eliminar
+              </Button>
+            )
           }
         ]}
         data={employees}
@@ -121,6 +151,20 @@ const EmployeeList = ({ annexedId, status }) => {
           submitFunction={addEmployee}
           successMessage="Trabajador agregado"
           successFunction={fetchEmployees}
+        />
+      )}
+      {currentEmployee && openDelete && (
+        <ConfirmDelete
+          open={openDelete}
+          onClose={toggleOpenDelete}
+          message={
+            <Typography variant="h6">
+              ¿Estas seguro de a eliminar:{' '}
+              <strong>{`${currentEmployee.full_Name}`}</strong>?
+            </Typography>
+          }
+          loading={deleting}
+          onConfirm={blockEmployee}
         />
       )}
     </Box>
