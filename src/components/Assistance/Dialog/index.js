@@ -268,7 +268,7 @@ const WorkerInterventionRecord = ({
       })
     }
   })
-
+  console.log(formik.isValid)
   const handleSelectChange = (e) => {
     const { name, value } = e.target
     switch (name) {
@@ -322,10 +322,10 @@ const WorkerInterventionRecord = ({
       const selected = managementList.find(
         (item) => item.id === parseInt(management_id, 10)
       )
-      if (selected.name === 'ENTREGA DE BENEFICIO') {
+      if (selected?.name === 'ENTREGA DE BENEFICIO') {
         toggleOpenBenefit()
       }
-      setSelectedManagement(selected.name)
+      setSelectedManagement(selected?.name)
     } else {
       setSelectedManagement('')
     }

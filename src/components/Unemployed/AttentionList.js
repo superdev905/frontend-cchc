@@ -99,7 +99,7 @@ const AttentionDetails = () => {
           employee={unemployed?.employee}
           visitShift={''}
           submitFunction={createAttention}
-          company={{ business_name: '' }}
+          company={{ business_name: '', construction_name: '' }}
           construction={{ name: '' }}
           successFunction={fetchList}
           successMessage="Atención creada con éxito"
