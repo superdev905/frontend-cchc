@@ -268,7 +268,6 @@ const WorkerInterventionRecord = ({
       })
     }
   })
-  console.log(formik.isValid)
   const handleSelectChange = (e) => {
     const { name, value } = e.target
     switch (name) {
