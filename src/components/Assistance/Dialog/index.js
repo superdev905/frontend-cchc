@@ -81,7 +81,7 @@ const WorkerInterventionRecord = ({
     benefit: null,
     activity: null
   })
-  const [selectedPlans, setSelectedPlans] = useState([])
+  //  const [selectedPlans, setSelectedPlans] = useState([])
   const [casoSocial, setCasoSocial] = useState([])
   const [beneficiaryList, setBeneficiaryList] = useState([])
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null)
@@ -340,7 +340,7 @@ const WorkerInterventionRecord = ({
     }
   }, [type, visitShift])
 
-  useEffect(() => {
+  /*  useEffect(() => {
     if (
       formik.values.case_id &&
       formik.values.case_id !== 'NEW' &&
@@ -351,7 +351,7 @@ const WorkerInterventionRecord = ({
       )
       setSelectedPlans(foundCase?.interventionPlans || [])
     }
-  }, [formik.values.case_id, casesForSelect])
+  }, [formik.values.case_id, casesForSelect]) */
 
   useEffect(() => {
     if (formik.values.area_id && areas.length > 0) {
@@ -906,7 +906,7 @@ const WorkerInterventionRecord = ({
                     </Select>
                   </Grid>
                   <Grid item xs={12} lg={5}>
-                    <Select
+                    {/* <Select
                       label="Plan de Intervención"
                       name="task_id"
                       required={
@@ -937,7 +937,7 @@ const WorkerInterventionRecord = ({
                           {item.managementName}
                         </option>
                       ))}
-                    </Select>
+                      </Select> */}
                   </Grid>
                 </Grid>
                 {formik.values.is_social_case === 'SI' &&
