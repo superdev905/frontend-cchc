@@ -17,11 +17,13 @@ const List = () => {
   const { enqueueSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const { user } = useSelector((state) => state.auth)
   const [query, setQuery] = useState({
     size: 30,
     page: 1,
     search: '',
-    socialCaseId
+    socialCaseId,
+    user_id: user?.id
   })
   const [currentTask, setCurrentTask] = useState(null)
   const { interventionPlans: list, totalInterventions: totalDocs } =
