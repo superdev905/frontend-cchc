@@ -13,7 +13,7 @@ const AssistanceList = ({ loading, list }) => {
     <Box>
       <Box>
         <DataTable
-          emptyMessage="No hay existen detalles de atención "
+          emptyMessage="No existen detalles de atención "
           progressPending={loading}
           columns={[
             {

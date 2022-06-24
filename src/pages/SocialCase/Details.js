@@ -82,7 +82,7 @@ const SocialCaseDetails = () => {
             <Box my={1}>
               <Alert severity="error" style={{ borderRadius: 5 }}>
                 <Typography>
-                  Estado de caso: <strong>{caseDetails?.state}</strong>
+                  Estado del caso: <strong>{caseDetails?.state}</strong>
                 </Typography>
               </Alert>
             </Box>
