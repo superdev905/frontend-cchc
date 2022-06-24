@@ -170,7 +170,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
     dispatch(commonActions.getAreas())
     dispatch(commonActions.getRegions())
   }, [])
-
+  console.log(employees)
   return (
     <Menu
       classes={{ paper: classes.root }}
@@ -243,7 +243,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
                 key={`application--filters-employees${item.id}`}
                 value={item.id}
               >
-                {item.names}
+                {item.names} {item.paternal_surname}
               </option>
             ))}
           </Select>

@@ -213,7 +213,7 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
                           <Typography
                             style={{ fontSize: 17, fontWeight: 'bold' }}
                           >
-                            {`Nombre:  ${values.names}`}
+                            {`Nombre:  ${values.names} ${values.paternal_surname}`}
                           </Typography>
                           <Typography
                             style={{
