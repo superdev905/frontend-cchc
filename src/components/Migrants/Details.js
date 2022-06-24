@@ -49,6 +49,7 @@ const DetailsDrawer = ({ open, onClose, migrantId }) => {
   const { open: openEdit, toggleOpen: toggleOpenEdit } = useToggle()
   const { open: openAttention, toggleOpen: toggleOpenAttention } = useToggle()
   const [benefit, setBenefit] = useState(null)
+  const [attentions, setAttentions] = useState()
 
   const createAttention = (values) =>
     dispatch(
@@ -64,7 +65,12 @@ const DetailsDrawer = ({ open, onClose, migrantId }) => {
   const fetchData = () => {
     setLoading(true)
     dispatch(migrants.getMigrantDetails(migrantId)).then(() => {
-      setLoading(false)
+      dispatch(
+        assistanceActions.getAttention({ id_employee: migrant.employeeId })
+      ).then((result) => {
+        setAttentions(result)
+        setLoading(false)
+      })
     })
   }
 
@@ -188,7 +194,10 @@ const DetailsDrawer = ({ open, onClose, migrantId }) => {
           />
         </Box>
         <Box mt={2}>
-          <AttentionDetails />
+          <AttentionDetails
+            createAttention={createAttention}
+            attentions={attentions}
+          />
         </Box>
         {openEdit && benefit && (
           <BenefitDialog

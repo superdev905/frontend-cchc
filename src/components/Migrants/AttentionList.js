@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Typography } from '@material-ui/core'
-import { Wrapper, Button, ActionsTable } from '../UI'
+import { Wrapper, Button } from '../UI'
 import { DataTable } from '../Shared'
 import { useToggle } from '../../hooks'
-import assistanceActions from '../../state/actions/assistance'
 import migrants from '../../state/actions/migrants'
 import AssistanceDialog from '../Assistance/Dialog'
 
-const AttentionDetails = ({ migrantId, open }) => {
+const AttentionDetails = ({ migrantId, open, createAttention, attentions }) => {
   const dispatch = useDispatch
   const [loading, setLoading] = useState()
   const { migrant } = useSelector((state) => state.migrants)
@@ -21,16 +20,7 @@ const AttentionDetails = ({ migrantId, open }) => {
       setLoading(false)
     })
   }
-  const createAttention = (values) =>
-    dispatch(
-      assistanceActions.createAssistance({
-        ...values,
-        employee_id: migrant.employee.id,
-        employee_name: migrant.employee.names,
-        employee_lastname: `${migrant.employee.paternalSurname}`,
-        employee_rut: migrant.employee.run
-      })
-    )
+
   useEffect(() => {
     if (open) {
       fetchData()
@@ -61,7 +51,7 @@ const AttentionDetails = ({ migrantId, open }) => {
           columns={[
             {
               name: 'Fecha',
-              selector: (row) => row.stringDate
+              selector: (row) => row.date.split('T')[0]
             },
             {
               name: 'Nombre de Obra',
@@ -81,14 +71,10 @@ const AttentionDetails = ({ migrantId, open }) => {
               name: 'Método de contacto',
               selector: (row) => row.contact_method,
               hide: 'md'
-            },
-            {
-              name: '',
-              right: true,
-              cell: (row) => <ActionsTable {...row} onView={() => {}} />
             }
           ]}
           pagination
+          data={attentions}
         />
       </Box>
       {openAttention && (

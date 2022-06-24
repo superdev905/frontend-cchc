@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Typography, Grid, makeStyles } from '@material-ui/core'
 import files from '../../state/actions/files'
@@ -7,6 +8,7 @@ import { FileThumbnail, FileVisor } from '../Shared'
 import PaymentsList from './Payment/List'
 import { UserCard } from '../Users'
 import { useToggle } from '../../hooks'
+import assistanceActions from '../../state/actions/assistance'
 import BenefitsList from './BenefitsList'
 import AttentionDetails from './AttentionList'
 
@@ -32,6 +34,25 @@ const Details = ({ loading }) => {
   const dispatch = useDispatch()
   const { unemployed } = useSelector((state) => state.unemployed)
   const { open, toggleOpen } = useToggle()
+  const [dataList, setDataList] = useState()
+
+  const createAttention = (values) =>
+    dispatch(
+      assistanceActions.createAssistance({
+        ...values,
+        employee_id: unemployed.employee.id,
+        employee_name: unemployed.employee.names,
+        employee_lastname: `${unemployed.employee.paternalSurname}`,
+        employee_rut: unemployed.employee.run
+      })
+    )
+
+  useEffect(() => {
+    if (unemployed)
+      dispatch(
+        assistanceActions.getAttention({ id_employee: unemployed.employeeId })
+      ).then((result) => setDataList(result))
+  }, [unemployed])
 
   return (
     <Box px={1}>
@@ -125,7 +146,10 @@ const Details = ({ loading }) => {
           <PaymentsList />
         </Box>
         <Box mt={2}>
-          <AttentionDetails />
+          <AttentionDetails
+            createAttention={createAttention}
+            dataList={dataList}
+          />
         </Box>
       </Box>
     </Box>

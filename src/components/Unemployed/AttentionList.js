@@ -2,14 +2,13 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { Box, Typography } from '@material-ui/core'
-import { Wrapper, Button, ActionsTable } from '../UI'
+import { Wrapper, Button } from '../UI'
 import { DataTable } from '../Shared'
 import { useToggle } from '../../hooks'
-import assistanceActions from '../../state/actions/assistance'
 import unemployedActions from '../../state/actions/unemployed'
 import AssistanceDialog from '../Assistance/Dialog'
 
-const AttentionDetails = () => {
+const AttentionDetails = ({ createAttention, dataList }) => {
   const dispatch = useDispatch
   const { idUnemployed } = useParams()
   const [loading, setLoading] = useState()
@@ -26,17 +25,6 @@ const AttentionDetails = () => {
       setLoading(false)
     })
   }
-
-  const createAttention = (values) =>
-    dispatch(
-      assistanceActions.createAssistance({
-        ...values,
-        employee_id: unemployed.employee.id,
-        employee_name: unemployed.employee.names,
-        employee_lastname: `${unemployed.employee.paternalSurname}`,
-        employee_rut: unemployed.employee.run
-      })
-    )
 
   return (
     <Wrapper>
@@ -61,7 +49,7 @@ const AttentionDetails = () => {
           columns={[
             {
               name: 'Fecha',
-              selector: (row) => row.stringDate
+              selector: (row) => row.date.split('T')[0]
             },
             {
               name: 'Nombre de Obra',
@@ -81,14 +69,10 @@ const AttentionDetails = () => {
               name: 'Método de contacto',
               selector: (row) => row.contact_method,
               hide: 'md'
-            },
-            {
-              name: '',
-              right: true,
-              cell: (row) => <ActionsTable {...row} onView={() => {}} />
             }
           ]}
           pagination
+          data={dataList}
         />
       </Box>
       {openAttention && (
