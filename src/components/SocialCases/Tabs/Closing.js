@@ -8,7 +8,6 @@ const Closing = () => {
   const { caseDetails } = useSelector((state) => state.socialCase)
 
   useEffect(() => {}, [caseDetails])
-  console.log(caseDetails)
   return (
     <Grid item xs={12}>
       {caseDetails?.state === 'SOLICITADO' ? (
