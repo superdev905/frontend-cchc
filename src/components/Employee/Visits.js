@@ -9,7 +9,7 @@ import { DataTable } from '../Shared'
 import { formatDate } from '../../formatters'
 import { useToggle } from '../../hooks'
 import { AssistanceDetailsModal } from '../Assistance'
-import AssistanceEditModal from '../Assistance/Dialog'
+import AssistanceDialog from '../Assistance/Dialog'
 
 const AttentionDetails = () => {
   const dispatch = useDispatch()
@@ -172,7 +172,7 @@ const AttentionDetails = () => {
           />
         )}
         {openEdit && (
-          <AssistanceEditModal
+          <AssistanceDialog
             open={openEdit}
             onClose={toggleOpenEdit}
             sourceSystem={'OFICINA'}
