@@ -1,35 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import { Wrapper, LabeledRow, Text, EmptyState } from '../../UI'
-import ClosingModal from '../Closing/ClosingModal'
 import { formatDate } from '../../../formatters'
 
 const Closing = () => {
-  const [open, setOpen] = useState(false)
   const { caseDetails } = useSelector((state) => state.socialCase)
 
-  const openModal = () => {
-    setOpen(true)
-  }
-  const closeModal = () => {
-    setOpen(false)
-  }
-
-  useEffect(() => {
-    closeModal()
-  }, [caseDetails])
-
+  useEffect(() => {}, [caseDetails])
   return (
     <Grid item xs={12}>
-      {caseDetails?.closing ? (
+      {!caseDetails?.closing ? (
         <Box>
           <Wrapper>
-            <EmptyState
-              message={'Este caso no fue cerrado'}
-              event={openModal}
-              actionMessage={'Cerrar'}
-            />
+            <EmptyState message={'Este caso no fue cerrado'} />
           </Wrapper>
         </Box>
       ) : (
@@ -65,7 +49,6 @@ const Closing = () => {
           </Box>
         </Wrapper>
       )}
-      <ClosingModal open={open} onClose={closeModal} />
     </Grid>
   )
 }

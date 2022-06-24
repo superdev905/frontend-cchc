@@ -53,7 +53,6 @@ const AttentionDetails = () => {
     fetchList()
     dispatch(commonActions.getManagement())
   }, [])
-
   return (
     <Box width="100%">
       <Wrapper>

@@ -7,6 +7,7 @@ import { Box, Typography, Grid } from '@material-ui/core'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { Select, Button, TextField, TextArea } from '../../UI'
+import { useSuccess } from '../../../hooks'
 import { Dialog } from '../../Shared'
 import states from '../../../resources/statesData'
 import socialCaseActions from '../../../state/actions/socialCase'
@@ -39,6 +40,7 @@ const ClosingModal = ({ open, onClose }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
+  const { success, changeSuccess } = useSuccess()
   const { socialCaseId } = useParams()
   const { isMobile } = useSelector((state) => state.ui)
   const { user } = useSelector((state) => state.auth)
@@ -66,7 +68,9 @@ const ClosingModal = ({ open, onClose }) => {
             enqueueSnackbar('Caso Cerrado Exitosamente', {
               variant: 'success'
             })
+            changeSuccess(false)
             dispatch(socialCaseActions.getSocialCaseById(socialCaseId))
+            onClose()
           }
         )
       } catch (error) {
@@ -151,8 +155,18 @@ const ClosingModal = ({ open, onClose }) => {
                     />
                   </Box>
                 </Box>
-                <Box className={classes.boxHorizontal}>
-                  <Button type="submit" disabled={!formik.isValid}>
+                <Box
+                  className={classes.boxHorizontal}
+                  textAlign="center"
+                  marginTop="15px"
+                >
+                  <Button
+                    type="submit"
+                    disabled={!formik.isValid}
+                    success={success}
+                    loading={formik.isSubmitting}
+                    onClick={formik.handleSubmit}
+                  >
                     Guardar
                   </Button>
                 </Box>

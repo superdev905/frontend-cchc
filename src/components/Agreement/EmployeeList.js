@@ -6,7 +6,6 @@ import { useToggle } from '../../hooks'
 import { ConfirmDelete, DataTable } from '../Shared'
 import { Button, SearchInput } from '../UI'
 import housingActions from '../../state/actions/housing'
-import employeesActions from '../../state/actions/employees'
 import { formatDate } from '../../formatters'
 import AddEmployee from './AddEmployee'
 
