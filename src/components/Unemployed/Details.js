@@ -35,6 +35,7 @@ const Details = ({ loading }) => {
   const { unemployed } = useSelector((state) => state.unemployed)
   const { open, toggleOpen } = useToggle()
   const [dataList, setDataList] = useState()
+  const [updateDataList, setUpdateDataList] = useState(false)
 
   const createAttention = (values) =>
     dispatch(
@@ -45,14 +46,18 @@ const Details = ({ loading }) => {
         employee_lastname: `${unemployed.employee.paternalSurname}`,
         employee_rut: unemployed.employee.run
       })
-    )
+    ).then(() => {
+      setUpdateDataList(true)
+    })
 
   useEffect(() => {
-    if (unemployed)
+    if (unemployed) {
+      setUpdateDataList(false)
       dispatch(
         assistanceActions.getAttention({ id_employee: unemployed.employeeId })
       ).then((result) => setDataList(result))
-  }, [unemployed])
+    }
+  }, [unemployed, updateDataList])
 
   return (
     <Box px={1}>
@@ -149,6 +154,7 @@ const Details = ({ loading }) => {
           <AttentionDetails
             createAttention={createAttention}
             dataList={dataList}
+            setUpdateDataList={setUpdateDataList}
           />
         </Box>
       </Box>

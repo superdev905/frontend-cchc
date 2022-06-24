@@ -11,19 +11,15 @@ import AssistanceDialog from '../Assistance/Dialog'
 const AttentionDetails = ({ createAttention, dataList }) => {
   const dispatch = useDispatch
   const { idUnemployed } = useParams()
-  const [loading, setLoading] = useState()
   const { unemployed } = useSelector((state) => state.unemployed)
   const { open: openAttention, toggleOpen: toggleOpenAttention } = useToggle()
 
   const fetchList = () => {
-    setLoading(true)
     dispatch(
       unemployedActions.getUnemployedById({
         id_unemployed: idUnemployed
       })
-    ).then(() => {
-      setLoading(false)
-    })
+    )
   }
 
   return (
@@ -45,7 +41,6 @@ const AttentionDetails = ({ createAttention, dataList }) => {
       <Box>
         <DataTable
           emptyMessage="No existen detalles de atención "
-          progressPending={loading}
           columns={[
             {
               name: 'Fecha',
