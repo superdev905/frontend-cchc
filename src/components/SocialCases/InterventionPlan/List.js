@@ -22,7 +22,13 @@ const List = () => {
     size: 30,
     page: 1,
     search: '',
+<<<<<<< HEAD
     socialCaseId
+=======
+    socialCaseId,
+    user_id: user?.id,
+    rol: user?.role.key
+>>>>>>> 47444b9c986d6aa13b3d88bb8f8f557d79ba2ebc
   })
   const [currentTask, setCurrentTask] = useState(null)
   const { interventionPlans: list, totalInterventions: totalDocs } =
