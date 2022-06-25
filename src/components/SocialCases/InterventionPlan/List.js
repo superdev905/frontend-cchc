@@ -17,13 +17,12 @@ const List = () => {
   const { enqueueSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
-  const { user } = useSelector((state) => state.auth)
+  const { caseDetails } = useSelector((state) => state.socialCase)
   const [query, setQuery] = useState({
     size: 30,
     page: 1,
     search: '',
-    socialCaseId,
-    user_id: user?.id
+    socialCaseId
   })
   const [currentTask, setCurrentTask] = useState(null)
   const { interventionPlans: list, totalInterventions: totalDocs } =
@@ -69,7 +68,8 @@ const List = () => {
     dispatch(
       socialCasesActions.getInterventionPlans({
         ...query,
-        search: query.search.trim()
+        search: query.search.trim(),
+        user_Id: caseDetails.employeeId
       })
     )
       .then(() => {
@@ -81,8 +81,10 @@ const List = () => {
   }
 
   useEffect(() => {
-    fetchList()
-  }, [query])
+    if (caseDetails) {
+      fetchList()
+    }
+  }, [query, caseDetails])
   return (
     <Box>
       <Box my={1}>

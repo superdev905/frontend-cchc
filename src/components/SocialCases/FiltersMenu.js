@@ -170,7 +170,6 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
     dispatch(commonActions.getAreas())
     dispatch(commonActions.getRegions())
   }, [])
-  console.log(employees)
   return (
     <Menu
       classes={{ paper: classes.root }}
@@ -317,7 +316,9 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
         </Box>
 
         <Box width="100%" display="flex" justifyContent="center">
-          <Button variant="outlined">Cancelar</Button>
+          <Button variant="outlined" onClick={onClose}>
+            Cancelar
+          </Button>
           <Button onClick={applyFilter}>Aplicar</Button>
         </Box>
       </Box>
