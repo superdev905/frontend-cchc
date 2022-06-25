@@ -385,7 +385,7 @@ const WorkerInterventionRecord = ({
       setAttachments([])
       dispatch(commonActions.getAreas())
       dispatch(commonActions.getManagement())
-      dispatch(socialCasesActions.getListCases())
+      dispatch(socialCasesActions.getListCases(employee.id))
     }
     setSelectedBeneficiary(employee)
     formik.setFieldValue('attended_id', employee.id)
@@ -426,6 +426,8 @@ const WorkerInterventionRecord = ({
       setCasoSocial([])
     }
   }, [employee, casesForSelect])
+
+  console.log(casesForSelect)
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>

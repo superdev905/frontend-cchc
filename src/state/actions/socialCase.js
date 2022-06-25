@@ -45,9 +45,9 @@ const getSocialCaseById =
         })
     })
 
-const getListCases = () => (dispatch) =>
+const getListCases = (id) => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.socialCase}/social-cases/collect`)
+    Axios.get(`${config.services.socialCase}/social-cases/collect/${id}`)
       .then((response) => {
         const { data } = response
         dispatch({
