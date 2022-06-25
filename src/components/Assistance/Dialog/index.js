@@ -427,8 +427,6 @@ const WorkerInterventionRecord = ({
     }
   }, [employee, casesForSelect])
 
-  console.log(casesForSelect)
-
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
       <Box>

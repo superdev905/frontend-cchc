@@ -18,17 +18,14 @@ const List = () => {
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const { caseDetails } = useSelector((state) => state.socialCase)
+  const { user } = useSelector((state) => state.auth)
   const [query, setQuery] = useState({
     size: 30,
     page: 1,
     search: '',
-<<<<<<< HEAD
-    socialCaseId
-=======
     socialCaseId,
     user_id: user?.id,
     rol: user?.role.key
->>>>>>> 47444b9c986d6aa13b3d88bb8f8f557d79ba2ebc
   })
   const [currentTask, setCurrentTask] = useState(null)
   const { interventionPlans: list, totalInterventions: totalDocs } =
