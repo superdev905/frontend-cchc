@@ -23,7 +23,8 @@ const List = () => {
     page: 1,
     search: '',
     socialCaseId,
-    user_id: user?.id
+    user_id: user?.id,
+    rol: user?.role.key
   })
   const [currentTask, setCurrentTask] = useState(null)
   const { interventionPlans: list, totalInterventions: totalDocs } =

@@ -170,7 +170,6 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
     dispatch(commonActions.getAreas())
     dispatch(commonActions.getRegions())
   }, [])
-  console.log(employees)
   return (
     <Menu
       classes={{ paper: classes.root }}
