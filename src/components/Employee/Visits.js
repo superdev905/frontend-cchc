@@ -49,10 +49,9 @@ const AttentionDetails = () => {
         construction_id: employee.current_job.construction_id || ''
       })
     )
-
   const editAttention = (values) =>
     dispatch(
-      assistanceActions.editAssistance(currentData?.id, {
+      assistanceActions.editAssistance(assistance.id, {
         ...values,
         employee_id: employee.id,
         employee_name: employee.names,
