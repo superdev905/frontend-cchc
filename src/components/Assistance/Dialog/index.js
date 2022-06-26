@@ -82,7 +82,6 @@ const WorkerInterventionRecord = ({
     activity: null
   })
   //  const [selectedPlans, setSelectedPlans] = useState([])
-  const [casoSocial, setCasoSocial] = useState([])
   const [beneficiaryList, setBeneficiaryList] = useState([])
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null)
   const { open: openBenefit, toggleOpen: toggleOpenBenefit } = useToggle()
@@ -403,29 +402,6 @@ const WorkerInterventionRecord = ({
       })
     }
   }, [!formik.isValid, formik.isSubmitting])
-
-  useEffect(() => {
-    if (casesForSelect.length > 0) {
-      if (type !== 'UPDATE') {
-        const casos = casesForSelect?.filter((filter) =>
-          employee.fullName
-            ? filter.employeeNames === employee.fullName
-            : filter.employeeNames ===
-              `${employee.names} ${employee.paternal_surname} ${employee.maternal_surname}`
-        )
-        setCasoSocial(casos)
-      } else {
-        const casos = casesForSelect?.filter(
-          (filter) =>
-            filter.employeeNames ===
-            `${data.employee_name} ${data.employee_lastname}`
-        )
-        setCasoSocial(casos)
-      }
-    } else {
-      setCasoSocial([])
-    }
-  }, [employee, casesForSelect])
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'lg'}>
@@ -895,7 +871,7 @@ const WorkerInterventionRecord = ({
                     >
                       <option value="">SELECCIONE OPCIÓN</option>
                       {[{ id: 'NEW', name: 'NUEVO' }]
-                        .concat(casoSocial)
+                        .concat(casesForSelect)
                         .map((item, i) => (
                           <option key={`case_id-${i}-${item}`} value={item.id}>
                             {item.id === 'NEW'
