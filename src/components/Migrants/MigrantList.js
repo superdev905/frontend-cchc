@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import { Button, Wrapper, SearchInput, ActionsTable, Select } from '../UI'
 import { DataTable } from '../Shared'
 import { formatDate, formatSearchWithRut, formatQuery } from '../../formatters'
@@ -15,10 +16,15 @@ const MigrantList = () => {
   const [years, setYears] = useState([])
   const [loading, setLoading] = useState(false)
   const [current, setCurrent] = useState(null)
-  const { migrantsList, totalDocs, filters } = useSelector(
-    (state) => state.migrants
-  )
+  const { migrantsList, totalDocs } = useSelector((state) => state.migrants)
   const { open: openDetails, toggleOpen: toggleOpenDetails } = useToggle()
+  const [filters, setFilters] = useState({
+    page: 1,
+    skip: 0,
+    size: 10,
+    search: '',
+    state: ''
+  })
 
   const getYears = () => {
     const currentYear = new Date().getFullYear()
@@ -58,25 +64,25 @@ const MigrantList = () => {
         setLoading(false)
       })
   }
+  const searchButton = () => {
+    fetchMigrants()
+  }
 
   const updateFilters = (values) => {
     dispatch(migrantsActions.setFilters(values))
   }
 
   const onSearchChange = (e) => {
-    const { value } = e.target
-
-    dispatch(
-      migrantsActions.setFilters({
-        ...filters,
-        search: formatSearchWithRut(value.toString())
-      })
-    )
+    setFilters({
+      ...filters,
+      skip: 0,
+      search: formatSearchWithRut(e.target.value)
+    })
   }
 
   useEffect(() => {
     fetchMigrants()
-  }, [filters])
+  }, [])
   useEffect(() => {
     setYears(getYears)
   }, [])
@@ -104,7 +110,11 @@ const MigrantList = () => {
                       value={filters.search}
                       onChange={onSearchChange}
                       placeholder="Buscar por: RUT O NOMBRE DE TRABAJADOR"
-                    />
+                    >
+                      <IconButton onClick={searchButton}>
+                        <SearchIcon color="primary" fontSize="large" />
+                      </IconButton>
+                    </SearchInput>
                   </Grid>
                 </Grid>
               </Grid>
@@ -164,7 +174,6 @@ const MigrantList = () => {
           paginationServer={true}
           paginationTotalRows={totalDocs}
           paginationPerPage={filters.size}
-          paginationServer={true}
           onChangeRowsPerPage={(limit) => {
             updateFilters({ ...filters, size: limit })
           }}

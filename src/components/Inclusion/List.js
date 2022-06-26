@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Box, Chip, Grid } from '@material-ui/core'
+import { Box, Chip, Grid, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import InclusionDialog from './Dialog'
 import { useToggle } from '../../hooks'
 import { DataTable } from '../Shared'
@@ -44,9 +45,13 @@ const List = () => {
         setLoading(false)
       })
   }
+
+  const searchButton = () => {
+    getCases()
+  }
   useEffect(() => {
     getCases()
-  }, [query])
+  }, [])
 
   return (
     <Box>
@@ -71,7 +76,7 @@ const List = () => {
               </Grid>
               <Grid item xs={8}>
                 <SearchInput
-                  placeholder="Buscar por: Rut de trabajador"
+                  placeholder="Buscar por: Rut de trabajador, Nombre"
                   value={query.search}
                   onChange={(e) => {
                     setQuery({
@@ -79,7 +84,11 @@ const List = () => {
                       search: formatSearchWithRut(e.target.value)
                     })
                   }}
-                />
+                >
+                  <IconButton onClick={searchButton}>
+                    <SearchIcon color="primary" fontSize="large" />
+                  </IconButton>
+                </SearchInput>
               </Grid>
             </Grid>
           </Grid>

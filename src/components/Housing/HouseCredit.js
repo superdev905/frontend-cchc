@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid, Typography, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import { ActionsTable, Button, SearchInput } from '../UI'
 import { DataTable } from '../Shared'
 import housingActions from '../../state/actions/housing'
@@ -36,10 +37,12 @@ const HouseAgreements = () => {
       setLoading(false)
     })
   }
-
+  const searchButton = () => {
+    fetchAgreements()
+  }
   useEffect(() => {
     fetchAgreements()
-  }, [query])
+  }, [])
 
   return (
     <Box>
@@ -57,7 +60,11 @@ const HouseAgreements = () => {
               placeholder="Buscar convenio por: Nombre de empresa"
               value={query.search}
               onChange={handleSearch}
-            />
+            >
+              <IconButton onClick={searchButton}>
+                <SearchIcon color="primary" fontSize="large" />
+              </IconButton>
+            </SearchInput>
           </Grid>
           <Grid item xs={12} md={7}>
             <Box textAlign="right">

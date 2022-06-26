@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Grid, Box } from '@material-ui/core'
+import { Grid, Box, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import { ActionsTable, SearchInput, Button, Wrapper } from '../UI'
 import { formatDate, formatQuery, formatSearchWithRut } from '../../formatters'
 import { DataTable } from '../Shared'
@@ -18,7 +19,6 @@ const SocialCasesList = () => {
   const { totalCases, casesList, filters } = useSelector(
     (state) => state.socialCase
   )
-  const { user } = useSelector((state) => state.auth)
 
   const onSearchChange = (e) => {
     const { value } = e.target
@@ -50,6 +50,9 @@ const SocialCasesList = () => {
       setLoading(false)
     })
   }
+  const searchButton = () => {
+    fetchSocialCases()
+  }
 
   const onRowClick = (row) => {
     history.push(`/social-case/${row.id}/details`)
@@ -57,7 +60,7 @@ const SocialCasesList = () => {
 
   useEffect(() => {
     fetchSocialCases()
-  }, [filters])
+  }, [])
 
   return (
     <Box>
@@ -70,7 +73,11 @@ const SocialCasesList = () => {
                   value={filters.search}
                   onChange={onSearchChange}
                   placeholder="Buscar por: EMPRESA, RUT O NOMBRE DE TRABAJADOR"
-                />
+                >
+                  <IconButton onClick={searchButton}>
+                    <SearchIcon color="primary" fontSize="large" />
+                  </IconButton>
+                </SearchInput>
               </Grid>
               <Grid item xs={12} md={6}>
                 <Box display="flex" justifyContent="flex-end">

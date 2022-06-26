@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid, Typography, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import { useToggle } from '../../hooks'
 import { ConfirmDelete, DataTable } from '../Shared'
 import { Button, SearchInput } from '../UI'
 import housingActions from '../../state/actions/housing'
-import { formatDate } from '../../formatters'
+import { formatDate, formatSearchWithRut } from '../../formatters'
 import AddEmployee from './AddEmployee'
 
 const EmployeeList = ({ annexedId, status }) => {
@@ -39,6 +40,9 @@ const EmployeeList = ({ annexedId, status }) => {
       setLoading(false)
     })
   }
+  const searchButton = () => {
+    fetchEmployees()
+  }
 
   const addEmployee = (values) =>
     dispatch(housingActions.addEmployee(annexedId, values))
@@ -55,10 +59,26 @@ const EmployeeList = ({ annexedId, status }) => {
         toggleOpenDelete()
       })
   }
+  const changePage = (page) => {
+    setQuery({ ...query, page })
+    setLoading(true)
+    dispatch(
+      housingActions.getAgreementEmployees({
+        ...query,
+        page
+      })
+    )
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
 
   useEffect(() => {
     fetchEmployees()
-  }, [query, annexedId, deleting])
+  }, [annexedId, deleting])
   return (
     <Box>
       <Typography
@@ -72,9 +92,17 @@ const EmployeeList = ({ annexedId, status }) => {
             placeholder="Buscar trabajador: Nombres"
             value={query.search}
             onChange={(e) => {
-              setQuery({ ...query, search: e.target.value })
+              setQuery({
+                ...query,
+                skip: 0,
+                search: formatSearchWithRut(e.target.value)
+              })
             }}
-          />
+          >
+            <IconButton onClick={searchButton}>
+              <SearchIcon color="primary" fontSize="large" />
+            </IconButton>
+          </SearchInput>
         </Grid>
         <Grid item xs={12} md={7}>
           <Box display="flex" justifyContent="flex-end">
@@ -135,9 +163,7 @@ const EmployeeList = ({ annexedId, status }) => {
         onChangeRowsPerPage={(limit) => {
           setQuery({ ...query, size: limit })
         }}
-        onChangePage={(page) => {
-          setQuery({ ...query, page })
-        }}
+        onChangePage={changePage}
         paginationTotalRows={totalDocs}
       />
       {open && (

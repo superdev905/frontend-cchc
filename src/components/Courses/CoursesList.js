@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiArrowRight as NextIcon } from 'react-icons/fi'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import { ActionsTable, SearchInput, Select, StatusChip, Wrapper } from '../UI'
 import { formatDate } from '../../formatters'
 import coursesActions from '../../state/actions/courses'
@@ -44,13 +45,17 @@ const CoursesList = () => {
       setLoading(false)
     })
   }
+
+  const searchButton = () => {
+    fetchCourses()
+  }
   const onRowClick = (row) => {
     history.push(`/courses/${row.id}/classes`)
   }
 
   useEffect(() => {
     fetchCourses()
-  }, [filters])
+  }, [])
 
   return (
     <Wrapper>
@@ -77,7 +82,11 @@ const CoursesList = () => {
               value={filters.search}
               onChange={onSearchChange}
               placeholder="Buscar por: Nombre de curso, código"
-            />
+            >
+              <IconButton onClick={searchButton}>
+                <SearchIcon color="primary" fontSize="large" />
+              </IconButton>
+            </SearchInput>
           </Grid>
         </Grid>
       </Box>

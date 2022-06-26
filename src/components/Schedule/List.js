@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import scheduleActions from '../../state/actions/schedule'
 import { DataTable } from '../Shared'
 import { ActionsTable, Button, SearchInput, StatusChip, Wrapper } from '../UI'
@@ -28,10 +29,13 @@ const List = () => {
       setLoading(false)
     })
   }
+  const searchButton = () => {
+    fetchSchedules()
+  }
 
   useEffect(() => {
     fetchSchedules()
-  }, [query])
+  }, [])
 
   return (
     <Wrapper>
@@ -47,7 +51,11 @@ const List = () => {
                 })
               }
               placeholder="Buscar por: RUT, Nombre de empresa"
-            />
+            >
+              <IconButton onClick={searchButton}>
+                <SearchIcon color="primary" fontSize="large" />
+              </IconButton>
+            </SearchInput>
           </Grid>
           <Grid item xs={12} md={6} lg={7}>
             <Box textAlign="right">

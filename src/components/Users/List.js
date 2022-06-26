@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
+import {
+  Box,
+  Grid,
+  makeStyles,
+  Typography,
+  IconButton
+} from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import usersActions from '../../state/actions/users'
 import { ConfirmDelete, DataTable } from '../Shared'
 import { ActionsTable, Button, SearchInput, Select, StatusChip } from '../UI'
@@ -54,6 +61,10 @@ const List = () => {
       .catch(() => {
         setLoading(false)
       })
+  }
+
+  const searchButton = () => {
+    fetchUsers()
   }
 
   const onCreateUser = (values) => {
@@ -112,7 +123,7 @@ const List = () => {
 
   useEffect(() => {
     fetchUsers()
-  }, [filters])
+  }, [])
   return (
     <Box>
       <Box>
@@ -137,7 +148,11 @@ const List = () => {
               value={filters.search}
               placeholder="Buscar por: Nombre, Correo"
               onChange={handleSearch}
-            />
+            >
+              <IconButton onClick={searchButton}>
+                <SearchIcon color="primary" fontSize="large" />
+              </IconButton>
+            </SearchInput>
           </Grid>
 
           <Grid item xs={12} md={5} className={classes.top}>
