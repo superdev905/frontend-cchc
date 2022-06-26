@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  frontend:
+    restart: unless-stopped
+    build:
+      context: .
+    ports:
+      - '5190:80'
+    env_file:
+      - .env
+    container_name: fcchc-frontend
+    stdin_open: true
+    volumes:
+      - .:/app
+      - /app/node_modules

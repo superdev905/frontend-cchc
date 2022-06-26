@@ -1,7 +1,8 @@
 #/bin/bash!
 docker context use default
-docker-compose --file docker-compose.test.yml up --build
-docker tag frontend-cchc_frontend-test cchcdev.azurecr.io/frontend-cchc:latest
-docker push cchcdev.azurecr.io/frontend-cchc:latest
-docker context use azuretest1
-docker compose --file docker-compose.azure.yml up --build
+docker-compose --file docker-compose.image.yml up --build
+docker tag frontend-cchc_frontend cchcprod.azurecr.io/frontend-cchc-prod:latest
+docker push cchcprod.azurecr.io/frontend-cchc-prod:latest
+#az acr login --name  cchcprod
+docker context use azureprod
+docker compose --file docker-compose.prod.yml up --build
