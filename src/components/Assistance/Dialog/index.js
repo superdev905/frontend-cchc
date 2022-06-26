@@ -260,9 +260,19 @@ const WorkerInterventionRecord = ({
             }
             handleCreateCaseSocial(newCase)
           }
-          if (formik.values.task_id) {
+          if (formik.values.case_id !== 'NEW' && formik.values.task_id) {
             dispatch(
-              socialCasesActions.completeInterventionTask(formik.values.task_id)
+              socialCasesActions.createInterventionTask({
+                managementId: body.task_id,
+                managementName: managementList.find(
+                  (item) => item.id === parseInt(body.task_id, 10)
+                ).name,
+                socialCaseId: body.case_id,
+                professionalId: user.id,
+                professionalNames: `${user.names} ${user.paternal_surname} ${user.maternal_surname}`,
+                frequency: 'FECHA FIJA',
+                nextDate: new Date()
+              })
             )
           }
         })
@@ -677,11 +687,14 @@ const WorkerInterventionRecord = ({
                 }
               >
                 <option value="">SELECCIONE GESTIÓN </option>
-                {managementList.map((item, i) => (
-                  <option key={`management-${i}-${item.id}`} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
+                {managementList.map((item, i) =>
+                  item.name !== 'AUTODERIVACIÓN' &&
+                  item.name !== 'INTERVENCIÓN CONJUNTA' ? (
+                    <option key={`management-${i}-${item.id}`} value={item.id}>
+                      {item.name}
+                    </option>
+                  ) : null
+                )}
               </Select>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
@@ -884,38 +897,42 @@ const WorkerInterventionRecord = ({
                     </Select>
                   </Grid>
                   <Grid item xs={12} lg={5}>
-                    {/* <Select
-                      label="Plan de Intervención"
-                      name="task_id"
-                      required={
-                        formik.values.is_social_case === 'SI' ||
-                        formik.values.is_social_case === ''
-                      }
-                      value={formik.values.task_id}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={
-                        formik.touched.task_id && Boolean(formik.errors.task_id)
-                      }
-                      helperText={
-                        formik.touched.task_id && formik.errors.task_id
-                      }
-                      disabled={
-                        formik.values.case_id === 'NEW' ||
-                        formik.values.is_social_case === 'NO'
-                      }
-                    >
-                      <option value="">SELECCIONE PLAN DE INTERVENCIÓN</option>
-                      <option value="autoderivation">AUTODERIVACIÓN</option>
-                      <option value="jointIntervention">
-                        INTERVENCIÓN CONJUNTA
-                      </option>
-                      {selectedPlans.map((item, i) => (
-                        <option key={`plan-${i}-${item}`} value={item.id}>
-                          {item.managementName}
+                    {formik.values.case_id && formik.values.case_id !== 'NEW' && (
+                      <Select
+                        label="Plan de Intervención"
+                        name="task_id"
+                        required={
+                          formik.values.is_social_case === 'SI' ||
+                          formik.values.is_social_case === ''
+                        }
+                        value={formik.values.task_id}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.task_id &&
+                          Boolean(formik.errors.task_id)
+                        }
+                        helperText={
+                          formik.touched.task_id && formik.errors.task_id
+                        }
+                        disabled={
+                          formik.values.case_id === 'NEW' ||
+                          formik.values.is_social_case === 'NO'
+                        }
+                      >
+                        <option value="">
+                          SELECCIONE PLAN DE INTERVENCIÓN
                         </option>
-                      ))}
-                      </Select> */}
+                        {managementList.map((item, i) =>
+                          item.name === 'AUTODERIVACIÓN' ||
+                          item.name === 'INTERVENCIÓN CONJUNTA' ? (
+                            <option key={i} value={item.id}>
+                              {item.name}
+                            </option>
+                          ) : null
+                        )}
+                      </Select>
+                    )}
                   </Grid>
                 </Grid>
                 {formik.values.is_social_case === 'SI' &&

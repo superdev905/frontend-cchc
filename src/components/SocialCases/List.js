@@ -19,6 +19,7 @@ const SocialCasesList = () => {
   const { totalCases, casesList, filters } = useSelector(
     (state) => state.socialCase
   )
+  const { user } = useSelector((state) => state.auth)
 
   const onSearchChange = (e) => {
     const { value } = e.target
