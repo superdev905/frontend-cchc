@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/styles'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import { Button, Wrapper, SearchInput, ActionsTable } from '../UI'
 import { DataTable } from '../Shared'
-import { formatDate, formatQuery, formatSearchWithRut } from '../../formatters'
+import { formatDate, formatSearchWithRut } from '../../formatters'
 import UnemployedModal from './UnemployedModal'
 import unemployedActions from '../../state/actions/unemployed'
 import { useToggle } from '../../hooks'
@@ -18,7 +19,12 @@ const useStyles = makeStyles(() => ({
 const UnemployedList = () => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const [query, setQuery] = useState({ page: 1, size: 10, search: '' })
+  const [filters, setFilters] = useState({
+    page: 1,
+    skip: 0,
+    size: 10,
+    search: ''
+  })
   const { unemployedList, totalUnemployed } = useSelector(
     (state) => state.unemployed
   )
@@ -29,8 +35,23 @@ const UnemployedList = () => {
 
   const fetchUnemployed = () => {
     setLoading(true)
-    dispatch(unemployedActions.getUnemployed(formatQuery(query))).then(() => {
+    dispatch(
+      unemployedActions.getUnemployed({
+        ...filters,
+        search: filters.search.trim()
+      })
+    ).then(() => {
       setLoading(false)
+    })
+  }
+  const searchButton = () => {
+    fetchUnemployed()
+  }
+  const handleStateChange = (e) => {
+    setFilters({
+      ...filters,
+      skip: 0,
+      search: formatSearchWithRut(e.target.value)
     })
   }
 
@@ -48,7 +69,7 @@ const UnemployedList = () => {
 
   useEffect(() => {
     fetchUnemployed()
-  }, [query])
+  }, [])
 
   return (
     <Box className={classes.main}>
@@ -58,12 +79,14 @@ const UnemployedList = () => {
             <Grid container spacing={1}>
               <Grid item xs={12} md={7}>
                 <SearchInput
-                  value={query.search || ''}
-                  onChange={(e) => {
-                    setQuery(formatSearchWithRut(e.target.value))
-                  }}
+                  value={filters.search || ''}
+                  onChange={handleStateChange}
                   placeholder="Buscar por: RUT O NOMBRE DE TRABAJADOR"
-                />
+                >
+                  <IconButton onClick={searchButton}>
+                    <SearchIcon color="primary" fontSize="large" />
+                  </IconButton>
+                </SearchInput>
               </Grid>
               <Grid item xs={12} md={5}>
                 <Box
@@ -119,15 +142,13 @@ const UnemployedList = () => {
           onRowClicked={onRowClick}
           paginationRowsPerPageOptions={[10, 20, 30, 40]}
           paginationServer={true}
-          paginationTotalRows={10}
           paginationPerPage={50}
-          paginationServer={true}
           paginationTotalRows={totalUnemployed}
           onChangeRowsPerPage={(limit) => {
-            setQuery({ ...query, size: limit })
+            setFilters({ ...filters, size: limit })
           }}
           onChangePage={(page) => {
-            setQuery({ ...query, page })
+            setFilters({ ...filters, page })
           }}
         />
       </Wrapper>

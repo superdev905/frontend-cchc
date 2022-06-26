@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import companiesActions from '../../../state/actions/companies'
 import { ActionsTable, Button, SearchInput, Select, Wrapper } from '../../UI'
 import CreateCompany from '../Create'
@@ -35,12 +36,10 @@ const List = ({ ...props }) => {
     dispatch(companiesActions.toggleCreateModal(showCreateModal))
   }
 
-  const onSearchChange = (e) => {
-    const { value } = e.target
-
+  const handleSearchChange = (e) => {
     setFilters({
       ...filters,
-      search: formatSearchWithRut(value.toString()),
+      search: formatSearchWithRut(e.target.value.toString()),
       page: 1
     })
   }
@@ -58,10 +57,12 @@ const List = ({ ...props }) => {
         setLoading(false)
       })
   }
-
+  const searchButton = () => {
+    fetchCompanies()
+  }
   useEffect(() => {
     fetchCompanies()
-  }, [filters])
+  }, [])
 
   return (
     <Box>
@@ -89,9 +90,13 @@ const List = ({ ...props }) => {
                 <Grid item xs={12} md={9}>
                   <SearchInput
                     value={filters.search}
-                    onChange={onSearchChange}
+                    onChange={handleSearchChange}
                     placeholder="Buscar por: razón social, rut"
-                  />
+                  >
+                    <IconButton onClick={searchButton}>
+                      <SearchIcon color="primary" fontSize="large" />
+                    </IconButton>
+                  </SearchInput>
                 </Grid>
               </Grid>
             </Grid>

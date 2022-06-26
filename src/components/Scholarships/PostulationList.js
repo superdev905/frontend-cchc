@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory, withRouter } from 'react-router-dom'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import { Button, PageHeading, SearchInput, Select, Wrapper } from '../UI'
 import { formatSearchWithRut, formatDate } from '../../formatters'
 import scholarshipsActions from '../../state/actions/scholarships'
@@ -66,10 +67,13 @@ const PostulationList = () => {
       setLoading(false)
     })
   }
+  const searchButton = () => {
+    fetchPostulations()
+  }
 
   useEffect(() => {
     fetchPostulations()
-  }, [filters])
+  }, [])
 
   return (
     <Wrapper>
@@ -98,7 +102,11 @@ const PostulationList = () => {
               value={filters.search}
               onChange={onSearchChange}
               placeholder="Buscar por: Trabajador, benecifiario, empresa"
-            />
+            >
+              <IconButton onClick={searchButton}>
+                <SearchIcon color="primary" fontSize="large" />
+              </IconButton>
+            </SearchInput>
           </Grid>
           <Grid item xs={12} md={6}>
             <Box display="flex" justifyContent="flex-end">

@@ -384,7 +384,10 @@ const List = () => {
             business_name: visit.business_name,
             id: visit.business_id
           }}
-          construction={{ name: visit.construction_name }}
+          construction={{
+            id: visit.construction_id,
+            construction_name: visit.construction_name
+          }}
           successFunction={fetchAttendedList}
           successMessage="Atención creada con éxito"
         />

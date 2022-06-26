@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import { Autocomplete } from '@material-ui/lab'
 import { Wrapper, SearchInput, Button, TextField } from '../UI'
 import { useToggle } from '../../hooks'
@@ -31,7 +32,7 @@ const ReportsList = () => {
       return
     }
     setListModules(modulesReports)
-  }, [filters])
+  }, [])
 
   useEffect(() => {
     const filtered = []
@@ -67,7 +68,7 @@ const ReportsList = () => {
               )}
             />
           </Grid>
-          <Grid item xs={12} md={9}>
+          <Grid item xs={12} md={4}>
             <SearchInput
               value={filters.search}
               onChange={(e) =>
@@ -77,7 +78,11 @@ const ReportsList = () => {
                 })
               }
               placeholder="Buscar por Nombre:"
-            />
+            >
+              <IconButton>
+                <SearchIcon color="primary" fontSize="large" />
+              </IconButton>
+            </SearchInput>
           </Grid>
           <Grid item xs={12}>
             <DataTable

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiDownload as DownloadIcon } from 'react-icons/fi'
-import { Box, Chip, Grid } from '@material-ui/core'
+import { Box, Chip, Grid, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import protocolsActions from '../../state/actions/protocols'
 import filesActions from '../../state/actions/files'
 import { useToggle } from '../../hooks'
@@ -58,10 +59,13 @@ const ProtocolsList = () => {
       setLoading(false)
     })
   }
+  const searchButton = () => {
+    fetchProtocols()
+  }
 
   useEffect(() => {
     fetchProtocols()
-  }, [filters])
+  }, [])
 
   return (
     <Box>
@@ -88,7 +92,11 @@ const ProtocolsList = () => {
                 onChange={(e) => {
                   setFilters({ ...filters, search: e.target.value })
                 }}
-              />
+              >
+                <IconButton onClick={searchButton}>
+                  <SearchIcon color="primary" fontSize="large" />
+                </IconButton>
+              </SearchInput>
             </Grid>
             <Grid item xs={12} md={6}>
               <Box display="flex" justifyContent="flex-end">

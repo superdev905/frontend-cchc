@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import constructionAction from '../../state/actions/constructions'
 import { DataTable } from '../Shared'
 import { SearchInput, Wrapper, StatusChip, Button, Select } from '../UI'
 import ConstructionModal from './CreateModal'
 import { useToggle } from '../../hooks'
+import { formatSearchWithRut } from '../../formatters'
 
 const List = ({ ...props }) => {
   const dispatch = useDispatch()
@@ -21,8 +23,12 @@ const List = ({ ...props }) => {
   })
   const { list, total: totalDocs } = useSelector((state) => state.constructions)
 
-  const searchChange = (e) => {
-    setFilters({ ...filters, search: e.target.value })
+  const handleSearchChange = (e) => {
+    setFilters({
+      ...filters,
+      skip: 0,
+      search: formatSearchWithRut(e.target.value)
+    })
   }
 
   const handleStatusChange = (e) => {
@@ -53,9 +59,12 @@ const List = ({ ...props }) => {
       setLoading(false)
     })
   }
+  const searchButton = () => {
+    fetchConstructions()
+  }
   useEffect(() => {
     fetchConstructions()
-  }, [filters])
+  }, [])
   return (
     <div>
       <Wrapper>
@@ -77,8 +86,12 @@ const List = ({ ...props }) => {
             <SearchInput
               value={filters.search}
               placeholder="Buscar por: razón social, rut"
-              onChange={searchChange}
-            />
+              onChange={handleSearchChange}
+            >
+              <IconButton onClick={searchButton}>
+                <SearchIcon color="primary" fontSize="large" />
+              </IconButton>
+            </SearchInput>
           </Grid>
           <Grid item xs={12} md={6}>
             <Box display="flex" justifyContent="flex-end">

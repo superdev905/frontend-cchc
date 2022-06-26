@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { FiArrowRight as NextIcon } from 'react-icons/fi'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 import benefitsActions from '../../state/actions/benefits'
 import { DataTable } from '../Shared'
 import {
@@ -48,6 +49,9 @@ const BenefitList = () => {
       setLoading(false)
     })
   }
+  const searchButton = () => {
+    fetchBenefits()
+  }
   const onRowClick = (row) => {
     history.push(`/benefits/${row.id}`)
   }
@@ -75,7 +79,7 @@ const BenefitList = () => {
 
   useEffect(() => {
     fetchBenefits()
-  }, [filters])
+  }, [])
   return (
     <Wrapper>
       <Box>
@@ -101,7 +105,11 @@ const BenefitList = () => {
               value={filters.search}
               onChange={onSearchChange}
               placeholder="Buscar por: Código, Nombre"
-            />
+            >
+              <IconButton onClick={searchButton}>
+                <SearchIcon color="primary" fontSize="large" />
+              </IconButton>
+            </SearchInput>
           </Grid>
           <Grid item xs={12} md={6}>
             <Box display="flex" justifyContent="flex-end">

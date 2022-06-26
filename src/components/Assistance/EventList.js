@@ -61,7 +61,6 @@ const EventList = () => {
       setLoading(false)
     })
   }
-
   const logAction = (action) => {
     const values = {
       user_id: user.id,

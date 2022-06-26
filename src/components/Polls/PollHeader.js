@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, IconButton } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
+import SearchIcon from '@material-ui/icons/Search'
 import {
   Button,
   Select,
@@ -52,13 +53,16 @@ const PollHeader = () => {
     })
   }
 
+  const searchButton = () => {
+    fetchPolls()
+  }
   const redirectToPoll = (id) => {
     history.push(`/polls/${id}`)
   }
 
   useEffect(() => {
     fetchPolls()
-  }, [filters])
+  }, [])
   return (
     <Wrapper>
       <Box p={2}>
@@ -84,7 +88,11 @@ const PollHeader = () => {
                 value={filters.search}
                 placeholder="Buscar encuesta por título"
                 onChange={searchChange}
-              />
+              >
+                <IconButton onClick={searchButton}>
+                  <SearchIcon color="primary" fontSize="large" />
+                </IconButton>
+              </SearchInput>
             </Grid>
             <Grid item xs={12} md={6}>
               <Box display="flex" justifyContent="flex-end">
