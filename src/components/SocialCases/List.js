@@ -44,7 +44,7 @@ const SocialCasesList = () => {
       formattedFilters.endDate = new Date(filters.endDate).toISOString()
     }
     if (user.role.key !== 'ADMIN') {
-      formattedFilters.userId = user.id
+      formattedFilters.professionalId = user.id
     }
     dispatch(
       socialCaseActions.getSocialCases(
