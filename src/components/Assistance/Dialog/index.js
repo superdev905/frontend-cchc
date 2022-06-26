@@ -247,6 +247,8 @@ const WorkerInterventionRecord = ({
               assistanceId: result.id,
               businessId: company.id,
               businessName: company.business_name,
+              constructionId: construction.id,
+              constructionName: construction.construction_name,
               employeeId: employee.id,
               employeeRut: employee.run,
               employeeNames: `${employee.names} ${employee.paternal_surname} ${
