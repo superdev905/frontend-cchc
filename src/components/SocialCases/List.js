@@ -65,7 +65,6 @@ const SocialCasesList = () => {
   useEffect(() => {
     fetchSocialCases()
   }, [])
-
   return (
     <Box>
       <Wrapper>

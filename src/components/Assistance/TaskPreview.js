@@ -87,10 +87,13 @@ const TaskPreview = ({ open, onClose, anchorEl, event }) => {
         employee_id: task?.socialCase.employeeId,
         employee_name: task?.socialCase.employeeNames.split(' ')[0],
         employee_lastname: task?.socialCase.employeeNames.split(' ')[1],
-        employee_rut: task?.socialCase.employeeRut
+        employee_rut: task?.socialCase.employeeRut,
+        business_id: task?.socialCase.businessId,
+        construction_name: task?.socialCase?.constructionName,
+        construction_id: task?.socialCase.constructionId
       })
     )
-
+  console.log(task)
   return (
     <Menu
       classes={{ paper: classes.root }}
@@ -167,8 +170,14 @@ const TaskPreview = ({ open, onClose, anchorEl, event }) => {
           sourceSystem={'CASOS SOCIALES'}
           open={openAssistance}
           onClose={toggleOpenAssistance}
-          company={{ business_name: task?.socialCase?.businessName }}
-          construction={{ name: '' }}
+          company={{
+            business_name: task?.socialCase?.businessName,
+            id: task?.socialCase.businessId
+          }}
+          construction={{
+            construction_name: task?.socialCase?.constructionName,
+            id: task?.socialCase.constructionId
+          }}
           defaultCaseId={task?.socialCase.id}
           defaultTaskId={task?.id}
           defaultSocialCase={'SI'}
