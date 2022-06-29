@@ -15,7 +15,6 @@ const Background = ({ loading }) => {
   const classes = useStyles()
   const { caseDetails } = useSelector((state) => state.socialCase)
   const { employee } = useSelector((state) => state.employees)
-
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -32,7 +31,7 @@ const Background = ({ loading }) => {
               Datos del Trabajador
             </Typography>
             <LabeledRow label={'Run'}>
-              <Text loading={loading}>{caseDetails?.employee?.run} </Text>
+              <Text loading={loading}>{caseDetails?.employeeRut} </Text>
             </LabeledRow>
             <LabeledRow label={'Nombres'}>
               <Text loading={loading}>{caseDetails?.employee?.names}</Text>
@@ -69,6 +68,9 @@ const Background = ({ loading }) => {
             </LabeledRow>
             <LabeledRow label={'Prevision'}>
               <Text loading={loading}></Text>
+            </LabeledRow>
+            <LabeledRow label={'Tipo de Derivación'}>
+              <Text loading={loading}>{caseDetails?.derivationState}</Text>
             </LabeledRow>
           </Grid>
           <Grid item xs={12} md={6}>
