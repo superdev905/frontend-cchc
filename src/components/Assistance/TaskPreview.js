@@ -93,7 +93,6 @@ const TaskPreview = ({ open, onClose, anchorEl, event }) => {
         construction_id: task?.socialCase.constructionId
       })
     )
-  console.log(task)
   return (
     <Menu
       classes={{ paper: classes.root }}

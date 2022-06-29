@@ -46,9 +46,12 @@ const AttentionDetails = () => {
         employee_lastname: `${employee.paternal_surname}`,
         employee_rut: employee.run,
         business_id: employee.current_job.business_id || '',
-        construction_id: employee.current_job.construction_id || ''
+        business_name: employee.current_job.business_name,
+        construction_id: employee.current_job.construction_id || '',
+        construction_name: employee.current_job.construction_name
       })
     )
+  console.log(employee)
   const editAttention = (values) =>
     dispatch(
       assistanceActions.editAssistance(assistance.id, {
@@ -165,7 +168,10 @@ const AttentionDetails = () => {
               id: employee?.current_job?.business_id,
               construction_name: employee.current_job.construction_name
             }}
-            construction={{ name: '' }}
+            construction={{
+              construction_name: employee.current_job.construction_name,
+              id: employee.current_job.construction_id
+            }}
             successFunction={fetchList}
             successMessage="Atención creada con éxito"
           />
@@ -180,12 +186,14 @@ const AttentionDetails = () => {
             submitFunction={editAttention}
             company={{
               business_name: employee?.current_job?.business_name,
-              id: employee?.current_job?.business_id,
-              construction_name: employee.current_job.construction_name
+              id: employee?.current_job?.business_id
             }}
             data={assistance}
             type="UPDATE"
-            construction={{ name: '' }}
+            construction={{
+              construction_name: employee.current_job.construction_name,
+              id: employee.current_job.construction_id
+            }}
             successFunction={fetchList}
             successMessage="Atención editada con éxito"
           />
