@@ -256,6 +256,11 @@ const WorkerInterventionRecord = ({
               }`.trim(),
               areaId: values.area_id,
               professionalId: user.id,
+              derivationState: body.task_id
+                ? managementList.find(
+                    (item) => item.id === parseInt(body.task_id, 10)
+                  ).name
+                : '',
               ...caseFormik.values
             }
             handleCreateCaseSocial(newCase)
@@ -897,14 +902,11 @@ const WorkerInterventionRecord = ({
                     </Select>
                   </Grid>
                   <Grid item xs={12} lg={5}>
-                    {formik.values.case_id && formik.values.case_id !== 'NEW' && (
+                    {formik.values.case_id && (
                       <Select
                         label="Plan de Intervención"
                         name="task_id"
-                        required={
-                          formik.values.is_social_case === 'SI' ||
-                          formik.values.is_social_case === ''
-                        }
+                        required={formik.values.is_social_case === 'SI'}
                         value={formik.values.task_id}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -915,10 +917,7 @@ const WorkerInterventionRecord = ({
                         helperText={
                           formik.touched.task_id && formik.errors.task_id
                         }
-                        disabled={
-                          formik.values.case_id === 'NEW' ||
-                          formik.values.is_social_case === 'NO'
-                        }
+                        disabled={formik.values.is_social_case === 'NO'}
                       >
                         <option value="">
                           SELECCIONE PLAN DE INTERVENCIÓN
