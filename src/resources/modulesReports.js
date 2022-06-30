@@ -28,6 +28,13 @@ const modulesReports = [
     name: 'Asistencias por Empresa',
     type: 'ASSISTANCE_COMPANY',
     isActive: true
+  },
+  {
+    module: 'Reporte Mensual',
+    name: 'Reporte por Empresa',
+    type: 'MONTHLY_REPORT',
+    report: 'ASSISTANCE_COMPANY',
+    isActive: true
   }
 ]
 

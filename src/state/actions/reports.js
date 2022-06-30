@@ -130,13 +130,36 @@ const getAssistanceReportByCompany = (values) => () =>
       })
   })
 
+const getMonthlyReport = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.assistance}/reports/visit-by-company`,
+      values,
+      {
+        responseType: 'arraybuffer'
+      }
+    )
+      .then((response) => {
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+
+        saveAs(blob, `Visitas-empresa-${new Date().getTime()}`)
+        resolve(response.data)
+      })
+      .catch((err) => {
+        reject(err.response.data)
+      })
+  })
+
 const reportsActions = {
   getStats,
   getVisitsReport,
   getVisitsReportByCompany,
   getVisitsReportByAssigned,
   getAssistanceReportByEmployee,
-  getAssistanceReportByCompany
+  getAssistanceReportByCompany,
+  getMonthlyReport
 }
 
 export default reportsActions
