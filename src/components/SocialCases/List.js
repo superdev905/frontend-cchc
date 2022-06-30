@@ -133,7 +133,7 @@ const SocialCasesList = () => {
             },
             {
               name: '',
-              right: true,
+              center: true,
               cell: (row) => (
                 <ActionsTable
                   onView={() => {
