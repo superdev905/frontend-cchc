@@ -16,22 +16,11 @@ const SocialCasesList = () => {
   const { open, handleOpen, handleClose, anchorEl } = useMenu()
   const history = useHistory()
   const [loading, setLoading] = useState(false)
+  const [search, setSearch] = useState()
   const { totalCases, casesList, filters } = useSelector(
     (state) => state.socialCase
   )
   const { user } = useSelector((state) => state.auth)
-
-  const onSearchChange = (e) => {
-    const { value } = e.target
-
-    dispatch(
-      socialCaseActions.setFilters({
-        ...filters,
-        search: formatSearchWithRut(value.toString()),
-        page: 1
-      })
-    )
-  }
 
   const fetchSocialCases = () => {
     setLoading(true)
@@ -55,7 +44,13 @@ const SocialCasesList = () => {
     })
   }
   const searchButton = () => {
-    fetchSocialCases()
+    dispatch(
+      socialCaseActions.setFilters({
+        ...filters,
+        search: formatSearchWithRut(search.toString()),
+        page: 1
+      })
+    )
   }
 
   const onRowClick = (row) => {
@@ -64,7 +59,8 @@ const SocialCasesList = () => {
 
   useEffect(() => {
     fetchSocialCases()
-  }, [])
+  }, [filters])
+
   return (
     <Box>
       <Wrapper>
@@ -73,8 +69,8 @@ const SocialCasesList = () => {
             <Grid container spacing={1}>
               <Grid item xs={12} md={6}>
                 <SearchInput
-                  value={filters.search}
-                  onChange={onSearchChange}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   placeholder="Buscar por: EMPRESA, RUT O NOMBRE DE TRABAJADOR"
                 >
                   <IconButton onClick={searchButton}>
@@ -134,10 +130,6 @@ const SocialCasesList = () => {
               name: 'Empresa',
               selector: (row) => row.businessName,
               hide: 'md'
-            },
-            {
-              name: 'Asistente',
-              selector: (row) => row.assistanceId
             },
             {
               name: '',

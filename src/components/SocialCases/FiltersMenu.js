@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 const FiltersMenu = ({ open, anchorEl, onClose }) => {
   const dispatch = useDispatch()
   const classes = useStyles()
-  const { areas, regions } = useSelector((state) => state.common)
+  const { areas } = useSelector((state) => state.common)
   const { filters } = useSelector((state) => state.socialCase)
   const [companies, setCompanies] = useState([])
   const [employees, setEmployees] = useState([])
@@ -78,32 +78,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
         }
       })
     }
-    if (typeInput === 'zone') {
-      setSeleted({
-        ...seleted,
-        zone: value
-      })
-      setSeletedTags({
-        ...seletedTags,
-        zone: {
-          ...seletedTags.zone,
-          filter: text
-        }
-      })
-    }
-    if (typeInput === 'delegation') {
-      setSeleted({
-        ...seleted,
-        delegation: value
-      })
-      setSeletedTags({
-        ...seletedTags,
-        delegation: {
-          ...seletedTags.delegation,
-          filter: text
-        }
-      })
-    }
+
     if (typeInput === 'area') {
       setSeleted({
         ...seleted,
@@ -150,7 +125,6 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
   const applyFilter = () => {
     dispatch(socialCaseActions.setFilters(seleted))
     dispatch(socialCaseActions.setTags(seletedTags))
-
     closeFilterMenu()
   }
 
@@ -170,6 +144,7 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
     dispatch(commonActions.getAreas())
     dispatch(commonActions.getRegions())
   }, [])
+
   return (
     <Menu
       classes={{ paper: classes.root }}
@@ -243,44 +218,6 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
                 value={item.id}
               >
                 {item.names} {item.paternal_surname}
-              </option>
-            ))}
-          </Select>
-        </Box>
-
-        <Box width="100%">
-          Zona:
-          <Select
-            value={seleted.zone}
-            name="zone"
-            onChange={(e) => onSelectedOption(e, 'zone')}
-          >
-            <option value="">-Seleccione-</option>
-            {regions.map((item) => (
-              <option
-                key={`application--filters-zone${item.id}`}
-                value={item.name}
-              >
-                {item.name}
-              </option>
-            ))}
-          </Select>
-        </Box>
-
-        <Box width="100%">
-          Delegación:
-          <Select
-            name="delegation"
-            value={seleted.delegation}
-            onChange={(e) => onSelectedOption(e, 'delegation')}
-          >
-            <option value="">-Seleccione-</option>
-            {regions.map((item) => (
-              <option
-                key={`application--filters-delegation${item.id}`}
-                value={item.name}
-              >
-                {item.name}
               </option>
             ))}
           </Select>
