@@ -1,17 +1,15 @@
-import { Email } from '@material-ui/icons'
 import { PDFViewer, Document, Page, Text } from '@react-pdf/renderer'
-import { useSelector } from 'react-redux'
+/*  import { useSelector } from 'react-redux' */
 import { Dialog } from '../../Shared'
 import useStyles from '../../Shared/FileVisor/styles'
 import AreaView from './view/AreaAtendida'
 import HouseAreaView from './view/AreaPrevision'
-import PrevisionAreaView from './view/AreaPrevision'
 import ObrasView from './view/ObrasAtendidas'
 import TeamView from './view/Team'
 
 const MonthlyReport = ({ open, onClose }) => {
-  const { visit, totalUsers, assistanceConstructionList, statisticsPrint } =
-    useSelector((state) => state.assistance)
+  /*  const { visit, totalUsers, assistanceConstructionList, statisticsPrint } =
+    useSelector((state) => state.assistance)  */
   const classes = useStyles()
   const jefaturas = [
     {
@@ -111,12 +109,12 @@ const MonthlyReport = ({ open, onClose }) => {
               la atención social en este mes estuvo integrado por:
             </Text>
             <Text> </Text>
-            {jefaturas.map((jefatura, index) => {
-              return <TeamView jefatura={jefatura} key={index} />
-            })}
-            {prueba.map((jefatura, index) => {
-              return <TeamView jefatura={jefatura} key={index} />
-            })}
+            {jefaturas.map((jefatura, index) => (
+              <TeamView jefatura={jefatura} key={index} />
+            ))}
+            {prueba.map((jefatura, index) => (
+              <TeamView jefatura={jefatura} key={index} />
+            ))}
           </Page>
           <Page size="A4" style={{ padding: '20px' }}>
             <Text> I. ATENCION SOCIAL EMPRESA - TERRENO "inserte fecha"</Text>
@@ -156,7 +154,7 @@ const MonthlyReport = ({ open, onClose }) => {
             <Text>Cuadro</Text>
             <Text>Gestiones realizadas "Inserte Fecha"</Text>
             <Text> </Text>
-            <PrevisionAreaView></PrevisionAreaView>
+            <HouseAreaView></HouseAreaView>
             <Text> </Text>
             <HouseAreaView></HouseAreaView>
             <Text> </Text>

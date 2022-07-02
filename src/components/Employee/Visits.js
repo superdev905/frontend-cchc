@@ -51,7 +51,6 @@ const AttentionDetails = () => {
         construction_name: employee.current_job.construction_name
       })
     )
-  console.log(employee)
   const editAttention = (values) =>
     dispatch(
       assistanceActions.editAssistance(assistance.id, {

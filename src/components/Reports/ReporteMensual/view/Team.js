@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from '@react-pdf/renderer'
+import { View, StyleSheet } from '@react-pdf/renderer'
 import Columna from './Columna'
 
 const TeamView = ({ jefatura }) => {

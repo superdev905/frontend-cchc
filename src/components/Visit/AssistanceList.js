@@ -9,7 +9,6 @@ import { ActionsTable } from '../UI'
 const AssistanceList = ({ loading, list }) => {
   const { open: openView, toggleOpen: toggleOpenView } = useToggle()
   const [currentData, setCurrentData] = useState(null)
-  console.log(list)
   return (
     <Box>
       <Box>
