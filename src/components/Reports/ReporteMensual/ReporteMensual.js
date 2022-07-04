@@ -6,7 +6,7 @@ import {
   Text,
   StyleSheet
 } from '@react-pdf/renderer'
-/*  import { useSelector } from 'react-redux' */
+import { useSelector } from 'react-redux'
 import { Dialog } from '../../Shared'
 import AreaView from './view/AreaAtendida'
 import HouseAreaView from './view/AreaPrevision'
@@ -16,6 +16,9 @@ import TeamView from './view/Team'
 const MonthlyReport = ({ open, onClose }) => {
   /*  const { visit, totalUsers, assistanceConstructionList, statisticsPrint } =
     useSelector((state) => state.assistance)  */
+  const test = useSelector((state) => state)
+  const { constructionByCompany } = useSelector((state) => state.constructions)
+  console.log(constructionByCompany, test)
   const styles = StyleSheet.create({
     box: {
       display: 'flex',
@@ -150,7 +153,13 @@ const MonthlyReport = ({ open, onClose }) => {
                 <Text style={styles.subtitle}>INFORME EJECUTIVO</Text>
               </Box>
               <Box>
-                <Text style={styles.subtitle}> "NOMBRE EMPRESA" </Text>
+                <Text style={styles.subtitle}>
+                  {`${constructionByCompany[0].business.business_name}
+                  ${constructionByCompany[0].name}`}
+                </Text>
+              </Box>
+              <Box>
+                <Text style={styles.subtitle}></Text>
               </Box>
               <Box>
                 <Text style={styles.subtitle}> "FECHA SELECCIONADA" </Text>
@@ -162,8 +171,8 @@ const MonthlyReport = ({ open, onClose }) => {
             <Text style={styles.text}>
               El presente documento informa sobre las actividades y gestiones
               realizadas por el equipo de la Fundación Social Cámara Chilena de
-              la Construcción durante el mes de "inserte Fecha" en "inserte
-              Empresa". <Br />
+              la Construcción durante el mes de "inserte Fecha" en{' '}
+              {constructionByCompany[0].business.business_name}. <Br />
               <Br /> Durante el periodo se atendió a los trabajadores de la
               empresa y sus grupos familiares tanto en las oficinas de la
               Fundación Social como en su lugar de trabajo.
@@ -399,9 +408,11 @@ const MonthlyReport = ({ open, onClose }) => {
             <Text style={styles.text}>Habilidades Parentales</Text>
             <Text style={styles.text}>Marketing:</Text>
             <Text style={styles.text}>1. Extensión IFE Laboral </Text>
-            <Text style={styles.text}>2. Actividades con los niños en verano</Text>
+            <Text style={styles.text}>
+              2. Actividades con los niños en verano
+            </Text>
             <Text style={styles.text}>3. Beca Presidente de la República </Text>
-            
+
             <Text style={styles.subtitles}>VII. CASOS SOCIALES RELEVANTES</Text>
             <Text style={styles.subtitles2}>Parque Las Palmas II</Text>
           </Page>
