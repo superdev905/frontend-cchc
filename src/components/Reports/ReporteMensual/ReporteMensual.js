@@ -17,7 +17,6 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
   /*  const { visit, totalUsers, assistanceConstructionList, statisticsPrint } =
     useSelector((state) => state.assistance)  */
   const { constructionByCompany } = useSelector((state) => state.constructions)
-  console.log(constructionByCompany)
   const styles = StyleSheet.create({
     box: {
       display: 'flex',

@@ -14,6 +14,10 @@ const ReportDialog = ({ open, onClose, type }) => {
   const { isMobile } = useSelector((state) => state.ui)
   const { constructionByCompany } = useSelector((state) => state.constructions)
   const dispatch = useDispatch()
+  const [selectedDate, setSelectedDate] = useState({
+    startDate: '',
+    endDate: ''
+  })
   const [formData, setFormData] = useState({
     id: '',
     month: '',
@@ -40,7 +44,6 @@ const ReportDialog = ({ open, onClose, type }) => {
     { name: 'Noviembre', value: 11 },
     { name: 'Diciembre', value: 12 }
   ]
-
   useEffect(() => {
     if (actualYear <= moment().year()) {
       setActualYear(actualYear + 1)
@@ -79,7 +82,26 @@ const ReportDialog = ({ open, onClose, type }) => {
     setFormData({ ...formData, obras: [] })
   }, [formData.id])
 
-  console.log(moment().toISOString())
+  const monthDays = () => {
+    const first = new Date(
+      parseInt(`${formData.year}`, 10),
+      parseInt(`${formData.month}`, 10) - 1,
+      1
+    ).toISOString()
+    const last = new Date(
+      parseInt(`${formData.year}`, 10),
+      parseInt(`${formData.month}`, 10),
+      0
+    ).toISOString()
+    setSelectedDate({ ...selectedDate, startDate: first, endDate: last })
+  }
+
+  useEffect(() => {
+    if (formData.month !== '' && formData.year !== '') {
+      monthDays()
+    }
+  }, [formData.month, formData.year])
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
       <Box>
@@ -94,7 +116,7 @@ const ReportDialog = ({ open, onClose, type }) => {
                   options={month}
                   getOptionLabel={(option) => `${option.name}`}
                   onChange={(_, m) =>
-                    setFormData({ ...formData, month: !m ? '' : m.name })
+                    setFormData({ ...formData, month: !m ? '' : m.value })
                   }
                   renderOption={(option) => (
                     <Box>
@@ -190,7 +212,7 @@ const ReportDialog = ({ open, onClose, type }) => {
           open={printMonthlyReport}
           onClose={togglePrintMonthlyReport}
           year={formData.year}
-          month={formData.month}
+          month={month[formData.month - 1].name}
         />
       )}
     </Dialog>
