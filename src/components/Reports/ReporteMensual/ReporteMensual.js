@@ -170,7 +170,7 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
             <Text style={styles.text}>
               El presente documento informa sobre las actividades y gestiones
               realizadas por el equipo de la Fundación Social Cámara Chilena de
-              la Construcción durante el mes de "inserte Fecha" en{' '}
+              la Construcción durante el mes de {`${month} ${year}`} en{' '}
               {constructionByCompany[0].business.business_name}. <Br />
               <Br /> Durante el periodo se atendió a los trabajadores de la
               empresa y sus grupos familiares tanto en las oficinas de la
@@ -192,7 +192,7 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
           <Page size="A4" style={styles.page}>
             <Text style={styles.subtitles}>
               {' '}
-              I. ATENCION SOCIAL EMPRESA - TERRENO "inserte fecha"
+              I. ATENCION SOCIAL EMPRESA - TERRENO {`${month} ${year}`}
             </Text>
             <Text style={styles.text}>
               Durante el presente mes se visitaron las siguientes obras en las
@@ -208,7 +208,7 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
             <ObrasView></ObrasView>
 
             <Text style={styles.text}>
-              El total de atenciones realizadas durante "Inserte Fecha", se
+              El total de atenciones realizadas durante {`${month} ${year}`}, se
               distribuye entre las areas citadas a continuacion:
             </Text>
             <Text style={styles.description}> Cuadro </Text>
@@ -254,7 +254,7 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
             </Text>
             <Text style={styles.description}>Cuadro</Text>
             <Text style={styles.description}>
-              Gestiones realizadas "Inserte Fecha"
+              Gestiones realizadas {`${month} ${year}`}
             </Text>
 
             <HouseAreaView></HouseAreaView>
@@ -265,23 +265,23 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
             <Text style={styles.subtitles}>MATERIAL DE DIFUSION ENTREGADO</Text>
             <Text style={styles.subtitles2}> A. Afiches:</Text>
             <Text style={styles.text}>
-              Durante "Inserte Fecha", de acuerdo a la programación de la
+              Durante {`${month} ${year}`}, de acuerdo a la programación de la
               empresa, se entregaron los siguientes afiches informativos.
               <Br />
               <Br />
             </Text>
             <Text style={styles.description}>Cuadro</Text>
             <Text style={styles.description}>
-              Afiches entregados "Inserte Fecha"
+              Afiches entregados {`${month} ${year}`}
             </Text>
             <Text style={styles.subtitles2}> B. Folletos: </Text>
             <Text style={styles.text}>
-              Durante "Inserte Fecha", de acuerdo a la programación de la
+              Durante {`${month} ${year}`}, de acuerdo a la programación de la
               empresa, se entregaron los siguientes folletos informativos.
             </Text>
             <Text style={styles.description}> Cuadro</Text>
             <Text style={styles.description}>
-              Folletos entregados "Inserte Fecha"
+              Folletos entregados {`${month} ${year}`}
             </Text>
           </Page>
 
@@ -302,14 +302,14 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
             </Text>
             <Text style={styles.description}>Cuadro</Text>
             <Text style={styles.description}>
-              Consultas realizadas por Area "inserte Fecha"
+              Consultas realizadas por Area {`${month} ${year}`}
             </Text>
             <Text>
               <Br />
             </Text>
             <Text style={styles.description}>Cuadro</Text>
             <Text style={styles.description}>
-              Gestiones realizadas "Inserte Fecha"
+              Gestiones realizadas {`${month} ${year}`}
             </Text>
             <Text>
               <Br />
@@ -329,14 +329,15 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
               Con el objetivo entregar información, incentivar y promover
               diversos temas de relevancia para los trabajadores durante sus
               visitas a obras, las asistentes sociales de la Fundación Social
-              realizan charlas informativas. <Br /> <Br /> Durante "Inserte
-              Fecha", de acuerdo a la programación de la empresa, se realizaron
-              las siguientes charlas informativas y de capacitación. <Br />
+              realizan charlas informativas. <Br /> <Br /> Durante{' '}
+              {`${month} ${year}`}, de acuerdo a la programación de la empresa,
+              se realizaron las siguientes charlas informativas y de
+              capacitación. <Br />
               <Br />
             </Text>
             <Text style={styles.description}>Cuadro</Text>
             <Text style={styles.description}>
-              Charlas realizadas "Inserte Fecha"
+              Charlas realizadas {`${month} ${year}`}
             </Text>
           </Page>
           <Page size="A4" style={styles.page}>
@@ -361,7 +362,8 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
               del grupo familiar y asi incidir positivamente en sus ingresos.
               <Br />
               <Br />
-              Durante "Inserte Fecha" no se matricularon personas en cursos.
+              Durante {`${month} ${year}`} no se matricularon personas en
+              cursos.
             </Text>
             <Text style={styles.subtitles}>
               V. BECAS EMPRESARIOS DE LA CONSTRUCCION{' '}
@@ -382,14 +384,14 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
           </Page>
           <Page size="A4" style={styles.page}>
             <Text style={styles.subtitles}>
-              VI. PROGRAMA DE FOMENTO AL AHORRO "Inserte Fecha"{' '}
+              VI. PROGRAMA DE FOMENTO AL AHORRO {`${month} ${year}`}{' '}
             </Text>
             <Text style={styles.text}>
-              Durante "Inserte Fecha" se continuó con la difusión en las obras
-              sobre este programa para incentivar el ahorro para la vivienda,
-              ahorro previsional voluntario y/o ahorro de libre disposición, a
-              través de los diversos beneficios que entrega la caja de
-              compensación.
+              Durante {`${month} ${year}`} se continuó con la difusión en las
+              obras sobre este programa para incentivar el ahorro para la
+              vivienda, ahorro previsional voluntario y/o ahorro de libre
+              disposición, a través de los diversos beneficios que entrega la
+              caja de compensación.
               <Br />
               <Br /> En el presente mes no se tramitaron aperturas de libretas
               de ahorro
