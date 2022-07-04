@@ -18,6 +18,7 @@ const ReportDialog = ({ open, onClose, type }) => {
     startDate: '',
     endDate: ''
   })
+  console.log(selectedDate)
   const [formData, setFormData] = useState({
     id: '',
     month: '',
