@@ -13,12 +13,11 @@ import HouseAreaView from './view/AreaPrevision'
 import ObrasView from './view/ObrasAtendidas'
 import TeamView from './view/Team'
 
-const MonthlyReport = ({ open, onClose }) => {
+const MonthlyReport = ({ open, onClose, year, month }) => {
   /*  const { visit, totalUsers, assistanceConstructionList, statisticsPrint } =
     useSelector((state) => state.assistance)  */
-  const test = useSelector((state) => state)
   const { constructionByCompany } = useSelector((state) => state.constructions)
-  console.log(constructionByCompany, test)
+  console.log(constructionByCompany)
   const styles = StyleSheet.create({
     box: {
       display: 'flex',
@@ -162,7 +161,7 @@ const MonthlyReport = ({ open, onClose }) => {
                 <Text style={styles.subtitle}></Text>
               </Box>
               <Box>
-                <Text style={styles.subtitle}> "FECHA SELECCIONADA" </Text>
+                <Text style={styles.subtitle}> {`${month} ${year}`} </Text>
               </Box>
             </Box>
           </Page>

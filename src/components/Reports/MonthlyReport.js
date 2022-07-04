@@ -80,7 +80,6 @@ const ReportDialog = ({ open, onClose, type }) => {
   }, [formData.id])
 
   console.log(moment().toISOString())
-
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
       <Box>
@@ -95,7 +94,7 @@ const ReportDialog = ({ open, onClose, type }) => {
                   options={month}
                   getOptionLabel={(option) => `${option.name}`}
                   onChange={(_, m) =>
-                    setFormData({ ...formData, month: !m ? '' : m.value })
+                    setFormData({ ...formData, month: !m ? '' : m.name })
                   }
                   renderOption={(option) => (
                     <Box>
@@ -190,6 +189,8 @@ const ReportDialog = ({ open, onClose, type }) => {
         <ReporteMensual
           open={printMonthlyReport}
           onClose={togglePrintMonthlyReport}
+          year={formData.year}
+          month={formData.month}
         />
       )}
     </Dialog>
