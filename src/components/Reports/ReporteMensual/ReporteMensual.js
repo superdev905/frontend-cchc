@@ -153,7 +153,7 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
               <Box>
                 <Text style={styles.subtitle}>
                   {`${constructionByCompany[0].business.business_name}
-                  ${constructionByCompany[0].name}`}
+                  `}
                 </Text>
               </Box>
               <Box>
