@@ -10,6 +10,7 @@ import AutocompleteVariable from './AutocompleteVariable'
 import { useToggle } from '../../hooks'
 import ReporteMensual from './ReporteMensual/ReporteMensual'
 import assistanceActions from '../../state/actions/assistance'
+import authActions from '../../state/actions/auth'
 
 const ReportDialog = ({ open, onClose, type }) => {
   const { isMobile } = useSelector((state) => state.ui)
@@ -20,6 +21,9 @@ const ReportDialog = ({ open, onClose, type }) => {
     end_date: ''
   })
   const [visits, setVisits] = useState()
+  const [filteredVisits, setFilteredVisits] = useState()
+  const [idVisits, setIdVisits] = useState()
+  const [asistentes, setAsistentes] = useState([])
   const [formData, setFormData] = useState({
     id: '',
     month: '',
@@ -114,13 +118,37 @@ const ReportDialog = ({ open, onClose, type }) => {
 
   useEffect(() => {
     if (visits && formData.obras.length > 0) {
-      const result = visits.filter((visit) => {
-        formData.obras.forEach((obra) => visit.constructions_id === obra.id)
-      })
-      console.log(result)
+      const result = visits.filter((visit) =>
+        formData.obras.some((obra) => obra.id === visit.construction_id)
+      )
+      setFilteredVisits(result)
     }
   }, [visits, formData.obras])
-  console.log(formData.obras)
+
+  const fetchAssistantReport = () => {
+    const values = {
+      assistantId: filteredVisits
+    }
+    dispatch(authActions.getAssistantReport(values)).then((data) =>
+      setAsistentes(data)
+    )
+  }
+
+  useEffect(() => {
+    if (filteredVisits) {
+      fetchAssistantReport()
+    }
+  }, [filteredVisits])
+
+  useEffect(() => {
+    if (filteredVisits) {
+      const result = filteredVisits.map((visita) => visita.id)
+      setIdVisits(result)
+    }
+  }, [filteredVisits])
+
+  console.log(idVisits)
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
       <Box>
@@ -232,6 +260,8 @@ const ReportDialog = ({ open, onClose, type }) => {
           onClose={togglePrintMonthlyReport}
           year={formData.year}
           month={month[formData.month - 1].name}
+          asistentes={asistentes}
+          filteredVisits={filteredVisits}
         />
       )}
     </Dialog>

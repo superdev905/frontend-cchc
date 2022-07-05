@@ -7,12 +7,12 @@ const TeamView = ({ jefatura }) => {
       flexDirection: 'row',
       alignItems: 'center',
       textAlign: 'center',
-      color: 'white',
+      color: 'black',
       fontSize: '12pt'
     },
     main: {
       width: '50%',
-      backgroundColor: 'grey',
+      backgroundColor: 'transparent',
       border: '1px solid grey'
     }
   })
@@ -20,10 +20,10 @@ const TeamView = ({ jefatura }) => {
     <View style={styles.row}>
       <Columna
         style={styles.main}
-        primary={jefatura.name}
+        primary={jefatura.nombre}
         secondary={jefatura.email}
       />
-      <Columna primary={jefatura.cargo} secondary={jefatura.zona} />
+      <Columna primary={jefatura.charge_name} secondary={jefatura?.zona} />
     </View>
   )
 }

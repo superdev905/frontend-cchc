@@ -4,11 +4,11 @@ const Columna = ({ primary, secondary }) => {
   const styles = StyleSheet.create({
     row: {
       textAlign: 'center',
-      color: 'white',
-      fontSize: '12pt'
+      fontSize: '12pt',
+      width: '80%'
     },
     main: {
-      backgroundColor: 'grey',
+      backgroundColor: 'transparent',
       border: '1px solid grey'
     }
   })

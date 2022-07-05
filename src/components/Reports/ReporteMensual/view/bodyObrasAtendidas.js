@@ -1,14 +1,14 @@
 import { View, Text, StyleSheet } from '@react-pdf/renderer'
 
-const ObrasView = ({ firstName, secondName, thirdName, fourthName }) => {
+const ObrasView = ({ place, date, quantity, consult }) => {
   const styles = StyleSheet.create({
     row: {
       flexDirection: 'row',
       alignItems: 'center',
       textAlign: 'center',
       border: '1px solid black',
-      backgroundColor: 'grey',
-      color: 'white',
+      backgroundColor: 'transparent',
+      color: 'black',
       fontSize: '12pt'
     },
     place: {
@@ -26,10 +26,10 @@ const ObrasView = ({ firstName, secondName, thirdName, fourthName }) => {
   })
   return (
     <View style={styles.row}>
-      <Text style={styles.place}>{firstName}</Text>
-      <Text style={styles.date}>{secondName}</Text>
-      <Text style={styles.people}>{thirdName}</Text>
-      <Text style={styles.consult}>{fourthName}</Text>
+      <Text style={styles.place}>{place}</Text>
+      <Text style={styles.date}>{date}</Text>
+      <Text style={styles.people}>{quantity}</Text>
+      <Text style={styles.consult}>{consult}</Text>
     </View>
   )
 }

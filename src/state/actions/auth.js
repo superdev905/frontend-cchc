@@ -152,6 +152,17 @@ const logs = (values) => () =>
       })
   })
 
+const getAssistantReport = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.auth}/report`, values)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+
 const authActions = {
   loginUser,
   getLoggedUser,
@@ -163,7 +174,8 @@ const authActions = {
   changePasswordFirstLogin,
   changePasswordProfile,
   reportEmail,
-  logs
+  logs,
+  getAssistantReport
 }
 
 export default authActions

@@ -433,6 +433,22 @@ const getAttention =
         })
     })
 
+const getVisitsToReport = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.assistance}/assistance/report?${queryString.stringify(
+        values
+      )}`
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data[0])
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const exportVisits = (values) => () =>
   new Promise((resolve, reject) => {
     Axios.post(`${config.services.assistance}/visits/export`, values, {
@@ -651,7 +667,8 @@ const assistanceActions = {
   editAssistance,
   sendEmail,
   statisticsPrint,
-  getAllVisitReport
+  getAllVisitReport,
+  getVisitsToReport
 }
 
 export default assistanceActions

@@ -7,13 +7,22 @@ import {
   StyleSheet
 } from '@react-pdf/renderer'
 import { useSelector } from 'react-redux'
+import moment from 'moment'
 import { Dialog } from '../../Shared'
 import AreaView from './view/AreaAtendida'
 import HouseAreaView from './view/AreaPrevision'
 import ObrasView from './view/ObrasAtendidas'
+import ObrasViewBody from './view/bodyObrasAtendidas'
 import TeamView from './view/Team'
 
-const MonthlyReport = ({ open, onClose, year, month }) => {
+const MonthlyReport = ({
+  open,
+  onClose,
+  year,
+  month,
+  asistentes,
+  filteredVisits
+}) => {
   /*  const { visit, totalUsers, assistanceConstructionList, statisticsPrint } =
     useSelector((state) => state.assistance)  */
   const { constructionByCompany } = useSelector((state) => state.constructions)
@@ -65,72 +74,64 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
   const Br = () => '\n'
   const jefaturas = [
     {
-      name: 'Cristián Carvallo',
+      nombre: 'Cristián Carvallo',
       email: 'ccarvallo@fundacioncchc.cl',
-      cargo: 'Gerente Sostenibilidad',
+      charge_name: 'Gerente Sostenibilidad',
       zona: '(Santiago)'
     },
     {
-      name: 'Carlos García',
+      nombre: 'Carlos García',
       email: 'cgarcia@fundacioncchc.cl',
-      cargo: 'Gerente Servicio Social',
+      charge_name: 'Gerente Servicio Social',
       zona: '(Santiago)'
     },
     {
-      name: 'Greta Lopez',
+      nombre: 'Greta Lopez',
       email: 'glopez@fundacioncchc.cl',
-      cargo: 'Sub Gerente Zona Norte Grande',
+      charge_name: 'Sub Gerente Zona Norte Grande',
       zona: '(Iquique)'
     },
     {
-      name: 'Ana María Gómez',
+      nombre: 'Ana María Gómez',
       email: 'amgomez@fundacioncchc.cl',
-      cargo: 'Sub Gerente Zona Sur',
+      charge_name: 'Sub Gerente Zona Sur',
       zona: '(Temuco)'
     },
     {
-      name: 'Johana Chamorro',
+      nombre: 'Johana Chamorro',
       email: 'jchamorro@fundacioncchc.cl',
-      cargo: 'Sub Gerente Quinta Región',
+      charge_name: 'Sub Gerente Quinta Región',
       zona: '(Valparaiso)'
     },
     {
-      name: 'Constanza Galaz',
+      nombre: 'Constanza Galaz',
       email: 'cgalaz@fundacioncchc.cl',
-      cargo: 'Jefa Norte Chico',
+      charge_name: 'Jefa Norte Chico',
       zona: '(La Serena)'
     },
     {
-      name: 'Yessica Pino',
+      nombre: 'Yessica Pino',
       email: 'ypino@fundacioncchc.cl',
-      cargo: 'Jefa Servicio Social Oficina',
+      charge_name: 'Jefa Servicio Social Oficina',
       zona: '(Santiago)'
     },
     {
-      name: 'Karina Hidalgo',
+      nombre: 'Karina Hidalgo',
       email: 'khidalgo@fundacioncchc.cl',
-      cargo: 'Coordinadora Atencion Social Empresas',
+      charge_name: 'Coordinadora Atencion Social Empresas',
       zona: '(Santiago)'
     },
     {
-      name: 'Krsitopher Poblete',
+      nombre: 'Krsitopher Poblete',
       email: 'kpoblete@fundacioncchc.cl',
-      cargo: 'Coordinador Atencion Social Empresas',
+      charge_name: 'Coordinador Atencion Social Empresas',
       zona: '(Santiago)'
     },
     {
-      name: 'Melisa Vega',
+      nombre: 'Melisa Vega',
       email: 'mvega@fundacioncchc.cl',
-      cargo: 'Coordinadora Atencion Social Empresas',
+      charge_name: 'Coordinadora Atencion Social Empresas',
       zona: '(Santiago)'
-    }
-  ]
-  const prueba = [
-    {
-      name: 'prueba',
-      email: 'prueba@prueba',
-      cargo: 'pruebas.',
-      zona: 'prueba'
     }
   ]
   return (
@@ -184,8 +185,8 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
             {jefaturas.map((jefatura, index) => (
               <TeamView jefatura={jefatura} key={index} />
             ))}
-            {prueba.map((jefatura, index) => (
-              <TeamView jefatura={jefatura} key={index} />
+            {asistentes.map((asistente, index) => (
+              <TeamView jefatura={asistente} key={index} />
             ))}
           </Page>
           <Page size="A4" style={styles.page}>
@@ -204,7 +205,26 @@ const MonthlyReport = ({ open, onClose, year, month }) => {
               Obras Atendidas durante el mes
             </Text>
 
-            <ObrasView></ObrasView>
+            <ObrasView
+              firstName={'Lugar'}
+              secondName={'Fecha'}
+              thirdName={'Personas'}
+              fourthName={'Consulta'}
+            />
+            {filteredVisits?.map((filteredVisit) => (
+              <ObrasViewBody
+                place={filteredVisit.construction_name}
+                date={moment(filteredVisit.start_date).format('DD-MM-YYYY')}
+                quantity={'pendiente'}
+                consult={'pendiente'}
+              />
+            ))}
+            <ObrasView
+              firstName={'TOTAL GENERAL'}
+              secondName={`${filteredVisits.length} visitas`}
+              thirdName={'pendiente'}
+              fourthName={'pendiente'}
+            />
 
             <Text style={styles.text}>
               El total de atenciones realizadas durante {`${month} ${year}`}, se
