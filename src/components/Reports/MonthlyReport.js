@@ -19,7 +19,7 @@ const ReportDialog = ({ open, onClose, type }) => {
     start_date: '',
     end_date: ''
   })
-  console.log(selectedDate)
+  const [visits, setVisits] = useState()
   const [formData, setFormData] = useState({
     id: '',
     month: '',
@@ -105,13 +105,22 @@ const ReportDialog = ({ open, onClose, type }) => {
   }, [formData.month, formData.year])
 
   useEffect(() => {
-    if (formData.month && formData.year && formData.id) {
+    if (selectedDate && formData.id) {
       dispatch(
         assistanceActions.getAllVisitReport(selectedDate, formData.id)
-      ).then((data) => console.log(data))
+      ).then((data) => setVisits(data))
     }
-  }, [formData.month, formData.year, formData.id])
+  }, [selectedDate, formData.id])
 
+  useEffect(() => {
+    if (visits && formData.obras.length > 0) {
+      const result = visits.filter((visit) => {
+        formData.obras.forEach((obra) => visit.constructions_id === obra.id)
+      })
+      console.log(result)
+    }
+  }, [visits, formData.obras])
+  console.log(formData.obras)
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
       <Box>
