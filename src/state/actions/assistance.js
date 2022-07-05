@@ -21,8 +21,9 @@ const createEvent = (values) => () =>
 const getAllVisitReport = (values, companyId) => () =>
   new Promise((resolve, reject) => {
     Axios.get(
-      `${config.services.assistance}/visits/report-visits/${companyId}`,
-      values
+      `${
+        config.services.assistance
+      }/visits/report-visits/${companyId}?${queryString.stringify(values)}`
     )
       .then((response) => {
         const { data } = response
