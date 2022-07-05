@@ -18,6 +18,20 @@ const createEvent = (values) => () =>
         reject(err.response.data.detail)
       })
   })
+const getAllVisitReport = (values, companyId) => () =>
+  new Promise((resolve, reject) => {
+    Axios.get(
+      `${config.services.assistance}/visits/report-visits/${companyId}`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
 
 const cleanCalendarEvents = () => (dispatch) =>
   dispatch({ type: assistanceTypes.GET_CALENDAR_EVENTS, payload: [] })
@@ -635,7 +649,8 @@ const assistanceActions = {
   getAttendedHistoricalEmployees,
   editAssistance,
   sendEmail,
-  statisticsPrint
+  statisticsPrint,
+  getAllVisitReport
 }
 
 export default assistanceActions

@@ -9,16 +9,17 @@ import { Button, SubmitButton, TextField } from '../UI'
 import AutocompleteVariable from './AutocompleteVariable'
 import { useToggle } from '../../hooks'
 import ReporteMensual from './ReporteMensual/ReporteMensual'
+import assistanceActions from '../../state/actions/assistance'
 
 const ReportDialog = ({ open, onClose, type }) => {
   const { isMobile } = useSelector((state) => state.ui)
   const { constructionByCompany } = useSelector((state) => state.constructions)
   const dispatch = useDispatch()
   const [selectedDate, setSelectedDate] = useState({
-    startDate: '',
-    endDate: ''
+    start_date: '',
+    end_date: ''
   })
-
+  console.log(selectedDate)
   const [formData, setFormData] = useState({
     id: '',
     month: '',
@@ -94,7 +95,7 @@ const ReportDialog = ({ open, onClose, type }) => {
       parseInt(`${formData.month}`, 10),
       0
     ).toISOString()
-    setSelectedDate({ ...selectedDate, startDate: first, endDate: last })
+    setSelectedDate({ ...selectedDate, start_date: first, end_date: last })
   }
 
   useEffect(() => {
@@ -102,6 +103,14 @@ const ReportDialog = ({ open, onClose, type }) => {
       monthDays()
     }
   }, [formData.month, formData.year])
+
+  useEffect(() => {
+    if (formData.month && formData.year && formData.id) {
+      dispatch(
+        assistanceActions.getAllVisitReport(selectedDate, formData.id)
+      ).then((data) => console.log(data))
+    }
+  }, [formData.month, formData.year, formData.id])
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
