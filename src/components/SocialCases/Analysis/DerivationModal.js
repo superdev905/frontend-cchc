@@ -46,6 +46,7 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
   const { enqueueSnackbar } = useSnackbar()
   const [state] = useState('ASIGNADO')
   const [value, setValue] = useState([])
+  const idEncargados = value.map((encargado) => encargado.id)
 
   const priority = ['BAJA', 'MEDIA', 'ALTA']
 
@@ -105,6 +106,7 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
       }
     }
   }, [caseDetails, open])
+
   return (
     <Dialog
       open={open}
