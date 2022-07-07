@@ -278,15 +278,14 @@ const getStats = () => (dispatch) =>
       })
   })
 
-const DerivationUpdate = (socialCaseId, assistanceDerivationId) => () =>
+const DerivationUpdate = (socialCaseId, arrId) => () =>
   new Promise((resolve, reject) => {
     Axios.put(`${config.services.socialCase}/social-cases/${socialCaseId}`, {
-      assistanceDerivationId
+      assistanceDerivationId: arrId
     })
       .then((response) => {
         const { data } = response
-        console.log(data)
-        resolve()
+        resolve(data)
       })
       .catch((err) => {
         reject(err.response.data.detail)

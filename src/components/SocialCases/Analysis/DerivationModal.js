@@ -46,7 +46,7 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
   const { enqueueSnackbar } = useSnackbar()
   const [state] = useState('ASIGNADO')
   const [value, setValue] = useState([])
-  const idEncargados = value.map((encargado) => encargado.id)
+  const assistanceDerivationId = value.map((encargado) => encargado.id)
 
   const priority = ['BAJA', 'MEDIA', 'ALTA']
 
@@ -72,7 +72,6 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
             .toUpperCase()
             .trim()
         }))
-
         dispatch(
           socialCaseActions.createDerivation(socialCaseId, formData)
         ).then(() => {
@@ -80,9 +79,10 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
             variant: 'success'
           })
           dispatch(
-            socialCaseActions.DerivationUpdate(socialCaseId, {
-              assistanceDerivationId: idEncargados
-            })
+            socialCaseActions.DerivationUpdate(
+              socialCaseId,
+              assistanceDerivationId
+            )
           )
           dispatch(socialCaseActions.getSocialCaseById(socialCaseId))
         })
