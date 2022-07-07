@@ -79,6 +79,9 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
           enqueueSnackbar('Delegación Ingresada Exitosamente', {
             variant: 'success'
           })
+          dispatch(
+            socialCaseActions.DerivationUpdate(socialCaseId, idEncargados)
+          )
           dispatch(socialCaseActions.getSocialCaseById(socialCaseId))
         })
       } catch (error) {
