@@ -80,7 +80,9 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
             variant: 'success'
           })
           dispatch(
-            socialCaseActions.DerivationUpdate(socialCaseId, idEncargados)
+            socialCaseActions.DerivationUpdate(socialCaseId, {
+              assistanceDerivationId: idEncargados
+            })
           )
           dispatch(socialCaseActions.getSocialCaseById(socialCaseId))
         })
