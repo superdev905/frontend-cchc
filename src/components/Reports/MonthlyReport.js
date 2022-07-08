@@ -24,6 +24,8 @@ const ReportDialog = ({ open, onClose, type }) => {
   const [filteredVisits, setFilteredVisits] = useState()
   const [idVisits, setIdVisits] = useState([])
   const [asistentes, setAsistentes] = useState([])
+  const [areaTotal, setAreaTotal] = useState([])
+  const [totalAtenciones, setTotalAtenciones] = useState(0)
   const [formData, setFormData] = useState({
     id: '',
     month: '',
@@ -151,7 +153,22 @@ const ReportDialog = ({ open, onClose, type }) => {
 
   useEffect(() => {
     if (idVisits.length > 0) {
-      dispatch(assistanceActions.ConsultAreaReport(idVisits))
+      dispatch(assistanceActions.ConsultAreaReport(idVisits)).then(
+        (stadisticArea) => {
+          setAreaTotal(
+            stadisticArea.result.sort((a, b) => {
+              if (a.total > b.total) {
+                return -1
+              } else if (a.total < b.total) {
+                return 1
+              } else {
+                return 0
+              }
+            })
+          )
+          setTotalAtenciones(stadisticArea.topicIds.length)
+        }
+      )
     }
   }, [idVisits])
 
@@ -268,6 +285,8 @@ const ReportDialog = ({ open, onClose, type }) => {
           month={month[formData.month - 1].name}
           asistentes={asistentes}
           filteredVisits={filteredVisits}
+          areaTotal={areaTotal}
+          totalAtenciones={totalAtenciones}
         />
       )}
     </Dialog>

@@ -14,6 +14,7 @@ import HouseAreaView from './view/AreaPrevision'
 import ObrasView from './view/ObrasAtendidas'
 import ObrasViewBody from './view/bodyObrasAtendidas'
 import TeamView from './view/Team'
+import AreaBody from './view/AreaBody'
 
 const MonthlyReport = ({
   open,
@@ -21,7 +22,9 @@ const MonthlyReport = ({
   year,
   month,
   asistentes,
-  filteredVisits
+  filteredVisits,
+  areaTotal,
+  totalAtenciones
 }) => {
   /*  const { visit, totalUsers, assistanceConstructionList, statisticsPrint } =
     useSelector((state) => state.assistance)  */
@@ -235,26 +238,60 @@ const MonthlyReport = ({
               {' '}
               Consultas realizadas por Area{' '}
             </Text>
-            <AreaView></AreaView>
+            {areaTotal && (
+              <>
+                <AreaView
+                  firstName={'Area Consulta'}
+                  secondName={'Total'}
+                  thirdName={'Porcentaje'}
+                />
+                {areaTotal.map((area) => {
+                  if (area.total > 0) {
+                    const porcentaje = (area.total * 100) / totalAtenciones
+
+                    return (
+                      <AreaBody
+                        AreaName={area.name}
+                        AtentionTotal={area.total}
+                        Porcentaje={`${Number.parseFloat(porcentaje).toFixed(
+                          2
+                        )}% `}
+                      />
+                    )
+                  }
+                })}
+                <AreaView
+                  firstName={'TOTAL GENERAL'}
+                  secondName={totalAtenciones}
+                  thirdName={'100%'}
+                />
+              </>
+            )}
           </Page>
           <Page size="A4" style={styles.page}>
             <Text style={styles.text}>
               De acuerdo a la información arrojada por la Consulta, es posible
               inferir que las áreas de mayor intervención son las siguientes:
             </Text>
-            <Text style={styles.subtitles2}>A-"llenado por asistente" </Text>
+            <Text style={styles.subtitles2}>
+              A- {areaTotal ? areaTotal[0].name : null}{' '}
+            </Text>
             <Text style={styles.text}>
               La primera área de mayor intervención corresponde a Previsión, con
               porcentaje de 52,63% consultas realizadas. A continuación se
               detallan sus variables:
             </Text>
-            <Text style={styles.subtitles2}>B- "llenado por asistente"</Text>
+            <Text style={styles.subtitles2}>
+              B- {areaTotal && areaTotal.length > 1 ? areaTotal[1].name : null}{' '}
+            </Text>
             <Text style={styles.text}>
               La segunda área de mayor intervención corresponde a Educación, con
               porcentaje de 18,42% consultas realizadas. A continuación se
               detallan sus variables:
             </Text>
-            <Text style={styles.subtitles2}>C- Vivienda</Text>
+            <Text style={styles.subtitles2}>
+              C- {areaTotal && areaTotal.length > 2 ? areaTotal[2].name : null}
+            </Text>
             <Text style={styles.text}>
               La Tercera área de mayor intervención corresponde a Vivienda, con
               porcentaje de 18,42% consultas realizadas. A continuación se

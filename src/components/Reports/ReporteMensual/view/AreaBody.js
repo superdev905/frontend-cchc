@@ -1,15 +1,15 @@
 import { View, Text, StyleSheet } from '@react-pdf/renderer'
 
-const AreaView = (props) => {
-  const { firstName, secondName, thirdName } = props
+const AreaBody = (props) => {
+  const { AreaName, AtentionTotal, Porcentaje } = props
   const styles = StyleSheet.create({
     row: {
       flexDirection: 'row',
       alignItems: 'center',
       textAlign: 'center',
       border: '1px solid black',
-      backgroundColor: 'grey',
-      color: 'white',
+      backgroundColor: 'transparent',
+      color: 'black',
       fontSize: '12pt'
     },
     area: {
@@ -24,11 +24,11 @@ const AreaView = (props) => {
   })
   return (
     <View style={styles.row}>
-      <Text style={styles.area}>{firstName}</Text>
-      <Text style={styles.total}>{secondName}</Text>
-      <Text style={styles.per}>{thirdName}</Text>
+      <Text style={styles.area}>{AreaName}</Text>
+      <Text style={styles.total}>{AtentionTotal}</Text>
+      <Text style={styles.per}>{Porcentaje}</Text>
     </View>
   )
 }
 
-export default AreaView
+export default AreaBody

@@ -631,7 +631,7 @@ const statisticsPrint = (data) => (dispatch) =>
 const ConsultAreaReport = (idVisits) => () =>
   new Promise((resolve, reject) => {
     Axios.post(
-      `${config.services.assistance}/assistance/get-asisstance-report`,
+      `${config.services.assistance}/assistance/get-assistance-report`,
       { visit_id: idVisits }
     )
       .then((response) => {
