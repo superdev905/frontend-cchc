@@ -24,7 +24,10 @@ const MonthlyReport = ({
   asistentes,
   filteredVisits,
   areaTotal,
-  totalAtenciones
+  totalAtenciones,
+  PrimerArea,
+  SegundaArea,
+  TercerArea
 }) => {
   /*  const { visit, totalUsers, assistanceConstructionList, statisticsPrint } =
     useSelector((state) => state.assistance)  */
@@ -274,29 +277,34 @@ const MonthlyReport = ({
               inferir que las áreas de mayor intervención son las siguientes:
             </Text>
             <Text style={styles.subtitles2}>
-              A- {areaTotal ? areaTotal[0].name : null}{' '}
+              A- {areaTotal ? areaTotal[0].name : null}
             </Text>
             <Text style={styles.text}>
-              La primera área de mayor intervención corresponde a Previsión, con
-              porcentaje de 52,63% consultas realizadas. A continuación se
-              detallan sus variables:
+              La primera área de mayor intervención corresponde a{' '}
+              {areaTotal ? areaTotal[0].name : null}, con porcentaje de 52,63%
+              consultas realizadas. A continuación se detallan sus variables:
             </Text>
+            <Text style={styles.text}> {PrimerArea || null} </Text>
             <Text style={styles.subtitles2}>
-              B- {areaTotal && areaTotal.length > 1 ? areaTotal[1].name : null}{' '}
+              B- {areaTotal && areaTotal.length > 1 ? areaTotal[1].name : null}
             </Text>
             <Text style={styles.text}>
-              La segunda área de mayor intervención corresponde a Educación, con
-              porcentaje de 18,42% consultas realizadas. A continuación se
+              La segunda área de mayor intervención corresponde a{' '}
+              {areaTotal && areaTotal.length > 1 ? areaTotal[1].name : null},
+              con porcentaje de 18,42% consultas realizadas. A continuación se
               detallan sus variables:
             </Text>
+            <Text style={styles.text}> {SegundaArea || null} </Text>
             <Text style={styles.subtitles2}>
               C- {areaTotal && areaTotal.length > 2 ? areaTotal[2].name : null}
             </Text>
             <Text style={styles.text}>
-              La Tercera área de mayor intervención corresponde a Vivienda, con
-              porcentaje de 18,42% consultas realizadas. A continuación se
+              La Tercera área de mayor intervención corresponde a{' '}
+              {areaTotal && areaTotal.length > 2 ? areaTotal[2].name : null},
+              con porcentaje de 18,42% consultas realizadas. A continuación se
               detallan sus variables:
             </Text>
+            <Text style={styles.text}> {TercerArea || null} </Text>
           </Page>
           <Page size="A4" style={styles.page}>
             <Text style={styles.subtitles}>

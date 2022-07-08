@@ -11,6 +11,7 @@ import { useToggle } from '../../hooks'
 import ReporteMensual from './ReporteMensual/ReporteMensual'
 import assistanceActions from '../../state/actions/assistance'
 import authActions from '../../state/actions/auth'
+import UserReportModal from './UserReportModal'
 
 const ReportDialog = ({ open, onClose, type }) => {
   const { isMobile } = useSelector((state) => state.ui)
@@ -33,10 +34,14 @@ const ReportDialog = ({ open, onClose, type }) => {
     obras: []
   })
   const [years, setYears] = useState([])
+  const [primerArea, setPrimerArea] = useState('')
+  const [segundaArea, setSegundaArea] = useState('')
+  const [tercerArea, setTercerArea] = useState('')
   const [actualYear, setActualYear] = useState(2010)
   const [query, setQuery] = useState({ business_id: '', state: 'ACTIVE' })
   const { open: printMonthlyReport, toggleOpen: togglePrintMonthlyReport } =
     useToggle()
+  const { open: userReport, toggleOpen: toggleUserReport } = useToggle()
 
   const month = [
     { name: 'Enero', value: 1 },
@@ -263,7 +268,7 @@ const ReportDialog = ({ open, onClose, type }) => {
                 Cancelar
               </Button>
               <SubmitButton
-                onClick={togglePrintMonthlyReport}
+                onClick={toggleUserReport}
                 disabled={
                   !formData.id ||
                   !formData.month ||
@@ -271,12 +276,29 @@ const ReportDialog = ({ open, onClose, type }) => {
                   formData.obras.length === 0
                 }
               >
-                Generar
+                siguiente
               </SubmitButton>
             </Box>
           </Box>
         </Box>
       </Box>
+      {userReport && (
+        <UserReportModal
+          setPrimerArea={setPrimerArea}
+          setSegundaArea={setSegundaArea}
+          setTercerArea={setTercerArea}
+          open={userReport}
+          onClose={toggleUserReport}
+          togglePrintMonthlyReport={togglePrintMonthlyReport}
+          firstLabel={areaTotal ? areaTotal[0].name : null}
+          secondLabel={
+            areaTotal && areaTotal.length > 1 ? areaTotal[1].name : null
+          }
+          thirdLabel={
+            areaTotal && areaTotal.length > 2 ? areaTotal[2].name : null
+          }
+        />
+      )}
       {printMonthlyReport && (
         <ReporteMensual
           open={printMonthlyReport}
@@ -287,6 +309,9 @@ const ReportDialog = ({ open, onClose, type }) => {
           filteredVisits={filteredVisits}
           areaTotal={areaTotal}
           totalAtenciones={totalAtenciones}
+          PrimerArea={primerArea}
+          SegundaArea={segundaArea}
+          TercerArea={tercerArea}
         />
       )}
     </Dialog>
