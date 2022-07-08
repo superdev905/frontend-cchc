@@ -10,16 +10,17 @@ import usersActions from '../../state/actions/users'
 const AutocompleteVariable = ({ type, onChange }) => {
   const dispatch = useDispatch()
   const [companies, setCompanies] = useState([])
+  const [search, setSearch] = useState('')
   const [employees, setEmployees] = useState([])
   const [users, setUsersList] = useState([])
 
   useEffect(() => {
     if (type === 'VISITS_COMPANY' || type === 'ASSISTANCE_COMPANY') {
-      dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
-        (list) => {
-          setCompanies(list)
-        }
-      )
+      dispatch(
+        companiesActions.getCompanies({ state: 'CREATED', search }, false)
+      ).then((list) => {
+        setCompanies(list)
+      })
     }
     if (type === 'ASSISTANCE_EMPLOYEE') {
       dispatch(employeesActions.getEmployees({ state: 'CREATED' }, false)).then(
@@ -33,7 +34,7 @@ const AutocompleteVariable = ({ type, onChange }) => {
         setUsersList(list)
       })
     }
-  }, [type])
+  }, [type, search])
 
   return (
     <>
@@ -56,6 +57,7 @@ const AutocompleteVariable = ({ type, onChange }) => {
               {...params}
               label="Selecciona empresa"
               placeholder="Nombre de empresa"
+              onChange={(e) => setSearch(e.target.value)}
             />
           )}
         />
