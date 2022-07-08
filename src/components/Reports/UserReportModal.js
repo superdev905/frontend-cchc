@@ -11,7 +11,8 @@ const UserReportModal = ({
   setPrimerArea,
   setSegundaArea,
   setTercerArea,
-  togglePrintMonthlyReport
+  togglePrintMonthlyReport,
+  closeAll
 }) => {
   const { isMobile } = useSelector((state) => state.ui)
   return (
@@ -37,7 +38,16 @@ const UserReportModal = ({
           onChange={(e) => setTercerArea(e.target.value)}
         />
       )}
-      <Button variant={'outlined'}> Cancelar </Button>
+      <Button
+        variant={'outlined'}
+        onClick={() => {
+          onClose()
+          closeAll()
+        }}
+      >
+        {' '}
+        Cancelar{' '}
+      </Button>
       <SubmitButton onClick={togglePrintMonthlyReport}> Generar </SubmitButton>
     </Dialog>
   )

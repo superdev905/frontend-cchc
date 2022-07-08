@@ -289,6 +289,7 @@ const ReportDialog = ({ open, onClose, type }) => {
           setTercerArea={setTercerArea}
           open={userReport}
           onClose={toggleUserReport}
+          closeAll={onClose}
           togglePrintMonthlyReport={togglePrintMonthlyReport}
           firstLabel={areaTotal ? areaTotal[0].name : null}
           secondLabel={
