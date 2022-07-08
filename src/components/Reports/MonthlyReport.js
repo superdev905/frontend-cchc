@@ -154,8 +154,6 @@ const ReportDialog = ({ open, onClose, type }) => {
     }
   }, [filteredVisits])
 
-  console.log(idVisits)
-
   useEffect(() => {
     if (idVisits.length > 0) {
       dispatch(assistanceActions.ConsultAreaReport(idVisits)).then(
@@ -164,11 +162,11 @@ const ReportDialog = ({ open, onClose, type }) => {
             stadisticArea.result.sort((a, b) => {
               if (a.total > b.total) {
                 return -1
-              } else if (a.total < b.total) {
-                return 1
-              } else {
-                return 0
               }
+              if (a.total < b.total) {
+                return 1
+              }
+              return 0
             })
           )
           setTotalAtenciones(stadisticArea.topicIds.length)

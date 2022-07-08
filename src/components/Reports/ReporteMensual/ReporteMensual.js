@@ -261,6 +261,7 @@ const MonthlyReport = ({
                       />
                     )
                   }
+                  return null
                 })}
                 <AreaView
                   firstName={'TOTAL GENERAL'}
