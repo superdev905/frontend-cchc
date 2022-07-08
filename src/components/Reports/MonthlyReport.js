@@ -22,7 +22,7 @@ const ReportDialog = ({ open, onClose, type }) => {
   })
   const [visits, setVisits] = useState()
   const [filteredVisits, setFilteredVisits] = useState()
-  const [idVisits, setIdVisits] = useState()
+  const [idVisits, setIdVisits] = useState([])
   const [asistentes, setAsistentes] = useState([])
   const [formData, setFormData] = useState({
     id: '',
@@ -148,6 +148,12 @@ const ReportDialog = ({ open, onClose, type }) => {
   }, [filteredVisits])
 
   console.log(idVisits)
+
+  useEffect(() => {
+    if (idVisits.length > 0) {
+      dispatch(assistanceActions.ConsultAreaReport(idVisits))
+    }
+  }, [idVisits])
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>

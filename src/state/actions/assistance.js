@@ -628,6 +628,21 @@ const statisticsPrint = (data) => (dispatch) =>
     payload: data
   })
 
+const ConsultAreaReport = (idVisits) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.assistance}/assistance/get-asisstance-report`,
+      { visit_id: idVisits }
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const assistanceActions = {
   toggleModal,
   getCalendarEvents,
@@ -668,7 +683,8 @@ const assistanceActions = {
   sendEmail,
   statisticsPrint,
   getAllVisitReport,
-  getVisitsToReport
+  getVisitsToReport,
+  ConsultAreaReport
 }
 
 export default assistanceActions
