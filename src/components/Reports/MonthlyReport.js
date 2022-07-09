@@ -27,6 +27,8 @@ const ReportDialog = ({ open, onClose, type }) => {
   const [asistentes, setAsistentes] = useState([])
   const [areaTotal, setAreaTotal] = useState([])
   const [totalAtenciones, setTotalAtenciones] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [topicId, setTopicId] = useState([])
   const [formData, setFormData] = useState({
     id: '',
     month: '',
@@ -84,7 +86,10 @@ const ReportDialog = ({ open, onClose, type }) => {
   }, [open])
 
   const fetchConstruction = () => {
-    dispatch(constructionActions.getConstructionsCompany(query)).then(() => {})
+    setLoading(true)
+    dispatch(constructionActions.getConstructionsCompany(query)).then(() =>
+      setLoading(false)
+    )
   }
 
   useEffect(() => {
@@ -117,9 +122,13 @@ const ReportDialog = ({ open, onClose, type }) => {
 
   useEffect(() => {
     if (selectedDate && formData.id) {
+      setLoading(true)
       dispatch(
         assistanceActions.getAllVisitReport(selectedDate, formData.id)
-      ).then((data) => setVisits(data))
+      ).then((data) => {
+        setVisits(data)
+        setLoading(false)
+      })
     }
   }, [selectedDate, formData.id])
 
@@ -136,9 +145,11 @@ const ReportDialog = ({ open, onClose, type }) => {
     const values = {
       assistantId: filteredVisits
     }
-    dispatch(authActions.getAssistantReport(values)).then((data) =>
+    setLoading(true)
+    dispatch(authActions.getAssistantReport(values)).then((data) => {
       setAsistentes(data)
-    )
+      setLoading(false)
+    })
   }
 
   useEffect(() => {
@@ -156,6 +167,7 @@ const ReportDialog = ({ open, onClose, type }) => {
 
   useEffect(() => {
     if (idVisits.length > 0) {
+      setLoading(true)
       dispatch(assistanceActions.ConsultAreaReport(idVisits)).then(
         (stadisticArea) => {
           setAreaTotal(
@@ -170,10 +182,13 @@ const ReportDialog = ({ open, onClose, type }) => {
             })
           )
           setTotalAtenciones(stadisticArea.topicIds.length)
+          setTopicId(stadisticArea.topicIds)
+          setLoading(false)
         }
       )
     }
   }, [idVisits])
+  console.log(topicId)
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
@@ -268,6 +283,7 @@ const ReportDialog = ({ open, onClose, type }) => {
               <SubmitButton
                 onClick={toggleUserReport}
                 disabled={
+                  loading ||
                   !formData.id ||
                   !formData.month ||
                   !formData.year ||
@@ -289,12 +305,18 @@ const ReportDialog = ({ open, onClose, type }) => {
           onClose={toggleUserReport}
           closeAll={onClose}
           togglePrintMonthlyReport={togglePrintMonthlyReport}
-          firstLabel={areaTotal ? areaTotal[0].name : null}
+          firstLabel={
+            areaTotal && areaTotal[0].total > 0 ? areaTotal[0].name : null
+          }
           secondLabel={
-            areaTotal && areaTotal.length > 1 ? areaTotal[1].name : null
+            areaTotal && areaTotal.length > 1 && areaTotal[1].total > 0
+              ? areaTotal[1].name
+              : null
           }
           thirdLabel={
-            areaTotal && areaTotal.length > 2 ? areaTotal[2].name : null
+            areaTotal && areaTotal.length > 2 && areaTotal[2].total > 0
+              ? areaTotal[2].name
+              : null
           }
         />
       )}

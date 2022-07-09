@@ -276,50 +276,81 @@ const MonthlyReport = ({
               De acuerdo a la información arrojada por la Consulta, es posible
               inferir que las áreas de mayor intervención son las siguientes:
             </Text>
-            <Text style={styles.subtitles2}>
-              A- {areaTotal ? areaTotal[0].name : null}
-            </Text>
-            <Text style={styles.text}>
-              La primera área de mayor intervención corresponde a{' '}
-              {areaTotal ? areaTotal[0].name : null}, con porcentaje de{' '}
-              {areaTotal
-                ? `${Number.parseFloat(
-                    (areaTotal[0].total * 100) / totalAtenciones
-                  ).toFixed(2)}% `
-                : '0%'}
-              consultas realizadas. A continuación se detallan sus variables:
-            </Text>
-            <Text style={styles.text}> {PrimerArea || null} </Text>
-            <Text style={styles.subtitles2}>
-              B- {areaTotal && areaTotal.length > 1 ? areaTotal[1].name : null}
-            </Text>
-            <Text style={styles.text}>
-              La segunda área de mayor intervención corresponde a{' '}
-              {areaTotal && areaTotal.length > 1 ? areaTotal[1].name : null},
-              con porcentaje de{' '}
-              {areaTotal && areaTotal.length > 1
-                ? `${Number.parseFloat(
-                    (areaTotal[1].total * 100) / totalAtenciones
-                  ).toFixed(2)}% `
-                : '0%'}{' '}
-              consultas realizadas. A continuación se detallan sus variables:
-            </Text>
-            <Text style={styles.text}> {SegundaArea || null} </Text>
-            <Text style={styles.subtitles2}>
-              C- {areaTotal && areaTotal.length > 2 ? areaTotal[2].name : null}
-            </Text>
-            <Text style={styles.text}>
-              La Tercera área de mayor intervención corresponde a{' '}
-              {areaTotal && areaTotal.length > 2 ? areaTotal[2].name : null},
-              con porcentaje de{' '}
-              {areaTotal && areaTotal.length > 2
-                ? `${Number.parseFloat(
-                    (areaTotal[2].total * 100) / totalAtenciones
-                  ).toFixed(2)}% `
-                : '0%'}{' '}
-              consultas realizadas. A continuación se detallan sus variables:
-            </Text>
-            <Text style={styles.text}> {TercerArea || null} </Text>
+            {areaTotal && areaTotal[0].total > 0 && (
+              <>
+                <Text style={styles.subtitles2}>
+                  A-{' '}
+                  {areaTotal && areaTotal[0].total > 0
+                    ? areaTotal[0].name
+                    : null}
+                </Text>
+                <Text style={styles.text}>
+                  La primera área de mayor intervención corresponde a{' '}
+                  {areaTotal && areaTotal[0].total > 0
+                    ? areaTotal[0].name
+                    : null}
+                  , con porcentaje de{' '}
+                  {areaTotal && areaTotal[0].total
+                    ? `${Number.parseFloat(
+                        (areaTotal[0].total * 100) / totalAtenciones
+                      ).toFixed(2)}% `
+                    : '0%'}
+                  consultas realizadas. A continuación se detallan sus
+                  variables:
+                </Text>
+                <Text style={styles.text}> {PrimerArea || null} </Text>
+              </>
+            )}
+            {areaTotal && areaTotal.length > 1 && areaTotal[1].total > 0 && (
+              <>
+                <Text style={styles.subtitles2}>
+                  B-{' '}
+                  {areaTotal && areaTotal.length > 1 && areaTotal[1].total > 0
+                    ? areaTotal[1].name
+                    : null}
+                </Text>
+                <Text style={styles.text}>
+                  La segunda área de mayor intervención corresponde a{' '}
+                  {areaTotal && areaTotal.length > 1 && areaTotal[1].Total > 0
+                    ? areaTotal[1].name
+                    : null}
+                  , con porcentaje de{' '}
+                  {areaTotal && areaTotal.length > 1 && areaTotal[1].total > 0
+                    ? `${Number.parseFloat(
+                        (areaTotal[1].total * 100) / totalAtenciones
+                      ).toFixed(2)}% `
+                    : '0%'}{' '}
+                  consultas realizadas. A continuación se detallan sus
+                  variables:
+                </Text>{' '}
+                <Text style={styles.text}> {SegundaArea || null} </Text>{' '}
+              </>
+            )}
+            {areaTotal && areaTotal.length > 2 && areaTotal[2].total > 0 && (
+              <>
+                <Text style={styles.subtitles2}>
+                  C-{' '}
+                  {areaTotal && areaTotal.length > 2 && areaTotal[2].total > 0
+                    ? areaTotal[2].name
+                    : null}
+                </Text>
+                <Text style={styles.text}>
+                  La Tercera área de mayor intervención corresponde a{' '}
+                  {areaTotal && areaTotal.length > 2 && areaTotal[2].total > 0
+                    ? areaTotal[2].name
+                    : null}
+                  , con porcentaje de{' '}
+                  {areaTotal && areaTotal.length > 2 && areaTotal[2].total > 0
+                    ? `${Number.parseFloat(
+                        (areaTotal[2].total * 100) / totalAtenciones
+                      ).toFixed(2)}% `
+                    : '0%'}{' '}
+                  consultas realizadas. A continuación se detallan sus
+                  variables:
+                </Text>
+                <Text style={styles.text}> {TercerArea || null} </Text>
+              </>
+            )}
           </Page>
           <Page size="A4" style={styles.page}>
             <Text style={styles.subtitles}>
