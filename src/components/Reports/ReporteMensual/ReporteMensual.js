@@ -33,7 +33,8 @@ const MonthlyReport = ({
   totalAtencionesOficina,
   areaOficina,
   topicNameTerreno,
-  topicNameOficina
+  topicNameOficina,
+  difusion
 }) => {
   const { constructionByCompany } = useSelector((state) => state.constructions)
   const styles = StyleSheet.create({
@@ -572,9 +573,7 @@ const MonthlyReport = ({
             <Text style={styles.subtitles2}>
               Los principales temas ha difundir el próximo mes son:
             </Text>
-            <Text style={styles.text}>
-              Entregar campo de texto abierto, igual que puntos anteriores.
-            </Text>
+            <Text style={styles.text}>{difusion}</Text>
             <Text style={styles.subtitles}>VII. CASOS SOCIALES RELEVANTES</Text>
             <Text style={styles.subtitles2}>Nombre obra</Text>
           </Page>

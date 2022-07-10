@@ -13,6 +13,7 @@ import ReporteMensual from './ReporteMensual/ReporteMensual'
 import assistanceActions from '../../state/actions/assistance'
 import authActions from '../../state/actions/auth'
 import UserReportModal from './UserReportModal'
+import DifusionReportModal from './DifusionReportModal'
 
 const ReportDialog = ({ open, onClose, type }) => {
   const { isMobile } = useSelector((state) => state.ui)
@@ -45,11 +46,13 @@ const ReportDialog = ({ open, onClose, type }) => {
   const [primerArea, setPrimerArea] = useState('')
   const [segundaArea, setSegundaArea] = useState('')
   const [tercerArea, setTercerArea] = useState('')
+  const [difusion, setDifusion] = useState('')
   const [actualYear, setActualYear] = useState(2010)
   const [query, setQuery] = useState({ business_id: '', state: 'ACTIVE' })
   const { open: printMonthlyReport, toggleOpen: togglePrintMonthlyReport } =
     useToggle()
   const { open: userReport, toggleOpen: toggleUserReport } = useToggle()
+  const { open: difusionReport, toggleOpen: toggleDifusionReport } = useToggle()
 
   const month = [
     { name: 'Enero', value: 1 },
@@ -363,7 +366,7 @@ const ReportDialog = ({ open, onClose, type }) => {
           open={userReport}
           onClose={toggleUserReport}
           closeAll={onClose}
-          togglePrintMonthlyReport={togglePrintMonthlyReport}
+          togglePrintMonthlyReport={toggleDifusionReport}
           firstLabel={
             areaTerreno && areaTerreno[0].total > 0 ? areaTerreno[0].name : null
           }
@@ -377,6 +380,16 @@ const ReportDialog = ({ open, onClose, type }) => {
               ? areaTerreno[2].name
               : null
           }
+        />
+      )}
+      {difusionReport && (
+        <DifusionReportModal
+          open={difusionReport}
+          onClose={toggleDifusionReport}
+          closeAll={onClose}
+          togglePrintMonthlyReport={togglePrintMonthlyReport}
+          setDifusion={setDifusion}
+          difusion={difusion}
         />
       )}
       {printMonthlyReport && (
@@ -396,6 +409,7 @@ const ReportDialog = ({ open, onClose, type }) => {
           areaOficina={areaOficina}
           topicNameTerreno={topicNameTerreno}
           topicNameOficina={topicNameOficina}
+          difusion={difusion}
         />
       )}
     </Dialog>

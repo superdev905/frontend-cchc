@@ -45,10 +45,9 @@ const UserReportModal = ({
           closeAll()
         }}
       >
-        {' '}
-        Cancelar{' '}
+        Cancelar
       </Button>
-      <SubmitButton onClick={togglePrintMonthlyReport}> Generar </SubmitButton>
+      <SubmitButton onClick={togglePrintMonthlyReport}>Siguiente</SubmitButton>
     </Dialog>
   )
 }
