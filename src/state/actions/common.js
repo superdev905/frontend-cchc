@@ -488,6 +488,20 @@ const deleteSchedule = (id) => () =>
       })
   })
 
+const getTopicsReportName = (arrId) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.parameters}/topics/topic-name-report`, {
+      id: arrId
+    })
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getRegions,
   getCharges,
@@ -524,5 +538,6 @@ export default {
   getSchedule,
   createSchedule,
   updateSchedule,
-  deleteSchedule
+  deleteSchedule,
+  getTopicsReportName
 }

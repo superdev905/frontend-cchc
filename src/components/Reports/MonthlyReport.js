@@ -4,6 +4,7 @@ import { Autocomplete } from '@material-ui/lab'
 import { useSelector, useDispatch } from 'react-redux'
 import moment from 'moment'
 import constructionActions from '../../state/actions/constructions'
+import commonActions from '../../state/actions/common'
 import { Dialog } from '../Shared'
 import { Button, SubmitButton, TextField } from '../UI'
 import AutocompleteVariable from './AutocompleteVariable'
@@ -25,10 +26,15 @@ const ReportDialog = ({ open, onClose, type }) => {
   const [filteredVisits, setFilteredVisits] = useState()
   const [idVisits, setIdVisits] = useState([])
   const [asistentes, setAsistentes] = useState([])
-  const [areaTotal, setAreaTotal] = useState([])
-  const [totalAtenciones, setTotalAtenciones] = useState(0)
+  const [areaTerreno, setAreaTerreno] = useState([])
+  const [totalAtencionesTerreno, setTotalAtencionesTerreno] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [topicId, setTopicId] = useState([])
+  const [topicIdTerreno, setTopicIdTerreno] = useState([])
+  const [areaOficina, setAreaOficina] = useState([])
+  const [totalAtencionesOficina, setTotalAtencionesOficina] = useState(0)
+  const [topicIdOficina, setTopicIdOficina] = useState([])
+  const [topicNameTerreno, setTopicNameTerreno] = useState([])
+  const [topicNameOficina, setTopicNameOficina] = useState([])
   const [formData, setFormData] = useState({
     id: '',
     month: '',
@@ -170,8 +176,48 @@ const ReportDialog = ({ open, onClose, type }) => {
       setLoading(true)
       dispatch(assistanceActions.ConsultAreaReport(idVisits)).then(
         (stadisticArea) => {
-          setAreaTotal(
-            stadisticArea.result.sort((a, b) => {
+          setAreaTerreno(
+            stadisticArea.terreno.length
+              ? stadisticArea.terreno.sort((a, b) => {
+                  if (a.total > b.total) {
+                    return -1
+                  }
+                  if (a.total < b.total) {
+                    return 1
+                  }
+                  return 0
+                })
+              : []
+          )
+          setAreaOficina(
+            stadisticArea.oficina.length > 0
+              ? stadisticArea.oficina.sort((a, b) => {
+                  if (a.total > b.total) {
+                    return -1
+                  }
+                  if (a.total < b.total) {
+                    return 1
+                  }
+                  return 0
+                })
+              : []
+          )
+          setTotalAtencionesTerreno(stadisticArea.topic_ids_terreno.length)
+          setTotalAtencionesOficina(stadisticArea.topic_ids_oficina.length)
+          setTopicIdTerreno(stadisticArea.topic_ids_terreno)
+          setTopicIdOficina(stadisticArea.topic_ids_oficina)
+          setLoading(false)
+        }
+      )
+    }
+  }, [idVisits])
+
+  useEffect(() => {
+    if (topicIdTerreno.length > 0) {
+      dispatch(commonActions.getTopicsReportName(topicIdTerreno)).then(
+        (data) => {
+          setTopicNameTerreno(
+            data.result.sort((a, b) => {
               if (a.total > b.total) {
                 return -1
               }
@@ -181,14 +227,27 @@ const ReportDialog = ({ open, onClose, type }) => {
               return 0
             })
           )
-          setTotalAtenciones(stadisticArea.topicIds.length)
-          setTopicId(stadisticArea.topicIds)
-          setLoading(false)
         }
       )
     }
-  }, [idVisits])
-  console.log(topicId)
+    if (topicIdOficina.length > 0) {
+      dispatch(commonActions.getTopicsReportName(topicIdOficina)).then(
+        (data) => {
+          setTopicNameOficina(
+            data.result.sort((a, b) => {
+              if (a.total > b.total) {
+                return -1
+              }
+              if (a.total < b.total) {
+                return 1
+              }
+              return 0
+            })
+          )
+        }
+      )
+    }
+  }, [topicIdTerreno, topicIdOficina])
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
@@ -306,16 +365,16 @@ const ReportDialog = ({ open, onClose, type }) => {
           closeAll={onClose}
           togglePrintMonthlyReport={togglePrintMonthlyReport}
           firstLabel={
-            areaTotal && areaTotal[0].total > 0 ? areaTotal[0].name : null
+            areaTerreno && areaTerreno[0].total > 0 ? areaTerreno[0].name : null
           }
           secondLabel={
-            areaTotal && areaTotal.length > 1 && areaTotal[1].total > 0
-              ? areaTotal[1].name
+            areaTerreno && areaTerreno.length > 1 && areaTerreno[1].total > 0
+              ? areaTerreno[1].name
               : null
           }
           thirdLabel={
-            areaTotal && areaTotal.length > 2 && areaTotal[2].total > 0
-              ? areaTotal[2].name
+            areaTerreno && areaTerreno.length > 2 && areaTerreno[2].total > 0
+              ? areaTerreno[2].name
               : null
           }
         />
@@ -328,11 +387,15 @@ const ReportDialog = ({ open, onClose, type }) => {
           month={month[formData.month - 1].name}
           asistentes={asistentes}
           filteredVisits={filteredVisits}
-          areaTotal={areaTotal}
-          totalAtenciones={totalAtenciones}
+          areaTerreno={areaTerreno}
+          totalAtencionesTerreno={totalAtencionesTerreno}
           PrimerArea={primerArea}
           SegundaArea={segundaArea}
           TercerArea={tercerArea}
+          totalAtencionesOficina={totalAtencionesOficina}
+          areaOficina={areaOficina}
+          topicNameTerreno={topicNameTerreno}
+          topicNameOficina={topicNameOficina}
         />
       )}
     </Dialog>

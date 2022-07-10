@@ -10,11 +10,13 @@ import { useSelector } from 'react-redux'
 import moment from 'moment'
 import { Dialog } from '../../Shared'
 import AreaView from './view/AreaAtendida'
-import HouseAreaView from './view/AreaPrevision'
 import ObrasView from './view/ObrasAtendidas'
 import ObrasViewBody from './view/bodyObrasAtendidas'
 import TeamView from './view/Team'
 import AreaBody from './view/AreaBody'
+import FirstComment from './view/firstComment'
+import SecondComment from './view/secondComment'
+import ThirdComment from './view/thirdComment'
 
 const MonthlyReport = ({
   open,
@@ -23,14 +25,16 @@ const MonthlyReport = ({
   month,
   asistentes,
   filteredVisits,
-  areaTotal,
-  totalAtenciones,
+  areaTerreno,
+  totalAtencionesTerreno,
   PrimerArea,
   SegundaArea,
-  TercerArea
+  TercerArea,
+  totalAtencionesOficina,
+  areaOficina,
+  topicNameTerreno,
+  topicNameOficina
 }) => {
-  /*  const { visit, totalUsers, assistanceConstructionList, statisticsPrint } =
-    useSelector((state) => state.assistance)  */
   const { constructionByCompany } = useSelector((state) => state.constructions)
   const styles = StyleSheet.create({
     box: {
@@ -141,12 +145,7 @@ const MonthlyReport = ({
     }
   ]
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullScreen={true}
-      /* classes={{ paper: classes.modalRoot }} */
-    >
+    <Dialog open={open} onClose={onClose} fullScreen={true}>
       <PDFViewer style={{ minHeight: '85vh', width: '100%' }}>
         <Document style={{ minHeigth: '100vh', width: '100%' }}>
           <Page size="A4" style={styles.page}>
@@ -241,18 +240,20 @@ const MonthlyReport = ({
               {' '}
               Consultas realizadas por Area{' '}
             </Text>
-            {areaTotal && (
-              <>
+            {areaTerreno && (
+              <Text>
                 <AreaView
                   firstName={'Area Consulta'}
                   secondName={'Total'}
                   thirdName={'Porcentaje'}
                 />
-                {areaTotal.map((area) => {
+                {areaTerreno.map((area, index) => {
                   if (area.total > 0) {
-                    const porcentaje = (area.total * 100) / totalAtenciones
+                    const porcentaje =
+                      (area.total * 100) / totalAtencionesTerreno
                     return (
                       <AreaBody
+                        key={index}
                         AreaName={area.name}
                         AtentionTotal={area.total}
                         Porcentaje={`${Number.parseFloat(porcentaje).toFixed(
@@ -265,10 +266,10 @@ const MonthlyReport = ({
                 })}
                 <AreaView
                   firstName={'TOTAL GENERAL'}
-                  secondName={totalAtenciones}
+                  secondName={totalAtencionesTerreno}
                   thirdName={'100%'}
                 />
-              </>
+              </Text>
             )}
           </Page>
           <Page size="A4" style={styles.page}>
@@ -276,81 +277,31 @@ const MonthlyReport = ({
               De acuerdo a la información arrojada por la Consulta, es posible
               inferir que las áreas de mayor intervención son las siguientes:
             </Text>
-            {areaTotal && areaTotal[0].total > 0 && (
-              <>
-                <Text style={styles.subtitles2}>
-                  A-{' '}
-                  {areaTotal && areaTotal[0].total > 0
-                    ? areaTotal[0].name
-                    : null}
-                </Text>
-                <Text style={styles.text}>
-                  La primera área de mayor intervención corresponde a{' '}
-                  {areaTotal && areaTotal[0].total > 0
-                    ? areaTotal[0].name
-                    : null}
-                  , con porcentaje de{' '}
-                  {areaTotal && areaTotal[0].total
-                    ? `${Number.parseFloat(
-                        (areaTotal[0].total * 100) / totalAtenciones
-                      ).toFixed(2)}% `
-                    : '0%'}
-                  consultas realizadas. A continuación se detallan sus
-                  variables:
-                </Text>
-                <Text style={styles.text}> {PrimerArea || null} </Text>
-              </>
+            {areaTerreno && areaTerreno[0].total > 0 && (
+              <FirstComment
+                areaTotal={areaTerreno}
+                totalAtenciones={totalAtencionesTerreno}
+                PrimerArea={PrimerArea}
+              />
             )}
-            {areaTotal && areaTotal.length > 1 && areaTotal[1].total > 0 && (
-              <>
-                <Text style={styles.subtitles2}>
-                  B-{' '}
-                  {areaTotal && areaTotal.length > 1 && areaTotal[1].total > 0
-                    ? areaTotal[1].name
-                    : null}
-                </Text>
-                <Text style={styles.text}>
-                  La segunda área de mayor intervención corresponde a{' '}
-                  {areaTotal && areaTotal.length > 1 && areaTotal[1].Total > 0
-                    ? areaTotal[1].name
-                    : null}
-                  , con porcentaje de{' '}
-                  {areaTotal && areaTotal.length > 1 && areaTotal[1].total > 0
-                    ? `${Number.parseFloat(
-                        (areaTotal[1].total * 100) / totalAtenciones
-                      ).toFixed(2)}% `
-                    : '0%'}{' '}
-                  consultas realizadas. A continuación se detallan sus
-                  variables:
-                </Text>{' '}
-                <Text style={styles.text}> {SegundaArea || null} </Text>{' '}
-              </>
-            )}
-            {areaTotal && areaTotal.length > 2 && areaTotal[2].total > 0 && (
-              <>
-                <Text style={styles.subtitles2}>
-                  C-{' '}
-                  {areaTotal && areaTotal.length > 2 && areaTotal[2].total > 0
-                    ? areaTotal[2].name
-                    : null}
-                </Text>
-                <Text style={styles.text}>
-                  La Tercera área de mayor intervención corresponde a{' '}
-                  {areaTotal && areaTotal.length > 2 && areaTotal[2].total > 0
-                    ? areaTotal[2].name
-                    : null}
-                  , con porcentaje de{' '}
-                  {areaTotal && areaTotal.length > 2 && areaTotal[2].total > 0
-                    ? `${Number.parseFloat(
-                        (areaTotal[2].total * 100) / totalAtenciones
-                      ).toFixed(2)}% `
-                    : '0%'}{' '}
-                  consultas realizadas. A continuación se detallan sus
-                  variables:
-                </Text>
-                <Text style={styles.text}> {TercerArea || null} </Text>
-              </>
-            )}
+            {areaTerreno &&
+              areaTerreno.length > 1 &&
+              areaTerreno[1].total > 0 && (
+                <SecondComment
+                  areaTotal={areaTerreno}
+                  totalAtenciones={totalAtencionesTerreno}
+                  SegundaArea={SegundaArea}
+                />
+              )}
+            {areaTerreno &&
+              areaTerreno.length > 2 &&
+              areaTerreno[2].total > 0 && (
+                <ThirdComment
+                  areaTotal={areaTerreno}
+                  totalAtenciones={totalAtencionesTerreno}
+                  TercerArea={TercerArea}
+                />
+              )}
           </Page>
           <Page size="A4" style={styles.page}>
             <Text style={styles.subtitles}>
@@ -362,14 +313,52 @@ const MonthlyReport = ({
               <Br />
               <Br />
             </Text>
+            {topicNameTerreno && areaTerreno && (
+              <Text>
+                {areaTerreno.map((area) => {
+                  if (area.total > 0) {
+                    return (
+                      <>
+                        <AreaView
+                          firstName={`AREA ${area.name}`}
+                          secondName={'Total'}
+                          thirdName={'Porcentaje'}
+                        />
+                        {topicNameTerreno.map((topic, index) => {
+                          if (topic.area_name === area.name) {
+                            const porcentaje = (topic.total * 100) / area.total
+                            return (
+                              <AreaBody
+                                key={index}
+                                AreaName={topic.name}
+                                AtentionTotal={topic.total}
+                                Porcentaje={`${Number.parseFloat(
+                                  porcentaje
+                                ).toFixed(2)}% `}
+                              />
+                            )
+                          }
+                          return null
+                        })}
+                        <AreaView
+                          firstName={'TOTAL GENERAL'}
+                          secondName={area.total}
+                          thirdName={'100%'}
+                        />
+                        <Text>
+                          <Br />
+                        </Text>
+                      </>
+                    )
+                  }
+                  return null
+                })}
+              </Text>
+            )}
             <Text style={styles.description}>Cuadro</Text>
             <Text style={styles.description}>
               Gestiones realizadas {`${month} ${year}`}
             </Text>
-
-            <HouseAreaView></HouseAreaView>
-
-            <HouseAreaView></HouseAreaView>
           </Page>
           <Page size="A4" style={styles.page}>
             <Text style={styles.subtitles}>MATERIAL DE DIFUSION ENTREGADO</Text>
@@ -414,6 +403,37 @@ const MonthlyReport = ({
             <Text style={styles.description}>
               Consultas realizadas por Area {`${month} ${year}`}
             </Text>
+            {areaOficina && (
+              <Text>
+                <AreaView
+                  firstName={'Area Consulta'}
+                  secondName={'Total'}
+                  thirdName={'Porcentaje'}
+                />
+                {areaOficina.map((area, index) => {
+                  if (area.total > 0) {
+                    const porcentaje =
+                      (area.total * 100) / totalAtencionesOficina
+                    return (
+                      <AreaBody
+                        key={index}
+                        AreaName={area.name}
+                        AtentionTotal={area.total}
+                        Porcentaje={`${Number.parseFloat(porcentaje).toFixed(
+                          2
+                        )}% `}
+                      />
+                    )
+                  }
+                  return null
+                })}
+                <AreaView
+                  firstName={'TOTAL GENERAL'}
+                  secondName={totalAtencionesOficina}
+                  thirdName={'100%'}
+                />
+              </Text>
+            )}
             <Text>
               <Br />
             </Text>
@@ -427,6 +447,48 @@ const MonthlyReport = ({
             <Text style={styles.subtitles2}>
               DISTRIBUCIÓN POR CONSULTA - ATENCION OFICINA
             </Text>
+            {topicNameOficina && areaOficina && (
+              <Text>
+                {areaOficina.map((area) => {
+                  if (area.total > 0) {
+                    return (
+                      <Text>
+                        <AreaView
+                          firstName={`AREA ${area.name}`}
+                          secondName={'Total'}
+                          thirdName={'Porcentaje'}
+                        />
+                        {topicNameOficina.map((topic, index) => {
+                          if (topic.area_name === area.name) {
+                            const porcentaje = (topic.total * 100) / area.total
+                            return (
+                              <AreaBody
+                                key={index}
+                                AreaName={topic.name}
+                                AtentionTotal={topic.total}
+                                Porcentaje={`${Number.parseFloat(
+                                  porcentaje
+                                ).toFixed(2)}% `}
+                              />
+                            )
+                          }
+                          return null
+                        })}
+                        <AreaView
+                          firstName={'TOTAL GENERAL'}
+                          secondName={area.total}
+                          thirdName={'100%'}
+                        />
+                        <Text>
+                          <Br />
+                        </Text>
+                      </Text>
+                    )
+                  }
+                  return null
+                })}
+              </Text>
+            )}
             <Text>
               <Br />
             </Text>
@@ -506,26 +568,15 @@ const MonthlyReport = ({
               <Br /> En el presente mes no se tramitaron aperturas de libretas
               de ahorro
             </Text>
-
-            <Text style={styles.subtitles}>
-              {' '}
-              VII. TEMAS DE DIFUSIÓN MENSUAL
-            </Text>
-
+            <Text style={styles.subtitles}>VII. TEMAS DE DIFUSIÓN MENSUAL</Text>
             <Text style={styles.subtitles2}>
-              Los principales temas ha difundir el próximo mes son:{' '}
+              Los principales temas ha difundir el próximo mes son:
             </Text>
-            <Text style={styles.text}>Charla:</Text>
-            <Text style={styles.text}>Habilidades Parentales</Text>
-            <Text style={styles.text}>Marketing:</Text>
-            <Text style={styles.text}>1. Extensión IFE Laboral </Text>
             <Text style={styles.text}>
-              2. Actividades con los niños en verano
+              Entregar campo de texto abierto, igual que puntos anteriores.
             </Text>
-            <Text style={styles.text}>3. Beca Presidente de la República </Text>
-
             <Text style={styles.subtitles}>VII. CASOS SOCIALES RELEVANTES</Text>
-            <Text style={styles.subtitles2}>Parque Las Palmas II</Text>
+            <Text style={styles.subtitles2}>Nombre obra</Text>
           </Page>
         </Document>
       </PDFViewer>
