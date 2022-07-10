@@ -7,7 +7,7 @@ import { useToggle } from '../../hooks'
 import { DataTable } from '../Shared'
 import modulesReports from '../../resources/modulesReports'
 import ReportDialog from './ReportDialog'
-import ReportMonthlyDialog from './MonthlyReport'
+import ReportMonthlyDialog from './ReportStepper'
 
 const ReportsList = () => {
   const { open, toggleOpen } = useToggle()
