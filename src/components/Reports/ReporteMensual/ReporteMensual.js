@@ -34,7 +34,9 @@ const MonthlyReport = ({
   areaOficina,
   topicNameTerreno,
   topicNameOficina,
-  difusion
+  difusion,
+  managementNameTerreno,
+  managementNameOficina
 }) => {
   const { constructionByCompany } = useSelector((state) => state.constructions)
   const styles = StyleSheet.create({
@@ -210,7 +212,6 @@ const MonthlyReport = ({
             <Text style={styles.description}>
               Obras Atendidas durante el mes
             </Text>
-
             <ObrasView
               firstName={'Lugar'}
               secondName={'Fecha'}
@@ -238,11 +239,10 @@ const MonthlyReport = ({
             </Text>
             <Text style={styles.description}> Cuadro </Text>
             <Text style={styles.description}>
-              {' '}
-              Consultas realizadas por Area{' '}
+              Consultas realizadas por Area
             </Text>
             {areaTerreno && (
-              <Text>
+              <>
                 <AreaView
                   firstName={'Area Consulta'}
                   secondName={'Total'}
@@ -270,7 +270,7 @@ const MonthlyReport = ({
                   secondName={totalAtencionesTerreno}
                   thirdName={'100%'}
                 />
-              </Text>
+              </>
             )}
           </Page>
           <Page size="A4" style={styles.page}>
@@ -315,7 +315,7 @@ const MonthlyReport = ({
               <Br />
             </Text>
             {topicNameTerreno && areaTerreno && (
-              <Text>
+              <>
                 {areaTerreno.map((area) => {
                   if (area.total > 0) {
                     return (
@@ -354,12 +354,41 @@ const MonthlyReport = ({
                   }
                   return null
                 })}
-              </Text>
+              </>
             )}
             <Text style={styles.description}>Cuadro</Text>
             <Text style={styles.description}>
               Gestiones realizadas {`${month} ${year}`}
             </Text>
+            {managementNameTerreno && (
+              <>
+                <AreaView
+                  firstName={'Gestión'}
+                  secondName={'TOTAL'}
+                  thirdName={'Porcentaje'}
+                />
+                {managementNameTerreno.result.map((management, index) => {
+                  const porcentaje =
+                    (management.total * 100) /
+                    managementNameTerreno.total_gestiones
+                  return (
+                    <AreaBody
+                      key={index}
+                      AreaName={management.name}
+                      AtentionTotal={management.total}
+                      Porcentaje={`${Number.parseFloat(porcentaje).toFixed(
+                        2
+                      )}% `}
+                    />
+                  )
+                })}
+                <AreaView
+                  firstName={'TOTAL GENERAL'}
+                  secondName={managementNameTerreno.total_gestiones}
+                  thirdName={'100%'}
+                />
+              </>
+            )}
           </Page>
           <Page size="A4" style={styles.page}>
             <Text style={styles.subtitles}>MATERIAL DE DIFUSION ENTREGADO</Text>
@@ -405,7 +434,7 @@ const MonthlyReport = ({
               Consultas realizadas por Area {`${month} ${year}`}
             </Text>
             {areaOficina && (
-              <Text>
+              <>
                 <AreaView
                   firstName={'Area Consulta'}
                   secondName={'Total'}
@@ -433,7 +462,7 @@ const MonthlyReport = ({
                   secondName={totalAtencionesOficina}
                   thirdName={'100%'}
                 />
-              </Text>
+              </>
             )}
             <Text>
               <Br />
@@ -442,6 +471,35 @@ const MonthlyReport = ({
             <Text style={styles.description}>
               Gestiones realizadas {`${month} ${year}`}
             </Text>
+            {managementNameOficina && (
+              <>
+                <AreaView
+                  firstName={'Gestión'}
+                  secondName={'TOTAL'}
+                  thirdName={'Porcentaje'}
+                />
+                {managementNameOficina.result.map((management, index) => {
+                  const porcentaje =
+                    (management.total * 100) /
+                    managementNameOficina.total_gestiones
+                  return (
+                    <AreaBody
+                      key={index}
+                      AreaName={management.name}
+                      AtentionTotal={management.total}
+                      Porcentaje={`${Number.parseFloat(porcentaje).toFixed(
+                        2
+                      )}% `}
+                    />
+                  )
+                })}
+                <AreaView
+                  firstName={'TOTAL GENERAL'}
+                  secondName={managementNameOficina.total_gestiones}
+                  thirdName={'100%'}
+                />
+              </>
+            )}
             <Text>
               <Br />
             </Text>
@@ -449,11 +507,11 @@ const MonthlyReport = ({
               DISTRIBUCIÓN POR CONSULTA - ATENCION OFICINA
             </Text>
             {topicNameOficina && areaOficina && (
-              <Text>
+              <>
                 {areaOficina.map((area) => {
                   if (area.total > 0) {
                     return (
-                      <Text>
+                      <>
                         <AreaView
                           firstName={`AREA ${area.name}`}
                           secondName={'Total'}
@@ -483,12 +541,12 @@ const MonthlyReport = ({
                         <Text>
                           <Br />
                         </Text>
-                      </Text>
+                      </>
                     )
                   }
                   return null
                 })}
-              </Text>
+              </>
             )}
             <Text>
               <Br />

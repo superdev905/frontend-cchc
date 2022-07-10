@@ -502,6 +502,20 @@ const getTopicsReportName = (arrId) => () =>
       })
   })
 
+const getManagementReportName = (arrId) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(`${config.services.parameters}/management/get-management-name`, {
+      id: arrId
+    })
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 export default {
   getRegions,
   getCharges,
@@ -539,5 +553,6 @@ export default {
   createSchedule,
   updateSchedule,
   deleteSchedule,
-  getTopicsReportName
+  getTopicsReportName,
+  getManagementReportName
 }

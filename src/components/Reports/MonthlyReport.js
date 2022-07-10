@@ -36,6 +36,10 @@ const ReportDialog = ({ open, onClose, type }) => {
   const [topicIdOficina, setTopicIdOficina] = useState([])
   const [topicNameTerreno, setTopicNameTerreno] = useState([])
   const [topicNameOficina, setTopicNameOficina] = useState([])
+  const [managementIdTerreno, setManagementIdTerreno] = useState([])
+  const [managementIdOficina, setManagementIdOficina] = useState([])
+  const [managementNameTerreno, setManagementNameTerreno] = useState([])
+  const [managementNameOficina, setManagementNamaeOficina] = useState([])
   const [formData, setFormData] = useState({
     id: '',
     month: '',
@@ -209,6 +213,8 @@ const ReportDialog = ({ open, onClose, type }) => {
           setTotalAtencionesOficina(stadisticArea.topic_ids_oficina.length)
           setTopicIdTerreno(stadisticArea.topic_ids_terreno)
           setTopicIdOficina(stadisticArea.topic_ids_oficina)
+          setManagementIdTerreno(stadisticArea.management_id_terreno)
+          setManagementIdOficina(stadisticArea.management_id_oficina)
           setLoading(false)
         }
       )
@@ -251,6 +257,19 @@ const ReportDialog = ({ open, onClose, type }) => {
       )
     }
   }, [topicIdTerreno, topicIdOficina])
+
+  useEffect(() => {
+    if (managementIdTerreno.length > 0) {
+      dispatch(commonActions.getManagementReportName(managementIdTerreno)).then(
+        (data) => setManagementNameTerreno(data)
+      )
+    }
+    if (managementIdOficina.length > 0) {
+      dispatch(commonActions.getManagementReportName(managementIdOficina)).then(
+        (data) => setManagementNamaeOficina(data)
+      )
+    }
+  }, [managementIdTerreno, managementIdOficina])
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
@@ -410,6 +429,8 @@ const ReportDialog = ({ open, onClose, type }) => {
           topicNameTerreno={topicNameTerreno}
           topicNameOficina={topicNameOficina}
           difusion={difusion}
+          managementNameTerreno={managementNameTerreno}
+          managementNameOficina={managementNameOficina}
         />
       )}
     </Dialog>
