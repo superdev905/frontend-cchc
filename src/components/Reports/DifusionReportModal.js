@@ -5,6 +5,7 @@ import { Button, SubmitButton, TextArea } from '../UI'
 const UserReportModal = ({
   open,
   onClose,
+  closeAll,
   setDifusion,
   togglePrintMonthlyReport,
   difusion
