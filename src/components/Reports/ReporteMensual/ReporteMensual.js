@@ -17,6 +17,10 @@ import AreaBody from './view/AreaBody'
 import FirstComment from './view/firstComment'
 import SecondComment from './view/secondComment'
 import ThirdComment from './view/thirdComment'
+import HeaderACF from './view/HeaderACF'
+import BodyACF from './view/BodyACF'
+import HeaderCompanyTable from './view/HeaderCompanyTable'
+import BodyCompanyTable from './view/BodyCompanyTable'
 
 const MonthlyReport = ({
   open,
@@ -36,9 +40,13 @@ const MonthlyReport = ({
   topicNameOficina,
   difusion,
   managementNameTerreno,
-  managementNameOficina
+  managementNameOficina,
+  folletoCharlaAfiche,
+  atencionesEmpresa,
+  totalConsultas
 }) => {
   const { constructionByCompany } = useSelector((state) => state.constructions)
+  const { topics } = useSelector((state) => state.common)
   const styles = StyleSheet.create({
     box: {
       display: 'flex',
@@ -216,7 +224,7 @@ const MonthlyReport = ({
               firstName={'Lugar'}
               secondName={'Fecha'}
               thirdName={'Personas'}
-              fourthName={'Consulta'}
+              fourthName={'Consultas'}
             />
             {filteredVisits?.map((filteredVisit) => (
               <ObrasViewBody
@@ -230,7 +238,7 @@ const MonthlyReport = ({
               firstName={'TOTAL GENERAL'}
               secondName={`${filteredVisits.length} visitas`}
               thirdName={'pendiente'}
-              fourthName={'pendiente'}
+              fourthName={totalConsultas}
             />
 
             <Text style={styles.text}>
@@ -403,6 +411,37 @@ const MonthlyReport = ({
             <Text style={styles.description}>
               Afiches entregados {`${month} ${year}`}
             </Text>
+            {folletoCharlaAfiche && (
+              <>
+                <HeaderACF
+                  first="N"
+                  second="Fecha"
+                  third="Obra"
+                  fourth="Afiche"
+                  five="Total"
+                />
+                {folletoCharlaAfiche.afiche.map((afiche, index) =>
+                  filteredVisits.map((visit) => {
+                    if (afiche.visit_id === visit.id) {
+                      return (
+                        <BodyACF
+                          first={index + 1}
+                          second={moment(visit.start_date).format('DD-MM-YYYY')}
+                          third={visit.construction_name}
+                          fourth={`${afiche.type.replace('AFICHES: ', '')}`}
+                          five={afiche.quantity}
+                        />
+                      )
+                    }
+                    return null
+                  })
+                )}
+                <HeaderACF
+                  second="TOTAL"
+                  five={folletoCharlaAfiche.totalAfiche}
+                />
+              </>
+            )}
             <Text style={styles.subtitles2}> B. Folletos: </Text>
             <Text style={styles.text}>
               Durante {`${month} ${year}`}, de acuerdo a la programación de la
@@ -412,6 +451,37 @@ const MonthlyReport = ({
             <Text style={styles.description}>
               Folletos entregados {`${month} ${year}`}
             </Text>
+            {folletoCharlaAfiche && (
+              <>
+                <HeaderACF
+                  first="N"
+                  second="Fecha"
+                  third="Obra"
+                  fourth="Folleto"
+                  five="Total"
+                />
+                {folletoCharlaAfiche.folleto.map((folleto, index) =>
+                  filteredVisits.map((visit) => {
+                    if (folleto.visit_id === visit.id) {
+                      return (
+                        <BodyACF
+                          first={index + 1}
+                          second={moment(visit.start_date).format('DD-MM-YYYY')}
+                          third={visit.construction_name}
+                          fourth={`${folleto.type.replace('FOLLETOS: ', '')}`}
+                          five={folleto.quantity}
+                        />
+                      )
+                    }
+                    return null
+                  })
+                )}
+                <HeaderACF
+                  second="TOTAL"
+                  five={folletoCharlaAfiche.totalFolleto}
+                />
+              </>
+            )}
           </Page>
 
           <Page size="A4" style={styles.page}>
@@ -570,6 +640,37 @@ const MonthlyReport = ({
             <Text style={styles.description}>
               Charlas realizadas {`${month} ${year}`}
             </Text>
+            {folletoCharlaAfiche && (
+              <>
+                <HeaderACF
+                  first="N"
+                  second="Fecha"
+                  third="Obra"
+                  fourth="Charla"
+                  five="Participantes"
+                />
+                {folletoCharlaAfiche.charla.map((charla, index) =>
+                  filteredVisits.map((visit) => {
+                    if (charla.visit_id === visit.id) {
+                      return (
+                        <BodyACF
+                          first={index + 1}
+                          second={moment(visit.start_date).format('DD-MM-YYYY')}
+                          third={visit.construction_name}
+                          fourth={`${charla.type.replace('CHARLA: ', '')}`}
+                          five={charla.quantity}
+                        />
+                      )
+                    }
+                    return null
+                  })
+                )}
+                <HeaderACF
+                  second="TOTAL"
+                  five={folletoCharlaAfiche.totalCharla}
+                />
+              </>
+            )}
           </Page>
           <Page size="A4" style={styles.page}>
             <Text style={styles.subtitles}>IV. PROYECTOS SOCIALES</Text>
@@ -633,7 +734,33 @@ const MonthlyReport = ({
             </Text>
             <Text style={styles.text}>{difusion}</Text>
             <Text style={styles.subtitles}>VII. CASOS SOCIALES RELEVANTES</Text>
-            <Text style={styles.subtitles2}>Nombre obra</Text>
+            <Text style={styles.subtitles2}>
+              {filteredVisits.map((visit) =>
+                atencionesEmpresa.map((at) =>
+                  visit.id === at.visit_id ? at.construction_name : null
+                )
+              )}
+            </Text>
+            {atencionesEmpresa && (
+              <>
+                <HeaderCompanyTable
+                  first="RUT"
+                  second="Nombre"
+                  third="Área Consulta"
+                  fourth="Gestión"
+                />
+                {atencionesEmpresa.map((at) => (
+                  <BodyCompanyTable
+                    first={at.employee_rut}
+                    second={at.attended_name}
+                    third={at.area_name}
+                    fourth={`TEMA: ${
+                      topics.find((val) => val.id === at.topic_id).name
+                    } \n ${at.company_report_observation}`}
+                  />
+                ))}
+              </>
+            )}
           </Page>
         </Document>
       </PDFViewer>

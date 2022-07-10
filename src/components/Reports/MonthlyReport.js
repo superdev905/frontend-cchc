@@ -33,6 +33,7 @@ const ReportDialog = ({ open, onClose, type }) => {
   const [topicIdTerreno, setTopicIdTerreno] = useState([])
   const [areaOficina, setAreaOficina] = useState([])
   const [totalAtencionesOficina, setTotalAtencionesOficina] = useState(0)
+  const [totalConsultas, setTotalConsultas] = useState(0)
   const [topicIdOficina, setTopicIdOficina] = useState([])
   const [topicNameTerreno, setTopicNameTerreno] = useState([])
   const [topicNameOficina, setTopicNameOficina] = useState([])
@@ -40,6 +41,8 @@ const ReportDialog = ({ open, onClose, type }) => {
   const [managementIdOficina, setManagementIdOficina] = useState([])
   const [managementNameTerreno, setManagementNameTerreno] = useState([])
   const [managementNameOficina, setManagementNamaeOficina] = useState([])
+  const [atencionesEmpresa, setAtencionesEmpresa] = useState([])
+  const [folletoCharlaAfiche, setFolletoCharlaAfiche] = useState([])
   const [formData, setFormData] = useState({
     id: '',
     month: '',
@@ -72,6 +75,11 @@ const ReportDialog = ({ open, onClose, type }) => {
     { name: 'Noviembre', value: 11 },
     { name: 'Diciembre', value: 12 }
   ]
+
+  useEffect(() => {
+    dispatch(commonActions.getTopics())
+  }, [])
+
   useEffect(() => {
     if (actualYear <= moment().year()) {
       setActualYear(actualYear + 1)
@@ -215,8 +223,13 @@ const ReportDialog = ({ open, onClose, type }) => {
           setTopicIdOficina(stadisticArea.topic_ids_oficina)
           setManagementIdTerreno(stadisticArea.management_id_terreno)
           setManagementIdOficina(stadisticArea.management_id_oficina)
+          setAtencionesEmpresa(stadisticArea.companyReport)
+          setTotalConsultas(stadisticArea.total_consultas)
           setLoading(false)
         }
+      )
+      dispatch(assistanceActions.getFolletoCharlaAfiche(idVisits)).then(
+        (data) => setFolletoCharlaAfiche(data)
       )
     }
   }, [idVisits])
@@ -368,7 +381,8 @@ const ReportDialog = ({ open, onClose, type }) => {
                   !formData.id ||
                   !formData.month ||
                   !formData.year ||
-                  formData.obras.length === 0
+                  formData.obras.length === 0 ||
+                  areaTerreno.length === 0
                 }
               >
                 siguiente
@@ -431,6 +445,9 @@ const ReportDialog = ({ open, onClose, type }) => {
           difusion={difusion}
           managementNameTerreno={managementNameTerreno}
           managementNameOficina={managementNameOficina}
+          folletoCharlaAfiche={folletoCharlaAfiche}
+          atencionesEmpresa={atencionesEmpresa}
+          totalConsultas={totalConsultas}
         />
       )}
     </Dialog>

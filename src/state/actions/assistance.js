@@ -643,6 +643,21 @@ const ConsultAreaReport = (idVisits) => () =>
       })
   })
 
+const getFolletoCharlaAfiche = (arrId) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.assistance}/assistance-construction/get-folleto-charla-afiche`,
+      { id: arrId }
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
 const assistanceActions = {
   toggleModal,
   getCalendarEvents,
@@ -684,7 +699,8 @@ const assistanceActions = {
   statisticsPrint,
   getAllVisitReport,
   getVisitsToReport,
-  ConsultAreaReport
+  ConsultAreaReport,
+  getFolletoCharlaAfiche
 }
 
 export default assistanceActions

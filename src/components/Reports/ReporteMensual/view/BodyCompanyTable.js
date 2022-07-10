@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from '@react-pdf/renderer'
 
-const ObrasView = ({ place, date, quantity, consult }) => {
+const BodyCompanyTable = ({ first, second, third, fourth }) => {
   const styles = StyleSheet.create({
     row: {
       flexDirection: 'row',
@@ -11,27 +11,27 @@ const ObrasView = ({ place, date, quantity, consult }) => {
       color: 'black',
       fontSize: '9pt'
     },
-    place: {
-      width: '50%'
+    number: {
+      width: '20%'
     },
     date: {
-      width: '23%'
+      width: '20%'
     },
-    people: {
-      width: '23%'
+    name: {
+      width: '20%'
     },
-    consult: {
-      width: '13%'
+    acf: {
+      width: '40%'
     }
   })
   return (
     <View style={styles.row}>
-      <Text style={styles.place}>{place}</Text>
-      <Text style={styles.date}>{date}</Text>
-      <Text style={styles.people}>{quantity}</Text>
-      <Text style={styles.consult}>{consult}</Text>
+      <Text style={styles.number}>{first}</Text>
+      <Text style={styles.date}>{second}</Text>
+      <Text style={styles.name}>{third}</Text>
+      <Text style={styles.acf}>{fourth}</Text>
     </View>
   )
 }
 
-export default ObrasView
+export default BodyCompanyTable
