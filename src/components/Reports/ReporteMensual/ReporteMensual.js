@@ -21,6 +21,7 @@ import HeaderACF from './view/HeaderACF'
 import BodyACF from './view/BodyACF'
 import HeaderCompanyTable from './view/HeaderCompanyTable'
 import BodyCompanyTable from './view/BodyCompanyTable'
+import Noinfo from './view/Noinfo'
 
 const MonthlyReport = ({
   open,
@@ -43,7 +44,10 @@ const MonthlyReport = ({
   managementNameOficina,
   folletoCharlaAfiche,
   atencionesEmpresa,
-  totalConsultas
+  totalConsultas,
+  contadorAsistencias,
+  contadorPersonas,
+  totalPersonas
 }) => {
   const { constructionByCompany } = useSelector((state) => state.constructions)
   const { topics } = useSelector((state) => state.common)
@@ -201,7 +205,7 @@ const MonthlyReport = ({
             {jefaturas.map((jefatura, index) => (
               <TeamView jefatura={jefatura} key={index} />
             ))}
-            {asistentes.map((asistente, index) => (
+            {asistentes?.map((asistente, index) => (
               <TeamView jefatura={asistente} key={index} />
             ))}
           </Page>
@@ -226,18 +230,36 @@ const MonthlyReport = ({
               thirdName={'Personas'}
               fourthName={'Consultas'}
             />
-            {filteredVisits?.map((filteredVisit) => (
-              <ObrasViewBody
-                place={filteredVisit.construction_name}
-                date={moment(filteredVisit.start_date).format('DD-MM-YYYY')}
-                quantity={'pendiente'}
-                consult={'pendiente'}
-              />
-            ))}
+            {filteredVisits?.map((filteredVisit) => {
+              let consultas
+              let personas
+              contadorAsistencias.map((c) => {
+                if (c.visitId === filteredVisit.id) {
+                  consultas = c.asistencias
+                }
+                return null
+              })
+
+              contadorPersonas.map((c) => {
+                if (c.visitId === filteredVisit.id) {
+                  personas = c?.persona?.length
+                }
+                return null
+              })
+
+              return (
+                <ObrasViewBody
+                  place={filteredVisit.construction_name}
+                  date={moment(filteredVisit.start_date).format('DD-MM-YYYY')}
+                  quantity={personas}
+                  consult={consultas}
+                />
+              )
+            })}
             <ObrasView
               firstName={'TOTAL GENERAL'}
               secondName={`${filteredVisits.length} visitas`}
-              thirdName={'pendiente'}
+              thirdName={totalPersonas}
               fourthName={totalConsultas}
             />
 
@@ -256,7 +278,7 @@ const MonthlyReport = ({
                   secondName={'Total'}
                   thirdName={'Porcentaje'}
                 />
-                {areaTerreno.map((area, index) => {
+                {areaTerreno?.map((area, index) => {
                   if (area.total > 0) {
                     const porcentaje =
                       (area.total * 100) / totalAtencionesTerreno
@@ -273,6 +295,9 @@ const MonthlyReport = ({
                   }
                   return null
                 })}
+                {totalAtencionesTerreno === 0 && (
+                  <Noinfo primary={'Sin información'} />
+                )}
                 <AreaView
                   firstName={'TOTAL GENERAL'}
                   secondName={totalAtencionesTerreno}
@@ -286,16 +311,18 @@ const MonthlyReport = ({
               De acuerdo a la información arrojada por la Consulta, es posible
               inferir que las áreas de mayor intervención son las siguientes:
             </Text>
-            {areaTerreno && areaTerreno[0].total > 0 && (
-              <FirstComment
-                areaTotal={areaTerreno}
-                totalAtenciones={totalAtencionesTerreno}
-                PrimerArea={PrimerArea}
-              />
-            )}
             {areaTerreno &&
-              areaTerreno.length > 1 &&
-              areaTerreno[1].total > 0 && (
+              areaTerreno?.length > 0 &&
+              areaTerreno[0]?.total > 0 && (
+                <FirstComment
+                  areaTotal={areaTerreno}
+                  totalAtenciones={totalAtencionesTerreno}
+                  PrimerArea={PrimerArea}
+                />
+              )}
+            {areaTerreno &&
+              areaTerreno?.length > 1 &&
+              areaTerreno[1]?.total > 0 && (
                 <SecondComment
                   areaTotal={areaTerreno}
                   totalAtenciones={totalAtencionesTerreno}
@@ -303,8 +330,8 @@ const MonthlyReport = ({
                 />
               )}
             {areaTerreno &&
-              areaTerreno.length > 2 &&
-              areaTerreno[2].total > 0 && (
+              areaTerreno?.length > 2 &&
+              areaTerreno[2]?.total > 0 && (
                 <ThirdComment
                   areaTotal={areaTerreno}
                   totalAtenciones={totalAtencionesTerreno}
@@ -324,7 +351,7 @@ const MonthlyReport = ({
             </Text>
             {topicNameTerreno && areaTerreno && (
               <>
-                {areaTerreno.map((area) => {
+                {areaTerreno?.map((area) => {
                   if (area.total > 0) {
                     return (
                       <>
@@ -333,7 +360,7 @@ const MonthlyReport = ({
                           secondName={'Total'}
                           thirdName={'Porcentaje'}
                         />
-                        {topicNameTerreno.map((topic, index) => {
+                        {topicNameTerreno?.map((topic, index) => {
                           if (topic.area_name === area.name) {
                             const porcentaje = (topic.total * 100) / area.total
                             return (
@@ -375,7 +402,7 @@ const MonthlyReport = ({
                   secondName={'TOTAL'}
                   thirdName={'Porcentaje'}
                 />
-                {managementNameTerreno.result.map((management, index) => {
+                {managementNameTerreno?.result?.map((management, index) => {
                   const porcentaje =
                     (management.total * 100) /
                     managementNameTerreno.total_gestiones
@@ -390,9 +417,12 @@ const MonthlyReport = ({
                     />
                   )
                 })}
+                {managementNameTerreno?.length === 0 && (
+                  <Noinfo primary={'Sin información'} />
+                )}
                 <AreaView
                   firstName={'TOTAL GENERAL'}
-                  secondName={managementNameTerreno.total_gestiones}
+                  secondName={managementNameTerreno.total_gestiones || 0}
                   thirdName={'100%'}
                 />
               </>
@@ -420,8 +450,8 @@ const MonthlyReport = ({
                   fourth="Afiche"
                   five="Total"
                 />
-                {folletoCharlaAfiche.afiche.map((afiche, index) =>
-                  filteredVisits.map((visit) => {
+                {folletoCharlaAfiche?.afiche?.map((afiche, index) =>
+                  filteredVisits?.map((visit) => {
                     if (afiche.visit_id === visit.id) {
                       return (
                         <BodyACF
@@ -435,6 +465,9 @@ const MonthlyReport = ({
                     }
                     return null
                   })
+                )}
+                {folletoCharlaAfiche?.afiche?.length === 0 && (
+                  <Noinfo primary={'Sin información'} />
                 )}
                 <HeaderACF
                   second="TOTAL"
@@ -460,8 +493,8 @@ const MonthlyReport = ({
                   fourth="Folleto"
                   five="Total"
                 />
-                {folletoCharlaAfiche.folleto.map((folleto, index) =>
-                  filteredVisits.map((visit) => {
+                {folletoCharlaAfiche?.folleto?.map((folleto, index) =>
+                  filteredVisits?.map((visit) => {
                     if (folleto.visit_id === visit.id) {
                       return (
                         <BodyACF
@@ -475,6 +508,9 @@ const MonthlyReport = ({
                     }
                     return null
                   })
+                )}
+                {folletoCharlaAfiche?.folleto?.length === 0 && (
+                  <Noinfo primary={'Sin información'} />
                 )}
                 <HeaderACF
                   second="TOTAL"
@@ -510,7 +546,7 @@ const MonthlyReport = ({
                   secondName={'Total'}
                   thirdName={'Porcentaje'}
                 />
-                {areaOficina.map((area, index) => {
+                {areaOficina?.map((area, index) => {
                   if (area.total > 0) {
                     const porcentaje =
                       (area.total * 100) / totalAtencionesOficina
@@ -527,6 +563,9 @@ const MonthlyReport = ({
                   }
                   return null
                 })}
+                {totalAtencionesOficina === 0 && (
+                  <Noinfo primary={'Sin información'} />
+                )}
                 <AreaView
                   firstName={'TOTAL GENERAL'}
                   secondName={totalAtencionesOficina}
@@ -548,7 +587,7 @@ const MonthlyReport = ({
                   secondName={'TOTAL'}
                   thirdName={'Porcentaje'}
                 />
-                {managementNameOficina.result.map((management, index) => {
+                {managementNameOficina?.result?.map((management, index) => {
                   const porcentaje =
                     (management.total * 100) /
                     managementNameOficina.total_gestiones
@@ -563,9 +602,12 @@ const MonthlyReport = ({
                     />
                   )
                 })}
+                {managementNameOficina?.length === 0 && (
+                  <Noinfo primary={'Sin información'} />
+                )}
                 <AreaView
                   firstName={'TOTAL GENERAL'}
-                  secondName={managementNameOficina.total_gestiones}
+                  secondName={managementNameOficina.total_gestiones || 0}
                   thirdName={'100%'}
                 />
               </>
@@ -578,7 +620,7 @@ const MonthlyReport = ({
             </Text>
             {topicNameOficina && areaOficina && (
               <>
-                {areaOficina.map((area) => {
+                {areaOficina?.map((area) => {
                   if (area.total > 0) {
                     return (
                       <>
@@ -587,7 +629,7 @@ const MonthlyReport = ({
                           secondName={'Total'}
                           thirdName={'Porcentaje'}
                         />
-                        {topicNameOficina.map((topic, index) => {
+                        {topicNameOficina?.map((topic, index) => {
                           if (topic.area_name === area.name) {
                             const porcentaje = (topic.total * 100) / area.total
                             return (
@@ -649,8 +691,8 @@ const MonthlyReport = ({
                   fourth="Charla"
                   five="Participantes"
                 />
-                {folletoCharlaAfiche.charla.map((charla, index) =>
-                  filteredVisits.map((visit) => {
+                {folletoCharlaAfiche.charla?.map((charla, index) =>
+                  filteredVisits?.map((visit) => {
                     if (charla.visit_id === visit.id) {
                       return (
                         <BodyACF
@@ -664,6 +706,9 @@ const MonthlyReport = ({
                     }
                     return null
                   })
+                )}
+                {folletoCharlaAfiche?.charla?.length === 0 && (
+                  <Noinfo primary={'Sin información'} />
                 )}
                 <HeaderACF
                   second="TOTAL"
@@ -735,10 +780,13 @@ const MonthlyReport = ({
             <Text style={styles.text}>{difusion}</Text>
             <Text style={styles.subtitles}>VII. CASOS SOCIALES RELEVANTES</Text>
             <Text style={styles.subtitles2}>
-              {filteredVisits.map((visit) =>
-                atencionesEmpresa.map((at) =>
+              {filteredVisits?.map((visit) =>
+                atencionesEmpresa?.map((at) =>
                   visit.id === at.visit_id ? at.construction_name : null
                 )
+              )}
+              {atencionesEmpresa?.length === 0 && (
+                <Noinfo primary={'Sin información'} />
               )}
             </Text>
             {atencionesEmpresa && (
@@ -749,7 +797,7 @@ const MonthlyReport = ({
                   third="Área Consulta"
                   fourth="Gestión"
                 />
-                {atencionesEmpresa.map((at) => (
+                {atencionesEmpresa?.map((at) => (
                   <BodyCompanyTable
                     first={at.employee_rut}
                     second={at.attended_name}
@@ -759,6 +807,9 @@ const MonthlyReport = ({
                     } \n ${at.company_report_observation}`}
                   />
                 ))}
+                {atencionesEmpresa?.length === 0 && (
+                  <Noinfo primary={'Sin información'} />
+                )}
               </>
             )}
           </Page>

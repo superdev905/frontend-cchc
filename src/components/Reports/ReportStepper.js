@@ -36,7 +36,10 @@ function getStepContent(
     onHandleBack,
     formData,
     month,
-    years
+    years,
+    primerArea,
+    segundaArea,
+    tercerArea
   }
 ) {
   switch (stepIndex) {
@@ -76,6 +79,9 @@ function getStepContent(
           }
           onHandleBack={onHandleBack}
           nextStepper={nextStepper}
+          primerArea={primerArea}
+          segundaArea={segundaArea}
+          tercerArea={tercerArea}
         />
       )
     case 2:
@@ -121,6 +127,11 @@ const ReportStepper = ({ open, onClose, type }) => {
   const [managementNameOficina, setManagementNamaeOficina] = useState([])
   const [atencionesEmpresa, setAtencionesEmpresa] = useState([])
   const [folletoCharlaAfiche, setFolletoCharlaAfiche] = useState([])
+  const [contador, setContador] = useState([])
+  const [visitToCount, setVisitToCount] = useState([])
+  const [contadorAsistencias, setContadorAsistencias] = useState([])
+  const [contadorPersonas, setContadorPersonas] = useState([])
+  const [totalPersonas, setTotalPersonas] = useState(0)
   const [formData, setFormData] = useState({
     id: '',
     month: '',
@@ -179,6 +190,12 @@ const ReportStepper = ({ open, onClose, type }) => {
         year: '',
         obras: []
       })
+      setStepper(0)
+      setPrimerArea('')
+      setSegundaArea('')
+      setTercerArea('')
+      setDifusion('')
+      setAreaTerreno([])
     }
   }, [open])
 
@@ -258,7 +275,12 @@ const ReportStepper = ({ open, onClose, type }) => {
   useEffect(() => {
     if (filteredVisits) {
       const result = filteredVisits.map((visita) => visita.id)
+      const asist = filteredVisits.map((visita) => ({
+        visitId: visita.id,
+        asistencias: 0
+      }))
       setIdVisits(result)
+      setVisitToCount(asist)
     }
   }, [filteredVisits])
 
@@ -301,6 +323,7 @@ const ReportStepper = ({ open, onClose, type }) => {
           setManagementIdOficina(stadisticArea.management_id_oficina)
           setAtencionesEmpresa(stadisticArea.companyReport)
           setTotalConsultas(stadisticArea.total_consultas)
+          setContador(stadisticArea.personas_visitas)
           setLoading(false)
         }
       )
@@ -368,6 +391,64 @@ const ReportStepper = ({ open, onClose, type }) => {
     setStepper(stepper < steps.length ? stepper + 1 : stepper)
   }
 
+  useEffect(() => {
+    if (contador.length > 0 && visitToCount.length > 0) {
+      const res = visitToCount.map((contAsis) => {
+        let counter = {
+          visitId: contAsis.visitId,
+          asistencias: contAsis.asistencias
+        }
+        contador.map((cont) => {
+          if (cont.visit_id === contAsis.visitId) {
+            counter = {
+              visitId: counter.visitId,
+              asistencias: counter.asistencias + 1
+            }
+          }
+          return null
+        })
+        return counter
+      })
+      setContadorAsistencias(res)
+    }
+  }, [contador, visitToCount])
+
+  useEffect(() => {
+    if (contador.length > 0 && visitToCount.length > 0) {
+      const res = visitToCount.map((vis) => {
+        const persona = { visitId: vis.visitId, persona: [] }
+        contador.map((cont) => {
+          if (cont.visit_id === vis.visitId) {
+            if (persona.persona.length > 0) {
+              const personaIn = persona.persona.filter(
+                (p) => p === cont.persona
+              )
+              if (personaIn.length === 0) {
+                persona.persona.push(cont.persona)
+              }
+              return persona
+            }
+            persona.persona.push(cont.persona)
+            return persona
+          }
+          return null
+        })
+        return persona
+      })
+      setContadorPersonas(res)
+    }
+  }, [contador, visitToCount])
+
+  useEffect(() => {
+    if (contadorPersonas.length > 0) {
+      let res = 0
+      contadorPersonas.forEach((c) => {
+        res += c.persona.length
+      })
+      setTotalPersonas(res)
+    }
+  }, [contadorPersonas])
+
   return (
     <Dialog
       open={open}
@@ -428,6 +509,12 @@ const ReportStepper = ({ open, onClose, type }) => {
           folletoCharlaAfiche={folletoCharlaAfiche}
           atencionesEmpresa={atencionesEmpresa}
           totalConsultas={totalConsultas}
+          primerArea={primerArea}
+          segundaArea={segundaArea}
+          tercerArea={tercerArea}
+          contadorAsistencias={contadorAsistencias}
+          contadorPersonas={contadorPersonas}
+          totalPersonas={totalPersonas}
         />
       )}
     </Dialog>

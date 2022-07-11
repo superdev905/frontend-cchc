@@ -5,15 +5,16 @@ const UserReportModal = ({
   setDifusion,
   togglePrintMonthlyReport,
   difusion,
-  onHadleBack
+  onHandleBack
 }) => (
   <Box>
     <TextArea
       label={'TEMAS DIFUSIÓN PRÓXIMO MES'}
       required
       onChange={(e) => setDifusion(e.target.value)}
+      value={difusion}
     />
-    <Button variant={'outlined'} onClick={onHadleBack}>
+    <Button variant={'outlined'} onClick={onHandleBack}>
       Volver
     </Button>
     <SubmitButton onClick={togglePrintMonthlyReport} disabled={!difusion}>

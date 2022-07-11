@@ -9,7 +9,10 @@ const UserReportModal = ({
   setSegundaArea,
   setTercerArea,
   nextStepper,
-  onHandleBack
+  onHandleBack,
+  primerArea,
+  segundaArea,
+  tercerArea
 }) => (
   <Box>
     {firstLabel && (
@@ -17,6 +20,7 @@ const UserReportModal = ({
         label={firstLabel}
         required
         onChange={(e) => setPrimerArea(e.target.value)}
+        value={primerArea}
       />
     )}
     {secondLabel && (
@@ -24,6 +28,7 @@ const UserReportModal = ({
         label={secondLabel}
         required
         onChange={(e) => setSegundaArea(e.target.value)}
+        value={segundaArea}
       />
     )}
     {thirdLabel && (
@@ -31,6 +36,7 @@ const UserReportModal = ({
         label={thirdLabel}
         required
         onChange={(e) => setTercerArea(e.target.value)}
+        value={tercerArea}
       />
     )}
     <Button variant={'outlined'} onClick={onHandleBack}>
