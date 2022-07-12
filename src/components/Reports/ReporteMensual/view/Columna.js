@@ -3,12 +3,13 @@ import { View, Text, StyleSheet } from '@react-pdf/renderer'
 const Columna = ({ primary, secondary }) => {
   const styles = StyleSheet.create({
     row: {
-      textAlign: 'center',
+      textAlign: 'left',
       fontSize: '12pt',
       width: '80%'
     },
     main: {
       backgroundColor: 'transparent',
+      padding: '3px',
       border: '1px solid grey'
     }
   })

@@ -361,7 +361,7 @@ const MonthlyReport = ({
                     return (
                       <>
                         <AreaView
-                          firstName={`AREA ${area.name}`}
+                          firstName={`CONSULTA AREA ${area.name}`}
                           secondName={'Total'}
                           thirdName={'Porcentaje'}
                         />
@@ -472,7 +472,9 @@ const MonthlyReport = ({
                   })
                 )}
                 {folletoCharlaAfiche?.afiche?.length === 0 && (
-                  <Noinfo primary={'Sin información'} />
+                  <Noinfo
+                    primary={'Durante el presente mes no se entregaron Afiches'}
+                  />
                 )}
                 <HeaderACF
                   second="TOTAL"
@@ -515,7 +517,11 @@ const MonthlyReport = ({
                   })
                 )}
                 {folletoCharlaAfiche?.folleto?.length === 0 && (
-                  <Noinfo primary={'Sin información'} />
+                  <Noinfo
+                    primary={
+                      'Durante el presente mes no se entregaron Folletos'
+                    }
+                  />
                 )}
                 <HeaderACF
                   second="TOTAL"
@@ -630,7 +636,7 @@ const MonthlyReport = ({
                     return (
                       <>
                         <AreaView
-                          firstName={`AREA ${area.name}`}
+                          firstName={`CONSULTA AREA ${area.name}`}
                           secondName={'Total'}
                           thirdName={'Porcentaje'}
                         />
@@ -713,7 +719,9 @@ const MonthlyReport = ({
                   })
                 )}
                 {folletoCharlaAfiche?.charla?.length === 0 && (
-                  <Noinfo primary={'Sin información'} />
+                  <Noinfo
+                    primary={'Durante el presente mes no se efectuaron Charlas'}
+                  />
                 )}
                 <HeaderACF
                   second="TOTAL"

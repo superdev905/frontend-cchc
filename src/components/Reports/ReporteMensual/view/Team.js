@@ -5,8 +5,8 @@ const TeamView = ({ jefatura }) => {
   const styles = StyleSheet.create({
     row: {
       flexDirection: 'row',
-      alignItems: 'center',
-      textAlign: 'center',
+      alignItems: 'left',
+      textAlign: 'left',
       color: 'black',
       fontSize: '12pt'
     },
