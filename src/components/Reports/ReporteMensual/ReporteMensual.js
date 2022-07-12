@@ -4,7 +4,8 @@ import {
   Document,
   Page,
   Text,
-  StyleSheet
+  StyleSheet,
+  Image
 } from '@react-pdf/renderer'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
@@ -22,6 +23,7 @@ import BodyACF from './view/BodyACF'
 import HeaderCompanyTable from './view/HeaderCompanyTable'
 import BodyCompanyTable from './view/BodyCompanyTable'
 import Noinfo from './view/Noinfo'
+import FcchcLogo from '../../../assets/informeLogo/Logo-fcchc.PNG'
 
 const MonthlyReport = ({
   open,
@@ -66,8 +68,8 @@ const MonthlyReport = ({
     },
     subtitle: {
       textAlign: 'center',
-      fontWeight: 'extrabold',
-      fontSize: '16pt',
+      fontWeight: 'bold',
+      fontSize: '20pt',
       marginTop: '20px'
     },
     page: {
@@ -94,6 +96,13 @@ const MonthlyReport = ({
       fontWeight: 'extrabold',
       fontSize: '12pt',
       textAlign: 'center'
+    },
+    images: {
+      width: '200px',
+      height: '200px',
+      marginVertical: 15,
+      marginHorizontal: 180,
+      paddingTop: '50px'
     }
   })
   const Br = () => '\n'
@@ -166,10 +175,9 @@ const MonthlyReport = ({
           <Page size="A4" style={styles.page}>
             <Box>
               <Box style={styles.box}>
-                <Text style={styles.title}> FUNDACIÓN SOCIAL SOMOS CCHC </Text>
-              </Box>
-              <Box>
-                <Text style={styles.subtitle}>INFORME EJECUTIVO</Text>
+                <Box style={styles.images}>
+                  <Image src={FcchcLogo} />
+                </Box>
               </Box>
               <Box>
                 <Text style={styles.subtitle}>
@@ -178,10 +186,7 @@ const MonthlyReport = ({
                 </Text>
               </Box>
               <Box>
-                <Text style={styles.subtitle}></Text>
-              </Box>
-              <Box>
-                <Text style={styles.subtitle}> {`${month} ${year}`} </Text>
+                <Text style={styles.subtitle}>{`${month} ${year}`}</Text>
               </Box>
             </Box>
           </Page>
