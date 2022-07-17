@@ -10,13 +10,14 @@ const Columna = ({ primary, secondary }) => {
     main: {
       backgroundColor: 'transparent',
       padding: '3px',
-      border: '1px solid grey'
+      border: '1px solid grey',
+      display: 'flex'
     }
   })
   return (
     <View style={styles.row}>
       <Text style={styles.main}>{primary} </Text>
-      <Text style={styles.main}>{secondary} </Text>
+      <Text style={styles.main}>{secondary}</Text>
     </View>
   )
 }

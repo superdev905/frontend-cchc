@@ -23,7 +23,13 @@ const TeamView = ({ jefatura }) => {
         primary={jefatura.nombre}
         secondary={jefatura.email}
       />
-      <Columna primary={jefatura.charge_name} secondary={jefatura?.zona} />
+      <Columna
+        primary={jefatura.charge_name}
+        secondary={
+          jefatura?.zona ||
+          `(${jefatura?.region_delegacion} - ${jefatura?.comuna_delegacion})`
+        }
+      />
     </View>
   )
 }

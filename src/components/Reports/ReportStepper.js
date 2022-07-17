@@ -218,12 +218,20 @@ const ReportStepper = ({ open, onClose, type }) => {
     const first = new Date(
       parseInt(`${formData.year}`, 10),
       parseInt(`${formData.month}`, 10) - 1,
-      1
+      1,
+      -4,
+      0,
+      0,
+      0
     ).toISOString()
     const last = new Date(
       parseInt(`${formData.year}`, 10),
       parseInt(`${formData.month}`, 10),
-      0
+      0,
+      19,
+      59,
+      59,
+      999
     ).toISOString()
     setSelectedDate({ ...selectedDate, start_date: first, end_date: last })
   }
@@ -515,6 +523,7 @@ const ReportStepper = ({ open, onClose, type }) => {
           contadorAsistencias={contadorAsistencias}
           contadorPersonas={contadorPersonas}
           totalPersonas={totalPersonas}
+          obras={formData.obras}
         />
       )}
     </Dialog>

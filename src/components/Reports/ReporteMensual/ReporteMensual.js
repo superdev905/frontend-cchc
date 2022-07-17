@@ -49,7 +49,8 @@ const MonthlyReport = ({
   totalConsultas,
   contadorAsistencias,
   contadorPersonas,
-  totalPersonas
+  totalPersonas,
+  obras
 }) => {
   const { constructionByCompany } = useSelector((state) => state.constructions)
   const { topics } = useSelector((state) => state.common)
@@ -168,6 +169,8 @@ const MonthlyReport = ({
       zona: '(Santiago)'
     }
   ]
+
+  console.log(asistentes)
   return (
     <Dialog open={open} onClose={onClose} fullScreen={true}>
       <PDFViewer style={{ minHeight: '85vh', width: '100%' }}>
@@ -183,6 +186,9 @@ const MonthlyReport = ({
                 <Text style={styles.subtitle}>
                   {`${constructionByCompany[0].business.business_name}
                   `}
+                </Text>
+                <Text style={styles.subtitle}>
+                  {obras.map((obra) => obra.name).join(' - ')}
                 </Text>
               </Box>
               <Box>
@@ -301,7 +307,11 @@ const MonthlyReport = ({
                   return null
                 })}
                 {totalAtencionesTerreno === 0 && (
-                  <Noinfo primary={'Sin información'} />
+                  <Noinfo
+                    primary={
+                      'Durante el presente mes no se efectuaron Consultas'
+                    }
+                  />
                 )}
                 <AreaView
                   firstName={'TOTAL GENERAL'}
@@ -423,7 +433,11 @@ const MonthlyReport = ({
                   )
                 })}
                 {managementNameTerreno?.length === 0 && (
-                  <Noinfo primary={'Sin información'} />
+                  <Noinfo
+                    primary={
+                      'Durante el presente mes no se efectuaron Gestiónes'
+                    }
+                  />
                 )}
                 <AreaView
                   firstName={'TOTAL GENERAL'}
@@ -575,7 +589,11 @@ const MonthlyReport = ({
                   return null
                 })}
                 {totalAtencionesOficina === 0 && (
-                  <Noinfo primary={'Sin información'} />
+                  <Noinfo
+                    primary={
+                      'Durante el presente mes no se efectuaron Consultas'
+                    }
+                  />
                 )}
                 <AreaView
                   firstName={'TOTAL GENERAL'}
@@ -614,7 +632,11 @@ const MonthlyReport = ({
                   )
                 })}
                 {managementNameOficina?.length === 0 && (
-                  <Noinfo primary={'Sin información'} />
+                  <Noinfo
+                    primary={
+                      'Durante el presente mes no se efectuaron Gestiónes'
+                    }
+                  />
                 )}
                 <AreaView
                   firstName={'TOTAL GENERAL'}
@@ -799,7 +821,11 @@ const MonthlyReport = ({
                 )
               )}
               {atencionesEmpresa?.length === 0 && (
-                <Noinfo primary={'Sin información'} />
+                <Noinfo
+                  primary={
+                    'Durante el presente mes no se efectuaron Casos sociales relevantes'
+                  }
+                />
               )}
             </Text>
             {atencionesEmpresa && (
@@ -821,7 +847,11 @@ const MonthlyReport = ({
                   />
                 ))}
                 {atencionesEmpresa?.length === 0 && (
-                  <Noinfo primary={'Sin información'} />
+                  <Noinfo
+                    primary={
+                      'Durante el presente mes no se efectuaron Casos sociales relevantes'
+                    }
+                  />
                 )}
               </>
             )}
