@@ -57,6 +57,7 @@ const TaskPreview = ({ open, onClose, anchorEl, event }) => {
   )
   const { employee } = useSelector((state) => state.employees)
   const [loading, setLoading] = useState(true)
+  const [updateTasks, setUpdateTasks] = useState(true)
 
   const { open: openAssistance, toggleOpen: toggleOpenAssistance } = useToggle()
 
@@ -65,10 +66,11 @@ const TaskPreview = ({ open, onClose, anchorEl, event }) => {
   }
 
   useEffect(() => {
-    if (open) {
+    if (open && updateTasks) {
       dispatch(socialCasesActions.getInterventionTaskDetails(event.taskId))
+      setUpdateTasks(false)
     }
-  }, [open])
+  }, [open, updateTasks])
 
   useEffect(() => {
     getUser(task?.socialCase.employeeId)
@@ -92,7 +94,7 @@ const TaskPreview = ({ open, onClose, anchorEl, event }) => {
         construction_name: task?.socialCase?.constructionName,
         construction_id: task?.socialCase.constructionId
       })
-    )
+    ).then(() => setUpdateTasks(true))
   return (
     <Menu
       classes={{ paper: classes.root }}
@@ -186,6 +188,8 @@ const TaskPreview = ({ open, onClose, anchorEl, event }) => {
             onClose()
           }}
           employee={employee}
+          updateTaskId={'UPDATE'}
+          setUpdateTasks={setUpdateTasks}
         />
       )}
     </Menu>

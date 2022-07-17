@@ -63,7 +63,9 @@ const WorkerInterventionRecord = ({
   sourceSystem,
   defaultCaseId,
   defaultTaskId,
-  defaultSocialCase
+  defaultSocialCase,
+  updateTaskId,
+  setUpdateTasks
 }) => {
   const dispatch = useDispatch()
   const classes = useStyles()
@@ -265,7 +267,11 @@ const WorkerInterventionRecord = ({
             }
             handleCreateCaseSocial(newCase)
           }
-          if (formik.values.case_id !== 'NEW' && formik.values.task_id) {
+          if (
+            formik.values.case_id !== 'NEW' &&
+            formik.values.task_id &&
+            updateTaskId !== 'UPDATE'
+          ) {
             dispatch(
               socialCasesActions.createInterventionTask({
                 managementId: body.task_id,
@@ -279,6 +285,10 @@ const WorkerInterventionRecord = ({
                 nextDate: new Date()
               })
             )
+          }
+          if (updateTaskId === 'UPDATE') {
+            dispatch(socialCasesActions.completeInterventionTask(body.task_id))
+            setUpdateTasks(true)
           }
         })
       })
@@ -902,7 +912,7 @@ const WorkerInterventionRecord = ({
                     </Select>
                   </Grid>
                   <Grid item xs={12} lg={5}>
-                    {formik.values.case_id && (
+                    {formik.values.case_id && updateTaskId !== 'UPDATE' && (
                       <Select
                         label="Plan de Intervención"
                         name="task_id"
