@@ -13,6 +13,7 @@ import { HeadingWithButton } from '../../components/Shared'
 import { SubmitButton, TextArea, TextField, Wrapper } from '../../components/UI'
 import { useSuccess, useToggle } from '../../hooks'
 import usersActions from '../../state/actions/users'
+import uiActions from '../../state/actions/ui'
 import CompanyCard from '../../components/Company/CompanyCard'
 import SearchCompany from '../../components/Companies/SearchCompany'
 import EmployeeList from './Employees/List'
@@ -21,6 +22,7 @@ import {
   HouseRelatedBusiness
 } from '../../components/Housing'
 import housingActions from '../../state/actions/housing'
+import { PollsModule } from '../../components/Polls'
 
 const useStyles = makeStyles(() => ({
   subHeading: {
@@ -123,6 +125,10 @@ const HousingNew = ({ type }) => {
       )
     }
   }, [selectedCompany])
+
+  useEffect(() => {
+    dispatch(uiActions.setCurrentModule('VIVIENDA'))
+  }, [])
 
   return (
     <Box>
@@ -321,6 +327,7 @@ const HousingNew = ({ type }) => {
             ></TextArea>
           </Box>
           <Box textAlign="right">
+            <PollsModule />
             <SubmitButton
               disabled={!formik.isValid || loading || employeeList.length === 0}
               startIcon={<SaveIcon />}

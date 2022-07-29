@@ -14,8 +14,10 @@ import { formatSearchWithRut } from '../../formatters'
 import generateColor from '../../utils/generateColor'
 import filesActions from '../../state/actions/files'
 import unemployedActions from '../../state/actions/unemployed'
+import uiActions from '../../state/actions/ui'
 import { useToggle } from '../../hooks'
 import AssistanceDialog from '../Assistance/Dialog'
+import { PollsModule } from '../Polls'
 
 const UnemployedModal = ({ open, onClose }) => {
   const dispatch = useDispatch()
@@ -143,6 +145,7 @@ const UnemployedModal = ({ open, onClose }) => {
       setYears(getYears)
       fetchRegions()
       dispatch(unemployedActions.getBenefits())
+      dispatch(uiActions.setCurrentModule('MIGRANTES'))
     }
   }, [open])
 
@@ -198,6 +201,7 @@ const UnemployedModal = ({ open, onClose }) => {
               </Grid>
             </Grid>
             <Box textAlign="center" marginTop="10px">
+              <PollsModule />
               <Button onClick={onClose}>Cancelar</Button>
             </Box>
           </Box>
@@ -334,6 +338,7 @@ const UnemployedModal = ({ open, onClose }) => {
               </Grid>
 
               <Box textAlign="center" marginTop="10px">
+                <PollsModule />
                 <SubmitButton
                   disabled={!uploadFile || !formik.isValid}
                   loading={formik.isSubmitting}

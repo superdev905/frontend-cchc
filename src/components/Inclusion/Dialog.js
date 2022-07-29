@@ -32,6 +32,8 @@ import SearchCompany from '../Companies/SearchCompany'
 import EmployeeRow from '../Scholarships/Create/EmployeeRow'
 import { COLORS } from '../../utils/generateColor'
 import ContactCard from '../Schedule/ContactCard'
+import { PollsModule } from '../Polls'
+import uiActions from '../../state/actions/ui'
 
 const useStyles = makeStyles(() => ({
   heading: {
@@ -199,6 +201,7 @@ const InclusiveCreate = ({
       dispatch(commonActions.getRegions())
       dispatch(commonActions.getCharges())
       dispatch(companiesActions.getConstructions())
+      dispatch(uiActions.setCurrentModule('INCLUSIÓN'))
     }
   }, [open])
 
@@ -508,6 +511,7 @@ const InclusiveCreate = ({
             </Grid>
           </Grid>
           <Box textAlign="center" marginTop="15px">
+            <PollsModule />
             <Button variant="outlined" onClick={onclose}>
               Cancelar
             </Button>

@@ -278,7 +278,7 @@ const EmployeeModal = ({
 
   useEffect(() => {
     if (open) {
-      dispatch(uiActions.setCurrentModule('EMPLOYEES'))
+      dispatch(uiActions.setCurrentModule('TRABAJADORES'))
     }
   }, [open])
 

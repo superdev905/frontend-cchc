@@ -11,6 +11,8 @@ import { Select, TextField } from '../../UI'
 import { CurrencyTextField, DatePicker } from '../../Shared'
 import CourseForm from '../../Courses/CourseForm'
 import commonActions from '../../../state/actions/common'
+import uiActions from '../../../state/actions/ui'
+import { PollsModule } from '../../Polls'
 
 const statusList = ['VIGENTE', 'NO VIGENTE']
 
@@ -28,6 +30,7 @@ const BenefitForm = ({ type, formik, actions }) => {
 
   useEffect(() => {
     dispatch(commonActions.getAreas())
+    dispatch(uiActions.setCurrentModule('BENEFICIOS'))
   }, [])
 
   return (
@@ -211,6 +214,9 @@ const BenefitForm = ({ type, formik, actions }) => {
             )}
           </Grid>
         </Grid>
+      </Box>
+      <Box>
+        <PollsModule />
       </Box>
       {actions}
     </Box>

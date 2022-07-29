@@ -30,6 +30,7 @@ import {
   Wrapper
 } from '../../components/UI'
 import benefitsActions from '../../state/actions/benefits'
+import uiActions from '../../state/actions/ui'
 import { useSuccess, useToggle } from '../../hooks'
 import users from '../../state/actions/users'
 import scheduleActions from '../../state/actions/schedule'
@@ -37,6 +38,7 @@ import SearchCompany from '../../components/Companies/SearchCompany'
 import CompanyCard from '../../components/Company/CompanyCard'
 import { formatDate } from '../../formatters'
 import CreateDialog from '../../components/Benefits/Create/CreateDialog'
+import { PollsModule } from '../../components/Polls'
 
 const useStyles = makeStyles(() => ({
   subHeading: {
@@ -324,6 +326,7 @@ const ListPage = () => {
     dispatch(users.getBosses()).then((result) => {
       setBosses(result)
     })
+    dispatch(uiActions.setCurrentModule('PROGRAMACIÓN'))
   }, [])
 
   return (
@@ -497,6 +500,7 @@ const ListPage = () => {
             </Box>
           </Box>
           <Box textAlign="right">
+            <PollsModule />
             <SubmitButton
               disabled={
                 !formik.isValid ||

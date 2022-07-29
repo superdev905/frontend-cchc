@@ -234,6 +234,7 @@ const ListEmployees = () => {
           submitFunction={createEmployee}
           successMessage="Ficha de trabajador creado correctamente"
           successFunction={afterCreateEmployee}
+          type="CREATE"
         />
       </Wrapper>
     </Box>
