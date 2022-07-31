@@ -170,7 +170,6 @@ const MonthlyReport = ({
     }
   ]
 
-  console.log(asistentes)
   return (
     <Dialog open={open} onClose={onClose} fullScreen={true}>
       <PDFViewer style={{ minHeight: '85vh', width: '100%' }}>

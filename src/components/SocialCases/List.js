@@ -114,7 +114,7 @@ const SocialCasesList = () => {
             },
             {
               name: 'Fecha',
-              selector: (row) => formatDate(row.createdDate, {}),
+              selector: (row) => formatDate(row.date, {}),
               hide: 'md'
             },
             {

@@ -35,6 +35,13 @@ const modulesReports = [
     type: 'MONTHLY_REPORT',
     report: 'ASSISTANCE_COMPANY',
     isActive: true
+  },
+  {
+    module: 'Caso social',
+    name: 'Reporte Caso Social',
+    type: 'INFORME_CSOCIAL',
+    report: 'INFORME_CSOCIAL',
+    isActive: true
   }
 ]
 

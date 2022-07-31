@@ -145,7 +145,7 @@ const UnemployedModal = ({ open, onClose }) => {
       setYears(getYears)
       fetchRegions()
       dispatch(unemployedActions.getBenefits())
-      dispatch(uiActions.setCurrentModule('MIGRANTES'))
+      dispatch(uiActions.setCurrentModule('CESANTES'))
     }
   }, [open])
 

@@ -8,10 +8,13 @@ import { DataTable } from '../Shared'
 import modulesReports from '../../resources/modulesReports'
 import ReportDialog from './ReportDialog'
 import ReportMonthlyDialog from './ReportStepper'
+import InformeCsocial from './CsocialReport'
 
 const ReportsList = () => {
   const { open, toggleOpen } = useToggle()
   const { open: MonthlyReport, toggleOpen: toggleOpenMonthlyReport } =
+    useToggle()
+  const { open: CsocialReport, toggleOpen: toggleOpenCsocialReport } =
     useToggle()
   const [type, setType] = useState('')
   const [modules, setModules] = useState([])
@@ -58,6 +61,7 @@ const ReportsList = () => {
         onClose={toggleOpenMonthlyReport}
         type={type}
       />
+      <InformeCsocial open={CsocialReport} onClose={toggleOpenCsocialReport} />
       <Box>
         <Grid container spacing={1} alignItems="center">
           <Grid item xs={12} md={3}>
@@ -117,12 +121,15 @@ const ReportsList = () => {
                   cell: (row) => (
                     <Button
                       onClick={() => {
-                        if (row.type !== 'MONTHLY_REPORT') {
-                          toggleOpen()
-                          setType(row.type)
-                        } else {
+                        if (row.type === 'MONTHLY_REPORT') {
                           toggleOpenMonthlyReport()
                           setType(row.report)
+                        }
+                        if (row.type === 'INFORME_CSOCIAL') {
+                          toggleOpenCsocialReport()
+                        } else {
+                          toggleOpen()
+                          setType(row.type)
                         }
                       }}
                       disabled={!row.isActive}
