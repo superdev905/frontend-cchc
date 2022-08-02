@@ -14,6 +14,7 @@ const useStyles = makeStyles(() => ({
 const Background = ({ loading }) => {
   const classes = useStyles()
   const { caseDetails } = useSelector((state) => state.socialCase)
+  const { employee } = useSelector((state) => state.employees)
 
   return (
     <Box>
@@ -45,6 +46,32 @@ const Background = ({ loading }) => {
               <Text loading={loading}>
                 {caseDetails?.employee?.maternalSurname}
               </Text>
+            </LabeledRow>
+            <LabeledRow label={'Edad'}>
+              <Text loading={loading}>{caseDetails?.employee?.run} </Text>
+            </LabeledRow>
+            <LabeledRow label={'Región'}>
+              <Text loading={loading}></Text>
+            </LabeledRow>
+            <LabeledRow label={'Comuna'}>
+              <Text loading={loading}></Text>
+            </LabeledRow>
+            <LabeledRow label={'Estado Civil'}>
+              <Text loading={loading}>
+                {employee?.marital_status?.description}{' '}
+              </Text>
+            </LabeledRow>
+            <LabeledRow label={'Hijos'}>
+              <Text loading={loading}> </Text>
+            </LabeledRow>
+            <LabeledRow label={'Afp'}>
+              <Text loading={loading}></Text>
+            </LabeledRow>
+            <LabeledRow label={'Prevision'}>
+              <Text loading={loading}></Text>
+            </LabeledRow>
+            <LabeledRow label={'Tipo de Derivación'}>
+              <Text loading={loading}>{caseDetails?.derivationState}</Text>
             </LabeledRow>
           </Grid>
           <Grid item xs={12} md={6}>
