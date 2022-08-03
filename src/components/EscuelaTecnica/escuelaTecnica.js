@@ -28,12 +28,12 @@ export default function Etc() {
       id: 4,
       name: 'Participantes',
       tag: 'alumns'
-    }
-    /*  {
+    },
+    {
       id: 5,
       name: 'Consolidado',
       tag: 'all'
-    }   */
+    }
   ]
 
   return (

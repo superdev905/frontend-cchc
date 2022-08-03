@@ -55,11 +55,27 @@ const getInformeParticipantes = (values) => () =>
       })
   })
 
+const getInformeConsolidado = (values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.integracion_etc}/etc-report/consolidado`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const informeCsocialActions = {
   getInformeCursos,
   getInformeEmpresas,
   getInformeLibroClases,
-  getInformeParticipantes
+  getInformeParticipantes,
+  getInformeConsolidado
 }
 
 export default informeCsocialActions

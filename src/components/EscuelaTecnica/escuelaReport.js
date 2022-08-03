@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Box, Grid, Typography } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment'
 import * as FileSaver from 'file-saver'
 import * as XLSX from 'xlsx'
 import { DatePicker, Dialog } from '../Shared'
-import { Button, SubmitButton } from '../UI'
+import { Button, SubmitButton, TextField } from '../UI'
 import IntegraEtcActions from '../../state/actions/integracionEtc'
 
 const ReportDialog = ({ open, onClose, report }) => {
@@ -16,8 +17,27 @@ const ReportDialog = ({ open, onClose, report }) => {
   const dispatch = useDispatch()
   const [formData, setFormData] = useState({
     start_date: '',
-    end_date: ''
+    end_date: '',
+    month: '',
+    year: ''
   })
+  const [years, setYears] = useState([])
+  const [actualYear, setActualYear] = useState(2019)
+  const [disabled, setDisabled] = useState(true)
+  const month = [
+    { name: 'Enero', value: 'JANUARY' },
+    { name: 'Febrero', value: 'FEBRUARY' },
+    { name: 'Marzo', value: 'MARCH' },
+    { name: 'Abril', value: 'APRIL' },
+    { name: 'Mayo', value: 'MAY' },
+    { name: 'Junio', value: 'JUNE' },
+    { name: 'Julio', value: 'JULY' },
+    { name: 'Agosto', value: 'AUGUST' },
+    { name: 'Septiembre', value: 'SEPTEMBER' },
+    { name: 'Octubre', value: 'OCTOBER' },
+    { name: 'Noviembre', value: 'NOVEMBER' },
+    { name: 'Diciembre', value: 'DECEMBER' }
+  ]
   const fileType =
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
   const fileExtension = '.xlsx'
@@ -119,6 +139,26 @@ const ReportDialog = ({ open, onClose, report }) => {
         }
       )
     }
+    if (report.tag === 'all') {
+      dispatch(IntegraEtcActions.getInformeConsolidado(formData)).then(
+        (data) => {
+          if (data.message === 'No se encontraron registros.') {
+            enqueueSnackbar(data.message, {
+              variant: 'error'
+            })
+            setLoading(false)
+          } else {
+            exportToCSV(
+              data.rows,
+              `Informe Consolidado ${moment(formData.start_date).format(
+                'DD-MM-YYYY'
+              )} - ${moment(formData.end_date).format('DD-MM-YYYY')}`,
+              data.message
+            )
+          }
+        }
+      )
+    }
   }
 
   const onSelectStartDate = (date) => {
@@ -139,10 +179,35 @@ const ReportDialog = ({ open, onClose, report }) => {
     if (open) {
       setFormData({
         start_date: '',
-        end_date: ''
+        end_date: '',
+        month: '',
+        year: ''
       })
     }
   }, [open])
+
+  useEffect(() => {
+    if (actualYear <= moment().year()) {
+      setActualYear(actualYear + 1)
+      setYears([...years, { value: actualYear }])
+    }
+  }, [years])
+
+  useEffect(() => {
+    if (
+      report.tag !== 'all' &&
+      (formData.start_date === '' || formData.end_date === '')
+    ) {
+      setDisabled(true)
+    } else if (
+      report.tag === 'all' &&
+      (formData.month === '' || formData.year === '')
+    ) {
+      setDisabled(true)
+    } else {
+      setDisabled(false)
+    }
+  }, [formData])
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth fullScreen={isMobile}>
@@ -152,14 +217,66 @@ const ReportDialog = ({ open, onClose, report }) => {
         </Typography>
         <Box p={2}>
           <Box>
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
-                <DatePicker label="Desde" onChange={onSelectStartDate} />
+            {report.tag === 'all' && (
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <Autocomplete
+                    options={month}
+                    getOptionLabel={(option) => `${option.name}`}
+                    onChange={(_, m) =>
+                      setFormData({ ...formData, month: !m ? '' : m.value })
+                    }
+                    renderOption={(option) => (
+                      <Box>
+                        <Typography>
+                          <strong>{option.name.toUpperCase()}</strong>
+                        </Typography>
+                      </Box>
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Selecciona Mes"
+                        placeholder="Mes"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Autocomplete
+                    options={years}
+                    getOptionLabel={(option) => `${option.value}`}
+                    onChange={(_, y) =>
+                      setFormData({ ...formData, year: !y ? '' : y.value })
+                    }
+                    renderOption={(option) => (
+                      <Box>
+                        <Typography>
+                          <strong>{option.value}</strong>
+                        </Typography>
+                      </Box>
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Selecciona Año"
+                        placeholder="Año"
+                      />
+                    )}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} md={6}>
-                <DatePicker label="Hasta" onChange={onSelectEndDate} />
+            )}
+            {report.tag !== 'all' && (
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <DatePicker label="Desde" onChange={onSelectStartDate} />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <DatePicker label="Hasta" onChange={onSelectEndDate} />
+                </Grid>
               </Grid>
-            </Grid>
+            )}
             <Box textAlign="center" marginTop="10px">
               <Button onClick={onClose} variant="outlined">
                 Cancelar
@@ -167,9 +284,7 @@ const ReportDialog = ({ open, onClose, report }) => {
               <SubmitButton
                 onClick={getDocument}
                 loading={loading}
-                disabled={
-                  formData.end_date === '' || formData.start_date === ''
-                }
+                disabled={disabled}
               >
                 Generar
               </SubmitButton>
