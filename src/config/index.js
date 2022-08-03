@@ -25,7 +25,7 @@ const services = {
   informe_csocial: {
     development: `${BASEURL[env]}:5100/api/v1`,
     testing: `${BASEURL[env]}:5191/api/v1`,
-    production: 'http://20.225.59.173:5196/api/v1',
+    production: 'http://localhost:5192/api/v1',
     azure_test: 'http://20.225.59.173:5196/api/v1'
   },
   parameters: {

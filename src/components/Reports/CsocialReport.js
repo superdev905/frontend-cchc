@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Box, Grid, Typography } from '@material-ui/core'
+import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment'
 import * as FileSaver from 'file-saver'
@@ -11,17 +12,18 @@ import informeCsocialActions from '../../state/actions/informe_csocial'
 const ReportDialog = ({ open, onClose }) => {
   const { isMobile } = useSelector((state) => state.ui)
   const [loading, setLoading] = useState(false)
+  const { enqueueSnackbar } = useSnackbar()
   const dispatch = useDispatch()
   const [formData, setFormData] = useState({
     id: '',
-    startDate: '',
-    endDate: ''
+    start_date: '',
+    end_date: ''
   })
   const fileType =
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
   const fileExtension = '.xlsx'
 
-  const exportToCSV = (apiData, fileName) => {
+  const exportToCSV = (apiData, fileName, mssg) => {
     const ws = XLSX.utils.json_to_sheet(apiData)
     const wb = {
       Sheets: { informe_csocial: ws },
@@ -35,40 +37,51 @@ const ReportDialog = ({ open, onClose }) => {
     FileSaver.saveAs(informe_csocial, fileName + fileExtension)
     setLoading(false)
     onClose()
+    enqueueSnackbar(mssg, {
+      variant: 'success'
+    })
   }
 
   const getDocument = () => {
     setLoading(true)
     delete formData.id
-    dispatch(informeCsocialActions.getInformeCsocial()).then((data) =>
-      exportToCSV(
-        data,
-        `Informe Csocial ${moment(formData.startDate).format(
-          'DD-MM-YYYY'
-        )} - ${moment(formData.endDate).format('DD-MM-YYYY')}`
-      )
-    )
+    dispatch(informeCsocialActions.getInformeCsocial(formData)).then((data) => {
+      if (data.message === 'No se encontraron registros.') {
+        enqueueSnackbar(data.message, {
+          variant: 'error'
+        })
+        setLoading(false)
+      } else {
+        exportToCSV(
+          data.rows,
+          `Informe Csocial ${moment(formData.start_date).format(
+            'DD-MM-YYYY'
+          )} - ${moment(formData.end_date).format('DD-MM-YYYY')}`,
+          data.message
+        )
+      }
+    })
   }
 
   const onSelectStartDate = (date) => {
     setFormData({
       ...formData,
-      startDate: date.toISOString()
+      start_date: date.toISOString()
     })
   }
 
   const onSelectEndDate = (date) => {
     setFormData({
       ...formData,
-      endDate: date.toISOString()
+      end_date: date.toISOString()
     })
   }
 
   useEffect(() => {
     if (open) {
       setFormData({
-        startDate: '',
-        endDate: ''
+        start_date: '',
+        end_date: ''
       })
     }
   }, [open])
@@ -96,7 +109,9 @@ const ReportDialog = ({ open, onClose }) => {
               <SubmitButton
                 onClick={getDocument}
                 loading={loading}
-                disabled={formData.endDate === '' || formData.startDate === ''}
+                disabled={
+                  formData.end_date === '' || formData.start_date === ''
+                }
               >
                 Generar
               </SubmitButton>

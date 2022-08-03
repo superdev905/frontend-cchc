@@ -1,9 +1,9 @@
 import Axios from '../../Axios'
 import config from '../../config'
 
-const getInformeCsocial = () => () =>
+const getInformeCsocial = (values) => () =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.informe_csocial}/view`)
+    Axios.post(`${config.services.informe_csocial}/view`, values)
       .then((response) => {
         const { data } = response
         resolve(data)
