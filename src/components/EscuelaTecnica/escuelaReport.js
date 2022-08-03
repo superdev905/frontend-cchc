@@ -150,9 +150,7 @@ const ReportDialog = ({ open, onClose, report }) => {
           } else {
             exportToCSV(
               data.rows,
-              `Informe Consolidado ${moment(formData.start_date).format(
-                'DD-MM-YYYY'
-              )} - ${moment(formData.end_date).format('DD-MM-YYYY')}`,
+              `Informe Consolidado ${formData.month} - ${formData.year}`,
               data.message
             )
           }
