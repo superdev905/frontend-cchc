@@ -36,7 +36,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const DerivationModal = ({ open, onClose, assistanceID }) => {
+const DerivationModal = ({ open, onClose, assistanceID, data, type }) => {
   const classes = useStyles()
   const { socialCaseId } = useParams()
   const dispatch = useDispatch()
@@ -52,8 +52,8 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
 
   const formik = useFormik({
     initialValues: {
-      priority: '',
-      observations: ''
+      priority: type === 'EDIT' ? data.priority : '',
+      observations: type === 'EDIT' ? data.observations : ''
     },
     validationSchema: Yup.object({
       priority: Yup.string().required('Seleccione la prioridad'),
@@ -72,20 +72,39 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
             .toUpperCase()
             .trim()
         }))
-        dispatch(
-          socialCaseActions.createDerivation(socialCaseId, formData)
-        ).then(() => {
-          enqueueSnackbar('Delegación Ingresada Exitosamente', {
-            variant: 'success'
-          })
+        if (type === 'EDIT') {
           dispatch(
-            socialCaseActions.DerivationUpdate(
-              socialCaseId,
-              assistanceDerivationId
+            socialCaseActions.editDerivation(socialCaseId, formData)
+          ).then(() => {
+            enqueueSnackbar('Delegación Editada Exitosamente', {
+              variant: 'success'
+            })
+            dispatch(
+              socialCaseActions.DerivationUpdate(
+                socialCaseId,
+                assistanceDerivationId
+              )
             )
-          )
-          dispatch(socialCaseActions.getSocialCaseById(socialCaseId))
-        })
+            dispatch(socialCaseActions.getSocialCaseById(socialCaseId))
+            onClose()
+          })
+        } else {
+          dispatch(
+            socialCaseActions.createDerivation(socialCaseId, formData)
+          ).then(() => {
+            enqueueSnackbar('Delegación Creada Exitosamente', {
+              variant: 'success'
+            })
+            dispatch(
+              socialCaseActions.DerivationUpdate(
+                socialCaseId,
+                assistanceDerivationId
+              )
+            )
+            dispatch(socialCaseActions.getSocialCaseById(socialCaseId))
+            onClose()
+          })
+        }
       } catch (error) {
         enqueueSnackbar(error, {
           variant: 'error'
@@ -97,9 +116,13 @@ const DerivationModal = ({ open, onClose, assistanceID }) => {
   useEffect(() => {
     if (open) {
       formik.resetForm()
-      setValue([])
+      if (type === 'EDIT') {
+        setValue(data.professionals)
+      } else {
+        setValue([])
+      }
     }
-  }, [open])
+  }, [open, type])
 
   useEffect(() => {
     if (open) {

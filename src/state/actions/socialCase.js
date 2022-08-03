@@ -148,6 +148,21 @@ const createDerivation = (socialCaseId, values) => () =>
       })
   })
 
+const editDerivation = (socialCaseId, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.put(
+      `${config.services.socialCase}/social-cases/derivation/edit/${socialCaseId}`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const getDerivation =
   (socialCaseId, derivationId, handleDispatch = true) =>
   (dispatch) =>
@@ -311,7 +326,8 @@ const socialCasesActions = {
   completeInterventionTask,
   cleanCalendarPlans,
   getStats,
-  DerivationUpdate
+  DerivationUpdate,
+  editDerivation
 }
 
 export default socialCasesActions

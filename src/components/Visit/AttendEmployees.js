@@ -14,6 +14,7 @@ const List = () => {
   const [exporting, setExporting] = useState(false)
   const { employeesToAttend } = useSelector((state) => state.assistance)
   const { visit } = useSelector((state) => state.assistance)
+  const { user } = useSelector((state) => state.auth)
 
   const { idVisit } = useParams()
 
@@ -26,13 +27,17 @@ const List = () => {
 
   const fetchEmployeesToAttend = () => {
     dispatch(
-      housingActions.getEmployeeToAttend({ businessId: visit.business_id })
+      housingActions.getEmployeeToAttend({
+        businessId: visit.business_id
+      })
     )
     dispatch(
       assistanceActions.getEmployeesToAttend({
         page: 1,
         size: 1,
-        businessId: visit?.business_id
+        businessId: visit?.business_id,
+        userId: user.id,
+        constructionId: visit.construction_id
       })
     )
   }
