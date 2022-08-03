@@ -115,6 +115,18 @@ const modulesByRole = {
       title: 'Configuración',
       path: '/settings',
       icon: <SettingsIcon />
+    },
+    {
+      title: 'Escuela',
+      path: '/etc',
+      icon: <SchoolIcon />
+    }
+  ],
+  ETC: [
+    {
+      title: 'Escuela',
+      path: '/etc',
+      icon: <SchoolIcon />
     }
   ],
   JEFATURA: [

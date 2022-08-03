@@ -17,6 +17,7 @@ const Home = lazy(() => import('../pages/Home'))
 const Settings = lazy(() => import('../pages/Settings'))
 const Construction = lazy(() => import('../pages/Construction'))
 const Constructions = lazy(() => import('../pages/Constructions'))
+const Etc = lazy(() => import('../pages/Etc/Etc'))
 const Users = lazy(() => import('../pages/Users'))
 const Calendar = lazy(() => import('../pages/Calendar'))
 const Visits = lazy(() => import('../pages/Visits'))
@@ -642,6 +643,22 @@ const routes = [
         yes={() => (
           <Layout>
             <Reports />
+          </Layout>
+        )}
+        no={() => (authenticated ? <Forbidden /> : <Login />)}
+      />
+    )
+  },
+  {
+    path: '/etc',
+    key: 'ETC',
+    exact: true,
+    component: ({ authenticated }) => (
+      <Can
+        availableTo={['ADMIN', 'ETC']}
+        yes={() => (
+          <Layout>
+            <Etc />
           </Layout>
         )}
         no={() => (authenticated ? <Forbidden /> : <Login />)}
