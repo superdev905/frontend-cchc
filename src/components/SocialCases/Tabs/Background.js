@@ -1,7 +1,9 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
+import moment from 'moment'
 import { LabeledRow, Text } from '../../UI'
+import EmployeesActions from '../../../state/actions/employees'
 
 const useStyles = makeStyles(() => ({
   heading: {
@@ -13,8 +15,28 @@ const useStyles = makeStyles(() => ({
 
 const Background = ({ loading }) => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const { caseDetails } = useSelector((state) => state.socialCase)
   const { employee } = useSelector((state) => state.employees)
+  const [prevision, setPrevision] = useState()
+  const [hijos, setHijos] = useState(0)
+  const born = moment(employee?.born_date)
+  const today = moment()
+  const age = born.diff(today, 'years')
+
+  useEffect(() => {
+    dispatch(EmployeesActions.getEmployeeDetails(caseDetails?.employeeId))
+    dispatch(
+      EmployeesActions.getPensionSituation({
+        employee_id: caseDetails?.employeeId
+      })
+    ).then((data) => setPrevision(data[0]))
+    dispatch(
+      EmployeesActions.getEmployeeRelatives({
+        employee_run: caseDetails?.employeeRut
+      })
+    ).then((data) => setHijos(data.length))
+  }, [caseDetails])
 
   return (
     <Box>
@@ -48,27 +70,26 @@ const Background = ({ loading }) => {
               </Text>
             </LabeledRow>
             <LabeledRow label={'Edad'}>
-              <Text loading={loading}>{caseDetails?.employee?.run} </Text>
+              <Text loading={loading}>{age * -1}</Text>
             </LabeledRow>
-            <LabeledRow label={'Región'}>
-              <Text loading={loading}></Text>
-            </LabeledRow>
-            <LabeledRow label={'Comuna'}>
-              <Text loading={loading}></Text>
+            <LabeledRow label={'Dirección'}>
+              <Text loading={loading}>{employee?.contact?.address}</Text>
             </LabeledRow>
             <LabeledRow label={'Estado Civil'}>
               <Text loading={loading}>
-                {employee?.marital_status?.description}{' '}
+                {employee?.marital_status?.description}
               </Text>
             </LabeledRow>
             <LabeledRow label={'Hijos'}>
-              <Text loading={loading}> </Text>
+              <Text loading={loading}>{hijos}</Text>
             </LabeledRow>
             <LabeledRow label={'Afp'}>
-              <Text loading={loading}></Text>
+              <Text loading={loading}>{prevision?.afp_isp?.description}</Text>
             </LabeledRow>
             <LabeledRow label={'Prevision'}>
-              <Text loading={loading}></Text>
+              <Text loading={loading}>
+                {prevision?.isapre_fonasa?.description}
+              </Text>
             </LabeledRow>
             <LabeledRow label={'Tipo de Derivación'}>
               <Text loading={loading}>{caseDetails?.derivationState}</Text>

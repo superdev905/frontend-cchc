@@ -2,7 +2,6 @@ import { memo, useEffect, useRef, useState } from 'react'
 import clsx from 'clsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
-import { endOfWeek, startOfWeek } from 'date-fns'
 import { Box, Typography } from '@material-ui/core'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -32,6 +31,26 @@ const EventsCalendar = () => {
   const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
   const calendarApi = useRef()
+  const year = new Date().getFullYear()
+  const month = new Date().getMonth()
+  const first = new Date(
+    parseInt(`${year}`, 10),
+    parseInt(`${month + 1}`, 10) - 1,
+    1,
+    -4,
+    0,
+    0,
+    0
+  ).toISOString()
+  const last = new Date(
+    parseInt(`${year}`, 10),
+    parseInt(`${month + 1}`, 10),
+    0,
+    19,
+    59,
+    59,
+    999
+  ).toISOString()
   const [currentDate] = useState(new Date())
   const [calendarDate, setCalendarDate] = useState(currentDate)
   const [loading, setLoading] = useState(false)
@@ -39,8 +58,8 @@ const EventsCalendar = () => {
   const [rangeDate, setRangeDate] = useState({ start: null, end: null })
   const [currentView, setCurrentView] = useState('dayGridMonth')
   const [filters, setFilters] = useState({
-    start_date: startOfWeek(currentDate),
-    end_date: endOfWeek(currentDate),
+    start_date: first,
+    end_date: last,
     users: [],
     type: ''
   })
