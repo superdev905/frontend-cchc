@@ -127,7 +127,11 @@ const ReportsList = () => {
                         }
                         if (row.type === 'INFORME_CSOCIAL') {
                           toggleOpenCsocialReport()
-                        } else {
+                        }
+                        if (
+                          row.type !== 'MONTHLY_REPORT' &&
+                          row.type !== 'INFORME_CSOCIAL'
+                        ) {
                           toggleOpen()
                           setType(row.type)
                         }
