@@ -13,7 +13,8 @@ const ConfirmDelete = ({
   loading,
   maxWidth,
   fullWidth,
-  disabled
+  disabled,
+  noCloseButton
 }) => (
   <Dialog
     open={open}
@@ -27,9 +28,13 @@ const ConfirmDelete = ({
           {message}
         </Typography>
         <Box textAlign="center" marginTop="15px">
-          <Button variant="outlined" onClick={onClose}>
-            Cancelar
-          </Button>
+          {noCloseButton ? (
+            ''
+          ) : (
+            <Button variant="outlined" onClick={onClose}>
+              Cancelar
+            </Button>
+          )}
           <SubmitButton
             danger={event === 'DELETE'}
             onClick={onConfirm}

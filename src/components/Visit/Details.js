@@ -8,7 +8,7 @@ import startOfWeek from 'date-fns/startOfWeek'
 import assistanceActions from '../../state/actions/assistance'
 import { formatDate, formatHours } from '../../formatters'
 import { useSuccess, useToggle } from '../../hooks'
-import { LabeledRow, StatusChip, Text, Wrapper, Button } from '../UI'
+import { LabeledRow, StatusChip, Text, Wrapper, Button, TextArea } from '../UI'
 import ReportModal from './Report/ReportModal'
 import { ConfirmDelete, FileVisor } from '../Shared'
 import MapModal from '../Constructions/MapModal'
@@ -49,9 +49,13 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
   const { open: openViewReport, toggleOpen: toggleOpenViewReport } = useToggle()
   const { open: openEditReport, toggleOpen: toggleOpenEditReport } = useToggle()
   const { visit: report } = useSelector((state) => state.assistance)
+  const { employeesToAttend } = useSelector((state) => state.assistance)
+  const { attendedEmployeeList } = useSelector((state) => state.assistance)
   const reportUrl = report?.report?.report_url
   const contacts = []
   const bossContact = []
+  const [isClosable, setIsClosable] = useState(true)
+  const [motive, setMotive] = useState()
 
   report?.report?.contacts?.forEach((mail) => {
     contacts.push(mail.contact_email)
@@ -213,6 +217,22 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
         )} a las ${formatHours(new Date())}`
       })
     )
+
+  useEffect(() => {
+    const validator = []
+    employeesToAttend?.forEach((toAttend) => {
+      const res = attendedEmployeeList?.some(
+        (attended) => toAttend?.employeeId === attended?.id
+      )
+      validator.push(res)
+    })
+    const result = validator.some((e) => e === false)
+    setIsClosable(!result)
+  }, [employeesToAttend, attendedEmployeeList])
+
+  useEffect(() => {
+    setMotive('')
+  }, [openVisitClose])
 
   return (
     <Wrapper>
@@ -427,7 +447,7 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
           }
         />
       )}
-      {visit && openVisitClose && (
+      {visit && openVisitClose && isClosable && (
         <ConfirmDelete
           maxWidth="md"
           event="CLOSE-VISIT"
@@ -448,6 +468,34 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
                   Se solicitará el cierre de la visita, al ser aprobada ya no se
                   podrá atender a los trabajadores
                 </Alert>
+              </Box>
+            </Box>
+          }
+        />
+      )}
+
+      {visit && openVisitClose && !isClosable && (
+        <ConfirmDelete
+          maxWidth="md"
+          event="CLOSE-VISIT"
+          confirmText="Solicitar"
+          open={openVisitClose}
+          success={success}
+          onClose={toggleOpenVisitClose}
+          loading={loading}
+          onConfirm={(e) => onRequestVisitClose(e)}
+          disabled={!motive}
+          message={
+            <Box>
+              <Typography variant="h6">
+                Hay trabajadores sin atender, indica el motivo antes de
+                solicitar el cierre.
+              </Typography>
+              <Box mt={2}>
+                <TextArea
+                  value={motive}
+                  onChange={(e) => setMotive(e.target.value)}
+                />
               </Box>
             </Box>
           }
