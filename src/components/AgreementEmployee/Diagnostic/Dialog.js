@@ -7,7 +7,7 @@ import { Box, Grid, Typography } from '@material-ui/core'
 import { useSuccess } from '../../../hooks'
 import commonActions from '../../../state/actions/common'
 import { CurrencyTextField, Dialog } from '../../Shared'
-import { Button, Select, SubmitButton, TextField } from '../../UI'
+import { Button, Select, SubmitButton } from '../../UI'
 import { decisionList } from '../../../config'
 
 const validationSchema = Yup.object().shape({
@@ -35,7 +35,7 @@ const SavingDialog = ({
   const { enqueueSnackbar } = useSnackbar()
   const { employee } = useSelector((state) => state.employees)
 
-  const { rshList, communes, maritalStatus } = useSelector(
+  const { rshList, communes, maritalStatus, subsidyList } = useSelector(
     (state) => state.common
   )
 
@@ -100,6 +100,7 @@ const SavingDialog = ({
     dispatch(commonActions.getRSH())
     dispatch(commonActions.getCommunes())
     dispatch(commonActions.getMaritalStatuses())
+    dispatch(commonActions.getTypesSubsidy())
   }, [])
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
@@ -170,15 +171,18 @@ const SavingDialog = ({
                 }
               >
                 <option value="">Selecciona una opción</option>
-                {['Subsidio 1', 'Subsidio 2'].map((item) => (
-                  <option key={`option-subsidio-${item}`} value={item.id}>
-                    {item.toUpperCase()}
+                {subsidyList.map((item, index) => (
+                  <option
+                    key={`option-subsidio-${index}`}
+                    value={item.description}
+                  >
+                    {item.description}
                   </option>
                 ))}
               </Select>
             </Grid>
             <Grid item xs={12} lg={6}>
-              <TextField
+              <Select
                 label="Subsidio al que postula"
                 required
                 name="targetSubsidy"
@@ -192,7 +196,17 @@ const SavingDialog = ({
                 helperText={
                   formik.touched.targetSubsidy && formik.errors.targetSubsidy
                 }
-              />
+              >
+                <option value="">Selecciona una opción</option>
+                {subsidyList.map((item, index) => (
+                  <option
+                    key={`option-subsidio-${index}`}
+                    value={item.description}
+                  >
+                    {item.description}
+                  </option>
+                ))}
+              </Select>
             </Grid>
             <Grid item xs={12} lg={6}>
               <Select
