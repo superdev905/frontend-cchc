@@ -128,7 +128,7 @@ const Background = ({ loading }) => {
               <Text loading={loading}>{caseDetails?.area?.name}</Text>
             </LabeledRow>
             <LabeledRow label={'Tema'}>
-              <Text loading={loading}>{caseDetails?.area.tema}</Text>
+              <Text loading={loading}>{caseDetails?.tema?.name}</Text>
             </LabeledRow>
           </Grid>
 
