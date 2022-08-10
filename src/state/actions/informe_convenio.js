@@ -15,8 +15,24 @@ const getInformeConvenio = () => () =>
       })
   })
 
+const getInformeAnexoConvenio = (value) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${config.services.informe_convenio}/convenio/informe-anexos-convenio`,
+      value
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
 const informeConvenioActions = {
-  getInformeConvenio
+  getInformeConvenio,
+  getInformeAnexoConvenio
 }
 
 export default informeConvenioActions

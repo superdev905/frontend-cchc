@@ -49,6 +49,13 @@ const modulesReports = [
     type: 'INFORME_CONVENIO',
     report: 'INFORME_CONVENIO',
     isActive: true
+  },
+  {
+    module: 'Vivienda',
+    name: 'Reporte Anexos por convenio',
+    type: 'INFORME_ANEXO_CONVENIO',
+    report: 'INFORME_ANEXO_CONVENIO',
+    isActive: true
   }
 ]
 

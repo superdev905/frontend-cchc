@@ -14,6 +14,7 @@ import ReportDialog from './ReportDialog'
 import ReportMonthlyDialog from './ReportStepper'
 import InformeCsocial from './CsocialReport'
 import informeConvenioActions from '../../state/actions/informe_convenio'
+import InformeAnexosPorConvenio from './InformeAnexoConvenio'
 
 const ReportsList = () => {
   const dispatch = useDispatch()
@@ -22,6 +23,8 @@ const ReportsList = () => {
   const { open: MonthlyReport, toggleOpen: toggleOpenMonthlyReport } =
     useToggle()
   const { open: CsocialReport, toggleOpen: toggleOpenCsocialReport } =
+    useToggle()
+  const { open: AnexoConvenio, toggleOpen: toggleOpenAnexoConvenio } =
     useToggle()
   const [type, setType] = useState('')
   const [modules, setModules] = useState([])
@@ -105,6 +108,10 @@ const ReportsList = () => {
         type={type}
       />
       <InformeCsocial open={CsocialReport} onClose={toggleOpenCsocialReport} />
+      <InformeAnexosPorConvenio
+        open={AnexoConvenio}
+        onClose={toggleOpenAnexoConvenio}
+      />
       <Box>
         <Grid container spacing={1} alignItems="center">
           <Grid item xs={12} md={3}>
@@ -174,13 +181,17 @@ const ReportsList = () => {
                         if (
                           row.type !== 'MONTHLY_REPORT' &&
                           row.type !== 'INFORME_CSOCIAL' &&
-                          row.type !== 'INFORME_CONVENIO'
+                          row.type !== 'INFORME_CONVENIO' &&
+                          row.type !== 'INFORME_ANEXO_CONVENIO'
                         ) {
                           toggleOpen()
                           setType(row.type)
                         }
                         if (row.type === 'INFORME_CONVENIO') {
                           generateInformeConvenio()
+                        }
+                        if (row.type === 'INFORME_ANEXO_CONVENIO') {
+                          toggleOpenAnexoConvenio()
                         }
                       }}
                       disabled={!row.isActive}
