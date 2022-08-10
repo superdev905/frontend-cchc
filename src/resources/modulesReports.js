@@ -42,6 +42,13 @@ const modulesReports = [
     type: 'INFORME_CSOCIAL',
     report: 'INFORME_CSOCIAL',
     isActive: true
+  },
+  {
+    module: 'Vivienda',
+    name: 'Reporte Convenio',
+    type: 'INFORME_CONVENIO',
+    report: 'INFORME_CONVENIO',
+    isActive: true
   }
 ]
 

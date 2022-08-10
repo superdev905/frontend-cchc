@@ -2,15 +2,22 @@ import { useEffect, useState } from 'react'
 import { Box, Grid, IconButton } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 import { Autocomplete } from '@material-ui/lab'
-import { Wrapper, SearchInput, Button, TextField } from '../UI'
+import { useDispatch } from 'react-redux'
+import { useSnackbar } from 'notistack'
+import * as FileSaver from 'file-saver'
+import * as XLSX from 'xlsx'
+import { Wrapper, SearchInput, SubmitButton, TextField } from '../UI'
 import { useToggle } from '../../hooks'
 import { DataTable } from '../Shared'
 import modulesReports from '../../resources/modulesReports'
 import ReportDialog from './ReportDialog'
 import ReportMonthlyDialog from './ReportStepper'
 import InformeCsocial from './CsocialReport'
+import informeConvenioActions from '../../state/actions/informe_convenio'
 
 const ReportsList = () => {
+  const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
   const { open, toggleOpen } = useToggle()
   const { open: MonthlyReport, toggleOpen: toggleOpenMonthlyReport } =
     useToggle()
@@ -19,10 +26,32 @@ const ReportsList = () => {
   const [type, setType] = useState('')
   const [modules, setModules] = useState([])
   const [listModules, setListModules] = useState([])
+  const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({
     search: '',
     module: ''
   })
+  const fileType =
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+  const fileExtension = '.xlsx'
+
+  const exportToCSV = (apiData, fileName, mssg) => {
+    const ws = XLSX.utils.json_to_sheet(apiData)
+    const wb = {
+      Sheets: { informe_convenio: ws },
+      SheetNames: ['informe_convenio']
+    }
+    const excelBuffer = XLSX.write(wb, {
+      bookType: 'xlsx',
+      type: 'array'
+    })
+    const informe_convenio = new Blob([excelBuffer], { type: fileType })
+    FileSaver.saveAs(informe_convenio, fileName + fileExtension)
+    setLoading(false)
+    enqueueSnackbar(mssg, {
+      variant: 'success'
+    })
+  }
 
   useEffect(() => {
     const { search, module } = filters
@@ -52,6 +81,20 @@ const ReportsList = () => {
       setListModules(modulesReports)
     }
   }, [])
+
+  const generateInformeConvenio = () => {
+    setLoading(true)
+    dispatch(informeConvenioActions.getInformeConvenio()).then((data) => {
+      if (data.message === 'No se encontraron registros.') {
+        enqueueSnackbar(data.message, {
+          variant: 'error'
+        })
+        setLoading(false)
+      } else {
+        exportToCSV(data.rows, `Informe Convenio`, data.message)
+      }
+    })
+  }
 
   return (
     <Wrapper>
@@ -119,7 +162,7 @@ const ReportsList = () => {
                   name: 'Informe',
                   right: true,
                   cell: (row) => (
-                    <Button
+                    <SubmitButton
                       onClick={() => {
                         if (row.type === 'MONTHLY_REPORT') {
                           toggleOpenMonthlyReport()
@@ -130,16 +173,21 @@ const ReportsList = () => {
                         }
                         if (
                           row.type !== 'MONTHLY_REPORT' &&
-                          row.type !== 'INFORME_CSOCIAL'
+                          row.type !== 'INFORME_CSOCIAL' &&
+                          row.type !== 'INFORME_CONVENIO'
                         ) {
                           toggleOpen()
                           setType(row.type)
                         }
+                        if (row.type === 'INFORME_CONVENIO') {
+                          generateInformeConvenio()
+                        }
                       }}
                       disabled={!row.isActive}
+                      loading={loading && row.type === 'INFORME_CONVENIO'}
                     >
                       Generar
-                    </Button>
+                    </SubmitButton>
                   )
                 }
               ]}

@@ -34,6 +34,12 @@ const services = {
     production: 'http://20.225.59.173:5199/api/v1',
     azure_test: 'http://20.225.59.173:5199/api/v1'
   },
+  informe_convenio: {
+    development: `${BASEURL[env]}:5100/api/v1`,
+    testing: `${BASEURL[env]}:5191/api/v1`,
+    production: 'http://20.225.59.173:5193/api/v1',
+    azure_test: 'http://20.225.59.173:5193/api/v1'
+  },
   parameters: {
     development: `${BASEURL[env]}:5200/api/v1`,
     testing: `${BASEURL[env]}:5195/api/v1`,
@@ -165,7 +171,8 @@ const config = {
     unemployed: services.unemployed[env],
     protocols: services.protocols[env],
     informe_csocial: services.informe_csocial[env],
-    integracion_etc: services.integracion_etc[env]
+    integracion_etc: services.integracion_etc[env],
+    informe_convenio: services.informe_convenio[env]
   }
 }
 
