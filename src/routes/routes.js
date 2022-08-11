@@ -77,7 +77,8 @@ const routes = [
           'JEFATURA',
           'ANALISTA_CASOS',
           'SOCIAL_CASES',
-          'CESANTES'
+          'CESANTES',
+          'ETC'
         ]}
         yes={() => (
           <Layout>
