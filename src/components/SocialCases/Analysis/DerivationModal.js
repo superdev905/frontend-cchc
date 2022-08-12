@@ -7,6 +7,7 @@ import { Box, Typography, Grid, Chip } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import moment from 'moment'
 import { Select, Button, TextField, TextArea } from '../../UI'
 import { Dialog } from '../../Shared'
 import companyActions from '../../../state/actions/companies'
@@ -86,7 +87,22 @@ const DerivationModal = ({ open, onClose, assistanceID, data, type }) => {
               )
             )
             dispatch(socialCaseActions.getSocialCaseById(socialCaseId))
-            dispatch(socialCaseActions.SocialCaseMail({ type: 'ASIGN' }))
+            const actualDate = moment().format('DD/MM/YYYY')
+            const asignedUsers = value?.map(
+              (el) =>
+                `${el?.names} ${el?.paternalSurname} ${el?.maternalSurname}`
+            )
+            dispatch(
+              socialCaseActions.SocialCaseMail(
+                { type: 'ASIGN' },
+                {
+                  profesionalDerivatedList: asignedUsers,
+                  date: actualDate.toString(),
+                  socialCaseNumber: socialCaseId,
+                  derivationComment: formData.observations
+                }
+              )
+            )
             onClose()
           })
         } else {
@@ -103,7 +119,22 @@ const DerivationModal = ({ open, onClose, assistanceID, data, type }) => {
               )
             )
             dispatch(socialCaseActions.getSocialCaseById(socialCaseId))
-            dispatch(socialCaseActions.SocialCaseMail({ type: 'ASIGN' }))
+            const actualDate = moment().format('DD/MM/YYYY')
+            const asignedUsers = value?.map(
+              (el) =>
+                `${el?.names} ${el?.paternal_surname} ${el?.maternal_surname}`
+            )
+            dispatch(
+              socialCaseActions.SocialCaseMail(
+                { type: 'ASIGN' },
+                {
+                  profesionalDerivatedList: asignedUsers,
+                  date: actualDate.toString(),
+                  socialCaseNumber: socialCaseId,
+                  derivationComment: formData.observations
+                }
+              )
+            )
             onClose()
           })
         }

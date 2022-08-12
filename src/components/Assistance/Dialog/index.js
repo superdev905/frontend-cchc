@@ -14,6 +14,7 @@ import {
   Switch
 } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
+import moment from 'moment'
 import RowAutocomplete from './RowAutocomplete'
 import EmployeeRow from './EmployeeRow'
 import { Dialog, FilePicker } from '../../Shared'
@@ -266,7 +267,25 @@ const WorkerInterventionRecord = ({
               ...caseFormik.values
             }
             handleCreateCaseSocial(newCase)
-            dispatch(socialCasesActions.SocialCaseMail({ type: 'CREATE' }))
+            const actualDate = moment().format('DD/MM/YYYY')
+            dispatch(
+              socialCasesActions.SocialCaseMail(
+                { type: 'CREATE' },
+                {
+                  date: actualDate.toString(),
+                  derivatedBy: `${user?.names} ${user?.paternal_surname} ${user?.maternal_surname}`,
+                  derivatedType: managementList.find(
+                    (e) => e.id === parseInt(formik.values.task_id, 10)
+                  )?.name,
+                  attended: body.attended_name,
+                  attendedRut: selectedBeneficiary.run,
+                  obra: event.construction_name,
+                  company: body.business_name,
+                  createComment: body.observation,
+                  createCommentEnd: caseFormik.values.requestType
+                }
+              )
+            )
           }
           if (
             formik.values.case_id !== 'NEW' &&

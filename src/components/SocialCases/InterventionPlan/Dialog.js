@@ -4,6 +4,8 @@ import { useFormik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
+import { useParams } from 'react-router-dom'
+import moment from 'moment'
 import commonActions from '../../../state/actions/common'
 import userActions from '../../../state/actions/users'
 import socialCaseActions from '../../../state/actions/socialCase'
@@ -28,9 +30,12 @@ const PlanDialog = ({
 }) => {
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
+  const { socialCaseId } = useParams()
   const [users, setUsers] = useState([])
+  const { user } = useSelector((state) => state.auth)
   const { isMobile } = useSelector((state) => state.ui)
   const { managementList: list } = useSelector((state) => state.common)
+  const { caseDetails } = useSelector((state) => state.socialCase)
   const { success, changeSuccess } = useSuccess()
   const formik = useFormik({
     validateOnMount: true,
@@ -58,7 +63,33 @@ const PlanDialog = ({
         .then(() => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, { variant: 'success' })
-          dispatch(socialCaseActions.SocialCaseMail({ type: 'EDIT' }))
+          const actualDate = moment().format('DD/MM/YYYY')
+          const interventionDate = moment(values.nextDate).format('DD/MM/YYYY')
+          const selectedUser = users.find(
+            (item) => item.id === parseInt(formik.values.professionalId, 10)
+          )
+          dispatch(
+            socialCaseActions.SocialCaseMail(
+              { type: 'EDIT' },
+              {
+                socialCaseNumber: socialCaseId,
+                date: actualDate.toString(),
+                attendedRut: caseDetails.employeeRut,
+                attended: caseDetails.employeeNames,
+                interventionType: list.find(
+                  (item) => item.id === parseInt(formik.values.managementId, 10)
+                )?.name,
+                interventionProfesionalName: `${selectedUser?.names} ${selectedUser?.paternal_surname} ${selectedUser?.maternal_surname}`,
+                interventionDate: interventionDate.toString(),
+                areaName: caseDetails.area?.name,
+                topicName: caseDetails.tema?.name,
+                derivatedBy: `${user?.names} ${user?.paternal_surname} ${user?.maternal_surname}`,
+                socialCaseStartDate: moment(caseDetails.date)
+                  .format('DD/MM/YYYY')
+                  .toString()
+              }
+            )
+          )
           changeSuccess(true, () => {
             onClose()
           })
@@ -78,6 +109,7 @@ const PlanDialog = ({
       })
     }
   }, [open])
+
   return (
     <Dialog fullScreen={isMobile} fullWidth open={open} onClose={onClose}>
       <Box>
