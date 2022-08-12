@@ -307,6 +307,60 @@ const DerivationUpdate = (socialCaseId, arrId) => () =>
       })
   })
 
+const SocialCaseMail = (type, values) => () =>
+  new Promise((resolve, reject) => {
+    Axios.post(
+      `${
+        config.services.socialCase
+      }/social-cases/mail/social-case?${queryString.stringify(type)}`,
+      values
+    )
+      .then((response) => {
+        const { data } = response
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err.response.data.detail)
+      })
+  })
+
+/*  Object Type to send mails
+{
+  to: [ <-- Arreglo de correos, dónde se enviarán los correos.
+    "string"
+  ],
+  cc: [ <-- Arreglo de correos en copia.
+    "string"
+  ],
+  date: "string", <-- Variable de fecha
+  createdBy: "string", <-- Variable de quién creó caso social
+  attended: "string", <-- Variable de quién fue atendido
+  attendedRut: "string", <-- Variable rut del atendido
+  obra: "string", <-- Variable nombre de obra.
+  company: "string", <-- Variable nombre de empresa.
+  createComment: "string", <-- Variable de comentario de creación
+  createCommentEnd: "string", <-- Variable de comentario de cierre.
+  socialCaseNumber: "string", <-- Variable número de caso social.
+  dataTable: [ <-- Variable para generar la tabla en la "edición" de caso social (Al agregar tareas o modificar tareas del plan de intervención)
+    {
+      type: "string", <-- Tipo de tarea Ej: Reporte
+      profesionalName: "string", <-- Nombre de a quién se le asignó
+      date: "string" <-- Fecha en que se creó o modificó la tarea?
+    }
+  ],
+  socialCaseCreatedAt: "string", <-- Fecha en que se creó el caso social.
+  areaName: "string", <-- Nombre del área
+  topicName: "string", <-- Nombre del tema
+  derivatedBy: "string", <-- Quién deriva el caso social.
+  officeDelegatedBy: "string", <-- Oficina desde la que se deriva?
+  derivationComment: "string", <-- Comentario de derivación
+  profesionalDerivatedList: [ <-- Arreglo con el listado de usuarios a los que se les derivó el caso social.
+    {
+      name: "string" <-- Nombre de usuarios.
+    }
+  ]
+} */
+
 const socialCasesActions = {
   getSocialCases,
   getSocialCaseById,
@@ -327,7 +381,8 @@ const socialCasesActions = {
   cleanCalendarPlans,
   getStats,
   DerivationUpdate,
-  editDerivation
+  editDerivation,
+  SocialCaseMail
 }
 
 export default socialCasesActions

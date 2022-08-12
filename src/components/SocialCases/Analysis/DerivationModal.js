@@ -86,6 +86,7 @@ const DerivationModal = ({ open, onClose, assistanceID, data, type }) => {
               )
             )
             dispatch(socialCaseActions.getSocialCaseById(socialCaseId))
+            dispatch(socialCaseActions.SocialCaseMail({ type: 'ASIGN' }))
             onClose()
           })
         } else {
@@ -102,6 +103,7 @@ const DerivationModal = ({ open, onClose, assistanceID, data, type }) => {
               )
             )
             dispatch(socialCaseActions.getSocialCaseById(socialCaseId))
+            dispatch(socialCaseActions.SocialCaseMail({ type: 'ASIGN' }))
             onClose()
           })
         }

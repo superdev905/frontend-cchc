@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Box, Grid, Typography } from '@material-ui/core'
 import commonActions from '../../../state/actions/common'
 import userActions from '../../../state/actions/users'
+import socialCaseActions from '../../../state/actions/socialCase'
 import { DatePicker, Dialog } from '../../Shared'
 import { Button, Select, SubmitButton } from '../../UI'
 import { useSuccess } from '../../../hooks'
@@ -57,6 +58,7 @@ const PlanDialog = ({
         .then(() => {
           formik.setSubmitting(false)
           enqueueSnackbar(successMessage, { variant: 'success' })
+          dispatch(socialCaseActions.SocialCaseMail({ type: 'EDIT' }))
           changeSuccess(true, () => {
             onClose()
           })

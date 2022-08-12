@@ -266,6 +266,7 @@ const WorkerInterventionRecord = ({
               ...caseFormik.values
             }
             handleCreateCaseSocial(newCase)
+            dispatch(socialCasesActions.SocialCaseMail({ type: 'CREATE' }))
           }
           if (
             formik.values.case_id !== 'NEW' &&
