@@ -86,7 +86,14 @@ const PlanDialog = ({
                 derivatedBy: `${user?.names} ${user?.paternal_surname} ${user?.maternal_surname}`,
                 socialCaseStartDate: moment(caseDetails.date)
                   .format('DD/MM/YYYY')
-                  .toString()
+                  .toString(),
+                profesionalDerivatedList: [],
+                to: [
+                  'sistrac.derivacion@fundacioncchc.cl',
+                  'j.diaz.b93@hotmail.com',
+                  selectedUser?.email
+                ],
+                officeDelegatedBy: user?.oficina
               }
             )
           )

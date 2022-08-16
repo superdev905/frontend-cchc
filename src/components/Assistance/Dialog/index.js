@@ -282,7 +282,13 @@ const WorkerInterventionRecord = ({
                   obra: event.construction_name,
                   company: body.business_name,
                   createComment: body.observation,
-                  createCommentEnd: caseFormik.values.requestType
+                  createCommentEnd: caseFormik.values.requestType,
+                  to: [
+                    user.email,
+                    'sistrac.derivacion@fundacioncchc.cl',
+                    user?.bossEmail
+                  ],
+                  profesionalDerivatedList: []
                 }
               )
             )

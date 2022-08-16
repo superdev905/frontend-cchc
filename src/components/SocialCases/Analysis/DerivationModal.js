@@ -92,6 +92,7 @@ const DerivationModal = ({ open, onClose, assistanceID, data, type }) => {
               (el) =>
                 `${el?.names} ${el?.paternalSurname} ${el?.maternalSurname}`
             )
+            const assignedTo = value?.map((el) => el.email)
             dispatch(
               socialCaseActions.SocialCaseMail(
                 { type: 'ASIGN' },
@@ -99,7 +100,8 @@ const DerivationModal = ({ open, onClose, assistanceID, data, type }) => {
                   profesionalDerivatedList: asignedUsers,
                   date: actualDate.toString(),
                   socialCaseNumber: socialCaseId,
-                  derivationComment: formData.observations
+                  derivationComment: formData.observations,
+                  to: assignedTo
                 }
               )
             )
@@ -124,6 +126,7 @@ const DerivationModal = ({ open, onClose, assistanceID, data, type }) => {
               (el) =>
                 `${el?.names} ${el?.paternal_surname} ${el?.maternal_surname}`
             )
+            const assignedTo = value?.map((el) => el.email)
             dispatch(
               socialCaseActions.SocialCaseMail(
                 { type: 'ASIGN' },
@@ -131,7 +134,8 @@ const DerivationModal = ({ open, onClose, assistanceID, data, type }) => {
                   profesionalDerivatedList: asignedUsers,
                   date: actualDate.toString(),
                   socialCaseNumber: socialCaseId,
-                  derivationComment: formData.observations
+                  derivationComment: formData.observations,
+                  to: assignedTo
                 }
               )
             )
