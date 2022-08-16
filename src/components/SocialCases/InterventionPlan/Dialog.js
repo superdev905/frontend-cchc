@@ -90,7 +90,6 @@ const PlanDialog = ({
                 profesionalDerivatedList: [],
                 to: [
                   'sistrac.derivacion@fundacioncchc.cl',
-                  'j.diaz.b93@hotmail.com',
                   selectedUser?.email
                 ],
                 officeDelegatedBy: user?.oficina
