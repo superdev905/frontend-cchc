@@ -156,6 +156,9 @@ const AttentionDetails = () => {
 
         {openAdd && (
           <AssistanceDialog
+            event={{
+              construction_name: employee.current_job.construction_name
+            }}
             sourceSystem={'OFICINA'}
             onClose={toggleOpenAdd}
             open={openAdd}
