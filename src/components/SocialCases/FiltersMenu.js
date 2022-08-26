@@ -7,7 +7,6 @@ import statesData from '../../resources/statesData'
 import filterSocialCase from '../../resources/filtersSocialCase'
 import tagsSocialCase from '../../resources/tagsSocialCase'
 import DatePicker from '../Shared/DatePicker'
-import companiesActions from '../../state/actions/companies'
 import usersActions from '../../state/actions/users'
 import commonActions from '../../state/actions/common'
 import socialCaseActions from '../../state/actions/socialCase'
@@ -26,7 +25,6 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
   const classes = useStyles()
   const { areas } = useSelector((state) => state.common)
   const { filters } = useSelector((state) => state.socialCase)
-  const [companies, setCompanies] = useState([])
   const [employees, setEmployees] = useState([])
   const [seleted, setSeleted] = useState(filterSocialCase)
   const [seletedTags, setSeletedTags] = useState(tagsSocialCase)
@@ -133,11 +131,6 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
   }, [filters])
 
   useEffect(() => {
-    dispatch(companiesActions.getCompanies({ state: 'CREATED' }, false)).then(
-      (list) => {
-        setCompanies(list)
-      }
-    )
     dispatch(usersActions.getFoundationUsers()).then((list) => {
       setEmployees(list)
     })
@@ -169,25 +162,6 @@ const FiltersMenu = ({ open, anchorEl, onClose }) => {
         flexDirection="column"
         padding="10px"
       >
-        <Box width="100%">
-          Empresa:
-          <Select
-            name="companies"
-            value={seleted.businessId}
-            onChange={(e) => onSelectedOption(e, 'companies')}
-          >
-            <option value="">-Seleccione-</option>
-            {companies.map((item) => (
-              <option
-                key={`application--filters-companies${item.id}`}
-                value={item.id}
-              >
-                {item.business_name.toUpperCase()}
-              </option>
-            ))}
-          </Select>
-        </Box>
-
         <Box width="100%">
           Estado:
           <Select
