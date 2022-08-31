@@ -107,10 +107,8 @@ const services = {
   socialCase: {
     development: `${BASEURL[env]}:5196/api/v1`,
     testing: `${BASEURL[env]}:5196/api/v1`,
-    production:
-      'http://social-case-api.southcentralus.azurecontainer.io:5191/api/v1',
-    azure_test:
-      'http://social-case-test.southcentralus.azurecontainer.io:5191/api/v1'
+    production: 'http://40.84.229.174:5198/api/v1',
+    azure_test: 'http://40.84.229.174:5198/api/v1'
   },
   question: {
     development: `${BASEURL[env]}:5197/api/v1`,
