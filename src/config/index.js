@@ -146,6 +146,11 @@ const services = {
     production: 'http://protocols-api.centralus.azurecontainer.io:5197/api/v1',
     azure_test:
       'http://protocols-test.southcentralus.azurecontainer.io:5197/api/v1'
+  },
+  visitStatistics: {
+    development: `${BASEURL[env]}:5119/api/v1`,
+    production: 'http://20.225.59.173:6001/api/v1',
+    azure_test: 'http://20.225.59.173:6001/api/v1'
   }
 }
 
@@ -170,7 +175,8 @@ const config = {
     protocols: services.protocols[env],
     informe_csocial: services.informe_csocial[env],
     integracion_etc: services.integracion_etc[env],
-    informe_convenio: services.informe_convenio[env]
+    informe_convenio: services.informe_convenio[env],
+    visit_statistics: services.visitStatistics[env]
   }
 }
 

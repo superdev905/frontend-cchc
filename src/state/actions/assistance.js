@@ -109,12 +109,14 @@ const getVisitReportItems = (id) => (dispatch) =>
 
 const getVisitStatistics = (idVisit) => (dispatch) =>
   new Promise((resolve, reject) => {
-    Axios.get(`${config.services.assistance}/visits/${idVisit}/statistics`)
+    Axios.get(
+      `${config.services.visit_statistics}/visits/${idVisit}/statistics`
+    )
       .then((response) => {
         const { data } = response
         dispatch({
           type: assistanceTypes.GET_VISIT_STATISTICS,
-          payload: data
+          payload: data.rows
         })
         resolve(data)
       })

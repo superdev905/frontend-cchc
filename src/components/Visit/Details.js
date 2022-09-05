@@ -243,7 +243,7 @@ const Details = ({ fetching, fetchDetails, setHistorial, historial }) => {
             !totalUsers ||
             !assistanceConstructionList ||
             !statisticsPrint ||
-            visitStatistics.length === 0
+            visitStatistics?.length === 0
           }
           onClick={togglePrintVisit}
         >

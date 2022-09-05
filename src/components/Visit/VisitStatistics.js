@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { Box, Grid, Typography, makeStyles, Paper } from '@material-ui/core'
@@ -18,28 +18,16 @@ const useStyles = makeStyles(() => ({
 const VisitStatistics = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const [newAttendedWorkers, setNewAttendedWorkers] = useState(0)
-  const [oldAttendedWorkers, setOldAttendedWorkers] = useState(0)
-  const { historicly, visit, totalUsers, visitStatistics } = useSelector(
+  const { visit, visitStatistics, totalUsers } = useSelector(
     (state) => state.assistance
   )
   const { idVisit } = useParams()
 
   useEffect(() => {
-    dispatch(assistanceActions.getVisitStatistics(idVisit))
+    if (idVisit && totalUsers) {
+      dispatch(assistanceActions.getVisitStatistics(idVisit))
+    }
   }, [idVisit, totalUsers])
-
-  useEffect(() => {
-    dispatch(
-      assistanceActions.statisticsPrint({
-        new: newAttendedWorkers,
-        old: oldAttendedWorkers,
-        total: visitStatistics?.total,
-        house: visitStatistics?.house,
-        subcontract: visitStatistics?.subcontract
-      })
-    )
-  }, [totalUsers, visitStatistics, newAttendedWorkers, oldAttendedWorkers])
 
   useEffect(() => {
     dispatch(
@@ -50,23 +38,6 @@ const VisitStatistics = () => {
       })
     )
   }, [visit])
-
-  useEffect(() => {
-    if (totalUsers.length > 0) {
-      let newWorker = 0
-      let old = 0
-      totalUsers.forEach((user) => {
-        const add = historicly.some((hist) => hist[0] === user.id)
-        if (add) {
-          old += 1
-        } else {
-          newWorker += 1
-        }
-      })
-      setNewAttendedWorkers(newWorker)
-      setOldAttendedWorkers(old)
-    }
-  }, [historicly, totalUsers])
 
   return (
     <Wrapper>
@@ -87,15 +58,15 @@ const VisitStatistics = () => {
           <hr></hr>
           <Grid>
             <LabeledRow label="Nuevos:">
-              <Text loaderWidth="80%">{newAttendedWorkers}</Text>
+              <Text loaderWidth="80%">{visitStatistics?.newWorker || 0}</Text>
             </LabeledRow>
 
             <LabeledRow label="Antiguos:">
-              <Text loaderWidth="80%">{oldAttendedWorkers}</Text>
+              <Text loaderWidth="80%">{visitStatistics?.old || 0}</Text>
             </LabeledRow>
 
             <LabeledRow label="Total:">
-              <Text loaderWidth="80%">{visitStatistics?.total}</Text>
+              <Text loaderWidth="80%">{visitStatistics?.total || 0}</Text>
             </LabeledRow>
           </Grid>
         </Paper>
@@ -112,13 +83,13 @@ const VisitStatistics = () => {
           <hr></hr>
           <Grid>
             <LabeledRow label="Casa:">
-              <Text loaderWidth="80%">{visitStatistics?.house}</Text>
+              <Text loaderWidth="80%">{visitStatistics?.casa || 0}</Text>
             </LabeledRow>{' '}
             <LabeledRow label="SubContrato:">
-              <Text loaderWidth="80%">{visitStatistics?.subcontract}</Text>
+              <Text loaderWidth="80%">{visitStatistics?.subContrato || 0}</Text>
             </LabeledRow>
             <LabeledRow label="Total:">
-              <Text loaderWidth="80%">{visitStatistics?.total}</Text>
+              <Text loaderWidth="80%">{visitStatistics?.total || 0}</Text>
             </LabeledRow>
           </Grid>
         </Paper>
