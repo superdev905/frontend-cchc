@@ -25,8 +25,7 @@ const services = {
   benefits: {
     development: `${BASEURL[env]}:5193/api/v1`,
     testing: `${BASEURL[env]}:5199/api/v1`,
-    production:
-      'http://20.225.59.173/s/benefits/api/v1',
+    production: 'http://20.225.59.173/s/benefits/api/v1',
     azure_test:
       'http://benefits-test.southcentralus.azurecontainer.io:5191/api/v1'
   },
