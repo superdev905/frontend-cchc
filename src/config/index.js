@@ -18,9 +18,17 @@ const services = {
   assistance: {
     development: `${BASEURL[env]}:5100/api/v1`,
     testing: `${BASEURL[env]}:5191/api/v1`,
-    production: 'http://20.225.59.173:5191/api/v1',
+    production: 'http://20.225.59.173/s/assistance/api/v1',
     azure_test:
       'http://assistance-test.southcentralus.azurecontainer.io:5191/api/v1'
+  },
+  benefits: {
+    development: `${BASEURL[env]}:5193/api/v1`,
+    testing: `${BASEURL[env]}:5199/api/v1`,
+    production:
+      'http://20.225.59.173/s/benefits/api/v1',
+    azure_test:
+      'http://benefits-test.southcentralus.azurecontainer.io:5191/api/v1'
   },
   informe_csocial: {
     development: `${BASEURL[env]}:5100/api/v1`,
@@ -81,14 +89,6 @@ const services = {
       'http://courses-api.southcentralus.azurecontainer.io:5199/api/v1',
     azure_test:
       'http://courses-test.southcentralus.azurecontainer.io:5199/api/v1'
-  },
-  benefits: {
-    development: `${BASEURL[env]}:5193/api/v1`,
-    testing: `${BASEURL[env]}:5199/api/v1`,
-    production:
-      'http://benefits-api.southcentralus.azurecontainer.io:5191/api/v1',
-    azure_test:
-      'http://benefits-test.southcentralus.azurecontainer.io:5191/api/v1'
   },
   schedule: {
     development: `${BASEURL[env]}:5300/api/v1`,
