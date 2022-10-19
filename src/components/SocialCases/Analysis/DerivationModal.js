@@ -38,6 +38,7 @@ const useStyles = makeStyles(() => ({
 }))
 
 const DerivationModal = ({ open, onClose, assistanceID, data, type }) => {
+  console.log(data)
   const classes = useStyles()
   const { socialCaseId } = useParams()
   const dispatch = useDispatch()
@@ -45,7 +46,7 @@ const DerivationModal = ({ open, onClose, assistanceID, data, type }) => {
   const { caseDetails } = useSelector((state) => state.socialCase)
   const [assistanceList, setAssistanceList] = useState([])
   const { enqueueSnackbar } = useSnackbar()
-  const [state] = useState('ASIGNADO')
+  const [state] = useState(data?.state)
   const [value, setValue] = useState([])
   const assistanceDerivationId = value.map((encargado) => encargado.id)
 
@@ -53,8 +54,8 @@ const DerivationModal = ({ open, onClose, assistanceID, data, type }) => {
 
   const formik = useFormik({
     initialValues: {
-      priority: type === 'EDIT' ? data.priority : '',
-      observations: type === 'EDIT' ? data.observations : ''
+      priority: data ? data.priority : '',
+      observations: data ? data.observations : ''
     },
     validationSchema: Yup.object({
       priority: Yup.string().required('Seleccione la prioridad'),

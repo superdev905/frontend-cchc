@@ -42,7 +42,7 @@ const HouseAgreements = () => {
   }
   useEffect(() => {
     fetchAgreements()
-  }, [])
+  }, [query])
 
   return (
     <Box>

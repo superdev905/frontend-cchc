@@ -1,8 +1,9 @@
+import { Link } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Grid, Typography, makeStyles } from '@material-ui/core'
 import moment from 'moment'
-import { LabeledRow, Text } from '../../UI'
+import { LabeledRow, Text, Button } from '../../UI'
 import EmployeesActions from '../../../state/actions/employees'
 
 const useStyles = makeStyles(() => ({
@@ -75,6 +76,12 @@ const Background = ({ loading }) => {
             <LabeledRow label={'Dirección'}>
               <Text loading={loading}>{employee?.contact?.address}</Text>
             </LabeledRow>
+            <LabeledRow label={'Teléfono'}>
+              <Text loading={loading}>{employee?.contact?.mobile_phone}</Text>
+            </LabeledRow>
+            <LabeledRow label={'Correo Electrónico'}>
+              <Text loading={loading}>{employee?.contact?.email}</Text>
+            </LabeledRow>
             <LabeledRow label={'Estado Civil'}>
               <Text loading={loading}>
                 {employee?.marital_status?.description}
@@ -94,6 +101,12 @@ const Background = ({ loading }) => {
             <LabeledRow label={'Tipo de Derivación'}>
               <Text loading={loading}>{caseDetails?.derivationState}</Text>
             </LabeledRow>
+            <Link
+              style={{ textDecoration: 'none' }}
+              to={`/employee/${caseDetails?.employeeId}/info`}
+            >
+              <Button>Ver Datos Completos</Button>
+            </Link>
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography className={classes.heading}>
